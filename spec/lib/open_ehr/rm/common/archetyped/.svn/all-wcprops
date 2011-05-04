@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped
+END
+feeder_audit_details_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped/feeder_audit_details_spec.rb
+END
+locatable_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped/locatable_spec.rb
+END
+archetyped_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped/archetyped_spec.rb
+END
+link_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped/link_spec.rb
+END
+feeder_audit_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped/feeder_audit_spec.rb
+END
+pathable_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/369/ruby/trunk/spec/lib/open_ehr/rm/common/archetyped/pathable_spec.rb
+END

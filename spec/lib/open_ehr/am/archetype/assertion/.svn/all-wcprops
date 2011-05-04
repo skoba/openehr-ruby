@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/392/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion
+END
+expr_binary_operator.rb
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/390/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/expr_binary_operator.rb
+END
+expr_leaf_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/385/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/expr_leaf_spec.rb
+END
+assertion_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/392/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/assertion_spec.rb
+END
+expr_unary_operator_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/389/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/expr_unary_operator_spec.rb
+END
+expr_operator_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/388/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/expr_operator_spec.rb
+END
+assertion_variable_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/390/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/assertion_variable_spec.rb
+END
+expr_item_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/384/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/expr_item_spec.rb
+END
+operator_kind_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/387/ruby/trunk/spec/lib/open_ehr/am/archetype/assertion/operator_kind_spec.rb
+END

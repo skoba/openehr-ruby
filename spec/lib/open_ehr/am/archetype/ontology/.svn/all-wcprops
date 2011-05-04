@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/412/ruby/trunk/spec/lib/open_ehr/am/archetype/ontology
+END
+archetype_term_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/411/ruby/trunk/spec/lib/open_ehr/am/archetype/ontology/archetype_term_spec.rb
+END
+archetype_ontology_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/412/ruby/trunk/spec/lib/open_ehr/am/archetype/ontology/archetype_ontology_spec.rb
+END

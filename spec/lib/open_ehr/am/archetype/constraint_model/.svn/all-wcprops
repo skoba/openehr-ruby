@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/401/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model
+END
+cardinality_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/375/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/cardinality_spec.rb
+END
+archetype_slot_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/382/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/archetype_slot_spec.rb
+END
+c_attribute_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/375/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_attribute_spec.rb
+END
+c_defined_object_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/380/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_defined_object_spec.rb
+END
+c_reference_object_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/382/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_reference_object_spec.rb
+END
+c_single_attribute_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/376/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_single_attribute_spec.rb
+END
+archetype_constraint_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/374/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/archetype_constraint_spec.rb
+END
+c_object_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/375/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_object_spec.rb
+END
+c_domain_type_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/381/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_domain_type_spec.rb
+END
+archetype_internal_ref_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/!svn/ver/382/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/archetype_internal_ref_spec.rb
+END
+c_complex_object_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/381/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_complex_object_spec.rb
+END
+c_multiple_attribute_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/377/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_multiple_attribute_spec.rb
+END
+c_primitive_object_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/393/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/c_primitive_object_spec.rb
+END
+constraint_ref_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/382/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/constraint_ref_spec.rb
+END

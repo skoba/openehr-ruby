@@ -1,0 +1,66 @@
+= Synopsis
+
+Ruby openEHR implementation project.
+* http://github.com/skoba/ruby-impl-openehr
+
+= Version
+
+Release-0.6.0
+
+= Requirements
+
+* Ruby 1.8.7 or higher, 1.9.2 reccomended
+* RubyGems
+* Tested with Ruby 1.9.2 on Linux and FreeBSD.
+* If you use Ruby 1.6, you should prepare racc 
+  runtime environment and some adjustment
+* It should work on other platforms with Ruby
+  support as well.
+
+== DESCRIPTION:
+
+ This is the version 0.6.0 release of Ruby openEHR implementation
+project. This release is still experimental preview of our work based
+on openEHR specification release 1.0.2. We implemented almost half of
+the specifications of the openEHR.  The work is still in progress. The
+intention is to have complete implementation of openEHR Reference
+Model and some of the Archetype Object Models, with support for
+archetype based object creation and validation.
+
+Parser and Seriarizer are also primitive, we are challanging to
+descrive archetype as another formalism such as YAML, instead of ADL.
+
+Almost all classes passed the test constructed by rspec or
+test/unit. This test cases are under /spec.
+
+Some specifications are not well determined yet, such as
+rm/security and so on. We postponed to implement such
+classes.
+
+Terminology and Demographic server will be implemented in
+other project.
+
+= Authors
+Akimichi Tatsukawa, Shinji Kobayashi
+openEHR.jp, <http://openehr.jp>
+
+= Copyright
+The software, including all files in this directory 
+and subdirectories is copyrighted to the original 
+authors and contributors, 2008
+All Rights Reserved.
+
+= License
+
+This product is under openEHR Open Source Software License
+
+The openEHR Foundation uses the Mozilla Tri-license 1.1 on
+all software copyrighted to the Foundation. This licence
+essentially provides the user a choice of licence conditions
+under which to operate with any given piece of software,
+being: the Mozilla Public licence (MPL), and the Free
+Software Foundation GNU General Public Licence (GPL) and
+Lesser GNU General Public Licence (LGPL). See the Mozilla
+relicensing FAQ for details of this license. This in no way
+constrains the way in which software created by other
+organisations is licenced.  

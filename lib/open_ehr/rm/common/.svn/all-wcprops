@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/370/ruby/trunk/lib/open_ehr/rm/common
+END
+directory.rb
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/369/ruby/trunk/lib/open_ehr/rm/common/directory.rb
+END
+change_control.rb
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/370/ruby/trunk/lib/open_ehr/rm/common/change_control.rb
+END
+resource.rb
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/370/ruby/trunk/lib/open_ehr/rm/common/resource.rb
+END
+archetyped.rb
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/370/ruby/trunk/lib/open_ehr/rm/common/archetyped.rb
+END
+generic.rb
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/370/ruby/trunk/lib/open_ehr/rm/common/generic.rb
+END

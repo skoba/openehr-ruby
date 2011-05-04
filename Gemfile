@@ -1,0 +1,6 @@
+gem 'xml-simple'
+gem 'activesupport'
+gem 'locale'
+gem 'rspec'
+gem 'guard-rspec'
+gem 'spork'

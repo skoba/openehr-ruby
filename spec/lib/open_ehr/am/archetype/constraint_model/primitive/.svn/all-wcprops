@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/401/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive
+END
+c_real_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/396/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_real_spec.rb
+END
+c_duration_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/401/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_duration_spec.rb
+END
+c_string_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/397/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_string_spec.rb
+END
+c_primitive_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/393/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_primitive_spec.rb
+END
+c_date_time_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/400/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_date_time_spec.rb
+END
+c_date_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/399/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_date_spec.rb
+END
+c_integer_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/395/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_integer_spec.rb
+END
+c_time_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/400/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_time_spec.rb
+END
+c_boolean_spec.rb
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/393/ruby/trunk/spec/lib/open_ehr/am/archetype/constraint_model/primitive/c_boolean_spec.rb
+END

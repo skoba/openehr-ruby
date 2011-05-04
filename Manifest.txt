@@ -1,0 +1,16 @@
+History.txt
+Manifest.txt
+PostInstall.txt
+README.rdoc
+Rakefile
+bin/open_ehr
+lib/open_ehr.rb
+lib/open_ehr/cli.rb
+script/console
+script/destroy
+script/generate
+spec/open_ehr_cli_spec.rb
+spec/open_ehr_spec.rb
+spec/spec.opts
+spec/spec_helper.rb
+tasks/rspec.rake

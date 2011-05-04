@@ -1,0 +1,9 @@
+For more information on the Ruby implementation of the 
+openEHR Project,
+see http://openehr.jp/
+
+For more information on the openEHR Project,
+see http://openehr.org/
+
+
+
