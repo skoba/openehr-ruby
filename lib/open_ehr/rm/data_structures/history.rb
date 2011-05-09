@@ -5,7 +5,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109157527311_729550_7234Report.html
 # refs #55
 require 'time'
-require 'activesupport'
+require 'active_support/core_ext'
 include OpenEHR::RM::DataStructures
 include OpenEHR::RM::Common::Archetyped
 
