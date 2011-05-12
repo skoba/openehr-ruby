@@ -1,4 +1,11 @@
-=== 0.0.1 2011-04-26
+=== 0.6.1 2011-05-09
 
-* 1 major enhancement:
-  * Initial release
+* First gem package release
+
+=== 0.6.2 2011-05-09
+* Fixed some package hierachy
+
+=== 0.7.0 2011-05
+* Fixed ADL parser library
+
+

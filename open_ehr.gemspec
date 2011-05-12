@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{open_ehr}
-  s.version = "0.6.1"
+  s.version = "0.6.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
@@ -26,35 +26,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "doc/README_rdoc.html",
-    "doc/created.rid",
-    "doc/images/brick.png",
-    "doc/images/brick_link.png",
-    "doc/images/bug.png",
-    "doc/images/bullet_black.png",
-    "doc/images/bullet_toggle_minus.png",
-    "doc/images/bullet_toggle_plus.png",
-    "doc/images/date.png",
-    "doc/images/find.png",
-    "doc/images/loadingAnimation.gif",
-    "doc/images/macFFBgHack.png",
-    "doc/images/package.png",
-    "doc/images/page_green.png",
-    "doc/images/page_white_text.png",
-    "doc/images/page_white_width.png",
-    "doc/images/plugin.png",
-    "doc/images/ruby.png",
-    "doc/images/tag_green.png",
-    "doc/images/wrench.png",
-    "doc/images/wrench_orange.png",
-    "doc/images/zoom.png",
-    "doc/index.html",
-    "doc/js/darkfish.js",
-    "doc/js/jquery.js",
-    "doc/js/quicksearch.js",
-    "doc/js/thickbox-compressed.js",
     "doc/openehr_terminology.xml",
-    "doc/rdoc.css",
     "lib/#open_ehr.rb#",
     "lib/open_ehr.rb",
     "lib/open_ehr/am.rb",
@@ -109,6 +81,7 @@ Gem::Specification.new do |s|
     "lib/open_ehr/terminology.rb",
     "lib/open_ehr/terminology/open_ehr_terminology.rb",
     "lib/open_ehr/writer.rb",
+    "open_ehr.gemspec",
     "spec/lib/open_ehr/am/archetype/archetype_spec.rb",
     "spec/lib/open_ehr/am/archetype/assertion/assertion_spec.rb",
     "spec/lib/open_ehr/am/archetype/assertion/assertion_variable_spec.rb",

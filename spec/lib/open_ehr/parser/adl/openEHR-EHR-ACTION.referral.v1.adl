@@ -1,0 +1,351 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ACTION.referral.v1
+
+concept
+	[at0000]	-- Referral actions
+language
+	original_language = <[ISO_639-1::en]>
+	translations = <
+		["de"] = <
+			language = <[ISO_639-1::de]>
+			author = <
+				["name"] = <"Jasmin Buck, Sebastian Garde">
+				["organisation"] = <"University of Heidelberg, Central Queensland University">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["de"] = <
+			language = <[ISO_639-1::de]>
+			purpose = <"Zur Dokumentation von Handlungen, die auf eine Behandlungsanfrage an einen zweiten Gesundheitsdienstleister basieren">
+			use = <"">
+			misuse = <"">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"For recording actions based on a request for a second provider to provide care">
+			use = <"">
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"NotSet">
+	other_contributors = <>
+
+definition
+	ACTION[at0000] matches {	-- Referral actions
+		ism_transition matches {
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::524]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0001]}		-- Planned
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::524]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0002]}		-- Communicated
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::524]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0003]}		-- Acknowledged
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::527]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0005]}		-- Postponed
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::528]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0006]}		-- Cancelled
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::529]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0004]}		-- Appointment
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0008]}		-- Attended
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0009]}		-- Secondary referral
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0010]}		-- Secondary referral completed
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0011]}		-- Return of care
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::530]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0007]}		-- Did not attend
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::531]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0013]}		-- No further contact
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::531]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0014]}		-- Multiple 'did not attend'
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::532]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0012]}		-- Completed
+					}
+				}
+			}
+		}
+		description matches {
+			allow_archetype ITEM_TREE occurrences matches {0..1} matches {
+				include
+					domain_concept matches {/referral\.v1/}
+				exclude
+					domain_concept matches {/.*/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["de"] = <
+			items = <
+				["at0000"] = <
+					description = <"Zur Dokumentation von Handlungen, die auf eine Behandlungsanfrage an einen zweiten Gesundheitsdienstleister basieren">
+					text = <"Überweisungshandlungen">
+				>
+				["at0001"] = <
+					description = <"Überweisung wurde geplant, aber keine weiter Handlung hat stattgefunden">
+					text = <"Geplant">
+				>
+				["at0002"] = <
+					description = <"Die Anfrage für die Überweisung wurde übermittelt">
+					text = <"Übermittelt">
+				>
+				["at0003"] = <
+					description = <"Die Überweisungsanfrage wurde vom zweiten Gesundheitsdienstleister bestätigt">
+					text = <"Bestätigt">
+				>
+				["at0004"] = <
+					description = <"Ein Termin mit dem zweiten Gesundheitsdienstleister wurde vereinbart">
+					text = <"Termin">
+				>
+				["at0005"] = <
+					description = <"Die Überweisung wurde verschoben, wird aber in der Zukunft durchgeführt werden">
+					text = <"Verschoben">
+				>
+				["at0006"] = <
+					description = <"Die Überweisung wurde gestrichen">
+					text = <"Gestrichen">
+				>
+				["at0007"] = <
+					description = <"Die Person ist zu ihrem Termin nicht erschienen">
+					text = <"Nicht erschienen">
+				>
+				["at0008"] = <
+					description = <"Die Person suchte den zweiten Gesundheitsdienstleister auf">
+					text = <"Erschienen">
+				>
+				["at0009"] = <
+					description = <"Eine Überweisung zu einem dritten Gesundheisdienstleister wurde organisiert">
+					text = <"Zweite Überweisung">
+				>
+				["at0010"] = <
+					description = <"Die zweite Überweisung ist abgeschlossen">
+					text = <"Zweite Überweisung abgeschlossen">
+				>
+				["at0011"] = <
+					description = <"Die Behandlung wurde zurück zum überweisenden Gesundheitsdienstleister gegeben">
+					text = <"Behandlung zurückgegeben">
+				>
+				["at0012"] = <
+					description = <"Der Überweisungsprozess ist abgeschlossen">
+					text = <"Abgeschlossen">
+				>
+				["at0013"] = <
+					description = <"Der Überweisungsprozess ist nicht abgeschlossen, es besteht aber kein Kontakt zum zweiten Gesundheitsdienstleister mehr">
+					text = <"Kein weiterer Kontakt">
+				>
+				["at0014"] = <
+					description = <"Die Person ist zu wiederholten Gelegenheiten nicht erschienen - es werden keine weiteren Termine vereinbart">
+					text = <"Wiederholtes 'nicht erschienen'">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"Actions arising based on a request for health care from a second health care provider.">
+					text = <"Referral actions">
+				>
+				["at0001"] = <
+					description = <"Referral has been planned but no further action">
+					text = <"Planned">
+				>
+				["at0002"] = <
+					description = <"The request for referral has been communicated">
+					text = <"Communicated">
+				>
+				["at0003"] = <
+					description = <"The referral request has been acknowledged by second provider">
+					text = <"Acknowledged">
+				>
+				["at0004"] = <
+					description = <"An appointment with the second provider has been arranged">
+					text = <"Appointment">
+				>
+				["at0005"] = <
+					description = <"Referral has been postponed but will be organised in the future">
+					text = <"Postponed">
+				>
+				["at0006"] = <
+					description = <"Referral has been cancelled">
+					text = <"Cancelled">
+				>
+				["at0007"] = <
+					description = <"The person did not attend for their appointment">
+					text = <"Did not attend">
+				>
+				["at0008"] = <
+					description = <"The person attended the second provider">
+					text = <"Attended">
+				>
+				["at0009"] = <
+					description = <"Referral to a third provider has been organised">
+					text = <"Secondary referral">
+				>
+				["at0010"] = <
+					description = <"Secondary referral is complete">
+					text = <"Secondary referral completed">
+				>
+				["at0011"] = <
+					description = <"Care is transferred back to referrer">
+					text = <"Return of care">
+				>
+				["at0012"] = <
+					description = <"Referral process is complete">
+					text = <"Completed">
+				>
+				["at0013"] = <
+					description = <"The referral process was not completed but no further contact with second provider is organised">
+					text = <"No further contact">
+				>
+				["at0014"] = <
+					description = <"The person did not attend on multiple occasions - no further appointments will been sent">
+					text = <"Multiple 'did not attend'">
+				>
+			>
+		>
+	>

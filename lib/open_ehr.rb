@@ -8,4 +8,5 @@ module OpenEHR
   autoload :AM, 'open_ehr/am'
   autoload :Terminology, 'open_ehr/terminology'
   autoload :Serializer, 'open_ehr/serializer'
+  autoload :Parser, 'open_ehr/parser'
 end

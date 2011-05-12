@@ -1,0 +1,239 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/369/ruby/trunk/lib/adl_parser/test/adl
+END
+adl-test-ENTRY.structure_test1.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/323/ruby/trunk/lib/adl_parser/test/adl/adl-test-ENTRY.structure_test1.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-generic-lymphnode.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-generic-lymphnode.v1.adl
+END
+openEHR-EHR-OBSERVATION.blood_pressure.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/328/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-OBSERVATION.blood_pressure.v1.adl
+END
+openEHR-EHR-SECTION.reason_for_encounter.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-SECTION.reason_for_encounter.v1.adl
+END
+openEHR-EHR-OBSERVATION.apgar.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-OBSERVATION.apgar.v1.adl
+END
+openEHR-EHR-ITEM_TREE.medication-formulation.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/318/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ITEM_TREE.medication-formulation.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl
+END
+adl-test-ENTRY.assumed_types.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/319/ruby/trunk/lib/adl_parser/test/adl/adl-test-ENTRY.assumed_types.v1.adl
+END
+openEHR-EHR-ITEM_TREE.imaging.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ITEM_TREE.imaging.v1.adl
+END
+openEHR-EHR-ACTION.imaging.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ACTION.imaging.v1.adl
+END
+openEHR-EHR-ITEM_TREE.medication.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ITEM_TREE.medication.v1.adl
+END
+adl-test-ENTRY.most_minimal.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/323/ruby/trunk/lib/adl_parser/test/adl/adl-test-ENTRY.most_minimal.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-fetus.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-fetus.v1.adl
+END
+openEHR-EHR-EVALUATION.adverse.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-EVALUATION.adverse.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-uterus.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/318/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-uterus.v1.adl
+END
+openEHR-EHR-CLUSTER.dimensions-circumference.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.dimensions-circumference.v1.adl
+END
+adl-test-ENTRY.basic_types_fail.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/323/ruby/trunk/lib/adl_parser/test/adl/adl-test-ENTRY.basic_types_fail.v1.adl
+END
+openEHR-EHR-ITEM_TREE.Laboratory_request.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ITEM_TREE.Laboratory_request.v1.adl
+END
+openEHR-EHR-ITEM_TREE.follow_up.v1draft.adl
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/318/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ITEM_TREE.follow_up.v1draft.adl
+END
+openEHR-EHR-SECTION.findings.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-SECTION.findings.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-generic-joint.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-generic-joint.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-abdomen.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-abdomen.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-chest.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-chest.v1.adl
+END
+openEHR-EHR-INSTRUCTION.referral.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-INSTRUCTION.referral.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-generic.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-generic.v1.adl
+END
+openEHR-EHR-COMPOSITION.encounter.v1draft.adl
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/369/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-COMPOSITION.encounter.v1draft.adl
+END
+openEHR-EHR-SECTION.vital_signs.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-SECTION.vital_signs.v1.adl
+END
+openEHR-EHR-CLUSTER.dimensions.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.dimensions.v1.adl
+END
+openEHR-EHR-CLUSTER.auscultation.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.auscultation.v1.adl
+END
+openEHR-EHR-INSTRUCTION.medication.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-INSTRUCTION.medication.v1.adl
+END
+openEHR-EHR-CLUSTER.auscultation-chest.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.auscultation-chest.v1.adl
+END
+openEHR-EHR-SECTION.summary.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-SECTION.summary.v1.adl
+END
+openEHR-EHR-OBSERVATION.body_mass_index.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/317/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-OBSERVATION.body_mass_index.v1.adl
+END
+openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl
+END
+adl-test-ENTRY.basic_types.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/320/ruby/trunk/lib/adl_parser/test/adl/adl-test-ENTRY.basic_types.v1.adl
+END
+openEHR-EHR-COMPOSITION.discharge.v1draft.adl
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-COMPOSITION.discharge.v1draft.adl
+END
+openEHR-EHR-CLUSTER.exam-nervous_system.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-nervous_system.v1.adl
+END
+openEHR-EHR-ITEM_TREE.referral.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ITEM_TREE.referral.v1.adl
+END
+openEHR-EHR-ACTION.referral.v1.adl
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/291/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ACTION.referral.v1.adl
+END

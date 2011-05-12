@@ -20,4 +20,7 @@ doc
 # jeweler generated
 pkg
 
+# logger generated
+log
+
 

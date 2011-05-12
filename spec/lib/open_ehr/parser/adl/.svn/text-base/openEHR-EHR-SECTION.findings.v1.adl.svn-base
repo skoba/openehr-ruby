@@ -1,0 +1,47 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-SECTION.findings.v1
+
+concept
+	[at0000]	-- Clinical findings
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["date"] = <"9/01/2007">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"A heading to contain clinical findings">
+			use = <"A section which only contains observations">
+			keywords = <"findings", ...>
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"Initial">
+	other_contributors = <>
+
+definition
+	SECTION[at0000] matches {	-- Clinical findings
+		items cardinality matches {0..*; unordered} matches {
+			allow_archetype OBSERVATION occurrences matches {0..1} matches {
+				include
+					archetype_id/value matches {/.*/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"The findings at this contact">
+					text = <"Clinical findings">
+				>
+			>
+		>
+	>

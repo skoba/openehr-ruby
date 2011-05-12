@@ -1,0 +1,6 @@
+K 13
+svn:mergeinfo
+V 184
+/ruby/branches/0.5.0/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl:165-168
+/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl:2-115
+END

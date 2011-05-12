@@ -1,0 +1,217 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-CLUSTER.auscultation.v1
+
+concept
+	[at0000]	-- Auscultation
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["date"] = <"7/04/2007">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record data found on examination by auscultation/listening">
+			use = <"To be embedded in an openEHR-EHR-OBSERVATION.exam cluster to express findings determined by auscultation">
+			keywords = <"auscultate", "listen", "auscultation", "listening", "bruit", "bowel sounds", "sounds">
+			misuse = <"Not for use in any other context at present">
+		>
+	>
+	lifecycle_state = <"OrganisationDraft">
+	other_contributors = <"Heather Leslie", ...>
+
+definition
+	CLUSTER[at0000] matches {	-- Auscultation
+		items cardinality matches {0..*; unordered} matches {
+			CLUSTER[at0001] occurrences matches {0..1} matches {	-- Normal Statements
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0003] occurrences matches {0..*} matches {	-- Normal Statement
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0056, 	-- No murmur
+									at0057, 	-- No bruit
+									at0073, 	-- Normal bowel sounds
+									at0085]	-- No abnormality detected
+								}
+							}
+						}
+					}
+				}
+			}
+			ELEMENT[at0004] occurrences matches {0..1} matches {	-- Clinical Description
+				value matches {
+					DV_TEXT matches {*}
+				}
+			}
+			CLUSTER[at0002] occurrences matches {0..1} matches {	-- Findings
+				items cardinality matches {0..*; unordered} matches {
+					CLUSTER[at0009] occurrences matches {0..1} matches {	-- Bowel sounds
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0074] occurrences matches {0..*} matches {	-- Specific Findings
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[local::
+											at0078, 	-- Absent bowel sounds
+											at0079, 	-- Decreased bowel sounds
+											at0080, 	-- Increased bowel sounds
+											at0081]	-- Tinkling bowel sounds
+										}
+									}
+								}
+							}
+							use_node ELEMENT /items[at0004]
+						}
+					}
+					CLUSTER[at0010] occurrences matches {0..1} matches {	-- Vessel bruit
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0088] matches {	-- Vessel name
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0030] occurrences matches {0..1} matches {	-- Maximal Location
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0091] occurrences matches {0..1} matches {	-- Description
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+						}
+					}
+					CLUSTER[at0089] occurrences matches {0..1} matches {	-- Other sounds
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0090] matches {	-- Description
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							use_node ELEMENT /items[at0002]/items[at0010]/items[at0030]
+						}
+					}
+					CLUSTER[at0086] occurrences matches {0..*} matches {	-- Localised auscultation
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0087] matches {	-- Site or region
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							allow_archetype CLUSTER occurrences matches {0..1} matches {
+								include
+									archetype_id/value matches {/auscultation\.v1/}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"Findings on Auscultation">
+					text = <"Auscultation">
+				>
+				["at0001"] = <
+					description = <"A group of statements about the normality of auscultation">
+					text = <"Normal Statements">
+				>
+				["at0002"] = <
+					description = <"Findings on auscultation">
+					text = <"Findings">
+				>
+				["at0003"] = <
+					description = <"Statements about the normality of the auscultation">
+					text = <"Normal Statement">
+				>
+				["at0004"] = <
+					description = <"Detailed clinical description of the findings on auscultation">
+					text = <"Clinical Description">
+				>
+				["at0009"] = <
+					description = <"Group of findings about auscultation of the bowel">
+					text = <"Bowel sounds">
+				>
+				["at0010"] = <
+					description = <"Group of findings about auscultation of a major blood vessel">
+					text = <"Vessel bruit">
+				>
+				["at0030"] = <
+					description = <"Site where finding is heard maximally">
+					text = <"Maximal Location">
+				>
+				["at0056"] = <
+					description = <"No murmur is heard">
+					text = <"No murmur">
+				>
+				["at0057"] = <
+					description = <"No bruit is heard">
+					text = <"No bruit">
+				>
+				["at0073"] = <
+					description = <"Bowel sounds are normal in intensity and character">
+					text = <"Normal bowel sounds">
+				>
+				["at0074"] = <
+					description = <"Specific auscultatory findings related to examination of the bowels">
+					text = <"Specific Findings">
+				>
+				["at0078"] = <
+					description = <"No bowel sounds can be heard">
+					text = <"Absent bowel sounds">
+				>
+				["at0079"] = <
+					description = <"Bowel sounds are less than normal">
+					text = <"Decreased bowel sounds">
+				>
+				["at0080"] = <
+					description = <"Bowel sounds are more intense than normal">
+					text = <"Increased bowel sounds">
+				>
+				["at0081"] = <
+					description = <"High pitched and very frequent bowel sounds can be heard">
+					text = <"Tinkling bowel sounds">
+				>
+				["at0085"] = <
+					description = <"Nothing abnormal on auscultation">
+					text = <"No abnormality detected">
+				>
+				["at0086"] = <
+					description = <"Auscultation in a particular site">
+					text = <"Localised auscultation">
+				>
+				["at0087"] = <
+					description = <"The site of the localised findings">
+					text = <"Site or region">
+				>
+				["at0088"] = <
+					description = <"The name of the vessel to which is being listened">
+					text = <"Vessel name">
+				>
+				["at0089"] = <
+					description = <"Recording of sounds of a different nature">
+					text = <"Other sounds">
+				>
+				["at0090"] = <
+					description = <"Description of other sounds">
+					text = <"Description">
+				>
+				["at0091"] = <
+					description = <"Description of the bruit">
+					text = <"Description">
+				>
+			>
+		>
+	>
