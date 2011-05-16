@@ -201,7 +201,7 @@ arch_description: #-- no meta-data ok
       end
 #    end
     @@logger.debug("#{__FILE__}:#{__LINE__}: arch_description: args  = \n#{args.to_yaml} at #{@filename}:#{@lineno}")
-    result = OpenEHR::AM::Archetype::Archetype_Description::ARCHETYPE_DESCRIPTION.new(args)
+    result = OpenEHR::AM::Archetype::ArchetypeDescription::ARCHETYPE_DESCRIPTION.new(args)
   }
   | SYM_DESCRIPTION error
   
@@ -1468,13 +1468,13 @@ end
 
 def scan
   @@logger.debug("#{__FILE__}:#{__LINE__}: Entering scan at #{@filename}:#{@lineno}:")
-  scanner = OpenEHR::Parser::ADLScanner.new(@adl_type, @filename)
-
+  scanner = OpenEHR::Parser::Scanner::ADLScanner.new(@adl_type, @filename)
+  p @adl_type, @filename
   until @data.nil?  do
     @data = scanner.scan(@data) do |sym, val|
         yield sym, val
     end
-    @data = $' # variable $' receives the string after the match
+#    @data = $' # variable $' receives the string after the match
   end
   yield :EOF, nil
   yield false, '$'

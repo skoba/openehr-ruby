@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'logger'
-require 'adl_parser.rb'
 require 'open_ehr'
-require 'util.rb'
+# require 'util'
+# require 'adl_parser'
 
 
 module OpenEHR
@@ -97,7 +97,11 @@ module OpenEHR
                 word = $&
                 if RESERVED[word]
                   @@logger.debug("ADLScanner#scan: RESERVED = #{RESERVED[word]} at #{@filename}:#{@lineno}")
-                  yield RESERVED[word], RESERVED[word]
+                  param = Array.new
+                  param << RESERVED[word] << RESERVED[word]
+#                  yield([[RESERVED[word], RESERVED[word]])
+                  p param
+                  yield param
                 elsif #/\A[A-Z][a-zA-Z0-9_]*/
                   @@logger.debug("ADLScanner#scan: V_ATTRIBUTE_IDENTIFIER = #{$&} at #{@filename}:#{@lineno}")
                   yield :V_ATTRIBUTE_IDENTIFIER, $&
