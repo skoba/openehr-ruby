@@ -3,12 +3,16 @@ GEM
   specs:
     activesupport (3.0.7)
     builder (3.0.0)
+    citrus (2.4.0)
     diff-lcs (1.1.2)
     git (1.2.5)
     guard (0.3.4)
       thor (~> 0.14.6)
     guard-rspec (0.3.1)
       guard (>= 0.2.2)
+    guard-spork (0.1.10)
+      guard (>= 0.2.2)
+      spork (>= 0.8.4)
     i18n (0.5.0)
     jeweler (1.6.0)
       bundler (~> 1.0.0)
@@ -16,14 +20,14 @@ GEM
       rake
     locale (2.0.5)
     rake (0.8.7)
-    rspec (2.5.0)
-      rspec-core (~> 2.5.0)
-      rspec-expectations (~> 2.5.0)
-      rspec-mocks (~> 2.5.0)
-    rspec-core (2.5.2)
-    rspec-expectations (2.5.0)
+    rspec (2.6.0)
+      rspec-core (~> 2.6.0)
+      rspec-expectations (~> 2.6.0)
+      rspec-mocks (~> 2.6.0)
+    rspec-core (2.6.0)
+    rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.5.0)
+    rspec-mocks (2.6.0)
     spork (0.8.4)
     thor (0.14.6)
     xml-simple (1.0.15)
@@ -34,10 +38,11 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   builder
+  citrus
   guard-rspec
+  guard-spork
   i18n
   jeweler
   locale
   rspec
-  spork
   xml-simple

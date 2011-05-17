@@ -3,23 +3,17 @@ include OpenEHR::Parser
 
 describe ADLParser do
 
-  before do
-    @parser = ADLParser.new
+  before (:all) do
+    @adl_dir = File.dirname(__FILE__)+'/adl/'
   end
 
-  it 'create valid instance' do
-    @parser.should be_an_instance_of ADLParser
-  end
-
-  context 'to parse openEHR-EHR-SECTION.reason_for_encounter.v1.adl' do
+  context 'openEHR-EHR-SECTION-summary.v1.adl' do
     before do
-      current_dir = File.dirname(__FILE__)
-      file =  File.read(current_dir + '/adl/openEHR-EHR-SECTION.reason_for_encounter.v1.adl')
-      @adl = @parser.parse(file, 'openEHR-EHR-SECTION.reason_for_encounter.v1')
+      @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION-summary.v1.adl')
     end
 
-    it 'parse adl and create an reference model' do
-      @adl.archetype_id.should be_an_instance_of OpenEHR::RM::Support::Identification::ArchetypeID
+    it 'archetype_id should be openEHR-EHR-SECTION-summary' do
+      @ap.archetype_id.should be_equal 'openEHR-EHR-SECTION-summary'
     end
   end
 end

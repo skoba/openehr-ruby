@@ -1,9 +1,7 @@
 require 'rubygems'
 require 'logger'
 require 'open_ehr'
-# require 'util'
-# require 'adl_parser'
-
+require 'strscan'
 
 module OpenEHR
   module Parser
@@ -12,24 +10,11 @@ module OpenEHR
       LOGGER = Logger.new('log/parser.log')
       LOGGER.level = Logger::DEBUG
 
-      class Base
-        attr_accessor :adl_type, :lineno
-        def initialize(adl_type, filename, lineno = 1)
-          @adl_type = adl_type
-          @filename = filename
-          @lineno = lineno
-        end
-
-        def scan(data)
-          raise
-        end
-      end
-
       #
       # ADLScanner
       # 
       class ADLScanner < Base
-        attr_accessor :adl_type, :lineno, :cadl_scanner, :dadl_scanner, :regex_scanner, :term_constraint_scanner
+        attr_accessor :adl_type, :cadl_scanner, :dadl_scanner, :regex_scanner, :term_constraint_scanner
 
         @@logger = OpenEHR::Parser::Scanner::LOGGER #Logger.new('log/scanner.log')
         RESERVED = {
@@ -56,17 +41,18 @@ module OpenEHR
                              :V_ISO8601_DURATION => /\AP([0-9]+[yY])?([0-9]+[mM])?([0-9]+[wW])?([0-9]+[dD])?T([0-9]+[hH])?([0-9]+[mM])?([0-9]+[sS])?|\AP([0-9]+[yY])?([0-9]+[mM])?([0-9]+[wW])?([0-9]+[dD])?/   #V_ISO8601_DURATION PnYnMnWnDTnnHnnMnnS
                             ]
         
-        def initialize(adl_type, filename, lineno = 1)
-          super(adl_type, filename, lineno)
+        def initialize(adl_type, filename)
+          super(adl_type, filename)
           @in_interval  = false
+          @s = StringScanner.new()
         end
 
         #
         # ADLScanner#scan
         #
-        def scan(data)
+        def scan
           @@logger.debug("#{__FILE__}:#{__LINE__}: Entering  ADLScanner#scan at #{@filename}:#{@lineno}: data = #{data.inspect}")
-          until data.nil?  do
+          until @s.eos?  do
             case @adl_type.last
             when :adl
               case data

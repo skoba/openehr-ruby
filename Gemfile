@@ -6,9 +6,10 @@ gem 'locale'
 gem 'builder'
 gem 'jeweler'
 gem 'i18n'
+gem 'citrus'
 
 group :development do
   gem 'rspec'
   gem 'guard-rspec'
-  gem 'spork'
+  gem 'guard-spork'
 end
