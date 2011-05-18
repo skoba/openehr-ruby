@@ -1,5 +1,45 @@
-grammer ADL
+grammar ADL
   rule Archetype
+   header language description definition ontology invariant
+  end
 
+  rule header
+    version archetype_id concept
+  end
+
+  rule version
+    'archetype' space '(' space 'adl_version' space '=' space ([0-9]+ ('.' [0-9]+)?) {to_i} space ')' space
+  end
+
+  rule archetype_id
+    /(\w+)-(\w+)-(\w+)\.(\w+)((?:-\w+)*)\.(v\w+)/ space
+  end
+
+  rule concept
+    'concept' space '[at' [0-9]+ ('.' [0-9]+)? ']' space '--' space [a-zA-Z]+ space
+  end
+
+  rule language
+     'language'
+  end
+
+  rule description
+
+  end
+
+  rule definition
+
+  end
+
+  rule ontology
+
+  end
+
+  rule invariant
+
+  end
+
+  rule space
+    [ \t\r\n]*
   end
 end

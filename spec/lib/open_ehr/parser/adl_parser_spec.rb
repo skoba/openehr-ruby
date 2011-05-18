@@ -9,7 +9,7 @@ describe ADLParser do
 
   context 'openEHR-EHR-SECTION-summary.v1.adl' do
     before do
-      @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION-summary.v1.adl')
+      @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
     end
 
     it 'archetype_id should be openEHR-EHR-SECTION-summary' do

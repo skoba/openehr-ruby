@@ -7,7 +7,6 @@ module OpenEHR
 
       def initialize(filename)
         @filename = filename
-        @data = File.read(filename)
       end
 
       def parse

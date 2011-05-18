@@ -8,8 +8,13 @@ module OpenEHR
     class ADLParser
       def initialize(filename)
         super(filename)
-        Citrus.load(File.dirname(__FILE__) + '/adl')
-        ADL.parse(@data)
+        data = File.read(filename)
+        Citrus.load(File.dirname(__FILE__)+'/adl.citrus')
+        @result  = ADL.parse(data)
+      end
+
+      def parse
+        return @result.value
       end
     end
   end # of Parser
