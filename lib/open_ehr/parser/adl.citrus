@@ -8,7 +8,7 @@ grammar ADL
   end
 
   rule version
-    'archetype' space '(' space 'adl_version' space '=' space ([0-9]+ ('.' [0-9]+)?) {to_i} space ')' space
+    'archetype' space '(' space 'adl_version' space '=' space FLOAT {to_i} space ')' space
   end
 
   rule archetype_id
@@ -16,11 +16,11 @@ grammar ADL
   end
 
   rule concept
-    'concept' space '[at' [0-9]+ ('.' [0-9]+)? ']' space '--' space [a-zA-Z]+ space
+    'concept' space ATCODE space '--' space ALPHA+ space
   end
 
   rule language
-     'language'
+     'language' space 'original_lanuage'
   end
 
   rule description
@@ -41,5 +41,21 @@ grammar ADL
 
   rule space
     [ \t\r\n]*
+  end
+
+  rule ALPHA
+    [a-zA-Z]
+  end
+
+  rule DIGIT
+    [0-9]
+  end
+
+  rule FLOAT
+    [0-9]+ ('.' [0-9]+)?
+  end
+
+  rule ATCODE
+    '[at' FLOAT ']'
   end
 end
