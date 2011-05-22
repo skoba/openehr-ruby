@@ -1,0 +1,30 @@
+grammar Symbol
+
+  rule ALPHANUM
+    [a-zA-Z0-9]
+  end
+
+  rule IDCHAR
+    [a-zA-Z0-9_]
+  end
+
+  rule NAMECHAR
+    [a-zA-Z0-9\._\-]
+  end
+
+  rule NAMECHAR_SPACE
+    [a-zA-Z0-9\._\- ]
+  end
+
+  rule NAMECHAR_PAREN
+    [a-zA-Z0-9\._\-()]
+  end
+
+  rule TRUE
+    `true`
+  end
+
+  rule FALSE
+    `false`
+  end
+end
