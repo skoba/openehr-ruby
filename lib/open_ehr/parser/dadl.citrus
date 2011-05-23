@@ -1,0 +1,67 @@
+require 'symbol'
+grammar DADL
+
+  include Symbol
+
+  rule attr_vals
+    attr_val | (attr_vals attr_val) | (attr_vals ';' attr_val)
+  end
+
+  rule attr_id
+    V_ATTRIBUTE_IDENTIFIER
+  end
+
+  rule object_block
+    complex_object_block | primitive_object_block | plugin_object_block
+  end
+
+  rule plugin_object_block
+    V_PLUGIN_SYNTAX_TYPE V_PLUGIN_BLOCK
+  end
+
+  rule complex_object_block
+    single_attr_object_block | multiple_attr_object_block
+  end
+
+  rule multiple_attr_object_block
+    untyped_multiple_attr_object_block | type_identifier untyped_multiple_attr_object_block
+  end
+
+  rule untyped_multiple_attr_object_block
+    multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK
+  end
+
+  rule multiple_attr_object_block_head
+    SYM_START_DBLOCK
+  end
+
+  rule keyed_objects
+    keyed_object | (keyed_objects keyed_object)
+  end
+
+  rule keyed_object
+    object_key SYM_EQ object_block
+  end
+
+  rule object_key
+    '[' simple_value ']'
+  end
+
+  rule single_attr_object_block
+    untyped_multiple_attr_object_block | type_identifier untyped_single_attr_object_block
+  end
+
+  rule untyped_single_attr_object_block
+    (single_attr_object_complex_head SYM_END_DBLOCK)
+    | (single_attr_object_complex_head attr_vals SYM_END_DBLOCK)
+  end
+
+  rule single_attr_object_complex_head
+    SYM_START_DBLOCK
+  end
+
+  rule primitive_object_block
+    untyped_primitive_object_block
+    | (type_identifier untyped_primitive_object_block)
+  end
+end

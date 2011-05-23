@@ -20,11 +20,233 @@ grammar Symbol
     [a-zA-Z0-9\._\-()]
   end
 
-  rule TRUE
+  rule NAMESTR
+   [a-zA-Z] [a-zA-Z0-9_]+
+  end
+
+  rule space
+    [ \t\r\n]*
+  end
+
+  rule COMMENTS
+    '--' .*
+  end Minus_code
+    '-'
+  end
+
+  rule Plus_Code
+    '+'
+  end
+
+  rule Star_code
+    '*'
+  end
+
+  rule Slash_code
+    '/'
+  end
+
+  rule Carret_code
+    '^'
+  end
+
+  rule Dot_code
+    '.'
+  end
+
+  rule Semicolon_code
+    ';'
+  end
+
+  rule Colon_code
+    ':'
+  end
+
+  rule Comma_code
+    ','
+  end
+
+  rule Expclamation_code
+    '!'
+  end
+
+  rule Left_parenthesis_code
+    '('
+  end
+
+  rule Right_parenthesis_code
+    ')'
+  end
+
+  rule Dollar_code
+    '$'
+  end
+
+  rule SYM_DT_UNKNOWN
+    '??'
+  end
+
+  rule Question_mark_code
+    '?'
+  end
+
+  rule SYM_INTERVAL_DELIM
+    '|'
+  end
+
+  rule Left_bracket_code
+    '['
+  end
+
+  rule Right_bracket_codde
+    ']'
+  end
+
+  rule SYM_EQ
+    '='
+  end
+
+  rule SYM_GE
+    '=>'
+  end
+
+  rule SYM_LE
+    '<='
+  end
+
+  rule SYM_LT
+    '<'
+  end
+
+  rule SYM_GT
+    '>'
+  end
+
+  rule SYM_START_DBLOCK
+    '<' space
+  end
+
+  rule SYM_END_DBLOCK
+    '>' space
+  end
+
+  rule SYM_ELLIPSIS
+    '..'
+  end
+
+  rule SYM_LIST_CONTINUE
+    '...'
+  end
+
+  rule SYM_TRUE
     `true`
   end
 
-  rule FALSE
+  rule SYM_FALSE
     `false`
+  end
+
+  rule SYM_INFINITY
+    `infinity`
+  end
+
+  rule V_URI
+    [a-z]+ '://' /[^<>|\\{}^~"\[\] ]*/
+  end
+
+  rule V_QUALIFIED_TERM_CODE_REF
+    '[' NAMECHAR_PAREN+ '::' NAMECHAR+ ']'
+  end
+
+  rule ERR_V_QUALIFIED_TERM_CODE_REF
+    '[' NAMECHAR_PAREN+ '::' NAMECHAR_SPACE+ ']'
+  end
+
+  rule V_LOCAL_TERM_CODE_REF
+    '[' ALPHANUM NAMECHAR* ']'
+  end
+
+  rule V_LOCAL_CODE
+    a[ct][0-9\.]+
+  end
+
+  rule V_ISO8601_EXTENDED_DATE_TIME
+    /[0-9]{4}-
+  end
+
+  rule SYM_ARCHETYPE
+    `archetype` space
+  end
+
+  rule SYM_TEMPLATE_COMPONENT
+    `template_component` space
+  end
+
+  rule SYM_TEMPLATE
+    `template` space
+  end
+
+  rule SYM_OPERATIONAL_TEMPLATE
+    `operational_template` space
+  end
+
+  rule SYM_ADL_VERSION
+    `adl_version`
+  end
+
+  rule SYM_IS_CONTROLLED
+    `controlled`
+  end
+
+  rule SYM_IS_GENERATED
+    `generated`
+  end
+
+  rule SYM_SPECIALIZE
+    `speciali` [SsZz] `e` space
+  end    
+
+  rule SYM_CONCEPT
+    `concept` space
+  end
+
+  rule SYM_LANGUAGE
+    `language` space
+  end
+
+  rule SYM_DESCRIPTION
+    `description` space
+  end
+
+  rule SYM_DEFINITION
+    `definition` space
+  end
+
+  rule SYM_INVARIANT
+    `invariant` space
+  end
+
+  rule SYM_ONTOLOGY
+    `ontology` space
+  end
+
+  rule SYM_ANNOTATIONS
+    `annotations` space
+  end
+
+  rule V_VERSION_STRING
+    [0-9]+\.[0-9]+(\.[0-9]+)*
+  end
+
+  rule V_LOCAL_TERM_CODE_REF
+    '[a' [ct] [0-9.]+ ']'
+  end
+
+  rule V_ARCHETYPE_ID
+    NAMESTR ('-' NAMESTR)2*2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]*
+  end
+
+  rule V_IDENTIFIER
+    [a-zA-Z][a-zA-Z0-9_]*
   end
 end

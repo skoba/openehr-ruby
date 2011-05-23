@@ -37,13 +37,13 @@ grammar ADL
   rule arch_concept
     SYM_CONCEPT V_LOCAL_TERM_CODE_REF
   end
+
   rule archetype_id
-    WORD '-' WORD '-' WORD '.' WORD ('-' WORD)? '.v' DIGIT* space
-#    /(\w+)-(\w+)-(\w+)\.(\w+)((?:-\w+)*)\.(v\w+)/ space
+
   end
 
   rule concept
-    'concept' space '[' ATCODE ']' space '--' space WORD space
+    'concept' space '['  ']' space '--' space WORD space
   end
 
   rule language
@@ -72,37 +72,5 @@ grammar ADL
 
   rule invariant
 
-  end
-
-  rule space
-    [ \t\r\n]*
-  end
-
-  rule ALPHA
-    [a-zA-Z]
-  end
-
-  rule WORD
-    ALPHA [a-zA-Z0-9_]*
-  end
-
-  rule DIGIT
-    [0-9]
-  end
-
-  rule INTEGER
-    [1-9] DIGIT*
-  end
-
-  rule FLOAT
-    DIGIT ('.' DIGIT+)?
-  end
-
-  rule INDICATOR
-    DIGIT* ('.' DIGIT+)*
-  end
-
-  rule ATCODE
-    'at' INDICATOR
   end
 end
