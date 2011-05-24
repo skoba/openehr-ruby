@@ -233,7 +233,7 @@ module OpenEHR
         end
       end # of ADLScanner
 
-      #
+      
       # DADLScanner
       # 
       class DADLScanner < ADLScanner
