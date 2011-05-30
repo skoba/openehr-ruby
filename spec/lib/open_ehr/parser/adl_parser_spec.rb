@@ -12,14 +12,20 @@ describe ADLParser do
       @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
     end
 
-    it 'is an instance fo ADLParser' do
-      @ap.should be_an_instance_of ADLParser
+    context 'ADLParser generated from Citrus parser library' do
+      it 'is an instance fo ADLParser' do
+        @ap.should be_an_instance_of ADLParser
+      end
     end
-    
 
-    # it 'archetype_id should be openEHR-EHR-SECTION-summary' do
-    #   @ap.archetype_id.should be_equal 'openEHR-EHR-SECTION-summary'
-    # end
+    context 'ADL parser generates archetype from ADL' do
+      before do
+        @archetype = @ap.parse
+      end
 
+      it 'archetype_id should be openEHR-EHR-SECTION-summary' do
+        @archetype.archetype_id.should be_equal 'openEHR-EHR-SECTION-summary'
+      end
+    end
   end
 end

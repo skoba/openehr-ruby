@@ -25,11 +25,15 @@ grammar ADLSymbol
   end
 
   rule space
-    [ \t\r\n]*
+    COMMENT+ | white_space
   end
 
-  rule COMMENTS
-    '--' .*
+  rule COMMENT
+    white_space '--' [^\n]* "\n"
+  end
+
+  rule white_space
+    [ \t\r\n]*
   end
 
   rule Minus_code
@@ -305,7 +309,7 @@ grammar ADLSymbol
   end
 
   rule V_ARCHETYPE_ID
-    NAMESTR ('-' NAMESTR)2*2 '.' NAMESTR+ ('-' NAMESTR)* '.v' [1-9] [0-9]*
+    NAMESTR ('-' NAMESTR)2*2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]*
   end
 
   rule V_IDENTIFIER

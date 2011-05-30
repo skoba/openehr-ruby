@@ -1,4 +1,5 @@
 require 'adl_symbol'
+
 grammar DADL
 
   include ADLSymbol
@@ -103,8 +104,8 @@ grammar DADL
 
   rule string_list_value
     V_STRING ',' V_STRING
-    | string_list_value, V_STRING
-    | V_STRING, SYM_LIST_CONTINUE
+    | string_list_value ',' V_STRING
+    | V_STRING ',' SYM_LIST_CONTINUE
   end
 
   rule integer_value
@@ -113,7 +114,7 @@ grammar DADL
 
   rule integer_list_value
     integer_value ',' integer_value | integer_list_value ',' integer_value
-    | integer_value, SYM_LIST_CONTINUE
+    | integer_value ',' SYM_LIST_CONTINUE
   end
 
   rule integer_interval_value
@@ -159,5 +160,115 @@ grammar DADL
     boolian_value ',' SYM_LIST_CONTINUE
   end
 
-  
+  rule character_value
+    V_CHARACTER
+  end
+
+  rule character_list_value
+    character_value ',' character_value |
+    character_list_value ',' character_value |
+    character_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule date_value
+    V_IS08601_EXTENDED_DATE
+  end
+
+  rule date_list_value
+    date_value ',' date_value |
+    date_list_value ',' date_value |
+    date_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule date_interval_value
+    SYM_INTERVAL_DELIM date_value SYM_ELLIPSIS date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT date_value SYM_ELLIPSIS date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM date_value SYM_ELLIPSIS SYM_LT date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT date_value SYM_ELLIPSIS SYM_LT date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LT date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LE date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GE date_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM date_value SYM_INTERVAL_DELIM
+  end
+
+  rule time_value
+    V_ISO8601_EXTENDED_TIME
+  end
+
+  rule time_list_value
+    time_value ',' time_value
+  | time_list_value ',' time_value
+  | time_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule time_interval_value
+    SYM_INTERVAL_DELIM time_value SYM_ELLIPSIS time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT time_value SYM_ELLIPSIS time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM time_value SYM_ELLIPSIS SYM_LT time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT time_value SYM_ELLIPSIS SYM_LT time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LT time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LE time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GE time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM time_value SYM_INTERVAL_DELIM
+  end
+
+  rule date_time_value
+    V_ISO_8601_EXTENDED_DATE_TIME
+  end
+
+  rule date_time_list_value
+    date_time_value ',' date_time_value
+  | date_time_list_value ',' date_time_value
+  | date_time_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule date_time_interval_value
+    SYM_INTERVAL_DELIM date_time_value SYM_ELLIPSIS date_time_value  SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT date_time_value SYM_ELLIPSIS date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM date_time_value SYM_ELLIPSIS SYM_LT date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT date_time_value SYM_ELLIPSIS SYM_LT date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LT date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LE date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GE date_time_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM date_time_value SYM_INTERVAL_DELIM
+  end
+
+  rule duration_value
+    V_ISO8601_DURATION
+  end
+
+  rule duration_list_value
+    duration_value ',' duration_value
+  | duration_list_value ',' duration_value
+  | duration_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule duration_interval_value
+    SYM_INTERVAL_DELIM duration_value SYM_ELLIPSIS duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT duration_value SYM_ELLIPSIS duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM duration_value SYM_ELLIPSIS SYM_LT duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT duration_value SYM_ELLIPSIS SYM_LT duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LT duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_LE duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GT duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM SYM_GE duration_value SYM_INTERVAL_DELIM
+  | SYM_INTERVAL_DELIM duration_value SYM_INTERVAL_DELIM
+  end
+
+  rule term_code
+    V_QUALIFIED_TERM_CODE_REF
+  end
+
+  rule term_code_list_value
+    term_code ',' term_code
+  | term_code_list_value ',' term_code
+  | term_code ',' SYM_LIST_CONTINUE
+  end
+
+  rule uri_value
+    V_URI
+  end
 end
