@@ -1,7 +1,7 @@
-require 'symbol'
+require 'adl_symbol'
 grammar DADL
 
-  include Symbol
+  include ADLSymbol
 
   rule attr_vals
     attr_val | attr_vals attr_val | attr_vals ';' attr_val
@@ -156,5 +156,8 @@ grammar DADL
   rule boolean_list_value
     boolean_value ',' boolean_value |
     boolean_list_value ',' boolean_value |
-    boolian_value
+    boolian_value ',' SYM_LIST_CONTINUE
+  end
+
+  
 end

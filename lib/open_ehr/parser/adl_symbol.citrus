@@ -1,4 +1,4 @@
-grammar Symbol
+grammar ADLSymbol
 
   rule ALPHANUM
     [a-zA-Z0-9]
@@ -32,7 +32,7 @@ grammar Symbol
     '--' .*
   end
 
-  end Minus_code
+  rule Minus_code
     '-'
   end
 
@@ -297,7 +297,7 @@ grammar Symbol
   end
 
   rule V_VERSION_STRING
-    [0-9]+\.[0-9]+(\.[0-9]+)*
+    [0-9]+'.'[0-9]+('.'[0-9]+)*
   end
 
   rule V_LOCAL_TERM_CODE_REF
@@ -305,7 +305,7 @@ grammar Symbol
   end
 
   rule V_ARCHETYPE_ID
-    NAMESTR ('-' NAMESTR)2*2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]*
+    NAMESTR ('-' NAMESTR)2*2 '.' NAMESTR+ ('-' NAMESTR)* '.v' [1-9] [0-9]*
   end
 
   rule V_IDENTIFIER

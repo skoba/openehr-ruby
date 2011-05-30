@@ -11,10 +11,21 @@ module OpenEHR
         data = File.read(filename)
         Citrus.load(File.dirname(__FILE__)+'/adl.citrus')
         @result  = ADL.parse(data)
+      rescue Citrus::ParseError => e
+        m = Citrus::Match.new(data)
+        m.dump
       end
 
       def parse
-        return @result.value
+        archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id)
+        return archetype
+      end
+
+      class ArchetypeMock
+        attr_reader :archetype_id
+        def initialize(args = { })
+          @archetype_id = args[:archetype_id]
+        end
       end
     end
   end # of Parser

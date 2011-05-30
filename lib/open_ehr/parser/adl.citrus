@@ -1,7 +1,7 @@
-require 'symbol'
+require 'adl_symbol'
 grammar ADL
 
-  include Symbol
+  include ADLSymbol
 
   rule Archetype
     arch_identification arch_specialisation arch_concept
@@ -10,7 +10,7 @@ grammar ADL
   end
 
   rule arch_identification
-    arch_head V_ARCHETYPE_ID
+    arch_head arch_meta_data V_ARCHETYPE_ID
   end
 
   rule arch_head
@@ -19,15 +19,15 @@ grammar ADL
   end
 
   rule arch_meta_data
-    arch_mata_data_items
+    '(' arch_meta_data_items ')' space
   end
 
   rule arch_meta_data_items
-    arch_meta_data_item*
+    arch_meta_data_item space | arch_meta_data_items space ';' arch_meta_data_item space
   end
 
   rule arch_meta_data_item
-    SYM_ADL_VERSION '=' space V_VERSION_STRING space | SYM_IS_CONTROLLED
+    SYM_ADL_VERSION '=' V_VERSION_STRING | SYM_IS_CONTROLLED
   end
 
   rule arch_specialisation
@@ -38,39 +38,7 @@ grammar ADL
     SYM_CONCEPT V_LOCAL_TERM_CODE_REF
   end
 
-  rule archetype_id
-
-  end
-
-  rule concept
-    'concept' space '['  ']' space '--' space WORD space
-  end
-
-  rule language
-     'language' space original_language space translation?
-  end
-
-  rule original_language
-    'original_language' space '=' space '<' space '[' WORD ']' space '>' space
-  end
-
-  rule translation
-    'translation' space '='
-  end
-
-  rule description
-
-  end
-
-  rule definition
-
-  end
-
-  rule ontology
-
-  end
-
-  rule invariant
-
+  rule arch_language
+    SYM_LANGUAGE | V_DADL_TEXT
   end
 end
