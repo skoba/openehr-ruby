@@ -1,0 +1,172 @@
+require 'adl_symbol'
+
+grammar CADL
+
+  include ADLSymbol
+
+  rule V_CADL_TEXT
+    c_complex_object
+  end
+
+  rule c_complex_object
+    c_complex_object_head SYM_MATCHES SYM_START_CBLOCK c_complex_object_body SYM_END_CBLOCK
+  end
+
+  rule c_complex_object_head
+    c_complex_object_id white_space c_occurrences space
+  end
+
+  rule c_complex_object_id
+    type_identifier V_LOCAL_TERM_CODE_REF | type_identifier
+  end
+
+  rule c_complex_object_body
+    c_any | c_attributes
+  end
+
+  rule c_object
+    c_complex_object
+  | archetype_internal_ref
+  | archetype_slot
+  | constraint_ref
+  | c_primitive_object
+  | V_C_DOMAIN_TYPE
+  end
+
+  rule archetype_internal_ref
+    SYM_USE_NODE type_identifier c_occurrences object_path
+  end
+
+  rule archetype_slot
+    c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes c_excludes SYM_END_CBLOCK
+  end
+
+  rule c_archetype_sloat_head
+    c_archetype_slot_id c_occurrences
+  end
+
+  rule c_archetype_slot_id
+    SYM_ALLOW_ARCHETYPE type_identifier
+  | SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF
+  end
+
+  rule c_primitive_object
+    c_primitive
+  end
+
+  rule c_primitive
+    c_integer
+  | c_real
+  | c_date
+  | c_time
+  | c_date_time
+  | c_duration
+  | c_string
+  | c_boolean
+  end
+
+  rule c_any
+    .*
+  end
+
+  rule c_attributes
+    c_attribute+
+  end
+
+  rule c_attrubute
+    c_attr_head SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK
+  end
+
+  rule c_attr_head
+    V_ATTRIBUTE_IDENTIFIER c_existence
+  | V_ATTRIBUTE_IDENTIFIER c_existence c_cardinality
+  end
+
+  rule c_attr_values
+    c_object+
+  | c_any
+  end
+
+  rule c_includes
+    SYM_INCLUDE assertions
+  end
+
+  rule c_excludes
+    SYM_EXCLUDE assertions
+  end
+
+  rule c_existence
+    SYM_EXISTENCE SYM_MATCHES SYM_START_CBLOCK existence_spec SYM_END_CBLOCK
+  end
+
+  rule existence_spec
+    V_INTEGER | V_INTEGER SYM_ELLIPSIS V_INTEGER
+  end
+
+  rule c_cardinality
+    SYM_CARDINALITY SYM_MATCHES SYM_START_CBLOCK cardinality_spec SYM_END_CBLOCK
+  end
+
+  rule cardinality_spec
+    occurrence_spec
+  | occurrence_spec ';' SYM_ORDERED
+  | occurrence_spec ';' SYM_UNORDERD
+  | occurrence_spec ';' SYM_UNIQUE
+  | occurrence_spec ';' SYM_ORDERED ';' SYM_UNIQUE
+  | occurrence_spec ';' SYM_UNORDERD ';' SYM_UNIQUE
+  | occurrence_spec ';' SYM_UNIQUE ';' SYM_ORDERED
+  | occurrence_spec ';' SYM_UNIQUE ';' SYM_UNORDERD
+  end
+
+  rule cardinality_limit_value
+    integer_value | .*
+  end
+
+  rule c_occurrences
+    SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK
+  end
+
+  rule occurrence_spec
+    carinality_limit_value | V_INTEGER SYM_ELLIPSIS carinality_limit_value
+  end
+
+  rule c_integer_spec
+    cardinality_limit_value
+  | integer_list_value
+  | integer_interval_value
+  | occurrence_spec
+  end
+
+  rule c_integer
+    c_integer_spec
+  | c_integer_spec ';' integer_value
+  end
+
+  rule c_real_spec
+    real_value
+  | real_list_value
+  | real_interval_value
+  end
+
+  rule c_real
+    c_real_spec
+  | c_real_spec ';' real_value
+  end
+
+  rule c_date_constraint
+    V_ISO8601_DATE_CONSTRAINT_PATTERN
+  | date_value
+  | date_interval_value
+  end
+
+  rule c_date
+    c_date_constraint
+  | c_date_constraint ';' date_value
+  end
+
+  rule c_time_constraint
+    V_ISO8601_TIME_CONSTRAINT_PATTERN
+  | time_value
+  | time_interval_value
+  end
+end

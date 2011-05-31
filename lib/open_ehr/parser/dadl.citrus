@@ -4,24 +4,30 @@ grammar DADL
 
   include ADLSymbol
 
+  rule V_DADL_TEXT
+    attr_vals | complex_object_block 
+  end
+
   rule attr_vals
-    attr_val | attr_vals attr_val | attr_vals ';' attr_val
+    attr_val (';'? space attr_val)*
+#    attr_val | attr_vals attr_val | attr_vals ';' attr_val
+  end
+
+  rule attr_val
+    attr_id SYM_EQ object_block
   end
 
   rule attr_id
-    V_ATTRIBUTE_IDENTIFIER
+    V_ATTRIBUTE_IDENTIFIER white_space
   end
 
   rule object_block
-    complex_object_block | primitive_object_block | plugin_object_block
-  end
-
-  rule plugin_object_block
-    V_PLUGIN_SYNTAX_TYPE V_PLUGIN_BLOCK
+    complex_object_block | primitive_object_block
   end
 
   rule complex_object_block
-    single_attr_object_block | multiple_attr_object_block
+    single_attr_object_block
+  | multiple_attr_object_block
   end
 
   rule multiple_attr_object_block
@@ -37,11 +43,11 @@ grammar DADL
   end
 
   rule keyed_objects
-    keyed_object | keyed_objects keyed_object
+    keyed_object+
   end
 
   rule keyed_object
-    object_key SYM_EQ object_block
+    object_key space SYM_EQ object_block
   end
 
   rule object_key
@@ -49,7 +55,7 @@ grammar DADL
   end
 
   rule single_attr_object_block
-    untyped_multiple_attr_object_block
+    untyped_single_attr_object_block
     | type_identifier untyped_single_attr_object_block
   end
 
@@ -71,9 +77,12 @@ grammar DADL
     SYM_START_DBLOCK primitive_object_value SYM_END_DBLOCK
   end
 
-  rule primitive_object_block
-    simple_value | simple_list_value | simple_interval_value
-    | term_code | term_code_list_value
+  rule primitive_object_value
+    term_code
+  | simple_list_value
+  | simple_value
+  | simple_interval_value
+  | term_code_list_value
   end
 
   rule simple_value
@@ -93,19 +102,13 @@ grammar DADL
     | time_interval_value | date_time_interval_value | duration_interval_value
   end
 
-  rule type_identifier
-    '(' V_TYPE_IDENTIFIER ')' | '(' V_GENERIC_TYPE_IDENTIFIER ')'
-    | V_TYPE_IDENTIFIER | V_GENERIC_TYPE_IDENTIFIER
-  end
-
   rule string_value
     V_STRING
   end
 
   rule string_list_value
-    V_STRING ',' V_STRING
-    | string_list_value ',' V_STRING
-    | V_STRING ',' SYM_LIST_CONTINUE
+    V_STRING (',' white_space V_STRING)*
+    | V_STRING ',' white_space SYM_LIST_CONTINUE
   end
 
   rule integer_value
@@ -161,7 +164,7 @@ grammar DADL
   end
 
   rule character_value
-    V_CHARACTER
+    V_CHAR
   end
 
   rule character_list_value

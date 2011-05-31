@@ -11,9 +11,6 @@ module OpenEHR
         data = File.read(filename)
         Citrus.load(File.dirname(__FILE__)+'/adl.citrus')
         @result  = ADL.parse(data)
-      # rescue
-      #   p = Citrus::Match.new(data)
-      #   p.dump
       end
 
       def parse

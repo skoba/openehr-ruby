@@ -1,9 +1,12 @@
 require 'adl_symbol'
 require 'dadl'
+require 'cadl'
+
 grammar ADL
 
   include ADLSymbol
   include DADL
+  include CADL
 
   rule Archetype
     arch_identification arch_specialisation? arch_concept

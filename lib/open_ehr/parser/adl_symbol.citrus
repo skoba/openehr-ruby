@@ -1,5 +1,12 @@
 grammar ADLSymbol
 
+  rule type_identifier
+    '(' V_TYPE_IDENTIFIER ')'
+    | '(' V_GENERIC_TYPE_IDENTIFIER ')'
+    | V_TYPE_IDENTIFIER
+    | V_GENERIC_TYPE_IDENTIFIER
+  end
+
   rule ALPHANUM
     [a-zA-Z0-9]
   end
@@ -12,12 +19,12 @@ grammar ADLSymbol
     [a-zA-Z0-9\._\-]
   end
 
-  rule NAMECHAR_SPACE
+  rule NAMECHAR_PACE
     [a-zA-Z0-9\._\- ]
   end
 
   rule NAMECHAR_PAREN
-    [a-zA-Z0-9\._\-()]
+    [a-zA-Z0-9\._\-\(\)]
   end
 
   rule NAMESTR
@@ -25,7 +32,7 @@ grammar ADLSymbol
   end
 
   rule space
-    COMMENT+ | white_space
+    COMMENT+ white_space | white_space
   end
 
   rule COMMENT
@@ -77,31 +84,31 @@ grammar ADLSymbol
   end
 
   rule Left_parenthesis_code
-    '('
+    '(' space
   end
 
   rule Right_parenthesis_code
-    ')'
+    ')' space
   end
 
   rule Dollar_code
-    '$'
+    '$' space
   end
 
   rule SYM_DT_UNKNOWN
-    '??'
+    '??' space
   end
 
   rule Question_mark_code
-    '?'
+    '?' space
   end
 
   rule SYM_INTERVAL_DELIM
-    '|'
+    '|' space
   end
 
   rule Left_bracket_code
-    '['
+    '[' space
   end
 
   rule Right_bracket_codde
@@ -109,7 +116,7 @@ grammar ADLSymbol
   end
 
   rule SYM_EQ
-    '='
+    '=' white_space
   end
 
   rule SYM_GE
@@ -153,11 +160,11 @@ grammar ADLSymbol
   end
 
   rule SYM_MATCHES
-    `matches` | `is` '_' `in`
+    `matches` | (`is` '_' `in` space)
   end
 
   rule SYM_THEN
-    `then`
+    `then` space
   end
 
   rule SYM_ELSE
@@ -373,7 +380,7 @@ grammar ADLSymbol
   end
 
   rule V_GENERIC_TYPE_IDENTIFIER
-    [A-Z] IDCHAR* '<' [a-zA-Z0-9,_<>]
+    [A-Z] IDCHAR* '<' [a-zA-Z0-9,_<>]+ '>'
   end
 
   rule V_ATTRIBUTE_IDENTIFIER
@@ -389,10 +396,10 @@ grammar ADLSymbol
   end
 
   rule V_CHAR
-    .
+    [^\\\n\"]
   end
 
   rule V_STRING
-    V_CHAR+
+    /\"[^"]*\"/m
   end
 end
