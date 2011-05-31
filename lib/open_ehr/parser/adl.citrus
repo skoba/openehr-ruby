@@ -1,10 +1,10 @@
-require 'adl_symbol'
+require 'shared_token'
 require 'dadl'
 require 'cadl'
 
 grammar ADL
 
-  include ADLSymbol
+  include SharedToken
   include DADL
   include CADL
 
