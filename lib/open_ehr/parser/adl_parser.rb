@@ -10,8 +10,11 @@ module OpenEHR
         super(filename)
         data = File.read(filename)
         Citrus.load(File.dirname(__FILE__)+'/adl.citrus')
-        @result  = ADL.parse(data)
+        @result = ADL.parse(data)
+      rescue Citrus::ParseError => e
+        raise ArgumentError, "Invalid data on line %d, offset %d!" %[e.line_number, e.line_offset]
       end
+
 
       def parse
         archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id)

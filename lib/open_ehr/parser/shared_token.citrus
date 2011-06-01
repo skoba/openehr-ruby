@@ -1,5 +1,9 @@
 grammar SharedToken
 
+  rule any_identifier
+    type_identifier | V_ATTRIBUTE_IDENTIFIER
+  end
+
   rule type_identifier
     '(' V_TYPE_IDENTIFIER ')'
     | '(' V_GENERIC_TYPE_IDENTIFIER ')'
@@ -63,8 +67,7 @@ grammar SharedToken
   end
 
   rule date_list_value
-    date_value ',' date_value |
-    date_list_value ',' date_value |
+    date_value (',' date_value)* |
     date_value ',' SYM_LIST_CONTINUE
   end
 
@@ -458,10 +461,6 @@ grammar SharedToken
     [0-9]+'.'[0-9]+('.'[0-9]+)*
   end
 
-  rule V_LOCAL_TERM_CODE_REF
-    '[a' [ct] [0-9.]+ ']'
-  end
-
   rule V_ARCHETYPE_ID
     NAMESTR ('-' NAMESTR)2*2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]*
   end
@@ -547,6 +546,6 @@ grammar SharedToken
   end
 
   rule V_STRING
-    /\"[^"]*\"/m
+    /"(?:[^"\\]+|\\.)*(")?/m
   end
 end

@@ -1,13 +1,15 @@
 require 'shared_token'
 require 'dadl'
 require 'cadl'
+require 'assertion'
 
 grammar ADL
 
   include SharedToken
   include DADL
   include CADL
-
+  include Assertion
+  
   rule Archetype
     arch_identification arch_specialisation? arch_concept
     arch_language? arch_description? arch_definition arch_invariant?
