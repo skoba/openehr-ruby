@@ -1,18 +1,23 @@
 require 'shared_token'
 require 'dadl'
 require 'cadl'
-require 'assertion'
+#require 'assertion'
 
 grammar ADL
 
   include SharedToken
   include DADL
   include CADL
-  include Assertion
+#  include Assertion
   
   rule Archetype
-    arch_identification arch_specialisation? arch_concept
-    arch_language? arch_description? arch_definition arch_invariant?
+    arch_identification
+    arch_specialisation?
+    arch_concept
+    arch_language?
+    arch_description?
+    arch_definition
+    arch_invariant?
     arch_ontology
   end
 
@@ -21,7 +26,7 @@ grammar ADL
   end
 
   rule arch_head
-    SYM_ARCHETYPE arch_meta_data? space
+    SYM_ARCHETYPE arch_meta_data?
   end
 
   rule arch_meta_data
@@ -29,7 +34,7 @@ grammar ADL
   end
 
   rule arch_meta_data_items
-    arch_meta_data_item | arch_meta_data_items ';' arch_meta_data_item
+    arch_meta_data_item (';' arch_meta_data_item)*
   end
 
   rule arch_meta_data_item

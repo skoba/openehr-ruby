@@ -9,7 +9,7 @@ grammar DADL
   end
 
   rule attr_vals
-    attr_val (';'? space attr_val)*
+    attr_val (';'? attr_val)*
 #    attr_val | attr_vals attr_val | attr_vals ';' attr_val
   end
 
@@ -31,7 +31,7 @@ grammar DADL
   end
 
   rule multiple_attr_object_block
-    untyped_multiple_attr_object_block | type_identifier untyped_multiple_attr_object_block
+    type_identifier? untyped_multiple_attr_object_block
   end
 
   rule untyped_multiple_attr_object_block
@@ -47,21 +47,19 @@ grammar DADL
   end
 
   rule keyed_object
-    object_key space SYM_EQ object_block
+    object_key SYM_EQ object_block
   end
 
   rule object_key
-    '[' simple_value ']'
+    '[' simple_value ']' white_space
   end
 
   rule single_attr_object_block
-    untyped_single_attr_object_block
-    | type_identifier untyped_single_attr_object_block
+    type_identifier? untyped_single_attr_object_block
   end
 
   rule untyped_single_attr_object_block
-    single_attr_object_complex_head SYM_END_DBLOCK
-    | single_attr_object_complex_head attr_vals SYM_END_DBLOCK
+    single_attr_object_complex_head attr_vals? SYM_END_DBLOCK
   end
 
   rule single_attr_object_complex_head
@@ -69,8 +67,7 @@ grammar DADL
   end
 
   rule primitive_object_block
-    untyped_primitive_object_block
-    | type_identifier untyped_primitive_object_block
+    type_identifier? untyped_primitive_object_block
   end
 
   rule untyped_primitive_object_block
@@ -107,9 +104,8 @@ grammar DADL
   end
 
   rule boolean_list_value
-    boolean_value ',' boolean_value |
-    boolean_list_value ',' boolean_value |
-    boolian_value ',' SYM_LIST_CONTINUE
+    boolean_value (',' boolean_value)+ |
+    boolean_value ',' SYM_LIST_CONTINUE
   end
 
   rule character_value
@@ -117,8 +113,7 @@ grammar DADL
   end
 
   rule character_list_value
-    character_value ',' character_value |
-    character_list_value ',' character_value |
+    character_value (',' character_value)+ |
     character_value ',' SYM_LIST_CONTINUE
   end
 
@@ -127,8 +122,7 @@ grammar DADL
   end
 
   rule term_code_list_value
-    term_code ',' term_code
-  | term_code_list_value ',' term_code
+    term_code (',' term_code)+
   | term_code ',' SYM_LIST_CONTINUE
   end
 

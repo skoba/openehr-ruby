@@ -17,7 +17,7 @@ grammar SharedToken
 
   rule integer_list_value
     integer_value (',' white_space integer_value)*
-    | integer_value ',' SYM_LIST_CONTINUE
+    | integer_value ',' white_space SYM_LIST_CONTINUE
   end
 
   rule integer_interval_value
@@ -58,7 +58,7 @@ grammar SharedToken
   end
 
   rule string_list_value
-    V_STRING (',' white_space V_STRING)*
+    V_STRING (',' white_space V_STRING)+
     | V_STRING ',' white_space SYM_LIST_CONTINUE
   end
 
@@ -67,8 +67,8 @@ grammar SharedToken
   end
 
   rule date_list_value
-    date_value (',' date_value)* |
-    date_value ',' SYM_LIST_CONTINUE
+    date_value (',' date_value)+
+  | date_value ',' SYM_LIST_CONTINUE
   end
 
   rule date_interval_value
@@ -88,8 +88,7 @@ grammar SharedToken
   end
 
   rule time_list_value
-    time_value ',' time_value
-  | time_list_value ',' time_value
+    time_value (',' time_value)+
   | time_value ',' SYM_LIST_CONTINUE
   end
 
@@ -110,8 +109,7 @@ grammar SharedToken
   end
 
   rule date_time_list_value
-    date_time_value ',' date_time_value
-  | date_time_list_value ',' date_time_value
+    date_time_value (',' date_time_value)+
   | date_time_value ',' SYM_LIST_CONTINUE
   end
 
@@ -132,8 +130,7 @@ grammar SharedToken
   end
 
   rule duration_list_value
-    duration_value ',' duration_value
-  | duration_list_value ',' duration_value
+    duration_value (',' duration_value)+
   | duration_value ',' SYM_LIST_CONTINUE
   end
 
@@ -174,7 +171,7 @@ grammar SharedToken
   end
 
   rule space
-    COMMENT+ white_space | white_space
+    COMMENT* white_space
   end
 
   rule COMMENT
@@ -226,27 +223,27 @@ grammar SharedToken
   end
 
   rule Left_parenthesis_code
-    '(' space
+    '('
   end
 
   rule Right_parenthesis_code
-    ')' space
+    ')'
   end
 
   rule Dollar_code
-    '$' space
+    '$'
   end
 
   rule SYM_DT_UNKNOWN
-    '??' space
+    '??'
   end
 
   rule Question_mark_code
-    '?' space
+    '?'
   end
 
   rule SYM_INTERVAL_DELIM
-    '|' space
+    '|'
   end
 
   rule Left_bracket_code
@@ -310,7 +307,7 @@ grammar SharedToken
   end
 
   rule SYM_MATCHES
-    `matches` space | (`is` '_' `in` space)
+    (`matches` | `is` '_' `in`) white_space
   end
 
   rule SYM_THEN
@@ -382,23 +379,23 @@ grammar SharedToken
   end
 
   rule SYM_INFINITY
-    `infinity`     
+    `infinity` space
   end
 
   rule SYM_USE_NODE
-    `use` '_' `node`
+    `use` '_' `node` space
   end
 
   rule SYM_ALLOW_ARCHETYPE
-    `allow` '_' `archetype` | `use` '_' `archetype`
+    (`allow` |  `use`) '_' `archetype` space
   end
 
   rule SYM_INCLUDE
-    `include`
+    `include` space
   end
 
   rule SYM_EXCLUDE
-    `exclude`
+    `exclude` space
   end
 
   rule SYM_TEMPLATE_COMPONENT
@@ -414,15 +411,15 @@ grammar SharedToken
   end
 
   rule SYM_ADL_VERSION
-    `adl_version`
+    `adl_version` space
   end
 
   rule SYM_IS_CONTROLLED
-    `controlled`
+    `controlled` space
   end
 
   rule SYM_IS_GENERATED
-    `generated`
+    `generated` space
   end
 
   rule SYM_SPECIALIZE
@@ -546,6 +543,6 @@ grammar SharedToken
   end
 
   rule V_STRING
-    /"(?:[^"\\]+|\\.)*(")?/m
+    /"(?:[^"\\]+|\\.)*(")?/
   end
 end

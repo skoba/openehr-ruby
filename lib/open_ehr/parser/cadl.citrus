@@ -1,26 +1,24 @@
 require 'shared_token'
-require 'assertion'
 
 grammar CADL
 
   include SharedToken
-  include Assertion
 
   rule V_CADL_TEXT
     c_complex_object
+    | assertions
   end
 
   rule c_complex_object
-    c_complex_object_head SYM_MATCHES SYM_START_CBLOCK c_complex_object_body SYM_END_CBLOCK
+    c_complex_object_head (SYM_MATCHES SYM_START_CBLOCK c_complex_object_body SYM_END_CBLOCK)?
   end
 
   rule c_complex_object_head
-    c_complex_object_id white_space c_occurrences? space
+    c_complex_object_id c_occurrences?
   end
 
   rule c_complex_object_id
-    type_identifier V_LOCAL_TERM_CODE_REF
-    | type_identifier
+    type_identifier V_LOCAL_TERM_CODE_REF? space
   end
 
   rule c_complex_object_body
@@ -29,11 +27,12 @@ grammar CADL
 
   rule c_object
     c_complex_object
-  | archetype_internal_ref
   | archetype_slot
+  | archetype_internal_ref
   | constraint_ref
   | c_primitive_object
   | V_C_DOMAIN_TYPE
+  | ERR_V_C_DOMAIN_TYPE
   end
 
   rule archetype_internal_ref
@@ -45,12 +44,11 @@ grammar CADL
   end
 
   rule c_archetype_slot_head
-    c_archetype_slot_id space c_occurrences?
+    c_archetype_slot_id white_space c_occurrences?
   end
 
   rule c_archetype_slot_id
-    SYM_ALLOW_ARCHETYPE white_space type_identifier
-  | SYM_ALLOW_ARCHETYPE white_space type_identifier space V_LOCAL_TERM_CODE_REF
+    SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF?
   end
 
   rule c_primitive_object
@@ -77,17 +75,15 @@ grammar CADL
   end
 
   rule c_attribute
-    c_attr_head SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK space
+    c_attr_head (SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK)?
   end
 
   rule c_attr_head
-     V_ATTRIBUTE_IDENTIFIER space c_existence? space c_cardinality space
-  |  V_ATTRIBUTE_IDENTIFIER space c_existence? space
+     V_ATTRIBUTE_IDENTIFIER white_space c_existence? c_cardinality? 
   end
 
   rule c_attr_values
-    c_any
-  | c_object+
+    c_any | c_object+
   end
 
   rule c_includes
@@ -103,7 +99,7 @@ grammar CADL
   end
 
   rule existence_spec
-    V_INTEGER | V_INTEGER SYM_ELLIPSIS V_INTEGER
+    V_INTEGER (SYM_ELLIPSIS V_INTEGER)?
   end
 
   rule c_cardinality
@@ -111,14 +107,8 @@ grammar CADL
   end
 
   rule cardinality_spec
-    occurrence_spec ';' space SYM_UNORDERD
-  | occurrence_spec ';' space SYM_ORDERED
-  | occurrence_spec ';' space SYM_UNIQUE
-  | occurrence_spec ';' space SYM_ORDERED ';' white_space SYM_UNIQUE
-  | occurrence_spec ';' space SYM_UNORDERD ';' white_space SYM_UNIQUE
-  | occurrence_spec ';' space SYM_UNIQUE ';' space SYM_ORDERED
-  | occurrence_spec ';' space SYM_UNIQUE ';' space SYM_UNORDERD
-  | occurrence_spec
+    occurrence_spec (';' white_space (SYM_UNORDERD|SYM_ORDERED) (';' white_space SYM_UNIQUE)?)?
+  | occurrence_spec SYM_UNIQUE (';' white_space (SYM_ORDERED|SYM_UNORDERD))?
   end
 
   rule c_occurrences
@@ -126,7 +116,7 @@ grammar CADL
   end
 
   rule occurrence_spec
-    V_INTEGER SYM_ELLIPSIS cardinality_limit_value | cardinality_limit_value
+    (V_INTEGER SYM_ELLIPSIS)? cardinality_limit_value
   end
 
   rule cardinality_limit_value
@@ -141,8 +131,7 @@ grammar CADL
   end
 
   rule c_integer
-    c_integer_spec
-  | c_integer_spec ';' integer_value
+    c_integer_spec (';' integer_value)?
   end
 
   rule c_real_spec
@@ -152,8 +141,7 @@ grammar CADL
   end
 
   rule c_real
-    c_real_spec
-  | c_real_spec ';' real_value
+    c_real_spec (';' real_value)?
   end
 
   rule c_date_constraint
@@ -163,8 +151,7 @@ grammar CADL
   end
 
   rule c_date
-    c_date_constraint
-  | c_date_constraint ';' date_value
+    c_date_constraint (';' date_value)?
   end
 
   rule c_time_constraint
@@ -174,8 +161,7 @@ grammar CADL
   end
 
   rule c_time
-    c_time_constraint
-  | c_time_constraint ';' time_value
+    c_time_constraint (';' time_value)?
   end
 
   rule c_date_time_constraint
@@ -190,8 +176,7 @@ grammar CADL
   end
 
   rule c_duration_constraint
-    duration_pattern
-  | duration_pattern '/' duration_interval_pattern
+    duration_pattern ('/' duration_interval_pattern)?
   | duration_value
   | duration_interval_value
   end
@@ -201,20 +186,17 @@ grammar CADL
   end
 
   rule c_duration
-    c_duration_constraint
-  | c_duration_constraint ';' duration_value
+    c_duration_constraint (';' duration_value)?
   end
 
   rule c_string_spec
     V_STRING
-  | string_list_value
-  | string_list_value ',' SYM_LIST_CONTINUE
+  | string_list_value (',' SYM_LIST_CONTINUE)?
   | V_REGEXP
   end
 
   rule c_string
-    c_string_spec
-  | c_string_spec ';' string_value
+    c_string_spec (';' string_value)?
   end
 
   rule c_boolean_spec
@@ -225,8 +207,7 @@ grammar CADL
   end
 
   rule c_boolean
-    c_boolean_spec
-  | c_boolean_spec ';' boolean_value
+    c_boolean_spec (';' boolean_value)?
   end
 
   rule constraint_ref
@@ -239,5 +220,75 @@ grammar CADL
 
   rule V_C_DOMAIN_TYPE
     '('? [A-Z] IDCHAR* ')'? [ \n]* '<' [^>]* '>'
+  end
+
+# assertion block
+
+  rule V_ASSETION_TEXT
+    assertions
+  end
+
+  rule assertions
+    assertion+
+  end
+
+  rule assertion
+    (any_identifier ':')? boolean_expression
+  end
+
+  rule boolean_expression
+    boolean_leaf | boolean_node
+  end
+
+  rule boolean_node
+    SYM_EXISTS absolute_path
+  | relative_path SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK
+  | SYM_NOT boolean_leaf
+  | arithmetic_expression (SYM_NE | SYM_LT | SYM_GT | SYM_LE | SYM_GE) arithmetic_expression
+  | boolean_expression (SYM_AND | SYM_OR | SYM_XOR | SYM_IMPLIES) boolean_expression
+  end
+
+  rule boolean_leaf
+    '(' boolean_expression ')'
+  | SYM_TRUE
+  | SYM_FALSE
+  end
+
+  rule arithmetic_expression
+    arithmetic_leaf
+  | arithmetic_node
+  end
+
+  rule arithmetic_node
+    arithmetic_expression ('+' | '-' | '*' | '/' | '^')arithmetic_leaf
+  end
+
+  rule arithmetic_leaf
+   '(' arithmetic_expression ')'
+  | integer_value
+  | real_value
+  | absolute_path
+  end
+
+
+# path block
+  rule movable_path
+     SYM_MOVABLE_LEADER relative_path
+   end
+
+  rule absolute_path
+    '/' relative_path?
+  end
+
+  rule relative_path
+    path_segment ('/' path_segment)*
+  end
+
+  rule path_segment
+    V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF?
+  end
+
+  rule SYM_MOVABLE_LEADER
+    '//'
   end
 end
