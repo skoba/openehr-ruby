@@ -67,7 +67,7 @@ grammar CADL
   end
 
   rule c_any
-    '*'
+    '*' space
   end
 
   rule c_attributes
@@ -75,11 +75,15 @@ grammar CADL
   end
 
   rule c_attribute
-    c_attr_head (SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK)?
+    c_attr_head c_attr_body
   end
 
   rule c_attr_head
      V_ATTRIBUTE_IDENTIFIER white_space c_existence? c_cardinality? 
+  end
+
+  rule c_attr_body
+    SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK
   end
 
   rule c_attr_values

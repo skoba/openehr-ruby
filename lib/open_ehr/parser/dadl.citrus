@@ -99,24 +99,6 @@ grammar DADL
     | time_interval_value | date_time_interval_value | duration_interval_value
   end
 
-  rule boolean_value
-    SYM_TRUE | SYM_FALSE
-  end
-
-  rule boolean_list_value
-    boolean_value (',' boolean_value)+ |
-    boolean_value ',' SYM_LIST_CONTINUE
-  end
-
-  rule character_value
-    V_CHAR
-  end
-
-  rule character_list_value
-    character_value (',' character_value)+ |
-    character_value ',' SYM_LIST_CONTINUE
-  end
-
   rule term_code
     V_QUALIFIED_TERM_CODE_REF
   end

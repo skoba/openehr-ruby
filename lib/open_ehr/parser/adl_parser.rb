@@ -29,5 +29,13 @@ module OpenEHR
         end
       end
     end
+
+    class CADLParser
+      def initialize(filename)
+        data = File.read(filename)
+        Citrus.load(File.dirname(__FILE__)+'/cadl.citrus')
+        @result = CADL.parse(data, :memoize => true)
+      end
+    end
   end # of Parser
 end # of OpenEHR

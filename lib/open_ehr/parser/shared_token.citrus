@@ -11,6 +11,15 @@ grammar SharedToken
     | V_GENERIC_TYPE_IDENTIFIER
   end
 
+  rule boolean_value
+    SYM_TRUE | SYM_FALSE
+  end
+
+  rule boolean_list_value
+    boolean_value (',' boolean_value)+ |
+    boolean_value ',' SYM_LIST_CONTINUE
+  end
+
   rule integer_value
     V_INTEGER | '+' V_INTEGER | '-' V_INTEGER
   end
@@ -51,6 +60,15 @@ grammar SharedToken
      | SYM_INTERVAL_DELIM SYM_GT real_value SYM_INTERVAL_DELIM
      | SYM_INTERVAL_DELIM SYM_GE real_value SYM_INTERVAL_DELIM
      | SYM_INTERVAL_DELIM real_value SYM_INTERVAL_DELIM
+  end
+
+  rule character_value
+    V_CHAR
+  end
+
+  rule character_list_value
+    character_value (',' character_value)+ |
+    character_value ',' SYM_LIST_CONTINUE
   end
 
   rule string_value

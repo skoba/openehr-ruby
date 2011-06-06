@@ -15,6 +15,7 @@ module OpenEHR
     end
 
     autoload :ADLParser, 'parser/adl_parser'
+    autoload :CADLParser, 'parser/adl_parser'
 #    autoload :XMLParser, 'parser/xml_perser'
 #    autoload :Exception, 'parser/exception'
 #    autoload :Scanner, 'parser/scanner'
