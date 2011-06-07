@@ -1,30 +1,24 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
-require 'polyglot'
-require 'treetop'
-
+require 'citrus'
 include OpenEHR::Parser
 
 module OpenEHR
   module Parser
-    class ADLParser < Base
+    class ADLParser
       def initialize(filename)
         super(filename)
         data = File.read(filename)
-        Treetop.load(File.dirname(__FILE__)+'/adl.tt')
-        ap = ADLSyntaxParser.new
-        p @result = ap.parse(data)
-
-        unless @result
-          puts ap.failure_reason
-          puts ap.failure_line
-          puts ap.failure_column
-        end
+        Citrus.load(File.dirname(__FILE__)+'/adl.citrus')
+        @result = ADL.parse(data, :memoize => true)
+        p @result
+      rescue Citrus::ParseError => e
+        p e.line
       end
 
       def parse
-#        archetype = ArchetypeMock.new(:archetype_id => archetype_id)
-#        return archetype
+        archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id)
+        return archetype
       end
 
 # temporary class for parser building

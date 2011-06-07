@@ -1,12 +1,8 @@
-require 'shared_token'
-
 grammar CADL
-
-  include SharedToken
 
   rule V_CADL_TEXT
     c_complex_object
-    | assertions
+    / assertions
   end
 
   rule c_complex_object
@@ -22,16 +18,17 @@ grammar CADL
   end
 
   rule c_complex_object_body
-    c_any | c_attributes
+    c_any / c_attributes
   end
 
   rule c_object
     c_complex_object
-  | archetype_slot
-  | archetype_internal_ref
-  | constraint_ref
-  | c_primitive_object
-  | V_C_DOMAIN_TYPE
+  / archetype_slot
+  / archetype_internal_ref
+  / constraint_ref
+  / c_primitive_object
+  / V_C_DOMAIN_TYPE
+#  / ERR_V_C_DOMAIN_TYPE
   end
 
   rule archetype_internal_ref
@@ -56,13 +53,13 @@ grammar CADL
 
   rule c_primitive
     c_integer
-  | c_real
-  | c_date
-  | c_time
-  | c_date_time
-  | c_duration
-  | c_string
-  | c_boolean
+  / c_real
+  / c_date
+  / c_time
+  / c_date_time
+  / c_duration
+  / c_string
+  / c_boolean
   end
 
   rule c_any
@@ -86,7 +83,7 @@ grammar CADL
   end
 
   rule c_attr_values
-    c_any | c_object+
+    c_any / c_object+
   end
 
   rule c_includes
@@ -110,8 +107,8 @@ grammar CADL
   end
 
   rule cardinality_spec
-    occurrence_spec (';' white_space (SYM_UNORDERD|SYM_ORDERED) (';' white_space SYM_UNIQUE)?)?
-  | occurrence_spec SYM_UNIQUE (';' white_space (SYM_ORDERED|SYM_UNORDERD))?
+    occurrence_spec (';' white_space (SYM_UNORDERD / SYM_ORDERED) (';' white_space SYM_UNIQUE)?)?
+  / occurrence_spec SYM_UNIQUE (';' white_space (SYM_ORDERED / SYM_UNORDERD))?
   end
 
   rule c_occurrences
@@ -123,14 +120,14 @@ grammar CADL
   end
 
   rule cardinality_limit_value
-    integer_value | '*'
+    integer_value / '*'
   end
 
   rule c_integer_spec
     cardinality_limit_value
-  | integer_list_value
-  | integer_interval_value
-  | occurrence_spec
+  / integer_list_value
+  / integer_interval_value
+  / occurrence_spec
   end
 
   rule c_integer
@@ -139,8 +136,8 @@ grammar CADL
 
   rule c_real_spec
     real_value
-  | real_list_value
-  | real_interval_value
+  / real_list_value
+  / real_interval_value
   end
 
   rule c_real
@@ -149,8 +146,8 @@ grammar CADL
 
   rule c_date_constraint
     V_ISO8601_DATE_CONSTRAINT_PATTERN
-  | date_value
-  | date_interval_value
+  / date_value
+  / date_interval_value
   end
 
   rule c_date
@@ -159,8 +156,8 @@ grammar CADL
 
   rule c_time_constraint
     V_ISO8601_TIME_CONSTRAINT_PATTERN
-  | time_value
-  | time_interval_value
+  / time_value
+  / time_interval_value
   end
 
   rule c_time
@@ -169,19 +166,19 @@ grammar CADL
 
   rule c_date_time_constraint
     V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
-  | date_time_value
-  | date_time_interval_value
+  / date_time_value
+  / date_time_interval_value
   end
 
   rule c_date_time
     c_date_time_constraint
-  | c_date_time_constraint ';' date_time_value
+  / c_date_time_constraint ';' date_time_value
   end
 
   rule c_duration_constraint
     duration_pattern ('/' duration_interval_pattern)?
-  | duration_value
-  | duration_interval_value
+  / duration_value
+  / duration_interval_value
   end
 
   rule duration_pattern
@@ -194,8 +191,8 @@ grammar CADL
 
   rule c_string_spec
     V_STRING
-  | string_list_value (',' SYM_LIST_CONTINUE)?
-  | V_REGEXP
+  / string_list_value (',' SYM_LIST_CONTINUE)?
+  / V_REGEXP
   end
 
   rule c_string
@@ -204,7 +201,7 @@ grammar CADL
 
   rule c_boolean_spec
     SYM_TRUE (',' SYM_FALSE)?
-  | SYM_FALSE (',' SYM_TRUE)?
+  / SYM_FALSE (',' SYM_TRUE)?
   end
 
   rule c_boolean
@@ -216,7 +213,7 @@ grammar CADL
   end
 
   rule V_REGEXP
-    '{/' [^(/})]* '/}'
+     '/' (!'/' . / '\/')* '/'
   end
 
   rule V_C_DOMAIN_TYPE
@@ -234,7 +231,7 @@ grammar CADL
   end
 
   rule assertion
-    (any_identifier ':')? boolean_expression
+    (any_identifier ':')? boolean_expression space
   end
 
   rule boolean_expression
@@ -243,16 +240,16 @@ grammar CADL
 
   rule boolean_node
     SYM_EXISTS absolute_path
-  | relative_path SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK
-  | SYM_NOT boolean_leaf
-  | arithmetic_expression (SYM_EQ | SYM_NE | SYM_LT | SYM_GT | SYM_LE | SYM_GE) arithmetic_expression
-  | boolean_leaf ((SYM_AND | SYM_OR | SYM_XOR | SYM_IMPLIES) boolean_leaf)?
+  / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK
+  / SYM_NOT boolean_leaf
+  / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression
+  / boolean_leaf ((SYM_AND / SYM_OR / SYM_XOR / SYM_IMPLIES) boolean_leaf)?
   end
 
   rule boolean_leaf
     '(' boolean_expression ')'
-  | SYM_TRUE
-  | SYM_FALSE
+  / SYM_TRUE
+  / SYM_FALSE
   end
 
   rule arithmetic_expression
@@ -260,28 +257,28 @@ grammar CADL
   end
 
   rule arithmetic_node
-    arithmetic_leaf (('+' | '-' | '*' | '/' | '^') arithmetic_leaf)?
+    arithmetic_leaf (('+' / '-' / '*' / '/' / '^') arithmetic_leaf)*
   end
 
   rule arithmetic_leaf
    '(' arithmetic_expression ')'
-  | integer_value
-  | real_value
-  | absolute_path
+  / integer_value
+  / real_value
+  / absolute_path
   end
 
 
 # path block
   rule movable_path
      SYM_MOVABLE_LEADER relative_path
-  end
+   end
 
   rule absolute_path
     '/' relative_path?
   end
 
   rule relative_path
-    path_segment ('/' path_segment)* space
+    path_segment ('/' path_segment)*
   end
 
   rule path_segment

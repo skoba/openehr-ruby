@@ -7,6 +7,7 @@ gem 'builder'
 gem 'jeweler'
 gem 'i18n'
 gem 'citrus'
+gem 'treetop'
 
 group :development do
   gem 'rspec'

@@ -9,7 +9,7 @@ describe ADLParser do
 
   context 'openEHR-EHR-SECTION-summary.v1.adl' do
     before do
-      @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
+      @ap = OpenEHR::Parser::ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
     end
 
     context 'ADLParser generated from Citrus parser library' do

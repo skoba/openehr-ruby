@@ -1,0 +1,532 @@
+grammar SharedToken
+
+  rule any_identifier
+    type_identifier / V_ATTRIBUTE_IDENTIFIER
+  end
+
+  rule type_identifier
+    '(' V_TYPE_IDENTIFIER ')'
+    / '(' V_GENERIC_TYPE_IDENTIFIER ')'
+    / V_TYPE_IDENTIFIER
+    / V_GENERIC_TYPE_IDENTIFIER
+  end
+
+  rule boolean_value
+    SYM_TRUE / SYM_FALSE
+  end
+
+  rule boolean_list_value
+    boolean_value (',' boolean_value)+ 
+  / boolean_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule integer_value
+    ('+' / '-')? V_INTEGER
+  end
+
+  rule integer_list_value
+    integer_value (',' white_space integer_value)*
+    / integer_value ',' white_space SYM_LIST_CONTINUE
+  end
+
+  rule integer_interval_value
+    SYM_INTERVAL_DELIM SYM_GT? integer_value SYM_ELLIPSIS SYM_LT? integer_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? integer_value SYM_INTERVAL_DELIM
+  end
+
+  rule real_value
+    ('+' / '-') V_REAL
+  end
+
+  rule real_list_value
+    real_value (',' white_space real_value)+
+    / real_value ',' white_space SYM_LIST_CONTINUE
+  end
+
+   rule real_interval_value
+       SYM_INTERVAL_DELIM SYM_GT? real_value SYM_ELLIPSIS SYM_LT? real_value SYM_INTERVAL_DELIM
+     / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT /SYM_GE)? real_value SYM_INTERVAL_DELIM
+     / SYM_INTERVAL_DELIM real_value SYM_INTERVAL_DELIM
+  end
+
+  rule character_value
+    V_CHAR
+  end
+
+  rule character_list_value
+    character_value (',' character_value)+
+  / character_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule string_value
+    V_STRING
+  end
+
+  rule string_list_value
+    V_STRING (',' white_space V_STRING)+
+    / V_STRING ',' white_space SYM_LIST_CONTINUE
+  end
+
+  rule date_value
+    V_ISO8601_EXTENDED_DATE
+  end
+
+  rule date_list_value
+    date_value (',' date_value)+
+  / date_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule date_interval_value
+    SYM_INTERVAL_DELIM SYM_GT? date_value SYM_ELLIPSIS SYM_LT? date_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? date_value SYM_INTERVAL_DELIM
+  end
+
+  rule time_value
+    V_ISO8601_EXTENDED_TIME
+  end
+
+  rule time_list_value
+    time_value (',' time_value)+
+  / time_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule time_interval_value
+    SYM_INTERVAL_DELIM SYM_GT? time_value SYM_ELLIPSIS SYM_LT? time_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? time_value SYM_INTERVAL_DELIM
+  end
+
+  rule date_time_value
+    V_ISO8601_EXTENDED_DATE_TIME
+  end
+
+  rule date_time_list_value
+    date_time_value (',' date_time_value)+
+  / date_time_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule date_time_interval_value
+    SYM_INTERVAL_DELIM SYM_GT? date_time_value SYM_ELLIPSIS SYM_LT? date_time_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? date_time_value SYM_INTERVAL_DELIM
+  end
+
+  rule duration_value
+    V_ISO8601_DURATION
+  end
+
+  rule duration_list_value
+    duration_value (',' duration_value)+
+  / duration_value ',' SYM_LIST_CONTINUE
+  end
+
+  rule duration_interval_value
+    SYM_INTERVAL_DELIM duration_value SYM_ELLIPSIS duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM SYM_GT duration_value SYM_ELLIPSIS duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM duration_value SYM_ELLIPSIS SYM_LT duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM SYM_GT duration_value SYM_ELLIPSIS SYM_LT duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM SYM_LT duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM SYM_LE duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM SYM_GT duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM SYM_GE duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM duration_value SYM_INTERVAL_DELIM
+  end
+
+  rule ALPHANUM
+    [a-zA-Z0-9]
+  end
+
+  rule IDCHAR
+    [a-zA-Z0-9_]
+  end
+
+  rule NAMECHAR
+    [a-zA-Z0-9\._\-]
+  end
+
+  rule NAMECHAR_SPACE
+    [a-zA-Z0-9\._\- ]
+  end
+
+  rule NAMECHAR_PAREN
+    [a-zA-Z0-9\._\-\(\)]
+  end
+
+  rule NAMESTR
+   [a-zA-Z] [a-zA-Z0-9_]+
+  end
+
+  rule space
+    COMMENT* white_space
+  end
+
+  rule COMMENT
+    white_space '--' [^\n]* "\n"
+  end
+
+  rule white_space
+    [ \t\r\n]*
+  end
+
+  rule Minus_code
+    '-'
+  end
+
+  rule Plus_Code
+    '+'
+  end
+
+  rule Star_code
+    '*'
+  end
+
+  rule Slash_code
+    '/'
+  end
+
+  rule Carret_code
+    '^'
+  end
+
+  rule Dot_code
+    '.'
+  end
+
+  rule Semicolon_code
+    ';'
+  end
+
+  rule Colon_code
+    ':'
+  end
+
+  rule Comma_code
+    ','
+  end
+
+  rule Expclamation_code
+    '!'
+  end
+
+  rule Left_parenthesis_code
+    '('
+  end
+
+  rule Right_parenthesis_code
+    ')'
+  end
+
+  rule Dollar_code
+    '$'
+  end
+
+  rule SYM_DT_UNKNOWN
+    '??'
+  end
+
+  rule Question_mark_code
+    '?'
+  end
+
+  rule SYM_INTERVAL_DELIM
+    '|'
+  end
+
+  rule Left_bracket_code
+    '[' space
+  end
+
+  rule Right_bracket_codde
+    ']'
+  end
+
+  rule SYM_EQ
+    '=' white_space
+  end
+
+  rule SYM_GE
+    '=>'
+  end
+
+  rule SYM_LE
+    '<='
+  end
+
+  rule SYM_LT
+    '<'
+  end
+
+  rule SYM_GT
+    '>'
+  end
+
+  rule SYM_START_DBLOCK
+    '<' space
+  end
+
+  rule SYM_END_DBLOCK
+    '>' space
+  end
+
+  rule SYM_START_CBLOCK
+    '{' space
+  end
+
+  rule SYM_END_CBLOCK
+    '}' space
+  end
+
+  rule SYM_ELLIPSIS
+    '..'
+  end
+
+  rule SYM_LIST_CONTINUE
+    '...'
+  end
+
+  rule SYM_INFINITY
+    [Ii] [Nn] [Ff] [Ii] [Nn] [Ii] [Tt] [Yy] space
+  end
+
+  rule SYM_ARCHETYPE
+    [Aa] [Rr] [Cc] [Hh] [Ee] [Tt] [Yy] [Pp] [Ee] space
+  end
+
+  rule SYM_MATCHES
+    ('matches' / 'is' '_' 'in') white_space
+  end
+
+  rule SYM_THEN
+    'then' space
+  end
+
+  rule SYM_ELSE
+    'else' space
+  end
+
+  rule SYM_AND
+    'and' space
+  end
+
+  rule SYM_OR
+    'or' space
+  end
+
+  rule SYM_XOR
+    'xor' space
+  end
+
+  rule SYM_NOT
+    'not' space
+  end
+
+  rule SYM_IMPLIES
+    'implies' space
+  end
+
+  rule SYM_TRUE
+    'true' space
+  end
+
+  rule SYM_FALSE
+    'false' space
+  end
+
+  rule SYM_FORALL
+    'for' '_' 'all' space
+  end
+
+  rule SYM_EXISTS
+    'exists' space
+  end
+
+  rule SYM_EXISTENCE
+    'existence' space
+  end
+
+  rule SYM_OCCURRENCES
+    'occurrences' white_space
+  end
+
+  rule SYM_CARDINALITY
+    'cardinality' white_space
+  end
+
+  rule SYM_ORDERED
+    'ordered' white_space
+  end
+
+  rule SYM_UNORDERD
+    'unordered' white_space
+  end
+
+  rule SYM_UNIQUE
+    'unique' white_space
+  end
+
+  rule SYM_INFINITY
+    'infinity' space
+  end
+
+  rule SYM_USE_NODE
+    'use' '_' 'node' space
+  end
+
+  rule SYM_ALLOW_ARCHETYPE
+    ('allow' /  'use') '_' 'archetype' space
+  end
+
+  rule SYM_INCLUDE
+    [Ii] [Nn] [Cc] [Ll] [Uu] [Dd] [Ee] space
+  end
+
+  rule SYM_EXCLUDE
+    'exclude' space
+  end
+
+  rule SYM_TEMPLATE_COMPONENT
+    'template_component' space
+  end
+
+  rule SYM_TEMPLATE
+    'template' space
+  end
+
+  rule SYM_OPERATIONAL_TEMPLATE
+    'operational_template' space
+  end
+
+  rule SYM_ADL_VERSION
+    'adl_version' space
+  end
+
+  rule SYM_IS_CONTROLLED
+    'controlled' space
+  end
+
+  rule SYM_IS_GENERATED
+    'generated' space
+  end
+
+  rule SYM_SPECIALIZE
+    [Ss] [Pp] [Ee] [Cc] [Ii] [Aa] [Ll] [Ii] [SsZz] [Ee] space
+  end    
+
+  rule SYM_CONCEPT
+    [Cc] [Oo] [Nn] [Cc] [Ee] [Pp] [Tt] space
+  end
+
+  rule SYM_LANGUAGE
+    'language' space
+  end
+
+  rule SYM_DESCRIPTION
+    'description' space
+  end
+
+  rule SYM_DEFINITION
+    'definition' space
+  end
+
+  rule SYM_INVARIANT
+    'invariant' space
+  end
+
+  rule SYM_ONTOLOGY
+    'ontology' space
+  end
+
+  rule SYM_ANNOTATIONS
+    'annotations' space
+  end
+
+  rule V_VERSION_STRING
+    [0-9]+ '.' [0-9]+ ('.' [0-9]+)*
+  end
+
+  rule V_ARCHETYPE_ID
+    NAMESTR ('-' NAMESTR) 2..2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]*
+  end
+
+  rule V_IDENTIFIER
+    [a-zA-Z] [a-zA-Z0-9_]*
+  end
+
+  rule V_URI
+    [a-z]+ '://' [^<>|\\{}^~"\[\] ]*
+  end
+
+  rule V_QUALIFIED_TERM_CODE_REF
+    '[' NAMECHAR_PAREN+ '::' NAMECHAR+ ']'
+  end
+
+  rule ERR_V_QUALIFIED_TERM_CODE_REF
+    '[' NAMECHAR_PAREN+ '::' NAMECHAR_SPACE+ ']'
+  end
+
+  rule V_LOCAL_TERM_CODE_REF
+    '[' ALPHANUM NAMECHAR* ']'
+  end
+
+  rule V_LOCAL_CODE
+    a [ct] [0-9\.]+
+  end
+
+  rule V_ISO8601_EXTENDED_DATE_TIME
+    ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? ('Z' / [+-] [0-9] 4..4)? ) / ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ':' [0-6] [0-9] ('Z' / [+-] [0-9] 4..4)?) / ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ('Z' / [+-] [0-9] 4..4)?)
+  end
+
+  rule V_ISO8601_EXTENDED_TIME
+    [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? (Z / [+-] [0-9] 4..4)? / [0-2] [0-9] ':' [0-6] [0-9] (Z / [+-] [0-9] 4..4)?
+  end
+
+  rule V_ISO8601_EXTENDED_DATE
+    [0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] / [0-9] 4..4 '-' [0-1] [0-9]
+  end
+
+  rule V_ISO8601_DURATION
+    'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH])? ([0-9]+ [mM])? ([0-9]+ [sS])?
+  end
+
+  rule V_ISO8601_DATE_CONSTRAINT_PATTERN
+    [yY] [yY] [yY] [yY] '-' [mM?X] [mM?X] '-' [dD?X] [dD?X]    
+  end
+
+  rule V_ISO8601_TIME_CONSTRAINT_PATTERN
+    [hH] [hH] ':' [mM?X] [mM?X] ':' [sS?X] [sS?X]
+  end
+
+  rule V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
+    [yY] [yY] [yY] [yY] '-' [mM?X] [mM?X] '-' [dD?X] [dD?X] [Tt] [hH?X] [hH?X] ':' [mM?X] [mM?X] ':' [sS?X] [sS?X]
+  end
+
+  rule V_ISO8601_DURATION_CONSTRAINT_PATTERN
+    'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH]? [mM]? [sS]? / 'P' [yY]? [mM]? [wW]? [dD]?
+  end
+
+  rule V_TYPE_IDENTIFIER
+    [A-Z] IDCHAR*
+  end
+
+  rule V_GENERIC_TYPE_IDENTIFIER
+    [A-Z] IDCHAR* '<' [a-zA-Z0-9,_<>]+ '>'
+  end
+
+  rule V_ATTRIBUTE_IDENTIFIER
+    [a-z] IDCHAR*
+  end
+
+  rule V_INTEGER
+    [0-9] / [1-9] [0-9]+ / [0-9]+ [eE] [+-]? [0-9]
+  end
+
+  rule V_REAL
+    [0-9] '.' [0-9]+ / [1-9] [0-9]+ '.' [0-9]+ / [0-9]+ '.' [0-9]+ [eE] [+-]? [0-9]+
+  end
+
+  rule V_CHAR
+    [^\\\n\"]
+  end
+
+  rule V_STRING
+    '"' (!'"' . / '\"')* '"'
+  end
+end

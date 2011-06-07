@@ -13,5 +13,4 @@ describe CADLParser do
       @cap.should be_an_instance_of CADLParser
     end
   end
-
 end

@@ -16,8 +16,8 @@ grammar SharedToken
   end
 
   rule boolean_list_value
-    boolean_value (',' boolean_value)+ |
-    boolean_value ',' SYM_LIST_CONTINUE
+    boolean_value (',' boolean_value)+
+  | boolean_value ',' SYM_LIST_CONTINUE
   end
 
   rule integer_value

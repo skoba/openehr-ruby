@@ -2,13 +2,13 @@ require 'shared_token'
 require 'dadl'
 require 'cadl'
 
-grammar ADL
+grammar ADLSyntax
 
   include SharedToken
   include DADL
   include CADL
 
-  rule Archetype
+  rule archetype
     arch_identification
     arch_specialisation?
     arch_concept
@@ -20,9 +20,10 @@ grammar ADL
   end
 
   rule arch_identification
-    arch_head V_ARCHETYPE_ID space
-       p matches[1]
-    }
+    arch_head V_ARCHETYPE_ID space {
+      def archetype_id
+      end
+   }
   end
 
   rule arch_head
@@ -38,8 +39,8 @@ grammar ADL
   end
 
   rule arch_meta_data_item
-    SYM_ADL_VERSION '=' V_VERSION_STRING
-  | SYM_IS_CONTROLLED
+    SYM_ADL_VERSION SYM_EQ V_VERSION_STRING
+  / SYM_IS_CONTROLLED
   end
 
   rule arch_specialisation
@@ -51,22 +52,22 @@ grammar ADL
   end
 
   rule arch_language
-    SYM_LANGUAGE V_DADL_TEXT
+    SYM_LANGUAGE V_DADL_TEXT space
   end
 
   rule arch_description
-    SYM_DESCRIPTION V_DADL_TEXT
+    SYM_DESCRIPTION V_DADL_TEXT space
   end
 
   rule arch_definition
-    SYM_DEFINITION V_CADL_TEXT
+    SYM_DEFINITION V_CADL_TEXT space
   end
 
   rule arch_invariant
-    SYM_INVARIANT V_ASSERTION_TEXT
+    SYM_INVARIANT V_ASSERTION_TEXT space
   end
 
   rule arch_ontology
-    SYM_ONTOLOGY V_DADL_TEXT
+    SYM_ONTOLOGY V_DADL_TEXT space
   end
 end
