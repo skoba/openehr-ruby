@@ -24,7 +24,7 @@ describe ADLParser do
       end
 
       it 'archetype_id should be openEHR-EHR-SECTION-summary' do
-        @archetype.archetype_id.should be_equal 'openEHR-EHR-SECTION-summary'
+        @archetype.archetype_id.should be_eql 'openEHR-EHR-SECTION.summary.v1'
       end
     end
   end

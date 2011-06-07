@@ -2626,51 +2626,51 @@ module CADL
       s2, i2 = [], index
       loop do
         i3 = index
-        i4, s4 = index, []
-        i5 = index
-        if has_terminal?('/', false, index)
-          r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if has_terminal?('\/', false, index)
+          r4 = instantiate_node(SyntaxNode,input, index...(index + 2))
+          @index += 2
         else
-          terminal_parse_failure('/')
-          r6 = nil
-        end
-        if r6
-          r5 = nil
-        else
-          @index = i5
-          r5 = instantiate_node(SyntaxNode,input, index...index)
-        end
-        s4 << r5
-        if r5
-          if index < input_length
-            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure("any character")
-            r7 = nil
-          end
-          s4 << r7
-        end
-        if s4.last
-          r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
-          r4.extend(VREGEXP0)
-        else
-          @index = i4
+          terminal_parse_failure('\/')
           r4 = nil
         end
         if r4
           r3 = r4
         else
-          if has_terminal?('\/', false, index)
-            r8 = instantiate_node(SyntaxNode,input, index...(index + 2))
-            @index += 2
+          i5, s5 = index, []
+          i6 = index
+          if has_terminal?('/', false, index)
+            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            @index += 1
           else
-            terminal_parse_failure('\/')
-            r8 = nil
+            terminal_parse_failure('/')
+            r7 = nil
           end
-          if r8
-            r3 = r8
+          if r7
+            r6 = nil
+          else
+            @index = i6
+            r6 = instantiate_node(SyntaxNode,input, index...index)
+          end
+          s5 << r6
+          if r6
+            if index < input_length
+              r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure("any character")
+              r8 = nil
+            end
+            s5 << r8
+          end
+          if s5.last
+            r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
+            r5.extend(VREGEXP0)
+          else
+            @index = i5
+            r5 = nil
+          end
+          if r5
+            r3 = r5
           else
             @index = i3
             r3 = nil

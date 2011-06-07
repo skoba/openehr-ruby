@@ -119,15 +119,8 @@ grammar SharedToken
   end
 
   rule duration_interval_value
-    SYM_INTERVAL_DELIM duration_value SYM_ELLIPSIS duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM SYM_GT duration_value SYM_ELLIPSIS duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM duration_value SYM_ELLIPSIS SYM_LT duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM SYM_GT duration_value SYM_ELLIPSIS SYM_LT duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM SYM_LT duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM SYM_LE duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM SYM_GT duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM SYM_GE duration_value SYM_INTERVAL_DELIM
-  / SYM_INTERVAL_DELIM duration_value SYM_INTERVAL_DELIM
+    SYM_INTERVAL_DELIM SYM_GT? duration_value SYM_ELLIPSIS SYM_LT? duration_value SYM_INTERVAL_DELIM
+  / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? duration_value SYM_INTERVAL_DELIM
   end
 
   rule ALPHANUM
@@ -295,83 +288,83 @@ grammar SharedToken
   end
 
   rule SYM_THEN
-    'then' space
+    [Tt] [Hh] [Ee] [Nn] space
   end
 
   rule SYM_ELSE
-    'else' space
+    [Ee] [Ll] [Ss] [Ee] space
   end
 
   rule SYM_AND
-    'and' space
+    [Aa] [Nn] [Dd] space
   end
 
   rule SYM_OR
-    'or' space
+    [Oo] [Rr] space
   end
 
   rule SYM_XOR
-    'xor' space
+    [Xx] [Oo] [Rr] space
   end
 
   rule SYM_NOT
-    'not' space
+    [Nn] [Oo] [Tt] space
   end
 
   rule SYM_IMPLIES
-    'implies' space
+    [Ii] [Mm] [Pp] [Ll] [Ii] [Ee] [Ss] space
   end
 
   rule SYM_TRUE
-    'true' space
+    [Tt] [Rr] [Uu] [Ee] space
   end
 
   rule SYM_FALSE
-    'false' space
+    [Ff] [Aa] [Ll] [Ss] [Ee] space
   end
 
   rule SYM_FORALL
-    'for' '_' 'all' space
+    [Ff] [Oo] [Rr] '_' [Aa] [Ll] [Ll] space
   end
 
   rule SYM_EXISTS
-    'exists' space
+    [Ee] [Xx] [Ii] [Ss] [Tt] [Ss] space
   end
 
   rule SYM_EXISTENCE
-    'existence' space
+    [Ee] [Xx] [Ii] [Ss] [Tt] [Ee] [Nn] [Cc] [Ee] space
   end
 
   rule SYM_OCCURRENCES
-    'occurrences' white_space
+    [Oo] [Cc] [Cc] [Uu] [Rr] [Rr] [Ee] [Nn] [Cc] [Ee] [Ss] white_space
   end
 
   rule SYM_CARDINALITY
-    'cardinality' white_space
+    [Cc] [Aa] [Rr] [Dd] [Ii] [Nn] [Aa] [Ll] [Ii] [Tt] [Yy] white_space
   end
 
   rule SYM_ORDERED
-    'ordered' white_space
+    [Oo] [Rr] [Dd] [Ee] [Rr] [Ee] [Dd] white_space
   end
 
   rule SYM_UNORDERD
-    'unordered' white_space
+    [Uu] [Nn] [Oo] [Rr] [Dd] [Ee] [Rr] [Ee] [Dd] white_space
   end
 
   rule SYM_UNIQUE
-    'unique' white_space
+    [Uu] [Nn] [Ii] [Qq] [Uu] [Ee] white_space
   end
 
   rule SYM_INFINITY
-    'infinity' space
+    [Ii] [Nn] [Ff] [Ii] [Nn] [Ii] [Tt] [Yy] space
   end
 
   rule SYM_USE_NODE
-    'use' '_' 'node' space
+    [Uu] [Ss] [Ee] '_' [Nn] [Oo] [Dd] [Ee] space
   end
 
   rule SYM_ALLOW_ARCHETYPE
-    ('allow' /  'use') '_' 'archetype' space
+    ([Aa] [Ll] [Ll] [Oo] [Ww] /  [Uu] [Ss] [Ee]) '_' [Aa] [Rr] [Cc] [Hh] [Ee] [Tt] [Yy] [Pp] [Ee] space
   end
 
   rule SYM_INCLUDE
@@ -379,31 +372,31 @@ grammar SharedToken
   end
 
   rule SYM_EXCLUDE
-    'exclude' space
+    [Ee] [Xx] [Cc] [Ll] [Uu] [Dd] [Ee] space
   end
 
   rule SYM_TEMPLATE_COMPONENT
-    'template_component' space
+    [Tt] [Ee] [Mm] [Pp] [Ll] [Aa] [Tt] [Ee] ' _' [Cc] [Oo] [Mm] [Pp] [Oo] [Nn] [Ee] [Nn] [Tt] space
   end
 
   rule SYM_TEMPLATE
-    'template' space
+    [Tt] [Ee] [Mm] [Pp] [Ll] [Aa] [Tt] [Ee] space
   end
 
   rule SYM_OPERATIONAL_TEMPLATE
-    'operational_template' space
+    [Oo] [Pp] [Ee] [Rr] [Aa] [Tt] [Ii] [Oo] [Nn] [Aa] [Ll] '_' [Tt] [Ee] [Mm] [Pp] [Ll] [Aa] [Tt] [Ee] space
   end
 
   rule SYM_ADL_VERSION
-    'adl_version' space
+    [Aa] [Dd] [Ll] '_' [Vv] [Ee] [Rr] [Ss] [Ii] [Oo] [Nn] space
   end
 
   rule SYM_IS_CONTROLLED
-    'controlled' space
+    [Cc] [Oo] [Nn] [Tt] [Rr] [Oo] [Ll] [Ll] [Ee] [Dd] space
   end
 
   rule SYM_IS_GENERATED
-    'generated' space
+    [Gg] [Ee] [Nn] [Ee] [Rr] [Aa] [Tt] [Ee] [Dd] space
   end
 
   rule SYM_SPECIALIZE
@@ -415,27 +408,27 @@ grammar SharedToken
   end
 
   rule SYM_LANGUAGE
-    'language' space
+    [Ll] [Aa] [Nn] [Gg] [Uu] [Aa] [Gg] [Ee] space
   end
 
   rule SYM_DESCRIPTION
-    'description' space
+    [Dd] [Ee] [Ss] [Cc] [Rr] [Ii] [Pp] [Tt] [Ii] [Oo] [Nn] space
   end
 
   rule SYM_DEFINITION
-    'definition' space
+    [Dd] [Ee] [Ff] [Ii] [Nn] [Ii] [Tt] [Ii] [Oo] [Nn] space
   end
 
   rule SYM_INVARIANT
-    'invariant' space
+    [Ii] [Nn] [Vv] [Aa] [Rr] [Ii] [Aa] [Nn] [Tt] space
   end
 
   rule SYM_ONTOLOGY
-    'ontology' space
+    [Oo] [Nn] [Tt] [Oo] [Ll] [Oo] [Gg] [Yy] space
   end
 
   rule SYM_ANNOTATIONS
-    'annotations' space
+    [Aa] [Nn] [Nn] [Oo] [Tt] [Aa] [Tt] [Ii] [Oo] [Nn] [Ss] space
   end
 
   rule V_VERSION_STRING

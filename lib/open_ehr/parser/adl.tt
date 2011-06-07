@@ -16,14 +16,19 @@ grammar ADLSyntax
     arch_description?
     arch_definition
     arch_invariant?
-    arch_ontology
+    arch_ontology {
+      def archetype_id
+        arch_identification.archetype_id
+      end
+    }
   end
 
   rule arch_identification
     arch_head V_ARCHETYPE_ID space {
       def archetype_id
+        self.V_ARCHETYPE_ID.text_value
       end
-   }
+    }
   end
 
   rule arch_head

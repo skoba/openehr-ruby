@@ -13,8 +13,7 @@ module OpenEHR
         data = File.read(filename)
         Treetop.load(File.dirname(__FILE__)+'/adl.tt')
         ap = ADLSyntaxParser.new
-        p @result = ap.parse(data)
-
+        @result = ap.parse(data)
         unless @result
           puts ap.failure_reason
           puts ap.failure_line
@@ -23,8 +22,8 @@ module OpenEHR
       end
 
       def parse
-#        archetype = ArchetypeMock.new(:archetype_id => archetype_id)
-#        return archetype
+        archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id)
+        return archetype
       end
 
 # temporary class for parser building

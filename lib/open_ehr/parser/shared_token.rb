@@ -2383,93 +2383,11 @@ module SharedToken
     end
 
     def duration_value1
-      elements[1]
-    end
-
-    def SYM_ELLIPSIS
-      elements[2]
-    end
-
-    def duration_value2
-      elements[3]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[4]
-    end
-  end
-
-  module DurationIntervalValue1
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def SYM_GT
-      elements[1]
-    end
-
-    def duration_value1
       elements[2]
     end
 
     def SYM_ELLIPSIS
       elements[3]
-    end
-
-    def duration_value2
-      elements[4]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[5]
-    end
-  end
-
-  module DurationIntervalValue2
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def duration_value1
-      elements[1]
-    end
-
-    def SYM_ELLIPSIS
-      elements[2]
-    end
-
-    def SYM_LT
-      elements[3]
-    end
-
-    def duration_value2
-      elements[4]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[5]
-    end
-  end
-
-  module DurationIntervalValue3
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def SYM_GT
-      elements[1]
-    end
-
-    def duration_value1
-      elements[2]
-    end
-
-    def SYM_ELLIPSIS
-      elements[3]
-    end
-
-    def SYM_LT
-      elements[4]
     end
 
     def duration_value2
@@ -2481,13 +2399,9 @@ module SharedToken
     end
   end
 
-  module DurationIntervalValue4
+  module DurationIntervalValue1
     def SYM_INTERVAL_DELIM1
       elements[0]
-    end
-
-    def SYM_LT
-      elements[1]
     end
 
     def duration_value
@@ -2496,74 +2410,6 @@ module SharedToken
 
     def SYM_INTERVAL_DELIM2
       elements[3]
-    end
-  end
-
-  module DurationIntervalValue5
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def SYM_LE
-      elements[1]
-    end
-
-    def duration_value
-      elements[2]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[3]
-    end
-  end
-
-  module DurationIntervalValue6
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def SYM_GT
-      elements[1]
-    end
-
-    def duration_value
-      elements[2]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[3]
-    end
-  end
-
-  module DurationIntervalValue7
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def SYM_GE
-      elements[1]
-    end
-
-    def duration_value
-      elements[2]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[3]
-    end
-  end
-
-  module DurationIntervalValue8
-    def SYM_INTERVAL_DELIM1
-      elements[0]
-    end
-
-    def duration_value
-      elements[1]
-    end
-
-    def SYM_INTERVAL_DELIM2
-      elements[2]
     end
   end
 
@@ -2583,17 +2429,35 @@ module SharedToken
     r2 = _nt_SYM_INTERVAL_DELIM
     s1 << r2
     if r2
-      r3 = _nt_duration_value
+      r4 = _nt_SYM_GT
+      if r4
+        r3 = r4
+      else
+        r3 = instantiate_node(SyntaxNode,input, index...index)
+      end
       s1 << r3
       if r3
-        r4 = _nt_SYM_ELLIPSIS
-        s1 << r4
-        if r4
-          r5 = _nt_duration_value
-          s1 << r5
-          if r5
-            r6 = _nt_SYM_INTERVAL_DELIM
-            s1 << r6
+        r5 = _nt_duration_value
+        s1 << r5
+        if r5
+          r6 = _nt_SYM_ELLIPSIS
+          s1 << r6
+          if r6
+            r8 = _nt_SYM_LT
+            if r8
+              r7 = r8
+            else
+              r7 = instantiate_node(SyntaxNode,input, index...index)
+            end
+            s1 << r7
+            if r7
+              r9 = _nt_duration_value
+              s1 << r9
+              if r9
+                r10 = _nt_SYM_INTERVAL_DELIM
+                s1 << r10
+              end
+            end
           end
         end
       end
@@ -2608,239 +2472,60 @@ module SharedToken
     if r1
       r0 = r1
     else
-      i7, s7 = index, []
-      r8 = _nt_SYM_INTERVAL_DELIM
-      s7 << r8
-      if r8
-        r9 = _nt_SYM_GT
-        s7 << r9
-        if r9
-          r10 = _nt_duration_value
-          s7 << r10
-          if r10
-            r11 = _nt_SYM_ELLIPSIS
-            s7 << r11
-            if r11
-              r12 = _nt_duration_value
-              s7 << r12
-              if r12
-                r13 = _nt_SYM_INTERVAL_DELIM
-                s7 << r13
-              end
-            end
-          end
-        end
-      end
-      if s7.last
-        r7 = instantiate_node(SyntaxNode,input, i7...index, s7)
-        r7.extend(DurationIntervalValue1)
-      else
-        @index = i7
-        r7 = nil
-      end
-      if r7
-        r0 = r7
-      else
-        i14, s14 = index, []
-        r15 = _nt_SYM_INTERVAL_DELIM
-        s14 << r15
+      i11, s11 = index, []
+      r12 = _nt_SYM_INTERVAL_DELIM
+      s11 << r12
+      if r12
+        i14 = index
+        r15 = _nt_SYM_LT
         if r15
-          r16 = _nt_duration_value
-          s14 << r16
+          r14 = r15
+        else
+          r16 = _nt_SYM_LE
           if r16
-            r17 = _nt_SYM_ELLIPSIS
-            s14 << r17
+            r14 = r16
+          else
+            r17 = _nt_SYM_GT
             if r17
-              r18 = _nt_SYM_LT
-              s14 << r18
+              r14 = r17
+            else
+              r18 = _nt_SYM_GE
               if r18
-                r19 = _nt_duration_value
-                s14 << r19
-                if r19
-                  r20 = _nt_SYM_INTERVAL_DELIM
-                  s14 << r20
-                end
+                r14 = r18
+              else
+                @index = i14
+                r14 = nil
               end
             end
           end
-        end
-        if s14.last
-          r14 = instantiate_node(SyntaxNode,input, i14...index, s14)
-          r14.extend(DurationIntervalValue2)
-        else
-          @index = i14
-          r14 = nil
         end
         if r14
-          r0 = r14
+          r13 = r14
         else
-          i21, s21 = index, []
-          r22 = _nt_SYM_INTERVAL_DELIM
-          s21 << r22
-          if r22
-            r23 = _nt_SYM_GT
-            s21 << r23
-            if r23
-              r24 = _nt_duration_value
-              s21 << r24
-              if r24
-                r25 = _nt_SYM_ELLIPSIS
-                s21 << r25
-                if r25
-                  r26 = _nt_SYM_LT
-                  s21 << r26
-                  if r26
-                    r27 = _nt_duration_value
-                    s21 << r27
-                    if r27
-                      r28 = _nt_SYM_INTERVAL_DELIM
-                      s21 << r28
-                    end
-                  end
-                end
-              end
-            end
-          end
-          if s21.last
-            r21 = instantiate_node(SyntaxNode,input, i21...index, s21)
-            r21.extend(DurationIntervalValue3)
-          else
-            @index = i21
-            r21 = nil
-          end
-          if r21
-            r0 = r21
-          else
-            i29, s29 = index, []
-            r30 = _nt_SYM_INTERVAL_DELIM
-            s29 << r30
-            if r30
-              r31 = _nt_SYM_LT
-              s29 << r31
-              if r31
-                r32 = _nt_duration_value
-                s29 << r32
-                if r32
-                  r33 = _nt_SYM_INTERVAL_DELIM
-                  s29 << r33
-                end
-              end
-            end
-            if s29.last
-              r29 = instantiate_node(SyntaxNode,input, i29...index, s29)
-              r29.extend(DurationIntervalValue4)
-            else
-              @index = i29
-              r29 = nil
-            end
-            if r29
-              r0 = r29
-            else
-              i34, s34 = index, []
-              r35 = _nt_SYM_INTERVAL_DELIM
-              s34 << r35
-              if r35
-                r36 = _nt_SYM_LE
-                s34 << r36
-                if r36
-                  r37 = _nt_duration_value
-                  s34 << r37
-                  if r37
-                    r38 = _nt_SYM_INTERVAL_DELIM
-                    s34 << r38
-                  end
-                end
-              end
-              if s34.last
-                r34 = instantiate_node(SyntaxNode,input, i34...index, s34)
-                r34.extend(DurationIntervalValue5)
-              else
-                @index = i34
-                r34 = nil
-              end
-              if r34
-                r0 = r34
-              else
-                i39, s39 = index, []
-                r40 = _nt_SYM_INTERVAL_DELIM
-                s39 << r40
-                if r40
-                  r41 = _nt_SYM_GT
-                  s39 << r41
-                  if r41
-                    r42 = _nt_duration_value
-                    s39 << r42
-                    if r42
-                      r43 = _nt_SYM_INTERVAL_DELIM
-                      s39 << r43
-                    end
-                  end
-                end
-                if s39.last
-                  r39 = instantiate_node(SyntaxNode,input, i39...index, s39)
-                  r39.extend(DurationIntervalValue6)
-                else
-                  @index = i39
-                  r39 = nil
-                end
-                if r39
-                  r0 = r39
-                else
-                  i44, s44 = index, []
-                  r45 = _nt_SYM_INTERVAL_DELIM
-                  s44 << r45
-                  if r45
-                    r46 = _nt_SYM_GE
-                    s44 << r46
-                    if r46
-                      r47 = _nt_duration_value
-                      s44 << r47
-                      if r47
-                        r48 = _nt_SYM_INTERVAL_DELIM
-                        s44 << r48
-                      end
-                    end
-                  end
-                  if s44.last
-                    r44 = instantiate_node(SyntaxNode,input, i44...index, s44)
-                    r44.extend(DurationIntervalValue7)
-                  else
-                    @index = i44
-                    r44 = nil
-                  end
-                  if r44
-                    r0 = r44
-                  else
-                    i49, s49 = index, []
-                    r50 = _nt_SYM_INTERVAL_DELIM
-                    s49 << r50
-                    if r50
-                      r51 = _nt_duration_value
-                      s49 << r51
-                      if r51
-                        r52 = _nt_SYM_INTERVAL_DELIM
-                        s49 << r52
-                      end
-                    end
-                    if s49.last
-                      r49 = instantiate_node(SyntaxNode,input, i49...index, s49)
-                      r49.extend(DurationIntervalValue8)
-                    else
-                      @index = i49
-                      r49 = nil
-                    end
-                    if r49
-                      r0 = r49
-                    else
-                      @index = i0
-                      r0 = nil
-                    end
-                  end
-                end
-              end
-            end
+          r13 = instantiate_node(SyntaxNode,input, index...index)
+        end
+        s11 << r13
+        if r13
+          r19 = _nt_duration_value
+          s11 << r19
+          if r19
+            r20 = _nt_SYM_INTERVAL_DELIM
+            s11 << r20
           end
         end
+      end
+      if s11.last
+        r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
+        r11.extend(DurationIntervalValue1)
+      else
+        @index = i11
+        r11 = nil
+      end
+      if r11
+        r0 = r11
+      else
+        @index = i0
+        r0 = nil
       end
     end
 
@@ -4296,7 +3981,7 @@ module SharedToken
 
   module SYMTHEN0
     def space
-      elements[1]
+      elements[4]
     end
   end
 
@@ -4312,17 +3997,43 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('then', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if has_terminal?('\G[Tt]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('then')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Hh]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ee]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Nn]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            r5 = _nt_space
+            s0 << r5
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4339,7 +4050,7 @@ module SharedToken
 
   module SYMELSE0
     def space
-      elements[1]
+      elements[4]
     end
   end
 
@@ -4355,17 +4066,43 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('else', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if has_terminal?('\G[Ee]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('else')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Ll]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ss]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ee]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            r5 = _nt_space
+            s0 << r5
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4382,7 +4119,7 @@ module SharedToken
 
   module SYMAND0
     def space
-      elements[1]
+      elements[3]
     end
   end
 
@@ -4398,17 +4135,34 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('and', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if has_terminal?('\G[Aa]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('and')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Dd]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          r4 = _nt_space
+          s0 << r4
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4425,7 +4179,7 @@ module SharedToken
 
   module SYMOR0
     def space
-      elements[1]
+      elements[2]
     end
   end
 
@@ -4441,17 +4195,25 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('or', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if has_terminal?('\G[Oo]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('or')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Rr]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        r3 = _nt_space
+        s0 << r3
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4468,7 +4230,7 @@ module SharedToken
 
   module SYMXOR0
     def space
-      elements[1]
+      elements[3]
     end
   end
 
@@ -4484,17 +4246,34 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('xor', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if has_terminal?('\G[Xx]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('xor')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Oo]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Rr]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          r4 = _nt_space
+          s0 << r4
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4511,7 +4290,7 @@ module SharedToken
 
   module SYMNOT0
     def space
-      elements[1]
+      elements[3]
     end
   end
 
@@ -4527,17 +4306,34 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('not', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if has_terminal?('\G[Nn]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('not')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Oo]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Tt]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          r4 = _nt_space
+          s0 << r4
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4554,7 +4350,7 @@ module SharedToken
 
   module SYMIMPLIES0
     def space
-      elements[1]
+      elements[7]
     end
   end
 
@@ -4570,17 +4366,70 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('implies', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if has_terminal?('\G[Ii]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('implies')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Mm]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Pp]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ll]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Ii]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ee]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Ss]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  r8 = _nt_space
+                  s0 << r8
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4597,7 +4446,7 @@ module SharedToken
 
   module SYMTRUE0
     def space
-      elements[1]
+      elements[4]
     end
   end
 
@@ -4613,17 +4462,43 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('true', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if has_terminal?('\G[Tt]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('true')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Rr]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Uu]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ee]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            r5 = _nt_space
+            s0 << r5
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4640,7 +4515,7 @@ module SharedToken
 
   module SYMFALSE0
     def space
-      elements[1]
+      elements[5]
     end
   end
 
@@ -4656,17 +4531,52 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('false', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if has_terminal?('\G[Ff]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('false')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Aa]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ll]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ss]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Ee]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              r6 = _nt_space
+              s0 << r6
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4683,7 +4593,7 @@ module SharedToken
 
   module SYMFORALL0
     def space
-      elements[3]
+      elements[7]
     end
   end
 
@@ -4699,35 +4609,69 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('for', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if has_terminal?('\G[Ff]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('for')
       r1 = nil
     end
     s0 << r1
     if r1
-      if has_terminal?('_', false, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      if has_terminal?('\G[Oo]', true, index)
+        r2 = true
         @index += 1
       else
-        terminal_parse_failure('_')
         r2 = nil
       end
       s0 << r2
       if r2
-        if has_terminal?('all', false, index)
-          r3 = instantiate_node(SyntaxNode,input, index...(index + 3))
-          @index += 3
+        if has_terminal?('\G[Rr]', true, index)
+          r3 = true
+          @index += 1
         else
-          terminal_parse_failure('all')
           r3 = nil
         end
         s0 << r3
         if r3
-          r4 = _nt_space
+          if has_terminal?('_', false, index)
+            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure('_')
+            r4 = nil
+          end
           s0 << r4
+          if r4
+            if has_terminal?('\G[Aa]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ll]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Ll]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  r8 = _nt_space
+                  s0 << r8
+                end
+              end
+            end
+          end
         end
       end
     end
@@ -4746,7 +4690,7 @@ module SharedToken
 
   module SYMEXISTS0
     def space
-      elements[1]
+      elements[6]
     end
   end
 
@@ -4762,17 +4706,61 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('exists', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if has_terminal?('\G[Ee]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('exists')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Xx]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ii]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ss]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Tt]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ss]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                r7 = _nt_space
+                s0 << r7
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4789,7 +4777,7 @@ module SharedToken
 
   module SYMEXISTENCE0
     def space
-      elements[1]
+      elements[9]
     end
   end
 
@@ -4805,17 +4793,88 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('existence', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-      @index += 9
+    if has_terminal?('\G[Ee]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('existence')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Xx]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ii]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ss]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Tt]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ee]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Nn]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Cc]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Ee]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      r10 = _nt_space
+                      s0 << r10
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4832,7 +4891,7 @@ module SharedToken
 
   module SYMOCCURRENCES0
     def white_space
-      elements[1]
+      elements[11]
     end
   end
 
@@ -4848,17 +4907,106 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('occurrences', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 11))
-      @index += 11
+    if has_terminal?('\G[Oo]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('occurrences')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_white_space
+      if has_terminal?('\G[Cc]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Cc]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Uu]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Rr]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Rr]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Ee]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Nn]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Cc]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Ee]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Ss]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          r12 = _nt_white_space
+                          s0 << r12
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4875,7 +5023,7 @@ module SharedToken
 
   module SYMCARDINALITY0
     def white_space
-      elements[1]
+      elements[11]
     end
   end
 
@@ -4891,17 +5039,106 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('cardinality', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 11))
-      @index += 11
+    if has_terminal?('\G[Cc]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('cardinality')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_white_space
+      if has_terminal?('\G[Aa]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Rr]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Dd]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Ii]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Nn]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Aa]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ll]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Ii]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Tt]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Yy]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          r12 = _nt_white_space
+                          s0 << r12
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4918,7 +5155,7 @@ module SharedToken
 
   module SYMORDERED0
     def white_space
-      elements[1]
+      elements[7]
     end
   end
 
@@ -4934,17 +5171,70 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('ordered', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if has_terminal?('\G[Oo]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('ordered')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_white_space
+      if has_terminal?('\G[Rr]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Dd]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ee]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Rr]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ee]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Dd]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  r8 = _nt_white_space
+                  s0 << r8
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -4961,7 +5251,7 @@ module SharedToken
 
   module SYMUNORDERD0
     def white_space
-      elements[1]
+      elements[9]
     end
   end
 
@@ -4977,17 +5267,88 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('unordered', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-      @index += 9
+    if has_terminal?('\G[Uu]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('unordered')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_white_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Oo]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Rr]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Dd]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ee]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Rr]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ee]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Dd]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      r10 = _nt_white_space
+                      s0 << r10
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5004,7 +5365,7 @@ module SharedToken
 
   module SYMUNIQUE0
     def white_space
-      elements[1]
+      elements[6]
     end
   end
 
@@ -5020,17 +5381,61 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('unique', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if has_terminal?('\G[Uu]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('unique')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_white_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ii]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Qq]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Uu]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ee]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                r7 = _nt_white_space
+                s0 << r7
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5047,7 +5452,7 @@ module SharedToken
 
   module SYMINFINITY0
     def space
-      elements[1]
+      elements[8]
     end
   end
 
@@ -5063,17 +5468,79 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('infinity', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-      @index += 8
+    if has_terminal?('\G[Ii]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('infinity')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ff]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ii]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Nn]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ii]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Tt]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Yy]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    r9 = _nt_space
+                    s0 << r9
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5090,7 +5557,7 @@ module SharedToken
 
   module SYMUSENODE0
     def space
-      elements[3]
+      elements[8]
     end
   end
 
@@ -5106,35 +5573,78 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('use', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if has_terminal?('\G[Uu]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('use')
       r1 = nil
     end
     s0 << r1
     if r1
-      if has_terminal?('_', false, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      if has_terminal?('\G[Ss]', true, index)
+        r2 = true
         @index += 1
       else
-        terminal_parse_failure('_')
         r2 = nil
       end
       s0 << r2
       if r2
-        if has_terminal?('node', false, index)
-          r3 = instantiate_node(SyntaxNode,input, index...(index + 4))
-          @index += 4
+        if has_terminal?('\G[Ee]', true, index)
+          r3 = true
+          @index += 1
         else
-          terminal_parse_failure('node')
           r3 = nil
         end
         s0 << r3
         if r3
-          r4 = _nt_space
+          if has_terminal?('_', false, index)
+            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure('_')
+            r4 = nil
+          end
           s0 << r4
+          if r4
+            if has_terminal?('\G[Nn]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Oo]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Dd]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ee]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    r9 = _nt_space
+                    s0 << r9
+                  end
+                end
+              end
+            end
+          end
         end
       end
     end
@@ -5152,8 +5662,14 @@ module SharedToken
   end
 
   module SYMALLOWARCHETYPE0
+  end
+
+  module SYMALLOWARCHETYPE1
+  end
+
+  module SYMALLOWARCHETYPE2
     def space
-      elements[3]
+      elements[11]
     end
   end
 
@@ -5170,25 +5686,95 @@ module SharedToken
 
     i0, s0 = index, []
     i1 = index
-    if has_terminal?('allow', false, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    i2, s2 = index, []
+    if has_terminal?('\G[Aa]', true, index)
+      r3 = true
+      @index += 1
     else
-      terminal_parse_failure('allow')
+      r3 = nil
+    end
+    s2 << r3
+    if r3
+      if has_terminal?('\G[Ll]', true, index)
+        r4 = true
+        @index += 1
+      else
+        r4 = nil
+      end
+      s2 << r4
+      if r4
+        if has_terminal?('\G[Ll]', true, index)
+          r5 = true
+          @index += 1
+        else
+          r5 = nil
+        end
+        s2 << r5
+        if r5
+          if has_terminal?('\G[Oo]', true, index)
+            r6 = true
+            @index += 1
+          else
+            r6 = nil
+          end
+          s2 << r6
+          if r6
+            if has_terminal?('\G[Ww]', true, index)
+              r7 = true
+              @index += 1
+            else
+              r7 = nil
+            end
+            s2 << r7
+          end
+        end
+      end
+    end
+    if s2.last
+      r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
+      r2.extend(SYMALLOWARCHETYPE0)
+    else
+      @index = i2
       r2 = nil
     end
     if r2
       r1 = r2
     else
-      if has_terminal?('use', false, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 3))
-        @index += 3
+      i8, s8 = index, []
+      if has_terminal?('\G[Uu]', true, index)
+        r9 = true
+        @index += 1
       else
-        terminal_parse_failure('use')
-        r3 = nil
+        r9 = nil
       end
-      if r3
-        r1 = r3
+      s8 << r9
+      if r9
+        if has_terminal?('\G[Ss]', true, index)
+          r10 = true
+          @index += 1
+        else
+          r10 = nil
+        end
+        s8 << r10
+        if r10
+          if has_terminal?('\G[Ee]', true, index)
+            r11 = true
+            @index += 1
+          else
+            r11 = nil
+          end
+          s8 << r11
+        end
+      end
+      if s8.last
+        r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
+        r8.extend(SYMALLOWARCHETYPE1)
+      else
+        @index = i8
+        r8 = nil
+      end
+      if r8
+        r1 = r8
       else
         @index = i1
         r1 = nil
@@ -5197,31 +5783,102 @@ module SharedToken
     s0 << r1
     if r1
       if has_terminal?('_', false, index)
-        r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
         terminal_parse_failure('_')
-        r4 = nil
+        r12 = nil
       end
-      s0 << r4
-      if r4
-        if has_terminal?('archetype', false, index)
-          r5 = instantiate_node(SyntaxNode,input, index...(index + 9))
-          @index += 9
+      s0 << r12
+      if r12
+        if has_terminal?('\G[Aa]', true, index)
+          r13 = true
+          @index += 1
         else
-          terminal_parse_failure('archetype')
-          r5 = nil
+          r13 = nil
         end
-        s0 << r5
-        if r5
-          r6 = _nt_space
-          s0 << r6
+        s0 << r13
+        if r13
+          if has_terminal?('\G[Rr]', true, index)
+            r14 = true
+            @index += 1
+          else
+            r14 = nil
+          end
+          s0 << r14
+          if r14
+            if has_terminal?('\G[Cc]', true, index)
+              r15 = true
+              @index += 1
+            else
+              r15 = nil
+            end
+            s0 << r15
+            if r15
+              if has_terminal?('\G[Hh]', true, index)
+                r16 = true
+                @index += 1
+              else
+                r16 = nil
+              end
+              s0 << r16
+              if r16
+                if has_terminal?('\G[Ee]', true, index)
+                  r17 = true
+                  @index += 1
+                else
+                  r17 = nil
+                end
+                s0 << r17
+                if r17
+                  if has_terminal?('\G[Tt]', true, index)
+                    r18 = true
+                    @index += 1
+                  else
+                    r18 = nil
+                  end
+                  s0 << r18
+                  if r18
+                    if has_terminal?('\G[Yy]', true, index)
+                      r19 = true
+                      @index += 1
+                    else
+                      r19 = nil
+                    end
+                    s0 << r19
+                    if r19
+                      if has_terminal?('\G[Pp]', true, index)
+                        r20 = true
+                        @index += 1
+                      else
+                        r20 = nil
+                      end
+                      s0 << r20
+                      if r20
+                        if has_terminal?('\G[Ee]', true, index)
+                          r21 = true
+                          @index += 1
+                        else
+                          r21 = nil
+                        end
+                        s0 << r21
+                        if r21
+                          r22 = _nt_space
+                          s0 << r22
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
         end
       end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
-      r0.extend(SYMALLOWARCHETYPE0)
+      r0.extend(SYMALLOWARCHETYPE2)
     else
       @index = i0
       r0 = nil
@@ -5330,7 +5987,7 @@ module SharedToken
 
   module SYMEXCLUDE0
     def space
-      elements[1]
+      elements[7]
     end
   end
 
@@ -5346,17 +6003,70 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('exclude', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if has_terminal?('\G[Ee]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('exclude')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Xx]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Cc]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ll]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Uu]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Dd]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Ee]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  r8 = _nt_space
+                  s0 << r8
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5373,7 +6083,7 @@ module SharedToken
 
   module SYMTEMPLATECOMPONENT0
     def space
-      elements[1]
+      elements[18]
     end
   end
 
@@ -5389,17 +6099,170 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('template_component', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 18))
-      @index += 18
+    if has_terminal?('\G[Tt]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('template_component')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Ee]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Mm]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Pp]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Ll]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Aa]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Tt]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ee]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?(' _', false, index)
+                      r9 = instantiate_node(SyntaxNode,input, index...(index + 2))
+                      @index += 2
+                    else
+                      terminal_parse_failure(' _')
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Cc]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Oo]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          if has_terminal?('\G[Mm]', true, index)
+                            r12 = true
+                            @index += 1
+                          else
+                            r12 = nil
+                          end
+                          s0 << r12
+                          if r12
+                            if has_terminal?('\G[Pp]', true, index)
+                              r13 = true
+                              @index += 1
+                            else
+                              r13 = nil
+                            end
+                            s0 << r13
+                            if r13
+                              if has_terminal?('\G[Oo]', true, index)
+                                r14 = true
+                                @index += 1
+                              else
+                                r14 = nil
+                              end
+                              s0 << r14
+                              if r14
+                                if has_terminal?('\G[Nn]', true, index)
+                                  r15 = true
+                                  @index += 1
+                                else
+                                  r15 = nil
+                                end
+                                s0 << r15
+                                if r15
+                                  if has_terminal?('\G[Ee]', true, index)
+                                    r16 = true
+                                    @index += 1
+                                  else
+                                    r16 = nil
+                                  end
+                                  s0 << r16
+                                  if r16
+                                    if has_terminal?('\G[Nn]', true, index)
+                                      r17 = true
+                                      @index += 1
+                                    else
+                                      r17 = nil
+                                    end
+                                    s0 << r17
+                                    if r17
+                                      if has_terminal?('\G[Tt]', true, index)
+                                        r18 = true
+                                        @index += 1
+                                      else
+                                        r18 = nil
+                                      end
+                                      s0 << r18
+                                      if r18
+                                        r19 = _nt_space
+                                        s0 << r19
+                                      end
+                                    end
+                                  end
+                                end
+                              end
+                            end
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5416,7 +6279,7 @@ module SharedToken
 
   module SYMTEMPLATE0
     def space
-      elements[1]
+      elements[8]
     end
   end
 
@@ -5432,17 +6295,79 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('template', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-      @index += 8
+    if has_terminal?('\G[Tt]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('template')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Ee]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Mm]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Pp]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Ll]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Aa]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Tt]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ee]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    r9 = _nt_space
+                    s0 << r9
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5459,7 +6384,7 @@ module SharedToken
 
   module SYMOPERATIONALTEMPLATE0
     def space
-      elements[1]
+      elements[20]
     end
   end
 
@@ -5475,17 +6400,188 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('operational_template', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 20))
-      @index += 20
+    if has_terminal?('\G[Oo]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('operational_template')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Pp]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ee]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Rr]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Aa]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Tt]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Ii]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Oo]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Nn]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Aa]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Ll]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          if has_terminal?('_', false, index)
+                            r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                            @index += 1
+                          else
+                            terminal_parse_failure('_')
+                            r12 = nil
+                          end
+                          s0 << r12
+                          if r12
+                            if has_terminal?('\G[Tt]', true, index)
+                              r13 = true
+                              @index += 1
+                            else
+                              r13 = nil
+                            end
+                            s0 << r13
+                            if r13
+                              if has_terminal?('\G[Ee]', true, index)
+                                r14 = true
+                                @index += 1
+                              else
+                                r14 = nil
+                              end
+                              s0 << r14
+                              if r14
+                                if has_terminal?('\G[Mm]', true, index)
+                                  r15 = true
+                                  @index += 1
+                                else
+                                  r15 = nil
+                                end
+                                s0 << r15
+                                if r15
+                                  if has_terminal?('\G[Pp]', true, index)
+                                    r16 = true
+                                    @index += 1
+                                  else
+                                    r16 = nil
+                                  end
+                                  s0 << r16
+                                  if r16
+                                    if has_terminal?('\G[Ll]', true, index)
+                                      r17 = true
+                                      @index += 1
+                                    else
+                                      r17 = nil
+                                    end
+                                    s0 << r17
+                                    if r17
+                                      if has_terminal?('\G[Aa]', true, index)
+                                        r18 = true
+                                        @index += 1
+                                      else
+                                        r18 = nil
+                                      end
+                                      s0 << r18
+                                      if r18
+                                        if has_terminal?('\G[Tt]', true, index)
+                                          r19 = true
+                                          @index += 1
+                                        else
+                                          r19 = nil
+                                        end
+                                        s0 << r19
+                                        if r19
+                                          if has_terminal?('\G[Ee]', true, index)
+                                            r20 = true
+                                            @index += 1
+                                          else
+                                            r20 = nil
+                                          end
+                                          s0 << r20
+                                          if r20
+                                            r21 = _nt_space
+                                            s0 << r21
+                                          end
+                                        end
+                                      end
+                                    end
+                                  end
+                                end
+                              end
+                            end
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5502,7 +6598,7 @@ module SharedToken
 
   module SYMADLVERSION0
     def space
-      elements[1]
+      elements[11]
     end
   end
 
@@ -5518,17 +6614,107 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('adl_version', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 11))
-      @index += 11
+    if has_terminal?('\G[Aa]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('adl_version')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Dd]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ll]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('_', false, index)
+            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure('_')
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Vv]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ee]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Rr]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ss]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Ii]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Oo]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Nn]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          r12 = _nt_space
+                          s0 << r12
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5545,7 +6731,7 @@ module SharedToken
 
   module SYMISCONTROLLED0
     def space
-      elements[1]
+      elements[10]
     end
   end
 
@@ -5561,17 +6747,97 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('controlled', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 10))
-      @index += 10
+    if has_terminal?('\G[Cc]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('controlled')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Oo]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Nn]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Tt]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Rr]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Oo]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Ll]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ll]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Ee]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Dd]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        r11 = _nt_space
+                        s0 << r11
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5588,7 +6854,7 @@ module SharedToken
 
   module SYMISGENERATED0
     def space
-      elements[1]
+      elements[9]
     end
   end
 
@@ -5604,17 +6870,88 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('generated', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-      @index += 9
+    if has_terminal?('\G[Gg]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('generated')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Ee]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Nn]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ee]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Rr]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Aa]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Tt]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ee]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Dd]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      r10 = _nt_space
+                      s0 << r10
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5850,7 +7187,7 @@ module SharedToken
 
   module SYMLANGUAGE0
     def space
-      elements[1]
+      elements[8]
     end
   end
 
@@ -5866,17 +7203,79 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('language', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-      @index += 8
+    if has_terminal?('\G[Ll]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('language')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Aa]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Nn]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Gg]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Uu]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Aa]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Gg]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ee]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    r9 = _nt_space
+                    s0 << r9
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5893,7 +7292,7 @@ module SharedToken
 
   module SYMDESCRIPTION0
     def space
-      elements[1]
+      elements[11]
     end
   end
 
@@ -5909,17 +7308,106 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('description', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 11))
-      @index += 11
+    if has_terminal?('\G[Dd]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('description')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Ee]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ss]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Cc]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Rr]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ii]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Pp]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Tt]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Ii]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Oo]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Nn]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          r12 = _nt_space
+                          s0 << r12
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5936,7 +7424,7 @@ module SharedToken
 
   module SYMDEFINITION0
     def space
-      elements[1]
+      elements[10]
     end
   end
 
@@ -5952,17 +7440,97 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('definition', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 10))
-      @index += 10
+    if has_terminal?('\G[Dd]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('definition')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Ee]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Ff]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Ii]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Nn]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ii]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Tt]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ii]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Oo]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Nn]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        r11 = _nt_space
+                        s0 << r11
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -5979,7 +7547,7 @@ module SharedToken
 
   module SYMINVARIANT0
     def space
-      elements[1]
+      elements[9]
     end
   end
 
@@ -5995,17 +7563,88 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('invariant', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-      @index += 9
+    if has_terminal?('\G[Ii]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('invariant')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Vv]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Aa]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Rr]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Ii]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Aa]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Nn]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Tt]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      r10 = _nt_space
+                      s0 << r10
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -6022,7 +7661,7 @@ module SharedToken
 
   module SYMONTOLOGY0
     def space
-      elements[1]
+      elements[8]
     end
   end
 
@@ -6038,17 +7677,79 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('ontology', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-      @index += 8
+    if has_terminal?('\G[Oo]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('ontology')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Tt]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Oo]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Ll]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Oo]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Gg]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Yy]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    r9 = _nt_space
+                    s0 << r9
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -6065,7 +7766,7 @@ module SharedToken
 
   module SYMANNOTATIONS0
     def space
-      elements[1]
+      elements[11]
     end
   end
 
@@ -6081,17 +7782,106 @@ module SharedToken
     end
 
     i0, s0 = index, []
-    if has_terminal?('annotations', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 11))
-      @index += 11
+    if has_terminal?('\G[Aa]', true, index)
+      r1 = true
+      @index += 1
     else
-      terminal_parse_failure('annotations')
       r1 = nil
     end
     s0 << r1
     if r1
-      r2 = _nt_space
+      if has_terminal?('\G[Nn]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
       s0 << r2
+      if r2
+        if has_terminal?('\G[Nn]', true, index)
+          r3 = true
+          @index += 1
+        else
+          r3 = nil
+        end
+        s0 << r3
+        if r3
+          if has_terminal?('\G[Oo]', true, index)
+            r4 = true
+            @index += 1
+          else
+            r4 = nil
+          end
+          s0 << r4
+          if r4
+            if has_terminal?('\G[Tt]', true, index)
+              r5 = true
+              @index += 1
+            else
+              r5 = nil
+            end
+            s0 << r5
+            if r5
+              if has_terminal?('\G[Aa]', true, index)
+                r6 = true
+                @index += 1
+              else
+                r6 = nil
+              end
+              s0 << r6
+              if r6
+                if has_terminal?('\G[Tt]', true, index)
+                  r7 = true
+                  @index += 1
+                else
+                  r7 = nil
+                end
+                s0 << r7
+                if r7
+                  if has_terminal?('\G[Ii]', true, index)
+                    r8 = true
+                    @index += 1
+                  else
+                    r8 = nil
+                  end
+                  s0 << r8
+                  if r8
+                    if has_terminal?('\G[Oo]', true, index)
+                      r9 = true
+                      @index += 1
+                    else
+                      r9 = nil
+                    end
+                    s0 << r9
+                    if r9
+                      if has_terminal?('\G[Nn]', true, index)
+                        r10 = true
+                        @index += 1
+                      else
+                        r10 = nil
+                      end
+                      s0 << r10
+                      if r10
+                        if has_terminal?('\G[Ss]', true, index)
+                          r11 = true
+                          @index += 1
+                        else
+                          r11 = nil
+                        end
+                        s0 << r11
+                        if r11
+                          r12 = _nt_space
+                          s0 << r12
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)

@@ -36,6 +36,12 @@ module ADLSyntax
     end
   end
 
+  module Archetype1
+    def archetype_id
+      arch_identification.archetype_id
+    end
+  end
+
   def _nt_archetype
     start_index = index
     if node_cache[:archetype].has_key?(index)
@@ -101,6 +107,7 @@ module ADLSyntax
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Archetype0)
+      r0.extend(Archetype1)
     else
       @index = i0
       r0 = nil
@@ -127,6 +134,7 @@ module ADLSyntax
 
   module ArchIdentification1
     def archetype_id
+      self.V_ARCHETYPE_ID.text_value
     end
   end
 
