@@ -1,6 +1,7 @@
 require 'shared_token'
 require 'dadl'
 require 'cadl'
+#require 'ap_helper'
 
 grammar ADLSyntax
 
@@ -8,44 +9,56 @@ grammar ADLSyntax
   include DADL
   include CADL
 
-  rule archetype
-    arch_identification
+  rule archetype 
+    arch_identification 
     arch_specialisation?
     arch_concept
     arch_language?
     arch_description?
     arch_definition
     arch_invariant?
-    arch_ontology {
-      def archetype_id
-        arch_identification.archetype_id
-      end
-    }
+    arch_ontology <Archetype>
   end
 
   rule arch_identification
-    arch_head V_ARCHETYPE_ID space {
-      def archetype_id
-        self.V_ARCHETYPE_ID.text_value
+    arch_head V_ARCHETYPE_ID space <ArchIdentification>
+  end
+
+  rule arch_head
+    SYM_ARCHETYPE arch_meta_data? {
+      def adl_version
+      	p @elements
       end
     }
   end
 
-  rule arch_head
-    SYM_ARCHETYPE arch_meta_data?
-  end
-
   rule arch_meta_data
-    '(' arch_meta_data_items ')' space
+    '(' arch_meta_data_items ')' space {
+    	def adl_version
+	   arch_meta_data_items.adl_version
+        end
+    }
   end
 
   rule arch_meta_data_items
-    arch_meta_data_item (';' arch_meta_data_item)*
+    arch_meta_data_item (';' arch_meta_data_item)* {
+      def adl_version
+        p @elements
+      end
+    }
   end
 
   rule arch_meta_data_item
-    SYM_ADL_VERSION SYM_EQ V_VERSION_STRING
-  / SYM_IS_CONTROLLED
+    SYM_ADL_VERSION SYM_EQ V_VERSION_STRING {
+      def adl_version
+        self.V_VERSION_STRING.text_value
+      end
+    }
+  / SYM_IS_CONTROLLED {
+      def is_controlled?
+        self.matched?
+      end
+    }
   end
 
   rule arch_specialisation

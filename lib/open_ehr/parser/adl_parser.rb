@@ -14,6 +14,7 @@ module OpenEHR
         Treetop.load(File.dirname(__FILE__)+'/adl.tt')
         ap = ADLSyntaxParser.new
         @result = ap.parse(data)
+        p @result.arch_identification.adl_version
         unless @result
           puts ap.failure_reason
           puts ap.failure_line
@@ -22,16 +23,21 @@ module OpenEHR
       end
 
       def parse
-        archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id)
+        archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id,
+                                      :adl_version => @result.adl_version)
         return archetype
       end
 
 # temporary class for parser building
 
       class ArchetypeMock
-        attr_reader :archetype_id
+        attr_reader :params
         def initialize(args = { })
-          @archetype_id = args[:archetype_id]
+          params = args
+        end
+
+        def method_missing(name)
+          params{name}
         end
       end
     end

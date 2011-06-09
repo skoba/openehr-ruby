@@ -2602,6 +2602,18 @@ module CADL
   module VREGEXP1
   end
 
+  module VREGEXP2
+  end
+
+  module VREGEXP3
+  end
+
+  module VREGEXP4
+  end
+
+  module VREGEXP5
+  end
+
   def _nt_V_REGEXP
     start_index = index
     if node_cache[:V_REGEXP].has_key?(index)
@@ -2614,90 +2626,233 @@ module CADL
     end
 
     i0, s0 = index, []
-    if has_terminal?('/', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+    i2, s2 = index, []
+    i3 = index
+    if has_terminal?('=', false, index)
+      r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
-      terminal_parse_failure('/')
-      r1 = nil
+      terminal_parse_failure('=')
+      r4 = nil
+    end
+    if r4
+      r3 = r4
+    else
+      if has_terminal?('!', false, index)
+        r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure('!')
+        r5 = nil
+      end
+      if r5
+        r3 = r5
+      else
+        @index = i3
+        r3 = nil
+      end
+    end
+    s2 << r3
+    if r3
+      if has_terminal?('~', false, index)
+        r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure('~')
+        r6 = nil
+      end
+      s2 << r6
+    end
+    if s2.last
+      r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
+      r2.extend(VREGEXP0)
+    else
+      @index = i2
+      r2 = nil
+    end
+    if r2
+      r1 = r2
+    else
+      r1 = instantiate_node(SyntaxNode,input, index...index)
     end
     s0 << r1
     if r1
-      s2, i2 = [], index
-      loop do
-        i3 = index
-        if has_terminal?('\/', false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
-        else
-          terminal_parse_failure('\/')
-          r4 = nil
+      i7 = index
+      i8, s8 = index, []
+      if has_terminal?('/', false, index)
+        r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure('/')
+        r9 = nil
+      end
+      s8 << r9
+      if r9
+        s10, i10 = [], index
+        loop do
+          i11 = index
+          if has_terminal?('\/', false, index)
+            r12 = instantiate_node(SyntaxNode,input, index...(index + 2))
+            @index += 2
+          else
+            terminal_parse_failure('\/')
+            r12 = nil
+          end
+          if r12
+            r11 = r12
+          else
+            i13, s13 = index, []
+            i14 = index
+            if has_terminal?('/', false, index)
+              r15 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure('/')
+              r15 = nil
+            end
+            if r15
+              r14 = nil
+            else
+              @index = i14
+              r14 = instantiate_node(SyntaxNode,input, index...index)
+            end
+            s13 << r14
+            if r14
+              if index < input_length
+                r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure("any character")
+                r16 = nil
+              end
+              s13 << r16
+            end
+            if s13.last
+              r13 = instantiate_node(SyntaxNode,input, i13...index, s13)
+              r13.extend(VREGEXP1)
+            else
+              @index = i13
+              r13 = nil
+            end
+            if r13
+              r11 = r13
+            else
+              @index = i11
+              r11 = nil
+            end
+          end
+          if r11
+            s10 << r11
+          else
+            break
+          end
         end
-        if r4
-          r3 = r4
-        else
-          i5, s5 = index, []
-          i6 = index
+        r10 = instantiate_node(SyntaxNode,input, i10...index, s10)
+        s8 << r10
+        if r10
           if has_terminal?('/', false, index)
-            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure('/')
-            r7 = nil
+            r17 = nil
           end
-          if r7
-            r6 = nil
-          else
-            @index = i6
-            r6 = instantiate_node(SyntaxNode,input, index...index)
-          end
-          s5 << r6
-          if r6
-            if index < input_length
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
-            else
-              terminal_parse_failure("any character")
-              r8 = nil
-            end
-            s5 << r8
-          end
-          if s5.last
-            r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
-            r5.extend(VREGEXP0)
-          else
-            @index = i5
-            r5 = nil
-          end
-          if r5
-            r3 = r5
-          else
-            @index = i3
-            r3 = nil
-          end
-        end
-        if r3
-          s2 << r3
-        else
-          break
+          s8 << r17
         end
       end
-      r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
-      s0 << r2
-      if r2
-        if has_terminal?('/', false, index)
-          r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      if s8.last
+        r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
+        r8.extend(VREGEXP2)
+      else
+        @index = i8
+        r8 = nil
+      end
+      if r8
+        r7 = r8
+      else
+        i18, s18 = index, []
+        if has_terminal?('^', false, index)
+          r19 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
-          terminal_parse_failure('/')
-          r9 = nil
+          terminal_parse_failure('^')
+          r19 = nil
         end
-        s0 << r9
+        s18 << r19
+        if r19
+          s20, i20 = [], index
+          loop do
+            i21, s21 = index, []
+            i22 = index
+            if has_terminal?('^', false, index)
+              r23 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure('^')
+              r23 = nil
+            end
+            if r23
+              r22 = nil
+            else
+              @index = i22
+              r22 = instantiate_node(SyntaxNode,input, index...index)
+            end
+            s21 << r22
+            if r22
+              if index < input_length
+                r24 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure("any character")
+                r24 = nil
+              end
+              s21 << r24
+            end
+            if s21.last
+              r21 = instantiate_node(SyntaxNode,input, i21...index, s21)
+              r21.extend(VREGEXP3)
+            else
+              @index = i21
+              r21 = nil
+            end
+            if r21
+              s20 << r21
+            else
+              break
+            end
+          end
+          r20 = instantiate_node(SyntaxNode,input, i20...index, s20)
+          s18 << r20
+          if r20
+            if has_terminal?('^', false, index)
+              r25 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure('^')
+              r25 = nil
+            end
+            s18 << r25
+          end
+        end
+        if s18.last
+          r18 = instantiate_node(SyntaxNode,input, i18...index, s18)
+          r18.extend(VREGEXP4)
+        else
+          @index = i18
+          r18 = nil
+        end
+        if r18
+          r7 = r18
+        else
+          @index = i7
+          r7 = nil
+        end
       end
+      s0 << r7
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
-      r0.extend(VREGEXP1)
+      r0.extend(VREGEXP5)
     else
       @index = i0
       r0 = nil

@@ -213,7 +213,7 @@ grammar CADL
   end
 
   rule V_REGEXP
-     '/' ('\/' / !'/' .)* '/'
+     (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') )
   end
 
   rule V_C_DOMAIN_TYPE
