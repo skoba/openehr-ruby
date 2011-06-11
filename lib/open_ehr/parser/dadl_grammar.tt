@@ -1,4 +1,4 @@
-require 'shared_token'
+require 'shared_token_grammar'
 
 grammar DADL
 

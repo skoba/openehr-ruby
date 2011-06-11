@@ -11,10 +11,9 @@ module OpenEHR
       def initialize(filename)
         super(filename)
         data = File.read(filename)
-        Treetop.load(File.dirname(__FILE__)+'/adl.tt')
-        ap = ADLSyntaxParser.new
+        Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
+        ap = ADLGrammarParser.new
         @result = ap.parse(data)
-        p @result.arch_identification.adl_version
         unless @result
           puts ap.failure_reason
           puts ap.failure_line
@@ -32,12 +31,13 @@ module OpenEHR
 
       class ArchetypeMock
         attr_reader :params
+
         def initialize(args = { })
-          params = args
+          @params = args
         end
 
         def method_missing(name)
-          params{name}
+          @params.key(name)
         end
       end
     end

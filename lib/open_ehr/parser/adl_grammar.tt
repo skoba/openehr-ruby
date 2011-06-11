@@ -1,64 +1,54 @@
-require 'shared_token'
-require 'dadl'
-require 'cadl'
-#require 'ap_helper'
+require 'shared_token_grammar'
+require 'dadl_grammar'
+require 'cadl_grammar'
+require 'adl'
 
-grammar ADLSyntax
+module OpenEHR
+  module Parser
+    grammar ADLGrammar
 
-  include SharedToken
-  include DADL
-  include CADL
+      include SharedToken
+      include DADL
+      include CADL
 
-  rule archetype 
-    arch_identification 
-    arch_specialisation?
-    arch_concept
-    arch_language?
-    arch_description?
-    arch_definition
-    arch_invariant?
-    arch_ontology <Archetype>
-  end
-
-  rule arch_identification
-    arch_head V_ARCHETYPE_ID space <ArchIdentification>
-  end
-
-  rule arch_head
-    SYM_ARCHETYPE arch_meta_data? {
-      def adl_version
-      	p @elements
-      end
-    }
-  end
-
-  rule arch_meta_data
-    '(' arch_meta_data_items ')' space {
-    	def adl_version
-	   arch_meta_data_items.adl_version
+      rule archetype 
+      arch_identification 
+      arch_specialisation?
+      arch_concept
+      arch_language?
+      arch_description?
+      arch_definition
+      arch_invariant?
+      arch_ontology {
+        def archetype_id
+          arch_identification.archetype_id
         end
-    }
-  end
 
-  rule arch_meta_data_items
-    arch_meta_data_item (';' arch_meta_data_item)* {
-      def adl_version
-        p @elements
-      end
-    }
-  end
+        def adl_version
+          arch_identification.adl_version
+        end
+      }
+    end
+
+    rule arch_identification
+      arch_head archetype_id:V_ARCHETYPE_ID space <ArchIdentification>
+    end
+
+    rule arch_head
+      SYM_ARCHETYPE arch_meta_data? <ArchHead>
+    end
+
+    rule arch_meta_data
+      '(' arch_meta_data_items ')' space <ArchMetaData>
+    end
+
+    rule arch_meta_data_items
+      arch_meta_data_item (';' arch_meta_data_item)*  <ArchMetaDataItems>
+    end
 
   rule arch_meta_data_item
-    SYM_ADL_VERSION SYM_EQ V_VERSION_STRING {
-      def adl_version
-        self.V_VERSION_STRING.text_value
-      end
-    }
-  / SYM_IS_CONTROLLED {
-      def is_controlled?
-        self.matched?
-      end
-    }
+    SYM_ADL_VERSION SYM_EQ V_VERSION_STRING space <ArchMetaDataItem>
+  / SYM_IS_CONTROLED space <ArchMetaDataItem>
   end
 
   rule arch_specialisation
