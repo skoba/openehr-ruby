@@ -24,11 +24,11 @@ describe ADLParser do
       end
 
       it 'archetype_id should be openEHR-EHR-SECTION-summary' do
-        @archetype.archetype_id.should be_eql 'openEHR-EHR-SECTION.summary.v1'
+        @archetype.archetype_id.should == 'openEHR-EHR-SECTION.summary.v1'
       end
 
       it 'adl_version should be 1.4' do
-        @archetype.adl_version.should be_equal '1.4'
+        @archetype.adl_version.should == '1.4'
       end
     end
   end

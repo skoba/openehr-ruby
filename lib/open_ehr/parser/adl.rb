@@ -1,54 +1,54 @@
-module ADLGrammar
-  class ArchetypeParams
-    
-  end
+module OpenEHR
+  module Parser
+    module ADLGrammar
+      class Base < Treetop::Runtime::SyntaxNode
 
-  module Archetype  #< Treetop::Runtime::SyntaxNode
-    def archetype_id
-      ArchIdentification.archtype_id
-    end
+      end
 
-    def adl_version
-      ArchHead.adl_version
-    end
-  end
+      class Archetype < Base
+        def archetype_id
+          ArchIdentification.archetype_id
+        end
 
-  module ArchIdentification #< Treetop::Runtime::SyntaxNode
-    def archetype_id
-      @elements[1].text_value
-    end
+        def adl_version
+          ArchMetaDataItems.adl_version
+        end
+      end
 
-    def adl_version
-      ArchHead.adl_version
-    end
-  end
+     class ArchIdentification < Base
+        def archetype_id
+          @elements[1].text_value
+        end
+      end
 
-  module ArchHead
-    def adl_version
-      p @elements
-      ArchMetaData.adl_version
-    end
-  end
+      class ArchHead < Base
+        def adl_version
+          p @elements.each{ |e| e.text_value }
+          ArchMetaData.adl_version
+        end
+      end
 
-  module ArchMetaData
-    def self.adl_version
-      ArchMetaDataItems.content
-    end
+      class ArchMetaData < Base
+        def adl_version
+          ArchMetaDataItems.content
+        end
 
-    def self.is_controled?
-      ArchMetaDataItems.content
-    end
-  end
-  
-  module ArchMetaDataItems #< Treetop::Runtime::SyntaxNode
-    def self.content
-      ArchMetaDataItem.content
-    end
-  end
+        def is_controled?
+          ArchMetaDataItems.content
+        end
+      end
+      
+      module ArchMetaDataItems #< Base
+        def self.adl_version
+          p name #@elements.each {|e| e.text_value}
+        end
+      end
 
-  module ArchMetaDataItem
-    def self.content
-      p @elements
+      class ArchMetaDataItem < Base
+        def self.content
+          p @elements
+        end
+      end
     end
   end
 end

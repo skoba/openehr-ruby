@@ -12,70 +12,106 @@ module OpenEHR
       include CADL
 
       rule archetype 
-      arch_identification 
-      arch_specialisation?
-      arch_concept
-      arch_language?
-      arch_description?
-      arch_definition
-      arch_invariant?
-      arch_ontology {
-        def archetype_id
-          arch_identification.archetype_id
-        end
+        arch_identification 
+        arch_specialisation?
+        arch_concept
+        arch_language?
+        arch_description?
+        arch_definition
+        arch_invariant?
+        arch_ontology {
+          def archetype_id
+            arch_identification.archetype_id
+          end
 
-        def adl_version
-          arch_identification.adl_version
-        end
-      }
+          def adl_version
+            arch_identification.adl_version
+          end
+        }
+      end
+
+      rule arch_identification
+        head:arch_head V_ARCHETYPE_ID space {
+	  def archetype_id
+            elements[1].text_value
+	  end
+
+	  def adl_version
+	    head.adl_version
+	  end
+        }
+      end
+
+      rule arch_head
+        SYM_ARCHETYPE m:arch_meta_data? {
+	  def adl_version
+            m.adl_version
+	  end
+	}
+      end
+
+      rule arch_meta_data
+        '(' arch_meta_data_items ')' space {
+	   def adl_version
+             arch_meta_data_items.adl_version
+           end
+         }
+      end
+
+      rule arch_meta_data_items
+        item:arch_meta_data_item (';' other_item:arch_meta_data_item)* {
+          def adl_version
+  	    item.adl_version
+          end
+
+	  def is_controled?
+	    item.is_controled? or other_item.map {|i| i.is_controled}
+	  end
+        }
+      end
+
+      rule arch_meta_data_item
+        SYM_ADL_VERSION SYM_EQ V_VERSION_STRING space {
+	  def adl_version
+	    elements[2].text_value
+          end
+        }
+      / SYM_IS_CONTROLED space {
+          def is_controled?
+	    if elements[0]
+	      true
+            end
+          end
+        }
+      end
+
+      rule arch_specialisation
+        SYM_SPECIALIZE V_ARCHETYPE_ID space
+      end
+
+      rule arch_concept
+        SYM_CONCEPT V_LOCAL_TERM_CODE_REF space
+      end
+
+      rule arch_language
+        SYM_LANGUAGE V_DADL_TEXT space
+      end
+
+      rule arch_description
+        SYM_DESCRIPTION V_DADL_TEXT space
+      end
+
+      rule arch_definition
+        SYM_DEFINITION V_CADL_TEXT space
+      end
+
+      rule arch_invariant
+        SYM_INVARIANT V_ASSERTION_TEXT space
+      end
+
+      rule arch_ontology
+        SYM_ONTOLOGY V_DADL_TEXT space
+      end
     end
-
-    rule arch_identification
-      arch_head archetype_id:V_ARCHETYPE_ID space <ArchIdentification>
-    end
-
-    rule arch_head
-      SYM_ARCHETYPE arch_meta_data? <ArchHead>
-    end
-
-    rule arch_meta_data
-      '(' arch_meta_data_items ')' space <ArchMetaData>
-    end
-
-    rule arch_meta_data_items
-      arch_meta_data_item (';' arch_meta_data_item)*  <ArchMetaDataItems>
-    end
-
-  rule arch_meta_data_item
-    SYM_ADL_VERSION SYM_EQ V_VERSION_STRING space <ArchMetaDataItem>
-  / SYM_IS_CONTROLED space <ArchMetaDataItem>
-  end
-
-  rule arch_specialisation
-    SYM_SPECIALIZE V_ARCHETYPE_ID space
-  end
-
-  rule arch_concept
-    SYM_CONCEPT V_LOCAL_TERM_CODE_REF space
-  end
-
-  rule arch_language
-    SYM_LANGUAGE V_DADL_TEXT space
-  end
-
-  rule arch_description
-    SYM_DESCRIPTION V_DADL_TEXT space
-  end
-
-  rule arch_definition
-    SYM_DEFINITION V_CADL_TEXT space
-  end
-
-  rule arch_invariant
-    SYM_INVARIANT V_ASSERTION_TEXT space
-  end
-
-  rule arch_ontology
-    SYM_ONTOLOGY V_DADL_TEXT space
   end
 end

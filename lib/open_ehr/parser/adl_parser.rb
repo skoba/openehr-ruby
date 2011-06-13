@@ -30,14 +30,12 @@ module OpenEHR
 # temporary class for parser building
 
       class ArchetypeMock
-        attr_reader :params
-
         def initialize(args = { })
           @params = args
         end
 
         def method_missing(name)
-          @params.key(name)
+          @params[name]
         end
       end
     end
