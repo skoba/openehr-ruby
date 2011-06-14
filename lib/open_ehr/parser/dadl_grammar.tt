@@ -1,130 +1,216 @@
 require 'shared_token_grammar'
+require 'dadl'
 
-grammar DADL
+module OpenEHR
+  module Parser
+    grammar DADLGrammar
 
-  include SharedToken
+      include SharedToken
 
-  rule V_DADL_TEXT
-    attr_vals / complex_object_block 
-  end
+      rule V_DADL_TEXT
+        '' attr_vals space {
+          def value
+            attr_vals.values
+          end
+        }
+      / '' complex_object_block space {
+          def value
+            complex_object_block.value
+          end
+        }
+      end
 
-  rule attr_vals
-    attr_val (';'? attr_val)*
-  end
+      rule attr_vals
+        first:attr_val second:(';'? attr_val)* {
+          def values
+            val = {first.id => first.values}
+            second.elements.map do |e|
+              if e.terminal?
+                p e.id, e.values
+                val << {e.id => e.values}
+              end
+            end
+            val
+          end    
+        }
+      end
 
-  rule attr_val
-    attr_id SYM_EQ object_block
-  end
+      rule attr_val
+        attr_id SYM_EQ object_block {
+          def id
+            attr_id.value
+          end
 
-  rule attr_id
-    V_ATTRIBUTE_IDENTIFIER white_space
-  end
+          def values
+            object_block.values
+          end
+        }
+      end
 
-  rule object_block
-    complex_object_block / primitive_object_block
-  end
+      rule attr_id
+        id:V_ATTRIBUTE_IDENTIFIER white_space {
+          def value
+            id.text_value
+          end
+        }
+      end
 
-  rule complex_object_block
-    single_attr_object_block
-  / multiple_attr_object_block
-  end
+      rule object_block
+        complex_object_block space {
+	  def values
+            complex_object_block.values
+          end
+        }
+      / primitive_object_block space {
+          def values
+            primitive_object_block.values
+          end
+        }
+      end
 
-  rule multiple_attr_object_block
-    type_identifier? untyped_multiple_attr_object_block
-  end
+      rule complex_object_block
+        single_attr_object_block {
+          def values
+            single_attr_object_block.value
+          end
+        }
+      / multiple_attr_object_block {
+          def values
+            multiple_attr_object_block.values
+          end
+        }
+      end
 
-  rule untyped_multiple_attr_object_block
-    multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK
-  end
+      rule multiple_attr_object_block
+        type_identifier? untyped_multiple_attr_object_block
+      end
 
-  rule multiple_attr_object_block_head
-    SYM_START_DBLOCK
-  end
+      rule untyped_multiple_attr_object_block
+        multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK
+      end
 
-  rule keyed_objects
-    keyed_object+
-  end
+      rule multiple_attr_object_block_head
+        SYM_START_DBLOCK
+      end
 
-  rule keyed_object
-    object_key SYM_EQ object_block
-  end
+      rule keyed_objects
+        keyed_object+
+      end
 
-  rule object_key
-    '[' simple_value ']' white_space
-  end
+      rule keyed_object
+        object_key SYM_EQ object_block
+      end
 
-  rule single_attr_object_block
-    type_identifier? untyped_single_attr_object_block
-  end
+      rule object_key
+        '[' simple_value ']' white_space
+      end
 
-  rule untyped_single_attr_object_block
-    single_attr_object_complex_head attr_vals? SYM_END_DBLOCK
-  end
+      rule single_attr_object_block
+        type_identifier? untyped_single_attr_object_block
+      end
 
-  rule single_attr_object_complex_head
-    SYM_START_DBLOCK
-  end
+      rule untyped_single_attr_object_block
+        single_attr_object_complex_head attr_vals? SYM_END_DBLOCK
+      end
 
-  rule primitive_object_block
-    type_identifier? untyped_primitive_object_block
-  end
+      rule single_attr_object_complex_head
+        SYM_START_DBLOCK
+      end
 
-  rule untyped_primitive_object_block
-    SYM_START_DBLOCK primitive_object_value SYM_END_DBLOCK
-  end
+      rule primitive_object_block
+        type_identifier? untyped_primitive_object_block {
+	  def values
+	    untyped_primitive_object_block.value
+          end
+        }
+      end
 
-  rule primitive_object_value
-    term_code
-  / simple_list_value
-  / simple_value
-  / simple_interval_value
-  / term_code_list_value
-  end
+      rule untyped_primitive_object_block
+        SYM_START_DBLOCK primitive_object_value SYM_END_DBLOCK {
+	  def value
+	    primitive_object_value.eval
+          end
+	}
+      end
 
-  rule simple_value
-    string_value
-  / integer_value
-  / real_value
-  / boolean_value
-  / character_value
-  / date_value
-  / time_value
-  / date_time_value
-  / duration_value
-  / uri_value
-  end
+      rule primitive_object_value
+        '' term_code {
+          def eval
+            term_code.value
+          end
+        }
+      / simple_list_value {
+          def eval
+            simpe_list_value.value
+          end
+        }
+      / simple_value {
+          def eval
+            simple.value
+          end
+        }
+      / simple_interval_value {
+          def eval
+            simple_interval_value.value
+          end
+        }
+      / term_code_list_value {
+          def eval
+            term_code_list_value.value
+          end
+        }
+      end
 
-  rule simple_list_value
-    string_list_value
-  / integer_list_value
-  / real_list_value
-  / boolean_list_value
-  / character_list_value
-  / date_list_value
-  / time_list_value
-  / date_time_list_value
-  / duration_list_value
-  end
+      rule simple_value
+        string_value
+      / integer_value
+      / real_value
+      / boolean_value
+      / character_value
+      / date_value
+      / time_value
+      / date_time_value
+      / duration_value
+      / uri_value
+      end
 
-  rule simple_interval_value
-    integer_interval_value
-  / real_interval_value
-  / date_interval_value
-  / time_interval_value
-  / date_time_interval_value
-  / duration_interval_value
-  end
+      rule simple_list_value
+        string_list_value
+      / integer_list_value
+      / real_list_value
+      / boolean_list_value
+      / character_list_value
+      / date_list_value
+      / time_list_value
+      / date_time_list_value
+      / duration_list_value
+      end
 
-  rule term_code
-    V_QUALIFIED_TERM_CODE_REF
-  end
+      rule simple_interval_value
+        integer_interval_value
+      / real_interval_value
+      / date_interval_value
+      / time_interval_value
+      / date_time_interval_value
+      / duration_interval_value
+      end
 
-  rule term_code_list_value
-    term_code (',' term_code)+
-  / term_code ',' SYM_LIST_CONTINUE
-  end
+      rule term_code
+        V_QUALIFIED_TERM_CODE_REF {
+          def value
+            elements[1].text_value + elements[2].text_value + elements[3].text_value
+          end
+        }
+      end
 
-  rule uri_value
-    V_URI
+      rule term_code_list_value
+        term_code (',' term_code)+
+      / term_code ',' SYM_LIST_CONTINUE
+      end
+
+      rule uri_value
+        V_URI
+      end
+    end
   end
 end

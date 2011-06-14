@@ -8,7 +8,7 @@ module OpenEHR
     grammar ADLGrammar
 
       include SharedToken
-      include DADL
+      include DADLGrammar
       include CADL
 
       rule archetype 
@@ -26,6 +26,14 @@ module OpenEHR
 
           def adl_version
             arch_identification.adl_version
+          end
+
+	  def concept
+	    arch_concept.value
+	  end
+
+	  def original_language
+            elements[3].original_language
           end
         }
       end
@@ -78,23 +86,33 @@ module OpenEHR
         }
       / SYM_IS_CONTROLED space {
           def is_controled?
-	    if elements[0]
-	      true
-            end
+	    true if elements[0]
           end
         }
       end
 
       rule arch_specialisation
-        SYM_SPECIALIZE V_ARCHETYPE_ID space
+        SYM_SPECIALIZE arch_id:V_ARCHETYPE_ID space {
+	  def specialised?
+	    true if elements[0]
+          end
+
+	  def archetype_id
+	    arch_id.text_value
+	  end
+        }
       end
 
       rule arch_concept
-        SYM_CONCEPT V_LOCAL_TERM_CODE_REF space
+        SYM_CONCEPT conc:V_LOCAL_TERM_CODE_REF space {
+	  def value
+            conc.text_value[1..-2]
+          end
+	}
       end
 
       rule arch_language
-        SYM_LANGUAGE V_DADL_TEXT space
+        SYM_LANGUAGE lang:V_DADL_TEXT <ArchLanguage>
       end
 
       rule arch_description

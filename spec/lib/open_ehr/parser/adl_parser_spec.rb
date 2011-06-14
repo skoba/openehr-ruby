@@ -30,6 +30,14 @@ describe ADLParser do
       it 'adl_version should be 1.4' do
         @archetype.adl_version.should == '1.4'
       end
+
+      it 'concept should be at0000]' do
+        @archetype.concept.should == 'at0000'
+      end
+
+      it 'original language is ISO_639-1::en' do
+        @archetype.original_language.should == 'ISO_639-1::en'
+      end
     end
   end
 end

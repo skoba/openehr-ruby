@@ -23,7 +23,9 @@ module OpenEHR
 
       def parse
         archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id,
-                                      :adl_version => @result.adl_version)
+                                      :adl_version => @result.adl_version,
+                                      :concept => @result.concept,
+                                      :original_language => @result.original_language)
         return archetype
       end
 
