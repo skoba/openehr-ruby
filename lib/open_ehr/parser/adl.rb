@@ -7,11 +7,11 @@ module OpenEHR
 
       class ArchLanguage < Base
         def original_language
-          lang.value["original_language"]
+          lang.value[:original_language]
         end
 
         def translations
-          lang.value["translations"]
+          lang.value[:translations]
         end
       end
     end

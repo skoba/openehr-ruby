@@ -6,6 +6,7 @@ module OpenEHR
       end
 
       class DADL < Base
+        
       end
     end
   end

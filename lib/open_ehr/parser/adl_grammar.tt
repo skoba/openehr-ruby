@@ -35,6 +35,14 @@ module OpenEHR
 	  def original_language
             elements[3].original_language
           end
+
+          def translations
+            elements[3].translations
+          end
+
+          def description
+            elements[4].values
+          end
         }
       end
 
@@ -116,7 +124,11 @@ module OpenEHR
       end
 
       rule arch_description
-        SYM_DESCRIPTION V_DADL_TEXT space
+        SYM_DESCRIPTION desc:V_DADL_TEXT space {
+          def values
+            desc.value
+          end
+        }
       end
 
       rule arch_definition

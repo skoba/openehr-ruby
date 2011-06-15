@@ -15,7 +15,7 @@ module OpenEHR
         }
       / '' complex_object_block space {
           def value
-            complex_object_block.value
+            complex_object_block.values
           end
         }
       end
@@ -23,12 +23,10 @@ module OpenEHR
       rule attr_vals
         first:attr_val second:(';'? attr_val)* {
           def values
-            val = {first.id => first.values}
+            val = {first.id.to_sym => first.values}
             second.elements.map do |e|
-              if e.terminal?
-                p e.id, e.values
-                val << {e.id => e.values}
-              end
+	      atv = e.attr_val
+              val[atv.id.to_sym] = atv.values
             end
             val
           end    
@@ -69,12 +67,12 @@ module OpenEHR
       end
 
       rule complex_object_block
-        single_attr_object_block {
+        '' single_attr_object_block {
           def values
             single_attr_object_block.value
           end
         }
-      / multiple_attr_object_block {
+      / '' multiple_attr_object_block {
           def values
             multiple_attr_object_block.values
           end
@@ -82,11 +80,19 @@ module OpenEHR
       end
 
       rule multiple_attr_object_block
-        type_identifier? untyped_multiple_attr_object_block
+        type_identifier? untyped_multiple_attr_object_block {
+          def values
+            untyped_multiple_attr_object_block.values
+          end
+        }
       end
 
       rule untyped_multiple_attr_object_block
-        multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK
+        multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK {
+          def values
+            keyed_objects.values
+          end
+        }
       end
 
       rule multiple_attr_object_block_head
@@ -94,15 +100,35 @@ module OpenEHR
       end
 
       rule keyed_objects
-        keyed_object+
+        keyed_object+ {
+          def values
+            val = {}
+            elements.each do |e|
+              val[e.key.to_sym] = e.value
+            end
+            val
+          end
+        }
       end
 
       rule keyed_object
-        object_key SYM_EQ object_block
+        object_key SYM_EQ object_block {
+          def key
+            object_key.value
+          end
+
+          def value
+            object_block.values
+          end
+        }
       end
 
       rule object_key
-        '[' simple_value ']' white_space
+        '[' simple_value ']' white_space {
+           def value
+             simple_value.eval
+           end
+        }
       end
 
       rule single_attr_object_block
@@ -141,28 +167,32 @@ module OpenEHR
         }
       / simple_list_value {
           def eval
-            simpe_list_value.value
+            simpe_list_value.eval
           end
         }
-      / simple_value {
+      / '' simple_value {
           def eval
-            simple.value
+            simple_value.eval
           end
         }
       / simple_interval_value {
           def eval
-            simple_interval_value.value
+            simple_interval_value.eval
           end
         }
       / term_code_list_value {
           def eval
-            term_code_list_value.value
+            term_code_list_value.eval
           end
         }
       end
 
       rule simple_value
-        string_value
+        '' string_value {
+          def eval
+            string_value.text_value[1..-2]
+          end
+        }
       / integer_value
       / real_value
       / boolean_value
