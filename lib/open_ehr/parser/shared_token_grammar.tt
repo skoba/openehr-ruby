@@ -52,25 +52,54 @@ module OpenEHR
       end
 
       rule character_value
-        V_CHAR
+        V_CHAR '' {
+           def value
+           end
+        }
       end
 
       rule character_list_value
-        character_value (',' character_value)+
-      / character_value ',' SYM_LIST_CONTINUE
+        character_value (',' character_value)+ {
+          def value
+            p elements
+          end
+        }
+      / character_value ',' SYM_LIST_CONTINUE {
+          def value
+            p elements
+          end
+        }
       end
 
       rule string_value
-        V_STRING
+        str:V_STRING '' {
+          def value
+            str.value
+          end
+        }
       end
 
       rule string_list_value
-        V_STRING (',' white_space V_STRING)+
-        / V_STRING ',' white_space SYM_LIST_CONTINUE
+        first:V_STRING second:(',' white_space V_STRING)+ {
+          def value
+	    [first.value] + second.elements.map{|s|
+              s.V_STRING.value
+            }
+          end
+        }
+      / V_STRING ',' white_space SYM_LIST_CONTINUE {
+          def value
+            p elements
+          end
+        }
       end
 
       rule date_value
-        V_ISO8601_EXTENDED_DATE
+        V_ISO8601_EXTENDED_DATE {
+          def value
+            p elements
+          end
+        }
       end
 
       rule date_list_value
@@ -506,7 +535,11 @@ module OpenEHR
       end
 
       rule V_ATTRIBUTE_IDENTIFIER
-        [a-z] IDCHAR*
+        [a-z] IDCHAR* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_INTEGER
@@ -522,7 +555,11 @@ module OpenEHR
       end
 
       rule V_STRING
-        '"' (!'"' . / '\"')* '"'
+        '"' str:((!'"' . / '\"')*) '"' {
+          def value
+            str.text_value
+          end
+        }
       end
     end
   end

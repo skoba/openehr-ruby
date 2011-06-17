@@ -132,7 +132,12 @@ module OpenEHR
       end
 
       rule arch_definition
-        SYM_DEFINITION V_CADL_TEXT space
+        SYM_DEFINITION definition:V_CADL_TEXT space {
+          def definition
+	     p definition
+             definition.value
+          end
+        }
       end
 
       rule arch_invariant

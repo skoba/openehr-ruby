@@ -14,7 +14,7 @@ module OpenEHR
         Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
         ap = ADLGrammarParser.new
         @result = ap.parse(data)
-        unless @result
+        if @result.nil?
           puts ap.failure_reason
           puts ap.failure_line
           puts ap.failure_column

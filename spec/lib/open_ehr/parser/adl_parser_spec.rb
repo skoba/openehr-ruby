@@ -75,11 +75,34 @@ describe ADLParser do
                 @en = @details[:en]
               end
 
-              it 'language = ISO_639-1::en' do
+              it 'language is ISO_639-1::en' do
                 @en[:language].should == 'ISO_639-1::en'
               end 
+
+              it 'purpose is A heading...' do
+                @en[:purpose].should == "A heading containing summary information based on particular evaluation entries"
+              end
+
+              it 'use is A heading for...' do
+                @en[:use].should == "A heading for organising clinical data under a heading of summary"
+              end
+
+              it 'keywords are review, conclusions, risk' do
+                @en[:keywords].should == ['review', 'conclusions', 'risk']
+              end
+
+              it 'misuse should empty' do
+                @en[:misuse].should == ''
+              end
             end
 
+            it 'lifecycle_state is Initial' do
+              @description[:lifecycle_state].should == 'Initial'
+            end
+
+            it 'other_contributors is nil' do
+              @description[:other_contributors].should be_nil
+            end
           end
         end
       end

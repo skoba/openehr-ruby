@@ -8,25 +8,24 @@ module OpenEHR
       include SharedToken
 
       rule V_DADL_TEXT
-        '' attr_vals space {
+        attr_vals space {
           def value
-            attr_vals.values
+            attr_vals.value
           end
         }
-      / '' complex_object_block space {
+      / complex_object_block space {
           def value
-            complex_object_block.values
+            complex_object_block.value
           end
         }
       end
 
       rule attr_vals
         first:attr_val second:(';'? attr_val)* {
-          def values
-            val = {first.id.to_sym => first.values}
-            second.elements.map do |e|
-	      atv = e.attr_val
-              val[atv.id.to_sym] = atv.values
+          def value
+            val = {first.id.to_sym => first.value}
+            second.elements.each do |e|
+              val[e.attr_val.id.to_sym] = e.attr_val.value
             end
             val
           end    
@@ -39,8 +38,8 @@ module OpenEHR
             attr_id.value
           end
 
-          def values
-            object_block.values
+          def value
+            object_block.value
           end
         }
       end
@@ -48,49 +47,49 @@ module OpenEHR
       rule attr_id
         id:V_ATTRIBUTE_IDENTIFIER white_space {
           def value
-            id.text_value
+            id.value
           end
         }
       end
 
       rule object_block
         complex_object_block space {
-	  def values
-            complex_object_block.values
+	  def value
+            complex_object_block.value
           end
         }
       / primitive_object_block space {
-          def values
-            primitive_object_block.values
+          def value
+            primitive_object_block.value
           end
         }
       end
 
       rule complex_object_block
-        '' single_attr_object_block {
-          def values
+        single_attr_object_block '' {
+          def value
             single_attr_object_block.value
           end
         }
-      / '' multiple_attr_object_block {
-          def values
-            multiple_attr_object_block.values
+      / multiple_attr_object_block '' {
+          def value
+            multiple_attr_object_block.value
           end
         }
       end
 
       rule multiple_attr_object_block
         type_identifier? untyped_multiple_attr_object_block {
-          def values
-            untyped_multiple_attr_object_block.values
+          def value
+            untyped_multiple_attr_object_block.value
           end
         }
       end
 
       rule untyped_multiple_attr_object_block
         multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK {
-          def values
-            keyed_objects.values
+          def value
+            keyed_objects.value
           end
         }
       end
@@ -101,7 +100,7 @@ module OpenEHR
 
       rule keyed_objects
         keyed_object+ {
-          def values
+          def value
             val = {}
             elements.each do |e|
               val[e.key.to_sym] = e.value
@@ -118,7 +117,7 @@ module OpenEHR
           end
 
           def value
-            object_block.values
+            object_block.value
           end
         }
       end
@@ -126,17 +125,30 @@ module OpenEHR
       rule object_key
         '[' simple_value ']' white_space {
            def value
-             simple_value.eval
+             simple_value.value
            end
         }
       end
 
       rule single_attr_object_block
-        type_identifier? untyped_single_attr_object_block
+        type_identifier? untyped_single_attr_object_block {
+           def value
+             untyped_single_attr_object_block.value
+           end
+        }
       end
 
       rule untyped_single_attr_object_block
-        single_attr_object_complex_head attr_vals? SYM_END_DBLOCK
+        single_attr_object_complex_head attr_vals SYM_END_DBLOCK {
+           def value
+             elements[1].value
+	   end
+        }
+      / single_attr_object_complex_head SYM_END_DBLOCK {
+          def value
+            nil
+          end
+        }
       end
 
       rule single_attr_object_complex_head
@@ -145,7 +157,7 @@ module OpenEHR
 
       rule primitive_object_block
         type_identifier? untyped_primitive_object_block {
-	  def values
+	  def value
 	    untyped_primitive_object_block.value
           end
         }
@@ -154,59 +166,62 @@ module OpenEHR
       rule untyped_primitive_object_block
         SYM_START_DBLOCK primitive_object_value SYM_END_DBLOCK {
 	  def value
-	    primitive_object_value.eval
+	    primitive_object_value.value
           end
 	}
       end
 
       rule primitive_object_value
-        '' term_code {
-          def eval
+        term_code '' {
+          def value
             term_code.value
           end
         }
-      / simple_list_value {
-          def eval
-            simpe_list_value.eval
-          end
-        }
-      / '' simple_value {
-          def eval
-            simple_value.eval
+      / simple_list_value '' {
+          def value
+            simple_list_value.value
           end
         }
       / simple_interval_value {
-          def eval
-            simple_interval_value.eval
+          def value
+            simple_interval_value.value
           end
         }
       / term_code_list_value {
-          def eval
-            term_code_list_value.eval
+          def value
+            term_code_list_value.value
+          end
+        }
+      / simple_value '' {
+          def value
+            simple_value.value
           end
         }
       end
 
       rule simple_value
-        '' string_value {
-          def eval
-            string_value.text_value[1..-2]
-          end
-        }
-      / integer_value
+        integer_value
       / real_value
       / boolean_value
-      / character_value
+      / character_value '' {
+          def value
+            p character_value
+          end
+        }
       / date_value
       / time_value
       / date_time_value
       / duration_value
       / uri_value
+      / string_value '' {
+          def value
+            string_value.value
+          end
+        }
       end
 
       rule simple_list_value
-        string_list_value
-      / integer_list_value
+        integer_list_value
       / real_list_value
       / boolean_list_value
       / character_list_value
@@ -214,6 +229,11 @@ module OpenEHR
       / time_list_value
       / date_time_list_value
       / duration_list_value
+      / string_list_value '' {
+          def value
+            string_list_value.value
+          end
+        }
       end
 
       rule simple_interval_value
