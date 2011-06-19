@@ -103,8 +103,18 @@ describe ADLParser do
             it 'other_contributors is nil' do
               @description[:other_contributors].should be_nil
             end
+          end # of details
+        end # of description
+
+        context 'definition section' do
+          before(:all) do
+            @definition = @archetype.definition
           end
-        end
+
+          it 'rm_type is SECTION' do
+            @definition[:rm_type_name].should == 'SECTION'
+          end
+        end #definition
       end
     end
   end

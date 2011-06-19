@@ -1,21 +1,55 @@
-grammar CADL
+require 'shared_token_grammar'
 
-  rule V_CADL_TEXT
-    c_complex_object
-    / assertions
-  end
+module OpenEHR
+  module Parser
+    grammar CADL
 
-  rule c_complex_object
-    c_complex_object_head (SYM_MATCHES SYM_START_CBLOCK c_complex_object_body SYM_END_CBLOCK)?
-  end
+    include SharedToken
 
-  rule c_complex_object_head
-    c_complex_object_id c_occurrences?
-  end
+    rule V_CADL_TEXT
+      c_complex_object '' {
+        def value
+          c_complex_object.value
+        end
+      }
+    / assertions {
+        def value
+          assertions.value
+        end
+      }
+    end
 
-  rule c_complex_object_id
-    type_identifier V_LOCAL_TERM_CODE_REF? space
-  end
+    rule c_complex_object
+      head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
+        def value
+          {:rm_type_name => head.value[:rm_type_name]}
+        end
+      }
+    / c_complex_object_head
+    end
+
+    rule c_complex_object_head
+      c_complex_object_id c_occurrences {
+        def value
+          c_complex_object_id.value
+        end
+      }
+    / c_complex_object_id
+    end
+
+    rule c_complex_object_id
+      ti:type_identifier lo:V_LOCAL_TERM_CODE_REF space {
+        def value
+	  {:rm_type_name => ti.value,
+           :node_id => lo.value}
+        end
+      }
+    / type_identifier space {
+        def value
+          type_identifier.value
+        end
+      }
+    end
 
   rule c_complex_object_body
     c_any / c_attributes
@@ -175,117 +209,131 @@ grammar CADL
   / c_date_time_constraint ';' date_time_value
   end
 
-  rule c_duration_constraint
-    duration_pattern ('/' duration_interval_pattern)?
-  / duration_value
-  / duration_interval_value
-  end
+      rule c_duration_constraint
+        duration_pattern ('/' duration_interval_pattern)?
+      / duration_value
+      / duration_interval_value
+      end
 
-  rule duration_pattern
-    V_ISO8601_TIME_CONSTRAINT_PATTERN
-  end
+      rule duration_pattern
+        V_ISO8601_TIME_CONSTRAINT_PATTERN
+      end
 
-  rule c_duration
-    c_duration_constraint (';' duration_value)?
-  end
+      rule c_duration
+        c_duration_constraint (';' duration_value)?
+      end
 
-  rule c_string_spec
-    V_STRING
-  / string_list_value (',' SYM_LIST_CONTINUE)?
-  / V_REGEXP
-  end
+      rule c_string_spec
+        string_list_value (',' SYM_LIST_CONTINUE)?
+      / V_REGEXP
+      / V_STRING
+      end
 
-  rule c_string
-    c_string_spec (';' string_value)?
-  end
+      rule c_string
+        c_string_spec (';' string_value)?
+      end
 
-  rule c_boolean_spec
-    SYM_TRUE (',' SYM_FALSE)?
-  / SYM_FALSE (',' SYM_TRUE)?
-  end
+      rule c_boolean_spec
+        SYM_TRUE (',' SYM_FALSE)?
+      / SYM_FALSE (',' SYM_TRUE)?
+      end
 
-  rule c_boolean
-    c_boolean_spec (';' boolean_value)?
-  end
+      rule c_boolean
+        c_boolean_spec (';' boolean_value)?
+      end
 
-  rule constraint_ref
-    V_LOCAL_TERM_CODE_REF
-  end
+      rule constraint_ref
+        V_LOCAL_TERM_CODE_REF
+      end
 
-  rule V_REGEXP
-     (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') )
-  end
+      rule V_REGEXP
+         (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') )
+      end
 
-  rule V_C_DOMAIN_TYPE
-    '('? [A-Z] IDCHAR* ')'? [ \n]* '<' [^>]* '>'
-  end
+      rule V_C_DOMAIN_TYPE
+        '('? [A-Z] IDCHAR* ')'? [ \n]* '<' [^>]* '>'
+      end
 
 # assertion block
 
-  rule V_ASSETION_TEXT
-    assertions
-  end
+      rule V_ASSETION_TEXT
+        assertions {
+          def value
+            p elements
+          end
+        }
+      end
 
-  rule assertions
-    assertion+
-  end
+      rule assertions
+        assertion+ {
+          def value
+            p elements
+          end
+        }
+      end
 
-  rule assertion
-    (any_identifier ':')? boolean_expression space
-  end
+      rule assertion
+        (any_identifier ':')? boolean_expression space {
+          def value
+            p elements
+          end
+        }
+      end
 
-  rule boolean_expression
-    boolean_node
-  end
+      rule boolean_expression
+        boolean_node
+      end
 
-  rule boolean_node
-    SYM_EXISTS absolute_path
-  / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK
-  / SYM_NOT boolean_leaf
-  / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression
-  / boolean_leaf ((SYM_AND / SYM_OR / SYM_XOR / SYM_IMPLIES) boolean_leaf)?
-  end
+      rule boolean_node
+        SYM_EXISTS absolute_path
+      / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK
+      / SYM_NOT boolean_leaf
+      / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression
+      / boolean_leaf ((SYM_AND / SYM_OR / SYM_XOR / SYM_IMPLIES) boolean_leaf)?
+      end
 
-  rule boolean_leaf
-    '(' boolean_expression ')'
-  / SYM_TRUE
-  / SYM_FALSE
-  end
+      rule boolean_leaf
+        '(' boolean_expression ')'
+      / SYM_TRUE
+      / SYM_FALSE
+      end
 
-  rule arithmetic_expression
-    arithmetic_node
-  end
+      rule arithmetic_expression
+        arithmetic_node
+      end
 
-  rule arithmetic_node
-    arithmetic_leaf (('+' / '-' / '*' / '/' / '^') arithmetic_leaf)*
-  end
+      rule arithmetic_node
+        arithmetic_leaf (('+' / '-' / '*' / '/' / '^') arithmetic_leaf)*
+      end
 
-  rule arithmetic_leaf
-   '(' arithmetic_expression ')'
-  / integer_value
-  / real_value
-  / absolute_path
-  end
+      rule arithmetic_leaf
+       '(' arithmetic_expression ')'
+      / integer_value
+      / real_value
+      / absolute_path
+      end
 
 
 # path block
-  rule movable_path
-     SYM_MOVABLE_LEADER relative_path
-   end
+      rule movable_path
+         SYM_MOVABLE_LEADER relative_path
+      end
 
-  rule absolute_path
-    '/' relative_path?
-  end
+      rule absolute_path
+        '/' relative_path?
+      end
 
-  rule relative_path
-    path_segment ('/' path_segment)*
-  end
+      rule relative_path
+        path_segment ('/' path_segment)*
+      end
 
-  rule path_segment
-    V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF?
-  end
+      rule path_segment
+        V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF?
+      end
 
-  rule SYM_MOVABLE_LEADER
-    '//'
+      rule SYM_MOVABLE_LEADER
+        '//'
+      end
+    end
   end
 end

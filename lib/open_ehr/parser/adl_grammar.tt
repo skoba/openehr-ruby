@@ -43,6 +43,10 @@ module OpenEHR
           def description
             elements[4].values
           end
+
+          def definition
+            arch_definition.value
+          end
         }
       end
 
@@ -133,9 +137,8 @@ module OpenEHR
 
       rule arch_definition
         SYM_DEFINITION definition:V_CADL_TEXT space {
-          def definition
-	     p definition
-             definition.value
+          def value
+            definition.value
           end
         }
       end

@@ -7,10 +7,26 @@ module OpenEHR
       end
 
       rule type_identifier
-        '(' V_TYPE_IDENTIFIER ')'
-      / '(' V_GENERIC_TYPE_IDENTIFIER ')'
-      / V_TYPE_IDENTIFIER
-      / V_GENERIC_TYPE_IDENTIFIER
+        '(' id:V_TYPE_IDENTIFIER ')' {
+          def value
+            id.value
+          end
+        }
+      / '(' id:V_GENERIC_TYPE_IDENTIFIER ')' {
+          def value
+            id.value
+          end
+        }
+      / id:V_TYPE_IDENTIFIER '' {
+          def value
+            id.value
+          end
+        }
+      / id:V_GENERIC_TYPE_IDENTIFIER '' {
+          def value
+            id.value
+          end
+        }
       end
 
       rule boolean_value
@@ -487,7 +503,11 @@ module OpenEHR
       end
 
       rule V_LOCAL_TERM_CODE_REF
-        '[' ALPHANUM NAMECHAR* ']'
+        '[' lt:(ALPHANUM NAMECHAR*) ']' {
+          def value
+            lt.text_value
+          end
+        }
       end
 
       rule V_LOCAL_CODE
@@ -527,11 +547,19 @@ module OpenEHR
       end
 
       rule V_TYPE_IDENTIFIER
-        [A-Z] IDCHAR*
+        [A-Z] IDCHAR* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_GENERIC_TYPE_IDENTIFIER
-        [A-Z] IDCHAR* '<' [a-zA-Z0-9,_<>]+ '>'
+        [A-Z] IDCHAR* '<' [a-zA-Z0-9,_<>]+ '>' {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_ATTRIBUTE_IDENTIFIER
