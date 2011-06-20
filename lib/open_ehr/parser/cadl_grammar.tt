@@ -4,86 +4,104 @@ module OpenEHR
   module Parser
     grammar CADL
 
-    include SharedToken
+      include SharedToken
 
-    rule V_CADL_TEXT
-      c_complex_object '' {
-        def value
-          c_complex_object.value
-        end
-      }
-    / assertions {
-        def value
-          assertions.value
-        end
-      }
-    end
+      rule V_CADL_TEXT
+        c_complex_object '' {
+          def value
+            c_complex_object.value
+          end
+        }
+      / assertions {
+          def value
+            assertions.value
+          end
+        }
+      end
 
-    rule c_complex_object
-      head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
-        def value
-          {:rm_type_name => head.value[:rm_type_name]}
-        end
-      }
-    / c_complex_object_head
-    end
+      rule c_complex_object
+        head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
+          def value
+            head.value + body.value
+          end
+        }
+      / c_complex_object_head {
+          def value
+            c_complex_object_head.value
+          end
+        }
+      end
 
-    rule c_complex_object_head
-      c_complex_object_id c_occurrences {
-        def value
-          c_complex_object_id.value
-        end
-      }
-    / c_complex_object_id
-    end
+      rule c_complex_object_head
+        c_complex_object_id c_occurrences {
+          def value
+            c_complex_object_id.value + c_occurrences.value
+          end
+        }
+      / c_complex_object_id '' {
+          def value
+            c_complex_object_id.value
+          end
+        }
+      end
 
-    rule c_complex_object_id
-      ti:type_identifier lo:V_LOCAL_TERM_CODE_REF space {
-        def value
-	  {:rm_type_name => ti.value,
-           :node_id => lo.value}
-        end
-      }
-    / type_identifier space {
-        def value
-          type_identifier.value
-        end
-      }
-    end
+      rule c_complex_object_id
+        ti:type_identifier lo:V_LOCAL_TERM_CODE_REF space {
+          def value
+            {:rm_type_name => ti.value,
+             :node_id => lo.value}
+          end
+        }
+      / ti:type_identifier space {
+          def value
+            {rm_type_name => ti.value}
+          end
+        }
+      end
 
-  rule c_complex_object_body
-    c_any / c_attributes
-  end
+      rule c_complex_object_body
+        c_any '' {
+          def value
+            c_any.value
+          end
+        }
+      / c_attributes {
+          def value
+            p c_attributes
+            c_attributes.value
+          end
+        }
+      end
 
-  rule c_object
-    c_complex_object
-  / archetype_slot
-  / archetype_internal_ref
-  / constraint_ref
-  / c_primitive_object
-  / V_C_DOMAIN_TYPE
-#  / ERR_V_C_DOMAIN_TYPE
-  end
+      rule c_object
+        c_complex_object
+      / archetype_slot
+      / archetype_internal_ref
+      / constraint_ref
+      / c_primitive_object
+      / V_C_DOMAIN_TYPE
+#     / ERR_V_C_DOMAIN_TYPE
+      end
 
-  rule archetype_internal_ref
-    SYM_USE_NODE type_identifier c_occurrences? object_path
-  end
+      rule archetype_internal_ref
+        SYM_USE_NODE type_identifier c_occurrences? object_path
+      end
 
-  rule archetype_slot
-    c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes? c_excludes? SYM_END_CBLOCK
-  end
+      rule archetype_slot
+        c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes? c_excludes? SYM_END_CBLOCK
+      end
 
-  rule c_archetype_slot_head
-    c_archetype_slot_id white_space c_occurrences?
-  end
+      rule c_archetype_slot_head
+        c_archetype_slot_id white_space c_occurrences?
+      end
 
-  rule c_archetype_slot_id
-    SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF?
-  end
+      rule c_archetype_slot_id
+        SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF?
+      end
 
-  rule c_primitive_object
-    c_primitive
-  end
+      rule c_primitive_object
+        c_primitive
+      end
 
   rule c_primitive
     c_integer
@@ -96,16 +114,28 @@ module OpenEHR
   / c_boolean
   end
 
-  rule c_any
-    '*' space
-  end
+      rule c_any
+        '*' space {
+          def value
+            '*'
+          end
+        }
+      end
 
-  rule c_attributes
-    c_attribute+
-  end
+      rule c_attributes
+        c_attribute+ {
+          def value
+            p elements
+          end
+        }
+      end
 
   rule c_attribute
-    c_attr_head c_attr_body
+    c_attr_head c_attr_body {
+      def value
+        p elements
+      end
+    }
   end
 
   rule c_attr_head
@@ -117,7 +147,16 @@ module OpenEHR
   end
 
   rule c_attr_values
-    c_any / c_object+
+    c_any '' {
+      def value
+        c_any.text_value
+      end
+    }
+  / c_object+ '' {
+      def value
+        elements.map { |e| p e}
+      end
+    }
   end
 
   rule c_includes
@@ -137,7 +176,11 @@ module OpenEHR
   end
 
   rule c_cardinality
-    SYM_CARDINALITY SYM_MATCHES SYM_START_CBLOCK cardinality_spec SYM_END_CBLOCK
+    SYM_CARDINALITY SYM_MATCHES SYM_START_CBLOCK cardinality_spec SYM_END_CBLOCK {
+      def value
+        p elements
+      end
+    }
   end
 
   rule cardinality_spec
@@ -146,11 +189,24 @@ module OpenEHR
   end
 
   rule c_occurrences
-    SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK
+    SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK {
+      def value
+        occurrence_spec.value
+      end
+    }
   end
 
   rule occurrence_spec
-    (V_INTEGER SYM_ELLIPSIS)? cardinality_limit_value
+    V_INTEGER SYM_ELLIPSIS cardinality_limit_value {
+      def value
+        p elements
+      end
+    }
+  / cardinality_limit_value '' {
+      def value
+        p elements
+      end
+    }
   end
 
   rule cardinality_limit_value

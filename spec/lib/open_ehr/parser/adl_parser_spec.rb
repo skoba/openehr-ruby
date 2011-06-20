@@ -114,6 +114,10 @@ describe ADLParser do
           it 'rm_type is SECTION' do
             @definition[:rm_type_name].should == 'SECTION'
           end
+
+          it 'node_id is at0000' do
+            @definition[:node_id].should == 'at0000'
+          end
         end #definition
       end
     end

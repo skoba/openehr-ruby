@@ -3,14 +3,15 @@ module OpenEHR
     module Archetype
       module Ontology
         class ArchetypeOntology
-          attr_accessor :constraint_definitions, :specialisation_depth
+          attr_accessor :specialisation_depth
           attr_accessor :term_attribute_names, :term_bindings
-          attr_reader :terminologies_available, :term_definitions
 
           def initialize(args = { })
             self.specialisation_depth = args[:specialisation_depth]
             self.term_definitions = args[:term_definitions]
-            self.constraint_definitions = args[:constraint_definitions]
+            if args[:constraint_definitions]
+              self.constraint_definitions = args[:constraint_definitions]
+            end
             self.term_bindings = args[:term_bindings]
           end
 
@@ -18,6 +19,7 @@ module OpenEHR
             if term_definitions.nil?
               raise ArgumentError, 'term_definitions is mandatory'
             end
+            @term_definition_map = definition_mapper(term_definitions)
             @term_definitions = term_definitions
           end
 
@@ -42,7 +44,13 @@ module OpenEHR
           def constraint_binding(a_terminology, a_code)
           end
 
-          def constraint_definition(a_lang, a_code)
+          def constraint_definitions=(constraint_definitions)
+            @constraint_definition_map = definition_mapper(constraint_definitions)
+            @constraint_definitions = constraint_definitions
+          end
+
+          def constraint_definitions(args = {})
+            return @constraint_definition_map[args[:lang]][args[:code]]
           end
 
           def has_language?(a_lang)
@@ -54,7 +62,21 @@ module OpenEHR
           def term_binding(a_terminology, a_code)
           end
 
-          def term_definition(a_lang, a_code)
+          def term_definitions(args = { })
+            return @term_definition_map[args[:lang]][args[:code]]
+          end
+
+          private
+          def definition_mapper(definitions)
+            map = { }
+            definitions.each do |lang, defs|
+              defs_map = { }
+              defs.each do |d|
+                defs_map[d.code] = d.items
+              end
+              map[lang] = defs_map
+            end
+            return map
           end
         end
 
@@ -84,6 +106,10 @@ module OpenEHR
             else
               return Set.new(@items.keys)
             end
+          end
+
+          def method_missing(key)
+            return @items[key.to_sym]
           end
         end
 

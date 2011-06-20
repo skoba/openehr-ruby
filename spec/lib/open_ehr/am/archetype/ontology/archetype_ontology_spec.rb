@@ -4,12 +4,12 @@ include OpenEHR::RM::DataTypes::Text
 
 describe ArchetypeOntology do
   before(:each) do
-    items = {'TEXT' => 'text', 'DESC' => 'description'}
+    items = {:text => 'Archetype Concept', :desc => 'concept description'}
     term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
-    items = {'TEXT' => 'concept'}
+    items = {:text => 'Blood pressure'}
     term2 = ArchetypeTerm.new(:code => 'at0001', :items => items)
     term_definitions = {'ja' => [term1, term2]}
-    items = {'text' => 'test', 'description' => 'test item'}
+    items = {:text => 'test', :description => 'test item'}
     term3 = ArchetypeTerm.new(:code => 'ac0000', :items => items)
     constraint_definitions = {'ja' => [term3]}
     code_phrase = stub(CodePhrase, :code_string => '163020007')
@@ -31,7 +31,7 @@ describe ArchetypeOntology do
   end
 
   it 'term_definitions should be assigned properly' do
-    @archetype_ontology.term_definitions['ja'][0].code.should == 'at0000'
+    @archetype_ontology.term_definitions(:lang => 'ja', :code => 'at0000')[:text].should == 'Archetype Concept'
   end
 
   it 'term_codes should returnd all at codes' do
@@ -39,7 +39,7 @@ describe ArchetypeOntology do
   end
 
   it 'constraint_definitions should be assigned properly' do
-    @archetype_ontology.constraint_definitions['ja'][0].items['text'].
+    @archetype_ontology.constraint_definitions(:lang => 'ja', :code => 'ac0000')[:text].
       should == 'test'
   end
 

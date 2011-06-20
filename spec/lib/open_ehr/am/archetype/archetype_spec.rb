@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../../../../spec_helper'
+require 'set'
 include OpenEHR::AM::Archetype
 include OpenEHR::AM::Archetype::ConstraintModel
 include OpenEHR::AM::Archetype::Ontology
@@ -11,7 +12,9 @@ describe Archetype do
     original_language = stub(CodePhrase, :code_string => 'ja')
     archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-SECTION.physical_examination-prenatal.v2')
     definition = stub(CComplexObject, :rm_type_name => 'SECTION')
-    ontology = stub(ArchetypeOntology, :specialisation_depth => 1)
+    items = {:text => 'Physical examination'}
+    term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
+    ontology = ArchetypeOntology.new(:specialisation_depth => 1, :term_definitions => {'ja' => [term1]})
     uid = HierObjectID.new(:value => 'ABCD::1')
     parent_archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-SECTION.physical_examination.v1')
     invariants = stub(Set, :size => 2)
@@ -94,5 +97,7 @@ describe Archetype do
     @archetype.short_concept_name.should == 'physical_examination'
   end
 
-  it 'concept name should be extracted from ontology'
+  it 'concept name should be extracted from ontology' do
+    @archetype.concept_name('ja').should == 'Physical examination'
+  end
 end

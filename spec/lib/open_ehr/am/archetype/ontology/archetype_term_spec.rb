@@ -3,7 +3,7 @@ include OpenEHR::AM::Archetype::Ontology
 
 describe ArchetypeTerm do
   before(:each) do
-    items = {'TEXT' => 'text', 'DESC' => 'description'}
+    items = {:text => 'text', :desc => 'description'}
     @archetype_term = ArchetypeTerm.new(:code => 'at0001',
                                         :items => items)
   end
@@ -29,11 +29,11 @@ describe ArchetypeTerm do
   end
 
   it 'items should be assigned properly' do
-    @archetype_term.items['TEXT'].should == 'text'
+    @archetype_term.items[:text].should == 'text'
   end
 
   it 'keys should be a set of keys of item' do
-    @archetype_term.keys.should == Set['TEXT', 'DESC']
+    @archetype_term.keys.should == Set[:text, :desc]
   end
 
   it 'keys should be empty if items are nil' do
