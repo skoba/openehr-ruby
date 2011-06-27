@@ -5,6 +5,7 @@ module OpenEHR
         class ArchetypeOntology
           attr_accessor :specialisation_depth
           attr_accessor :term_attribute_names, :term_bindings
+          attr_reader :term_definitions, :constraint_definitions
 
           def initialize(args = { })
             self.specialisation_depth = args[:specialisation_depth]
@@ -42,6 +43,7 @@ module OpenEHR
           end
 
           def constraint_binding(a_terminology, a_code)
+            
           end
 
           def constraint_definitions=(constraint_definitions)
@@ -49,20 +51,23 @@ module OpenEHR
             @constraint_definitions = constraint_definitions
           end
 
-          def constraint_definitions(args = {})
+          def constraint_definition(args = {})
             return @constraint_definition_map[args[:lang]][args[:code]]
           end
 
           def has_language?(a_lang)
+            return @term_definition_map.has_key? a_lang
           end
 
           def has_terminology?(a_terminology)
+            return @term_bindings.has_key? a_terminology
           end
 
-          def term_binding(a_terminology, a_code)
+          def term_binding(args = { })
+            
           end
 
-          def term_definitions(args = { })
+          def term_definition(args = { })
             return @term_definition_map[args[:lang]][args[:code]]
           end
 

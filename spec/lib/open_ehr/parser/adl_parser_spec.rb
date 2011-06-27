@@ -118,6 +118,10 @@ describe ADLParser do
           it 'node_id is at0000' do
             @definition[:node_id].should == 'at0000'
           end
+
+          it 'rm_attribute_name is items' do
+            @definition[:rm_attribute_name].should == 'items'
+          end
         end #definition
       end
     end

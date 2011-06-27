@@ -8,7 +8,7 @@ describe ArchetypeOntology do
     term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
     items = {:text => 'Blood pressure'}
     term2 = ArchetypeTerm.new(:code => 'at0001', :items => items)
-    term_definitions = {'ja' => [term1, term2]}
+    term_definitions = {'ja' => [term1, term2], 'en' => [term1]}
     items = {:text => 'test', :description => 'test item'}
     term3 = ArchetypeTerm.new(:code => 'ac0000', :items => items)
     constraint_definitions = {'ja' => [term3]}
@@ -54,6 +54,26 @@ describe ArchetypeOntology do
 
   it 'terminologies_available should return available terminology' do
     @archetype_ontology.terminologies_available.should == ['SNOMED-CT(2003)']
+  end
+
+  it 'has language ja' do
+    @archetype_ontology.should have_language 'ja'
+  end
+
+  it 'has language en' do
+    @archetype_ontology.should have_language 'en'
+  end
+
+  it 'does not have language es' do
+    @archetype_ontology.should_not have_language 'es'
+  end
+
+  it 'has terminology SNOMED-CT(2003)' do
+    @archetype_ontology.should have_terminology 'SNOMED-CT(2003)'
+  end
+
+  it 'does not have MHLW code' do
+    @archetype_ontology.should_not have_terminology 'MHLW'
   end
 end
                             

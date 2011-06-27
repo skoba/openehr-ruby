@@ -1,4 +1,5 @@
 require 'shared_token_grammar'
+require 'open_ehr/assumed_library_types'
 
 module OpenEHR
   module Parser
@@ -26,7 +27,7 @@ module OpenEHR
           end
         }
       / c_complex_object_head {
-          def value
+          def value      
             c_complex_object_head.value
           end
         }
@@ -65,9 +66,8 @@ module OpenEHR
             c_any.value
           end
         }
-      / c_attributes {
+      / c_attributes '' {
           def value
-            p c_attributes
             c_attributes.value
           end
         }
@@ -103,16 +103,16 @@ module OpenEHR
         c_primitive
       end
 
-  rule c_primitive
-    c_integer
-  / c_real
-  / c_date
-  / c_time
-  / c_date_time
-  / c_duration
-  / c_string
-  / c_boolean
-  end
+      rule c_primitive
+        c_integer
+      / c_real
+      / c_date
+      / c_time
+      / c_date_time
+      / c_duration
+      / c_string
+      / c_boolean
+      end
 
       rule c_any
         '*' space {
@@ -125,93 +125,134 @@ module OpenEHR
       rule c_attributes
         c_attribute+ {
           def value
+            [] << elements.map {|e| e.value}
+          end
+        }
+      end
+
+      rule c_attribute
+        c_attr_head c_attr_body {
+          def value
+            {:head => c_attr_head.value, :body => c_attr_body.value}
+          end
+        }
+      end
+
+      rule c_attr_head
+        id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
+          def value
+            {:id => elements[0].value, :existence => c_existence.value, :cardinality => c_cardinality.value}
+          end
+        }
+      / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
+          def value
+            {:id => elements[0].value, :existence => c_existence.value}
+          end
+        }
+      / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
+          def value
+            {:id => id.value, :cardinality => c_cardinality.value}
+          end
+        }
+      / V_ATTRIBUTE_IDENTIFIER white_space {
+          def value
+            {:id => elements[0].value}
+          end
+        }
+      end
+
+      rule c_attr_body
+        SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK
+      end
+
+      rule c_attr_values
+        c_any '' {
+          def value
+            c_any.text_value
+          end
+        }
+      / c_object+ '' {
+          def value
+            elements.map { |e| p e}
+          end
+        }
+      end
+
+      rule c_includes
+        SYM_INCLUDE assertions
+      end
+
+      rule c_excludes
+        SYM_EXCLUDE assertions
+      end
+
+      rule c_existence
+        SYM_EXISTENCE SYM_MATCHES SYM_START_CBLOCK existence_spec SYM_END_CBLOCK {
+          def value
             p elements
           end
         }
       end
 
-  rule c_attribute
-    c_attr_head c_attr_body {
-      def value
-        p elements
+      rule existence_spec
+        V_INTEGER (SYM_ELLIPSIS V_INTEGER)?
       end
-    }
-  end
 
-  rule c_attr_head
-     V_ATTRIBUTE_IDENTIFIER white_space c_existence? c_cardinality? 
-  end
-
-  rule c_attr_body
-    SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK
-  end
-
-  rule c_attr_values
-    c_any '' {
-      def value
-        c_any.text_value
+      rule c_cardinality
+        SYM_CARDINALITY SYM_MATCHES SYM_START_CBLOCK cardinality_spec SYM_END_CBLOCK {
+          def value
+            cardinality_spec.value
+          end
+        }
       end
-    }
-  / c_object+ '' {
-      def value
-        elements.map { |e| p e}
+
+      rule cardinality_spec
+        occurrence_spec (';' white_space (SYM_UNORDERD / SYM_ORDERED) (';' white_space SYM_UNIQUE)?)? {
+          def value
+            occurrence_spec.value
+          end
+        }
+      / occurrence_spec SYM_UNIQUE (';' white_space (SYM_ORDERED / SYM_UNORDERD))? {
+          def value
+            occurrence_spec.value
+          end
+        }
       end
-    }
-  end
 
-  rule c_includes
-    SYM_INCLUDE assertions
-  end
-
-  rule c_excludes
-    SYM_EXCLUDE assertions
-  end
-
-  rule c_existence
-    SYM_EXISTENCE SYM_MATCHES SYM_START_CBLOCK existence_spec SYM_END_CBLOCK
-  end
-
-  rule existence_spec
-    V_INTEGER (SYM_ELLIPSIS V_INTEGER)?
-  end
-
-  rule c_cardinality
-    SYM_CARDINALITY SYM_MATCHES SYM_START_CBLOCK cardinality_spec SYM_END_CBLOCK {
-      def value
-        p elements
+      rule c_occurrences
+        SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK {
+          def value
+            p occurrence_spec.value
+          end
+        }
       end
-    }
-  end
 
-  rule cardinality_spec
-    occurrence_spec (';' white_space (SYM_UNORDERD / SYM_ORDERED) (';' white_space SYM_UNIQUE)?)?
-  / occurrence_spec SYM_UNIQUE (';' white_space (SYM_ORDERED / SYM_UNORDERD))?
-  end
-
-  rule c_occurrences
-    SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK {
-      def value
-        occurrence_spec.value
+      rule occurrence_spec
+        st:(V_INTEGER) SYM_ELLIPSIS ed:cardinality_limit_value {
+          def value
+            
+            p st.value, ed.value
+          end
+        }
+      / cardinality_limit_value '' {
+          def value
+            p cardinality_limit_value.value
+          end
+        }
       end
-    }
-  end
 
-  rule occurrence_spec
-    V_INTEGER SYM_ELLIPSIS cardinality_limit_value {
-      def value
-        p elements
+      rule cardinality_limit_value
+        integer_value {
+          def value
+            text_value.to_i
+          end
+        }
+      / '*' {
+          def value
+            '*'
+          end
+        }
       end
-    }
-  / cardinality_limit_value '' {
-      def value
-        p elements
-      end
-    }
-  end
-
-  rule cardinality_limit_value
-    integer_value / '*'
-  end
 
   rule c_integer_spec
     cardinality_limit_value
