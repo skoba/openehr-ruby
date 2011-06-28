@@ -1,11 +1,14 @@
 require 'shared_token_grammar'
 require 'open_ehr/assumed_library_types'
+require 'open_ehr/am/archetype/constraint_model'
 
 module OpenEHR
   module Parser
     grammar CADL
 
       include SharedToken
+      include OpenEHR::AssumedLibraryTypes
+      include OpenEHR::AM::Archetype::ConstraintModel
 
       rule V_CADL_TEXT
         c_complex_object '' {
@@ -133,7 +136,9 @@ module OpenEHR
       rule c_attribute
         c_attr_head c_attr_body {
           def value
-            {:head => c_attr_head.value, :body => c_attr_body.value}
+            CAttribute.new(:rm_attribute_name => c_attr_head.value[:id],
+                           :existence => c_attr_head.value[:existence],
+                           :)
           end
         }
       end
@@ -141,12 +146,12 @@ module OpenEHR
       rule c_attr_head
         id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
           def value
-            {:id => elements[0].value, :existence => c_existence.value, :cardinality => c_cardinality.value}
+            {:id => id.value, :existence => c_existence.value, :cardinality => c_cardinality.value}
           end
         }
       / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
           def value
-            {:id => elements[0].value, :existence => c_existence.value}
+            {:id => id.value, :existence => c_existence.value}
           end
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
@@ -154,15 +159,19 @@ module OpenEHR
             {:id => id.value, :cardinality => c_cardinality.value}
           end
         }
-      / V_ATTRIBUTE_IDENTIFIER white_space {
+      / id:(V_ATTRIBUTE_IDENTIFIER) white_space {
           def value
-            {:id => elements[0].value}
+            {:id => id.value}
           end
         }
       end
 
       rule c_attr_body
-        SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK
+        SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK {
+          def value
+             c_attr_values.value
+          end
+        }
       end
 
       rule c_attr_values
@@ -207,14 +216,51 @@ module OpenEHR
       end
 
       rule cardinality_spec
-        occurrence_spec (';' white_space (SYM_UNORDERD / SYM_ORDERED) (';' white_space SYM_UNIQUE)?)? {
+        occurrence_spec ';' white_space SYM_ORDERED ';' white_space SYM_UNIQUE {
           def value
-            occurrence_spec.value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_unique => true,
+                            :is_orderd => true)
           end
         }
-      / occurrence_spec SYM_UNIQUE (';' white_space (SYM_ORDERED / SYM_UNORDERD))? {
+
+      / occurrence_spec ';' white_space SYM_ORDERED {
           def value
-            occurrence_spec.value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_orderd => true)
+          end
+        }
+      / occurrence_spec ';' white_space SYM_UNORDERD ';' white_space SYM_UNIQUE {
+          def value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_unique => true,
+                            :is_orderd => false)
+          end
+        }
+      / occurrence_spec ';' white_space SYM_UNORDERD {
+          def value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_orderd => false)
+          end
+        }
+      / occurrence_spec SYM_UNIQUE ';' white_space SYM_ORDERED {
+          def value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_unique => true,
+                            :is_orderd => true)
+          end
+        }
+      / occurrence_spec SYM_UNIQUE ';' white_space SYM_UNORDERD {
+          def value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_unique => true,
+                            :is_ordered => false)
+          end
+        }
+      / occurrence_spec SYM_UNIQUE {
+          def value
+            Cardinality.new(:interval => occurrence_spec.value,
+                            :is_unique => true)
           end
         }
       end
@@ -222,7 +268,7 @@ module OpenEHR
       rule c_occurrences
         SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK {
           def value
-            p occurrence_spec.value
+            occurrence_spec.value
           end
         }
       end
@@ -230,13 +276,19 @@ module OpenEHR
       rule occurrence_spec
         st:(V_INTEGER) SYM_ELLIPSIS ed:cardinality_limit_value {
           def value
-            
-            p st.value, ed.value
+            if ed.value == '*'
+              interval = Interval.new(:lower => st.value,
+                                      :upper_unbounded => true)
+            else
+              interval = Interval.new(:lower => st.value,
+                                      :upper => ed.value)
+            end
           end
         }
       / cardinality_limit_value '' {
           def value
-            p cardinality_limit_value.value
+            Interval.new(:lower => cardinality_limit_value.value,
+                         :upper => cardinality_limit_value.value)
           end
         }
       end
@@ -254,12 +306,16 @@ module OpenEHR
         }
       end
 
-  rule c_integer_spec
-    cardinality_limit_value
-  / integer_list_value
-  / integer_interval_value
-  / occurrence_spec
-  end
+      rule c_integer_spec
+        cardinality_limit_value '' {
+          def value
+            cardinality_limit_value.value
+          end
+        }
+      / integer_list_value
+      / integer_interval_value
+      / occurrence_spec
+      end
 
   rule c_integer
     c_integer_spec (';' integer_value)?

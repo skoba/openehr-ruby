@@ -93,7 +93,6 @@ module OpenEHR
             self.rm_type_name = args[:rm_type_name]
             self.node_id = args[:node_id]
             self.occurrences = args[:occurrences]
-
           end
 
           def rm_type_name=(rm_type_name)

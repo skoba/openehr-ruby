@@ -79,7 +79,7 @@ module OpenEHR
         def is_valid?
         end
 
-        def logical_paths(a_lang)          
+        def logical_paths(a_lang) 
         end
 
         def node_ids_vaild?
