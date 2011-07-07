@@ -30,8 +30,8 @@ describe ArchetypeOntology do
     @archetype_ontology.specialisation_depth.should be_equal 0
   end
 
-  it 'term_definitions should be assigned properly' do
-    @archetype_ontology.term_definitions(:lang => 'ja', :code => 'at0000')[:text].should == 'Archetype Concept'
+  it 'term_definition should be assigned properly' do
+    @archetype_ontology.term_definition(:lang => 'ja', :code => 'at0000')[:text].should == 'Archetype Concept'
   end
 
   it 'term_codes should returnd all at codes' do
@@ -39,7 +39,7 @@ describe ArchetypeOntology do
   end
 
   it 'constraint_definitions should be assigned properly' do
-    @archetype_ontology.constraint_definitions(:lang => 'ja', :code => 'ac0000')[:text].
+    @archetype_ontology.constraint_definition(:lang => 'ja', :code => 'ac0000')[:text].
       should == 'test'
   end
 

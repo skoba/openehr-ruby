@@ -26,7 +26,7 @@ module OpenEHR
       rule c_complex_object
         head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
           def value
-            head.value + body.value
+            p head.value, body.value
           end
         }
       / c_complex_object_head {
@@ -39,12 +39,13 @@ module OpenEHR
       rule c_complex_object_head
         c_complex_object_id c_occurrences {
           def value
-            c_complex_object_id.value + c_occurrences.value
+            {:id => c_complex_object_id.value,
+             :occurrences => c_occurrences.value}
           end
         }
       / c_complex_object_id '' {
           def value
-            c_complex_object_id.value
+            {:id => c_complex_object_id.value}
           end
         }
       end
@@ -66,18 +67,23 @@ module OpenEHR
       rule c_complex_object_body
         c_any '' {
           def value
-            c_any.value
+            {:all_allowed? => true}
           end
         }
       / c_attributes '' {
           def value
-            c_attributes.value
+            {:all_allowe? => false,
+             :children => c_attributes.value}
           end
         }
       end
 
       rule c_object
-        c_complex_object
+        c_complex_object {
+          def value
+             p elements
+          end
+        }
       / archetype_slot
       / archetype_internal_ref
       / constraint_ref
@@ -91,7 +97,22 @@ module OpenEHR
       end
 
       rule archetype_slot
-        c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes? c_excludes? SYM_END_CBLOCK
+        c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes c_excludes SYM_END_CBLOCK {
+          def value
+            {:includes => c_includes.value,
+             :excludes => c_excludes.value}
+          end
+        }
+      / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes SYM_END_CBLOCK {
+          def value
+            {:includes => c_includes.value}
+          end
+        }
+      / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_excludes SYM_END_CBLOCK {
+          def value
+            {:excludes => c_excludes.value}
+          end
+        }
       end
 
       rule c_archetype_slot_head
@@ -99,16 +120,32 @@ module OpenEHR
       end
 
       rule c_archetype_slot_id
-        SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF?
+        SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF {
+          def value
+            {:id =>type_identifier.value
+          end
+      / SYM_ALLOW_ARCHETYPE type_identifier
       end
 
       rule c_primitive_object
-        c_primitive
+        c_primitive '' {
+          def value
+            c_primitive.value
+          end
+        }
       end
 
       rule c_primitive
-        c_integer
-      / c_real
+        c_integer {
+          def value
+            c_integer.value
+          end
+        }	
+      / c_real {
+          def value
+            c_real.value
+          end
+        }
       / c_date
       / c_time
       / c_date_time
@@ -120,7 +157,7 @@ module OpenEHR
       rule c_any
         '*' space {
           def value
-            '*'
+            
           end
         }
       end
@@ -136,9 +173,10 @@ module OpenEHR
       rule c_attribute
         c_attr_head c_attr_body {
           def value
-            CAttribute.new(:rm_attribute_name => c_attr_head.value[:id],
-                           :existence => c_attr_head.value[:existence],
-                           :)
+            {:rm_attribute_name => c_attr_head.value[:id],
+             :existence => c_attr_head.value[:existence],
+             :cardinality => c_attr_head[:cardinality],
+             :children => c_attr_body.value}
           end
         }
       end
@@ -146,7 +184,9 @@ module OpenEHR
       rule c_attr_head
         id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
           def value
-            {:id => id.value, :existence => c_existence.value, :cardinality => c_cardinality.value}
+            {:id => id.value,
+             :existence => c_existence.value,
+             :cardinality => c_cardinality.value}
           end
         }
       / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
@@ -177,12 +217,12 @@ module OpenEHR
       rule c_attr_values
         c_any '' {
           def value
-            c_any.text_value
+            c_any.value
           end
         }
       / c_object+ '' {
           def value
-            elements.map { |e| p e}
+            elements.map { |e| p 'c_object', e}
           end
         }
       end
@@ -198,13 +238,22 @@ module OpenEHR
       rule c_existence
         SYM_EXISTENCE SYM_MATCHES SYM_START_CBLOCK existence_spec SYM_END_CBLOCK {
           def value
-            p elements
+            existence_spec.value
           end
         }
       end
 
       rule existence_spec
-        V_INTEGER (SYM_ELLIPSIS V_INTEGER)?
+        lo:V_INTEGER SYM_ELLIPSIS up:V_INTEGER {
+          def value
+            Interval.new(:lower => lo.value, :upper => up.value)
+          end
+        }
+      / V_INTEGER {
+          def value
+            Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
+          end
+        }
       end
 
       rule c_cardinality
@@ -465,7 +514,6 @@ module OpenEHR
       / real_value
       / absolute_path
       end
-
 
 # path block
       rule movable_path
