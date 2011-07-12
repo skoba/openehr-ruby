@@ -16,7 +16,7 @@ module OpenEHR
             c_complex_object.value
           end
         }
-      / assertions {
+      / assertions '' {
           def value
             assertions.value
           end
@@ -26,12 +26,12 @@ module OpenEHR
       rule c_complex_object
         head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
           def value
-            p head.value, body.value
+            {:head => head.value, :body => body.value}
           end
         }
-      / c_complex_object_head {
+      / c_complex_object_head '' {
           def value      
-            c_complex_object_head.value
+            {:head => c_complex_object_head.value}
           end
         }
       end
@@ -67,24 +67,28 @@ module OpenEHR
       rule c_complex_object_body
         c_any '' {
           def value
-            {:all_allowed? => true}
+            {:any_allowed? => true}
           end
         }
       / c_attributes '' {
           def value
-            {:all_allowe? => false,
+            {:any_allowed? => false,
              :children => c_attributes.value}
           end
         }
       end
 
       rule c_object
-        c_complex_object {
+        c_complex_object '' {
           def value
              p elements
           end
         }
-      / archetype_slot
+      / archetype_slot '' {
+          def value
+            archetype_slot.value
+          end
+        }
       / archetype_internal_ref
       / constraint_ref
       / c_primitive_object
@@ -122,9 +126,14 @@ module OpenEHR
       rule c_archetype_slot_id
         SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF {
           def value
-            {:id =>type_identifier.value
+            {:type =>type_identifier.value, :ref => V_LOCAL_TERM_CODE_REF.value}
           end
-      / SYM_ALLOW_ARCHETYPE type_identifier
+        }
+      / SYM_ALLOW_ARCHETYPE type_identifier {
+          def value
+            {:type => type_identifier.value}
+          end
+        }
       end
 
       rule c_primitive_object
@@ -136,22 +145,46 @@ module OpenEHR
       end
 
       rule c_primitive
-        c_integer {
+        c_integer '' {
           def value
             c_integer.value
           end
         }	
-      / c_real {
+      / c_real '' {
           def value
             c_real.value
           end
         }
-      / c_date
-      / c_time
-      / c_date_time
-      / c_duration
-      / c_string
-      / c_boolean
+      / c_date '' {
+          def value
+            c_date.value
+          end
+        }
+      / c_time {
+          def value
+            c_time.value
+          end
+        }
+      / c_date_time {
+          def value
+            c_date_time.value
+          end
+        }
+      / c_duration {
+          def value
+            c_duration.value
+          end
+        }
+      / c_string {
+          def value
+            c_string.value
+          end
+        }
+      / c_boolean {
+          def value
+            c_boolean.value
+          end
+        }
       end
 
       rule c_any
@@ -228,11 +261,19 @@ module OpenEHR
       end
 
       rule c_includes
-        SYM_INCLUDE assertions
+        SYM_INCLUDE assertions {
+          def value
+            assertions.value
+          end
+        }
       end
 
       rule c_excludes
-        SYM_EXCLUDE assertions
+        SYM_EXCLUDE assertions {
+          def value
+            assertions.value
+          end
+        }
       end
 
       rule c_existence
@@ -272,7 +313,6 @@ module OpenEHR
                             :is_orderd => true)
           end
         }
-
       / occurrence_spec ';' white_space SYM_ORDERED {
           def value
             Cardinality.new(:interval => occurrence_spec.value,
@@ -361,34 +401,38 @@ module OpenEHR
             cardinality_limit_value.value
           end
         }
-      / integer_list_value
+      / integer_list_value {
+          def value
+            integer_list_value.value
+          end
+        }
       / integer_interval_value
       / occurrence_spec
       end
 
-  rule c_integer
-    c_integer_spec (';' integer_value)?
-  end
+      rule c_integer
+        c_integer_spec (';' integer_value)?
+      end
 
-  rule c_real_spec
-    real_value
-  / real_list_value
-  / real_interval_value
-  end
+      rule c_real_spec
+        real_value
+      / real_list_value
+      / real_interval_value
+      end
 
-  rule c_real
-    c_real_spec (';' real_value)?
-  end
+      rule c_real
+        c_real_spec (';' real_value)?
+      end
 
-  rule c_date_constraint
-    V_ISO8601_DATE_CONSTRAINT_PATTERN
-  / date_value
-  / date_interval_value
-  end
+      rule c_date_constraint
+        V_ISO8601_DATE_CONSTRAINT_PATTERN
+      / date_value
+      / date_interval_value
+      end
 
-  rule c_date
-    c_date_constraint (';' date_value)?
-  end
+      rule c_date
+        c_date_constraint (';' date_value)?
+      end
 
   rule c_time_constraint
     V_ISO8601_TIME_CONSTRAINT_PATTERN
@@ -426,9 +470,26 @@ module OpenEHR
       end
 
       rule c_string_spec
-        string_list_value (',' SYM_LIST_CONTINUE)?
-      / V_REGEXP
-      / V_STRING
+        string_list_value ',' SYM_LIST_CONTINUE {
+          def value
+            p elements
+          end
+        }
+      / string_list_value '' {
+          def value
+            string_list_value.value
+          end
+        }
+      / V_REGEXP '' {
+          def value
+            V_REGEXP.value
+          end
+        }
+      / V_STRING '' {
+          def value
+            V_STRING.value
+          end
+        }
       end
 
       rule c_string
@@ -441,7 +502,16 @@ module OpenEHR
       end
 
       rule c_boolean
-        c_boolean_spec (';' boolean_value)?
+        c_boolean_spec ';' boolean_value {
+          def value
+            p elements
+          end
+        }
+      / c_boolean_spec {
+          def value
+            p elements
+          end
+        }
       end
 
       rule constraint_ref
@@ -449,7 +519,10 @@ module OpenEHR
       end
 
       rule V_REGEXP
-         (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') )
+         (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') ) {
+        def value
+          text_value
+        end
       end
 
       rule V_C_DOMAIN_TYPE
@@ -458,8 +531,8 @@ module OpenEHR
 
 # assertion block
 
-      rule V_ASSETION_TEXT
-        assertions {
+      rule V_ASSERTION_TEXT
+        assertions '' {
           def value
             p elements
           end
@@ -517,19 +590,35 @@ module OpenEHR
 
 # path block
       rule movable_path
-         SYM_MOVABLE_LEADER relative_path
+         SYM_MOVABLE_LEADER relative_path {
+           def value
+             text_value
+           end
+         }
       end
 
       rule absolute_path
-        '/' relative_path?
+        '/' relative_path? {
+           def value
+             text_value
+           end
+         }
       end
 
       rule relative_path
-        path_segment ('/' path_segment)*
+        path_segment ('/' path_segment)* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule path_segment
-        V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF?
+        V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF? {
+          def value
+            text_value
+          end
+        }
       end
 
       rule SYM_MOVABLE_LEADER

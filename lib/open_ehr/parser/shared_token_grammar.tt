@@ -3,7 +3,16 @@ module OpenEHR
     grammar SharedToken
 
       rule any_identifier
-        type_identifier / V_ATTRIBUTE_IDENTIFIER
+        type_identifier '' {
+          def value
+            type_identifier.value
+          end
+        }
+      / V_ATTRIBUTE_IDENTIFIER '' {
+          def value
+            V_ATTRIBUTE_IDENTIFIER.value
+          end
+        }
       end
 
       rule type_identifier
@@ -30,7 +39,16 @@ module OpenEHR
       end
 
       rule boolean_value
-        SYM_TRUE / SYM_FALSE
+        SYM_TRUE {
+          def value
+            true
+          end
+        }
+      / SYM_FALSE {
+          def value
+            false
+          end
+        }
       end
 
       rule boolean_list_value
@@ -39,12 +57,22 @@ module OpenEHR
       end
 
       rule integer_value
-        ('+' / '-')? V_INTEGER
+        ('+' / '-')? V_INTEGER {
+          text_value.to_i
+        }
       end
 
       rule integer_list_value
-        integer_value (',' white_space integer_value)*
-      / integer_value ',' white_space SYM_LIST_CONTINUE
+        integer_value (',' white_space integer_value)* {
+          def value
+            p elements
+          end
+        }
+      / integer_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            p elements
+          end
+        }
       end
 
       rule integer_interval_value
@@ -53,7 +81,11 @@ module OpenEHR
       end
 
       rule real_value
-        ('+' / '-') V_REAL
+        ('+' / '-') V_REAL {
+          def value
+            text_value.to_f
+          end
+        }
       end
 
       rule real_list_value
@@ -70,6 +102,7 @@ module OpenEHR
       rule character_value
         V_CHAR '' {
            def value
+             text_value
            end
         }
       end
