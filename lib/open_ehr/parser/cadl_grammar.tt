@@ -97,7 +97,11 @@ module OpenEHR
       end
 
       rule archetype_internal_ref
-        SYM_USE_NODE type_identifier c_occurrences? object_path
+        SYM_USE_NODE type_identifier c_occurrences? object_path {
+          def value
+            
+          end
+        }
       end
 
       rule archetype_slot
@@ -208,7 +212,7 @@ module OpenEHR
           def value
             {:rm_attribute_name => c_attr_head.value[:id],
              :existence => c_attr_head.value[:existence],
-             :cardinality => c_attr_head[:cardinality],
+             :cardinality => c_attr_head.value[:cardinality],
              :children => c_attr_body.value}
           end
         }
@@ -434,26 +438,26 @@ module OpenEHR
         c_date_constraint (';' date_value)?
       end
 
-  rule c_time_constraint
-    V_ISO8601_TIME_CONSTRAINT_PATTERN
-  / time_value
-  / time_interval_value
-  end
+      rule c_time_constraint
+        V_ISO8601_TIME_CONSTRAINT_PATTERN
+      / time_value
+      / time_interval_value
+      end
 
-  rule c_time
-    c_time_constraint (';' time_value)?
-  end
+      rule c_time
+        c_time_constraint (';' time_value)?
+      end
 
-  rule c_date_time_constraint
-    V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
-  / date_time_value
-  / date_time_interval_value
-  end
+      rule c_date_time_constraint
+        V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
+      / date_time_value
+      / date_time_interval_value
+      end
 
-  rule c_date_time
-    c_date_time_constraint
-  / c_date_time_constraint ';' date_time_value
-  end
+      rule c_date_time
+        c_date_time_constraint
+      / c_date_time_constraint ';' date_time_value
+      end
 
       rule c_duration_constraint
         duration_pattern ('/' duration_interval_pattern)?
@@ -519,10 +523,11 @@ module OpenEHR
       end
 
       rule V_REGEXP
-         (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') ) {
-        def value
-          text_value
-        end
+        (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') ) {
+          def value
+            text_value
+          end
+        }      
       end
 
       rule V_C_DOMAIN_TYPE
