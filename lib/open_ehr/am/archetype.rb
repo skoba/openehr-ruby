@@ -4,6 +4,10 @@ include OpenEHR::RM::Common::Resource
 module OpenEHR
   module AM
     module Archetype
+      autoload :Assertion, 'archetype/assertion'
+      autoload :ConstraintModel, 'archetype/constraint_model'
+      autoload :Ontology, 'archetype/ontology'
+
       module ADLDefinition
         include OpenEHR::RM::Support::Terminology
 #        include OpenEHR::RM::Support::Terminology::OpenEHR_Code_Set_Identifier
@@ -124,11 +128,6 @@ module OpenEHR
           @value = value
         end
       end
-
-      autoload :Assertion, 'archetype/assertion'
-      autoload :ConstraintModel, 'archetype/constraint_model'
-      autoload :Ontology, 'archetype/ontology'
-
     end # of Archetype
   end # of AM
 end # of OpenEHR

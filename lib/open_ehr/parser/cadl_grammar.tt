@@ -5,14 +5,13 @@ require 'open_ehr/am/archetype/constraint_model'
 module OpenEHR
   module Parser
     grammar CADL
-
-      include SharedToken
-      include OpenEHR::AssumedLibraryTypes
-      include OpenEHR::AM::Archetype::ConstraintModel
+#      include SharedToken
+#      include OpenEHR::AssumedLibraryTypes
+#      include OpenEHR::AM::Archetype::ConstraintModel
 
       rule V_CADL_TEXT
         c_complex_object '' {
-          def value
+          def value	    
             c_complex_object.value
           end
         }
@@ -26,11 +25,14 @@ module OpenEHR
       rule c_complex_object
         head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
           def value
-            {:head => head.value, :body => body.value}
+            {:rm_type_name => head.value[:rm_type_name],
+             :node_id => head.value[:node_id],
+             :any_allowed? => head.value[:any_allowed?],
+             :children => body.value}
           end
         }
       / c_complex_object_head '' {
-          def value      
+          def value
             {:head => c_complex_object_head.value}
           end
         }
@@ -39,13 +41,12 @@ module OpenEHR
       rule c_complex_object_head
         c_complex_object_id c_occurrences {
           def value
-            {:id => c_complex_object_id.value,
-             :occurrences => c_occurrences.value}
+            c_complex_object_id.value.update occurrences.value
           end
         }
       / c_complex_object_id '' {
           def value
-            {:id => c_complex_object_id.value}
+            c_complex_object_id.value
           end
         }
       end
@@ -81,7 +82,7 @@ module OpenEHR
       rule c_object
         c_complex_object '' {
           def value
-             p elements
+            c_complex_object_value
           end
         }
       / archetype_slot '' {
@@ -89,10 +90,26 @@ module OpenEHR
             archetype_slot.value
           end
         }
-      / archetype_internal_ref
-      / constraint_ref
-      / c_primitive_object
-      / V_C_DOMAIN_TYPE
+      / archetype_internal_ref '' {
+          def value
+            archetype_internal_ref.value
+          end
+        }
+      / constraint_ref '' {
+          def value
+            constraint_ref.value
+          end
+        }
+      / c_primitive_object {
+          def value
+            c_primitive_object.value
+          end
+        }
+      / V_C_DOMAIN_TYPE {
+          def value
+            p elemetns
+          end
+        }
 #     / ERR_V_C_DOMAIN_TYPE
       end
 
@@ -202,7 +219,7 @@ module OpenEHR
       rule c_attributes
         c_attribute+ {
           def value
-            [] << elements.map {|e| e.value}
+            elements.map {|e| e.value}
           end
         }
       end
@@ -246,7 +263,7 @@ module OpenEHR
       rule c_attr_body
         SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK {
           def value
-             c_attr_values.value
+            c_attr_values.value
           end
         }
       end
@@ -257,9 +274,13 @@ module OpenEHR
             c_any.value
           end
         }
-      / c_object+ '' {
+      / c_object more_co:(c_object '')* {
           def value
-            elements.map { |e| p 'c_object', e}
+            c_objects.map {|c| c.value}
+          end
+
+          def c_objects
+            [c_object] + more_co.elements.map {|e| e.c_object }
           end
         }
       end
@@ -291,12 +312,12 @@ module OpenEHR
       rule existence_spec
         lo:V_INTEGER SYM_ELLIPSIS up:V_INTEGER {
           def value
-            Interval.new(:lower => lo.value, :upper => up.value)
+            OpenEHR::AssumedTypesLibrary::Interval.new(:lower => lo.value, :upper => up.value)
           end
         }
       / V_INTEGER {
           def value
-            Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
+            OpenEHR::AssumedTypesLibrary::Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
           end
         }
       end
@@ -312,47 +333,47 @@ module OpenEHR
       rule cardinality_spec
         occurrence_spec ';' white_space SYM_ORDERED ';' white_space SYM_UNIQUE {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_unique => true,
                             :is_orderd => true)
           end
         }
       / occurrence_spec ';' white_space SYM_ORDERED {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_orderd => true)
           end
         }
       / occurrence_spec ';' white_space SYM_UNORDERD ';' white_space SYM_UNIQUE {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_unique => true,
                             :is_orderd => false)
           end
         }
       / occurrence_spec ';' white_space SYM_UNORDERD {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_orderd => false)
           end
         }
       / occurrence_spec SYM_UNIQUE ';' white_space SYM_ORDERED {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_unique => true,
                             :is_orderd => true)
           end
         }
       / occurrence_spec SYM_UNIQUE ';' white_space SYM_UNORDERD {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_unique => true,
                             :is_ordered => false)
           end
         }
       / occurrence_spec SYM_UNIQUE {
           def value
-            Cardinality.new(:interval => occurrence_spec.value,
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
                             :is_unique => true)
           end
         }
@@ -370,17 +391,17 @@ module OpenEHR
         st:(V_INTEGER) SYM_ELLIPSIS ed:cardinality_limit_value {
           def value
             if ed.value == '*'
-              interval = Interval.new(:lower => st.value,
+              interval = OpenEHR::AssumedLibraryTypes::Interval.new(:lower => st.value,
                                       :upper_unbounded => true)
             else
-              interval = Interval.new(:lower => st.value,
+              interval = OpenEHR::AssumedLibraryTypes::Interval.new(:lower => st.value,
                                       :upper => ed.value)
             end
           end
         }
       / cardinality_limit_value '' {
           def value
-            Interval.new(:lower => cardinality_limit_value.value,
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => cardinality_limit_value.value,
                          :upper => cardinality_limit_value.value)
           end
         }
@@ -476,7 +497,7 @@ module OpenEHR
       rule c_string_spec
         string_list_value ',' SYM_LIST_CONTINUE {
           def value
-            p elements
+
           end
         }
       / string_list_value '' {
@@ -508,12 +529,12 @@ module OpenEHR
       rule c_boolean
         c_boolean_spec ';' boolean_value {
           def value
-            p elements
+            
           end
         }
       / c_boolean_spec {
           def value
-            p elements
+
           end
         }
       end
@@ -539,7 +560,7 @@ module OpenEHR
       rule V_ASSERTION_TEXT
         assertions '' {
           def value
-            p elements
+            elements
           end
         }
       end
@@ -547,7 +568,7 @@ module OpenEHR
       rule assertions
         assertion+ {
           def value
-            p elements
+             elements
           end
         }
       end
@@ -555,7 +576,7 @@ module OpenEHR
       rule assertion
         (any_identifier ':')? boolean_expression space {
           def value
-            p elements
+            elements
           end
         }
       end

@@ -1,5 +1,6 @@
 --drm
 --colour
 --format specdoc
---loadby mtime
 --reverse
+
+#--loadby mtime
