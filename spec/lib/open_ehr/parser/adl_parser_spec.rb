@@ -119,8 +119,16 @@ describe ADLParser do
             @definition[:node_id].should == 'at0000'
           end
 
+          it 'path is /' do
+            @definition[:path].should == '/'
+          end
+
+          it 'not any allowed' do
+            @definition[:children][:any_allowed].should == false
+          end
+
           it 'rm_attribute_name is items' do
-            @definition[:rm_attribute_name].should == 'items'
+            @definition[:children][:rm_attribute_name].should == 'items'
           end
         end #definition
       end

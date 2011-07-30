@@ -25,15 +25,12 @@ module OpenEHR
       rule c_complex_object
         head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
           def value
-            {:rm_type_name => head.value[:rm_type_name],
-             :node_id => head.value[:node_id],
-             :any_allowed? => head.value[:any_allowed?],
-             :children => body.value}
+            head.value.store(:children, body.value)
           end
         }
       / c_complex_object_head '' {
           def value
-            {:head => c_complex_object_head.value}
+            c_complex_object_head.value
           end
         }
       end
@@ -68,13 +65,12 @@ module OpenEHR
       rule c_complex_object_body
         c_any '' {
           def value
-            {:any_allowed? => true}
+            [:any_allowed? => true]
           end
         }
       / c_attributes '' {
           def value
-            {:any_allowed? => false,
-             :children => c_attributes.value}
+            c_attributes.value + [Hash.new(:any_allowed? => false)]
           end
         }
       end
@@ -141,7 +137,16 @@ module OpenEHR
       end
 
       rule c_archetype_slot_head
-        c_archetype_slot_id white_space c_occurrences?
+        c_archetype_slot_id white_space c_occurrences {
+          def value
+            c_archetype_slot_id.value.update c_occurrences.value
+          end
+        }
+      / c_archetype_slot_id white_space {
+          def value
+            c_archetype_slot_id.value
+          end
+        }
       end
 
       rule c_archetype_slot_id
@@ -196,7 +201,7 @@ module OpenEHR
             c_duration.value
           end
         }
-      / c_string {
+      / c_string '' {
           def value
             c_string.value
           end
@@ -209,17 +214,17 @@ module OpenEHR
       end
 
       rule c_any
-        '*' space {
-          def value
-            
-          end
-        }
+        '*' space 
       end
 
       rule c_attributes
-        c_attribute+ {
+        c_attribute more_attr:(c_attribute)* {
           def value
-            elements.map {|e| e.value}
+            attributes.map {|c| c.value}
+          end
+
+          def attributes
+            [c_attribute] + more_attr.elements.map {|e| e.attribute}
           end
         }
       end
@@ -497,7 +502,7 @@ module OpenEHR
       rule c_string_spec
         string_list_value ',' SYM_LIST_CONTINUE {
           def value
-
+            string_list_value.value
           end
         }
       / string_list_value '' {
@@ -518,7 +523,10 @@ module OpenEHR
       end
 
       rule c_string
-        c_string_spec (';' string_value)?
+        c_string_spec (';' string_value)? {
+          def value
+          end
+        }
       end
 
       rule c_boolean_spec
@@ -532,9 +540,9 @@ module OpenEHR
             
           end
         }
-      / c_boolean_spec {
+      / c_boolean_spec '' {
           def value
-
+            c_boolean_spec.value
           end
         }
       end
@@ -568,35 +576,76 @@ module OpenEHR
       rule assertions
         assertion+ {
           def value
-             elements
+            elements.map {|e| e.value}
           end
         }
       end
 
       rule assertion
-        (any_identifier ':')? boolean_expression space {
+        id:(any_identifier ':')? boolean_expression space {
           def value
-            elements
+            if (id && !id.empty?)
+              {:tag => id.value, :expression => boolean_expression.value}
+            else
+              {:expression => boolean_expression.value}
+            end
           end
         }
       end
 
       rule boolean_expression
-        boolean_node
+        boolean_node '' {
+          def value
+            {:type => 'Boolean', :value => boolean_node.value}
+          end
+        }
       end
 
       rule boolean_node
-        SYM_EXISTS absolute_path
-      / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK
-      / SYM_NOT boolean_leaf
-      / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression
-      / boolean_leaf ((SYM_AND / SYM_OR / SYM_XOR / SYM_IMPLIES) boolean_leaf)?
+        SYM_EXISTS absolute_path {
+          def value
+            {:operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EXISTS,
+             :path => absolute_path.value }
+          end
+        }
+      / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK {
+          def value
+            {:path => relative_path.value, :children => c_primitive.value}
+          end
+        }
+      / SYM_NOT boolean_leaf {
+          def value
+            boolean_leaf.value
+          end
+        }
+      / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression {
+          def value
+            p elements
+          end
+        }
+      / boolean_leaf ((SYM_AND / SYM_OR / SYM_XOR / SYM_IMPLIES) boolean_leaf)? {
+          def value
+            p elements
+          end
+        }
       end
 
       rule boolean_leaf
-        '(' boolean_expression ')'
-      / SYM_TRUE
-      / SYM_FALSE
+        '(' boolean_expression ')' {
+          def value
+            boolean_expression.value
+          end
+        }
+      / SYM_TRUE {
+          def value
+            true
+          end
+        }
+      / SYM_FALSE {
+          def value
+            false
+          end
+        }
       end
 
       rule arithmetic_expression
@@ -608,10 +657,26 @@ module OpenEHR
       end
 
       rule arithmetic_leaf
-       '(' arithmetic_expression ')'
-      / integer_value
-      / real_value
-      / absolute_path
+       '(' arithmetic_expression ')' {
+          def value
+            arithmetic_expression.value
+          end
+        }
+      / integer_value '' {
+          def value
+            integer_value.value
+          end
+        }
+      / real_value '' {
+          def value
+            real_value.value
+          end
+        }
+      / absolute_path '' {
+          def value
+            absolute_path.value
+          end
+        }
       end
 
 # path block
