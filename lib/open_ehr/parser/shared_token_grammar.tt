@@ -1,3 +1,5 @@
+require 'open_ehr/assumed_library_types'
+
 module OpenEHR
   module Parser
     grammar SharedToken
@@ -148,7 +150,7 @@ module OpenEHR
       rule date_value
         V_ISO8601_EXTENDED_DATE {
           def value
-            p elements
+            elements
           end
         }
       end
@@ -164,7 +166,11 @@ module OpenEHR
       end
 
       rule time_value
-        V_ISO8601_EXTENDED_TIME
+        V_ISO8601_EXTENDED_TIME '' {
+          def value
+            V_ISO8601_EXTENDED_TIME.value
+          end
+        }
       end
 
       rule time_list_value
@@ -178,7 +184,11 @@ module OpenEHR
       end
 
       rule date_time_value
-        V_ISO8601_EXTENDED_DATE_TIME
+        V_ISO8601_EXTENDED_DATE_TIME {
+          def value
+            OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(text_value)
+          end
+        }
       end
 
       rule date_time_list_value
@@ -192,7 +202,11 @@ module OpenEHR
       end
 
       rule duration_value
-        V_ISO8601_DURATION
+        V_ISO8601_DURATION {
+          def value
+            OpenEHR::AssumedLibraryTypes::ISO8601Duration(text_value)
+          end
+        }
       end
 
       rule duration_list_value
@@ -514,27 +528,50 @@ module OpenEHR
       end
 
       rule V_VERSION_STRING
-        [0-9]+ '.' [0-9]+ ('.' [0-9]+)*
+        [0-9]+ '.' [0-9]+ ('.' [0-9]+)* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_ARCHETYPE_ID
-        NAMESTR ('-' NAMESTR) 2..2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]*
+        NAMESTR ('-' NAMESTR) 2..2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_IDENTIFIER
-        [a-zA-Z] [a-zA-Z0-9_]*
+        [a-zA-Z] [a-zA-Z0-9_]* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_URI
-        [a-z]+ '://' [^<>|\\{}^~"\[\] ]*
+        [a-z]+ '://' [^<>|\\{}^~"\[\] ]* {
+          def value
+            text_value
+          end
+        }
       end
 
       rule V_QUALIFIED_TERM_CODE_REF
-        '[' NAMECHAR_PAREN+ '::' NAMECHAR+ ']'
+        '[' qtc:(NAMECHAR_PAREN+ '::' NAMECHAR+) ']' {
+          def value
+            qtc.text_value
+        }
       end
 
       rule ERR_V_QUALIFIED_TERM_CODE_REF
-        '[' NAMECHAR_PAREN+ '::' NAMECHAR_SPACE+ ']'
+        '[' er:(NAMECHAR_PAREN+ '::' NAMECHAR_SPACE+) ']' {
+          def value
+            er.text_value
+          end
+        }
       end
 
       rule V_LOCAL_TERM_CODE_REF

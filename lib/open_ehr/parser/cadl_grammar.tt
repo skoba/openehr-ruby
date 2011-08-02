@@ -110,10 +110,16 @@ module OpenEHR
       end
 
       rule archetype_internal_ref
-        SYM_USE_NODE type_identifier c_occurrences? object_path {
+        SYM_USE_NODE type_identifier c_occurrences object_path {
           def value
-            
+            {:id => type_identifier.value, :occurrences => c_occurrences.value,
+             :path => object_path}
           end
+        }
+      / SYM_USE_NODE type_identifier object_path {
+          def value
+            {:id => type_identifier.value, :path => object_path}
+           end
         }
       end
 
