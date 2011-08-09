@@ -205,7 +205,7 @@ module OpenEHR
       / boolean_value
       / character_value '' {
           def value
-            p character_value
+            character_value.value
           end
         }
       / date_value

@@ -4,7 +4,7 @@ include OpenEHR::Parser
 describe ADLParser do
 
   before (:all) do
-    @adl_dir = File.dirname(__FILE__)+'/adl/'
+    @adl_dir = File.dirname(__FILE__) + '/adl/'
   end
 
   context 'openEHR-EHR-SECTION-summary.v1.adl' do

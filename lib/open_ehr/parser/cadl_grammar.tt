@@ -78,7 +78,7 @@ module OpenEHR
       rule c_object
         c_complex_object '' {
           def value
-            c_complex_object_value
+            c_complex_object.value
           end
         }
       / archetype_slot '' {
@@ -96,12 +96,12 @@ module OpenEHR
             constraint_ref.value
           end
         }
-      / c_primitive_object {
+      / c_primitive_object '' {
           def value
             c_primitive_object.value
           end
         }
-      / V_C_DOMAIN_TYPE {
+      / V_C_DOMAIN_TYPE '' {
           def value
             p elemetns
           end
@@ -192,17 +192,17 @@ module OpenEHR
             c_date.value
           end
         }
-      / c_time {
+      / c_time '' {
           def value
             c_time.value
           end
         }
-      / c_date_time {
+      / c_date_time '' {
           def value
             c_date_time.value
           end
         }
-      / c_duration {
+      / c_duration '' {
           def value
             c_duration.value
           end
@@ -212,7 +212,7 @@ module OpenEHR
             c_string.value
           end
         }
-      / c_boolean {
+      / c_boolean '' {
           def value
             c_boolean.value
           end
@@ -220,7 +220,7 @@ module OpenEHR
       end
 
       rule c_any
-        '*' space 
+        '*' space
       end
 
       rule c_attributes
@@ -326,7 +326,7 @@ module OpenEHR
             OpenEHR::AssumedTypesLibrary::Interval.new(:lower => lo.value, :upper => up.value)
           end
         }
-      / V_INTEGER {
+      / V_INTEGER '' {
           def value
             OpenEHR::AssumedTypesLibrary::Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
           end
@@ -437,13 +437,21 @@ module OpenEHR
             cardinality_limit_value.value
           end
         }
-      / integer_list_value {
+      / integer_list_value '' {
           def value
             integer_list_value.value
           end
         }
-      / integer_interval_value
-      / occurrence_spec
+      / integer_interval_value '' {
+          def value
+            integer_interval_value.value
+          end
+        }
+      / occurrence_spec {
+          def value
+            occurrence_spec.value
+          end
+        }
       end
 
       rule c_integer
@@ -554,7 +562,11 @@ module OpenEHR
       end
 
       rule constraint_ref
-        V_LOCAL_TERM_CODE_REF
+        V_LOCAL_TERM_CODE_REF '' {
+          def value
+            V_LOCAL_TERM_CODE_REF.value
+          end
+        }
       end
 
       rule V_REGEXP
@@ -655,7 +667,11 @@ module OpenEHR
       end
 
       rule arithmetic_expression
-        arithmetic_node
+        arithmetic_node '' {
+          def value
+            arithmetic_node.value
+          end
+        }
       end
 
       rule arithmetic_node
