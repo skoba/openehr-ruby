@@ -54,8 +54,20 @@ module OpenEHR
       end
 
       rule boolean_list_value
-        boolean_value (',' boolean_value)+ 
-      / boolean_value ',' SYM_LIST_CONTINUE
+        boolean_value (',' white_space more_bool:(boolean_value ''))+ {
+          def value
+            booelans.map {|b| b.value} 
+          end
+
+          def booleans
+            [boolean_value] + more_bool.elements.map { |b| b.boolean_value }
+          end
+        }
+      / boolean_value white_space SYM_LIST_CONTINUE {
+          def value
+            [boolean_value]
+          end
+        }
       end
 
       rule integer_value
@@ -67,14 +79,18 @@ module OpenEHR
       end
 
       rule integer_list_value
-        integer_value (',' white_space integer_value)* {
+        integer_value (',' white_space more_i:(integer_value))* {
           def value
-            p elements
+            integers.map { |i| i.value }
+          end
+
+          def integers
+            [integer_value] + more_i.elements.map { |i| i.integer_value }
           end
         }
       / integer_value ',' white_space SYM_LIST_CONTINUE {
           def value
-            p elements
+            [integer_value.value]
           end
         }
       end
