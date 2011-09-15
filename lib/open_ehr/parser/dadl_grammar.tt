@@ -200,19 +200,51 @@ module OpenEHR
       end
 
       rule simple_value
-        integer_value
-      / real_value
-      / boolean_value
+        integer_value '' {
+          def value
+            integer_value.value
+          end
+        }
+      / real_value '' {
+          def value
+            real_value.value
+          end
+        }
+      / boolean_value '' {
+          def value
+            boolean_value.value
+          end
+        }
       / character_value '' {
           def value
             character_value.value
           end
         }
-      / date_value
-      / time_value
-      / date_time_value
-      / duration_value
-      / uri_value
+      / date_value '' {
+          def value
+            date_value.value
+          end
+        }
+      / time_value '' {
+          def value
+            time_value.value
+          end
+        }
+      / date_time_value '' {
+          def value
+            date_time_value.value
+          end
+        }
+      / duration_value '' {
+          def value
+            duration_value.value
+          end
+        }
+      / uri_value '' {
+          def value
+            uri_value.value
+          end
+        }
       / string_value '' {
           def value
             string_value.value
@@ -221,14 +253,46 @@ module OpenEHR
       end
 
       rule simple_list_value
-        integer_list_value
-      / real_list_value
-      / boolean_list_value
-      / character_list_value
-      / date_list_value
-      / time_list_value
-      / date_time_list_value
-      / duration_list_value
+        integer_list_value '' {
+          def value
+            integer_list_value.value
+          end
+        }
+      / real_list_value '' {
+          def value
+            real_list_value.value
+          end
+        }
+      / boolean_list_value '' {
+          def value
+            boolean_list_value.value
+          end
+        }
+      / character_list_value '' {
+          def value
+            character_list_value.value
+          end
+        }
+      / date_list_value '' {
+          def value
+            date_list_value.value
+          end
+        }
+      / time_list_value '' {
+          def value
+            time_list_value.value
+          end
+        }
+      / date_time_list_value '' {
+          def value
+            date_time_list_value.value
+          end
+        }
+      / duration_list_value '' {
+          def value
+            duration_list_value.value
+          end
+        }
       / string_list_value '' {
           def value
             string_list_value.value
@@ -237,29 +301,57 @@ module OpenEHR
       end
 
       rule simple_interval_value
-        integer_interval_value
-      / real_interval_value
-      / date_interval_value
-      / time_interval_value
-      / date_time_interval_value
-      / duration_interval_value
+        integer_interval_value '' {
+          def value
+            integer_interval_value.value
+          end
+        }
+      / real_interval_value '' {
+          def value
+            real_interval_value.value
+          end
+        }
+      / date_interval_value '' {
+          def value
+            date_interval_value.value
+          end
+        }
+      / time_interval_value '' {
+          def value
+            time_interval_value.value
+          end
+        }
+      / date_time_interval_value '' {
+          def value
+            date_time_interval_value.value
+          end
+        }
+      / duration_interval_value {
+          def value
+            duration_interval_value.value
+          end
+        }
       end
 
       rule term_code
-        V_QUALIFIED_TERM_CODE_REF {
+        vtref:V_QUALIFIED_TERM_CODE_REF '' {
           def value
-            elements[1].text_value + elements[2].text_value + elements[3].text_value
+            vtref.value
           end
         }
       end
 
       rule term_code_list_value
-        term_code (',' term_code)+
+        term_code (',' term_code)+ 
       / term_code ',' SYM_LIST_CONTINUE
       end
 
       rule uri_value
-        V_URI
+        V_URI '' {
+          def value
+            V_URI.value
+          end
+        }
       end
     end
   end
