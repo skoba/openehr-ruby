@@ -432,13 +432,96 @@ module OpenEHR
       end
 
       rule time_list_value
-        time_value (',' time_value)+
-      / time_value ',' SYM_LIST_CONTINUE
+        time_value more_t:(',' time_value)+ {
+          def value
+            times.map {|t| t.value}
+          end
+
+          def times
+            [time_value] + more_t.elements.map {|t| t.time_value}
+          end
+        }
+      / time_value ',' SYM_LIST_CONTINUE {
+          def value
+            [time_value.value]
+          end
+        }
       end
 
       rule time_interval_value
-        SYM_INTERVAL_DELIM SYM_GT? time_value SYM_ELLIPSIS SYM_LT? time_value SYM_INTERVAL_DELIM
-      / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? time_value SYM_INTERVAL_DELIM
+        SYM_INTERVAL_DELIM SYM_GT lo:time_value SYM_ELLIPSIS SYM_LT up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:time_value SYM_ELLIPSIS up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:time_value SYM_ELLIPSIS SYM_LT up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:time_value SYM_ELLIPSIS up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => up.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :lower => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
       end
 
       rule date_time_value
@@ -450,13 +533,96 @@ module OpenEHR
       end
 
       rule date_time_list_value
-        date_time_value (',' date_time_value)+
-      / date_time_value ',' SYM_LIST_CONTINUE
+        date_time_value more_dt:(',' date_time_value)+ {
+          def value
+            date_times.map {|t| t.value}
+          end
+
+          def date_times
+            [date_time_value] + more_dt.elements.map {|dt| dt.date_time_value}
+          end
+        }
+      / date_time_value ',' SYM_LIST_CONTINUE {
+          def value
+            [date_time_value.value]
+          end
+        }
       end
 
       rule date_time_interval_value
-        SYM_INTERVAL_DELIM SYM_GT? date_time_value SYM_ELLIPSIS SYM_LT? date_time_value SYM_INTERVAL_DELIM
-      / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? date_time_value SYM_INTERVAL_DELIM
+        SYM_INTERVAL_DELIM SYM_GT lo:date_time_value SYM_ELLIPSIS SYM_LT up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:date_time_value SYM_ELLIPSIS up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:date_time_value SYM_ELLIPSIS SYM_LT up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:date_time_value SYM_ELLIPSIS up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => up.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :lower => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
       end
 
       rule duration_value
