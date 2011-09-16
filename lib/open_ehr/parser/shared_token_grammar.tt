@@ -325,16 +325,18 @@ module OpenEHR
       end
 
       rule date_value
-        V_ISO8601_EXTENDED_DATE {
+        V_ISO8601_EXTENDED_DATE '' {
           def value
-            elements
+            OpenEHR::AssumedLibraryTypes::ISO8601Date.new(V_ISO8601_EXTENDED_DATE.text_value)
           end
         }
       end
 
       rule date_list_value
-        date_value (',' date_value)+
-      / date_value ',' SYM_LIST_CONTINUE
+        date_value (',' date_value)+ {
+        }
+      / date_value ',' SYM_LIST_CONTINUE {
+        }
       end
 
       rule date_interval_value
@@ -345,7 +347,7 @@ module OpenEHR
       rule time_value
         V_ISO8601_EXTENDED_TIME '' {
           def value
-            V_ISO8601_EXTENDED_TIME.value
+            OpenEHR::AssumedLibraryTypes::ISO8601Time(V_ISO8601_EXTENDED_TIME.text_value)
           end
         }
       end
