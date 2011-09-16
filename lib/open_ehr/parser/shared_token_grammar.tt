@@ -634,13 +634,96 @@ module OpenEHR
       end
 
       rule duration_list_value
-        duration_value (',' duration_value)+
-      / duration_value ',' SYM_LIST_CONTINUE
+        duration_value more_d:(',' duration_value)+ {
+          def value
+            durations.map {|d| d.value}
+          end
+
+          def durations
+            [duration_value] + more_d.elements.map {|d| d.duration_value}
+          end
+        }
+      / duration_value ',' SYM_LIST_CONTINUE {
+          def value
+            [duration_valuel.value]
+          end
+        }
       end
 
       rule duration_interval_value
-        SYM_INTERVAL_DELIM SYM_GT? duration_value SYM_ELLIPSIS SYM_LT? duration_value SYM_INTERVAL_DELIM
-      / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT / SYM_GE)? duration_value SYM_INTERVAL_DELIM
+        SYM_INTERVAL_DELIM SYM_GT lo:duration_value SYM_ELLIPSIS SYM_LT up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:duration_value SYM_ELLIPSIS up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:duration_value SYM_ELLIPSIS SYM_LT up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:duration_value SYM_ELLIPSIS up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => up.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :lower => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
       end
 
       rule ALPHANUM
