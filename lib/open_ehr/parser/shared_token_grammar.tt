@@ -333,9 +333,19 @@ module OpenEHR
       end
 
       rule date_list_value
-        date_value (',' date_value)+ {
+        date_value more_dates:(',' white_space date_value)+ {
+          def value
+            dates.map {|d| d.value}
+          end
+
+          def dates
+            [date_value] + more_dates.elements.map {|d| d.date_value}
+          end
         }
       / date_value ',' SYM_LIST_CONTINUE {
+          def value
+            [date_value.value]
+          end
         }
       end
 
