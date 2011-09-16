@@ -171,8 +171,6 @@ module OpenEHR
                   :lower_included => true)
           end
         }
-
-   
       end
 
       rule real_value
@@ -184,14 +182,96 @@ module OpenEHR
       end
 
       rule real_list_value
-        real_value (',' white_space real_value)+
-      / real_value ',' white_space SYM_LIST_CONTINUE
+        real_value (',' white_space more_i:(real_value) '')* {
+          def value
+            reals.map { |i| i.value }
+          end
+
+          def reals
+            [real_value] + more_i.elements.map { |i| i.real_value }
+          end
+        }
+      / real_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            [real_value.value]
+          end
+        }
       end
 
       rule real_interval_value
-        SYM_INTERVAL_DELIM SYM_GT? real_value SYM_ELLIPSIS SYM_LT? real_value SYM_INTERVAL_DELIM
-      / SYM_INTERVAL_DELIM (SYM_LT / SYM_LE / SYM_GT /SYM_GE)? real_value SYM_INTERVAL_DELIM
-      / SYM_INTERVAL_DELIM real_value SYM_INTERVAL_DELIM
+        SYM_INTERVAL_DELIM SYM_GT lo:real_value SYM_ELLIPSIS SYM_LT up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:real_value SYM_ELLIPSIS up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:real_value SYM_ELLIPSIS SYM_LT up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:real_value SYM_ELLIPSIS up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => up.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :lower => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
       end
 
       rule character_value
@@ -203,14 +283,18 @@ module OpenEHR
       end
 
       rule character_list_value
-        character_value (',' character_value)+ {
+        character_value (',' white_space more_chars:(character_value))+ {
           def value
-            p elements
+            characters.map {|c| c.value }
+          end
+
+          def characters
+            [character_value] + more_chars.elements.map {|c| c.character_value}
           end
         }
       / character_value ',' SYM_LIST_CONTINUE {
           def value
-            p elements
+            [character_value.value]
           end
         }
       end
@@ -224,16 +308,18 @@ module OpenEHR
       end
 
       rule string_list_value
-        first:V_STRING second:(',' white_space V_STRING)+ {
+        first:string_value second:(',' white_space string_value)+ {
           def value
-	    [first.value] + second.elements.map{|s|
-              s.V_STRING.value
-            }
+            strings.map {|s| s.value}
+          end
+
+          def strings
+            [first] + second.elements.map {|s| s.string_value}
           end
         }
-      / V_STRING ',' white_space SYM_LIST_CONTINUE {
+      / str:V_STRING ',' white_space SYM_LIST_CONTINUE {
           def value
-            p elements
+            [str.value]
           end
         }
       end
