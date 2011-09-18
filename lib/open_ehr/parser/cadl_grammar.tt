@@ -25,12 +25,18 @@ module OpenEHR
       rule c_complex_object
         head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
           def value
-            head.value.store(:children, body.value)
+            args = head.value
+            args[:path] ||= '/'
+            args.update body.value
+            p args
+            OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(
+              args)
           end
         }
       / c_complex_object_head '' {
           def value
-            c_complex_object_head.value
+            OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(
+              c_complex_object_head.value)
           end
         }
       end
@@ -65,12 +71,13 @@ module OpenEHR
       rule c_complex_object_body
         c_any '' {
           def value
-            [:any_allowed? => true]
+            {:any_allowed? => true}
           end
         }
       / c_attributes '' {
           def value
-            c_attributes.value + [Hash.new(:any_allowed? => false)]
+            {:attributes => c_attributes.value,
+             :any_allowed? => false}
           end
         }
       end

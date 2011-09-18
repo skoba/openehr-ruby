@@ -110,9 +110,9 @@ module OpenEHR
           end
 
           def occurrences=(occurrences)
-            if occurrences.nil?
-              raise ArgumentError, 'invaild occurrences'
-            end
+            # if occurrences.nil?
+            #   raise ArgumentError, 'invaild occurrences'
+            # end
             @occurrences = occurrences
           end
 

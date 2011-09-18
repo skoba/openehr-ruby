@@ -9,7 +9,7 @@ gem 'i18n'
 gem 'treetop'
 gem 'polyglot'
 
-group :development do
+group :development, :test do
   gem 'rspec'
   gem 'guard-rspec'
   gem 'ruby-debug19'

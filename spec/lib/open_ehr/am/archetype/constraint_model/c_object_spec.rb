@@ -53,9 +53,9 @@ describe CObject do
     @c_object.occurrences.lower.should be_equal 0
   end
 
-  it 'should raise ArgumentError when occurences was assigned nil' do
-    lambda {
-      @c_object.occurrences = nil
-    }.should raise_error ArgumentError
-  end
+  # it 'should raise ArgumentError when occurences was assigned nil' do
+  #   lambda {
+  #     @c_object.occurrences = nil
+  #   }.should raise_error ArgumentError
+  # end
 end
