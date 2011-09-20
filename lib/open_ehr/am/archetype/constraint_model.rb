@@ -144,7 +144,7 @@ module OpenEHR
           end
 
           def existence=(existence)
-            if existence.nil? || existence.lower < 0 || existence.upper > 1
+            if !existence.nil? && (existence.lower < 0 || existence.upper > 1)
               raise ArgumentError, 'invalid existence'
             end
             @existence = existence

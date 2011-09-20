@@ -26,11 +26,8 @@ module OpenEHR
         head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK {
           def value
             args = head.value
-            args[:path] ||= '/'
             args.update body.value
-            p args
-            OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(
-              args)
+            OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
           end
         }
       / c_complex_object_head '' {
@@ -58,12 +55,14 @@ module OpenEHR
         ti:type_identifier lo:V_LOCAL_TERM_CODE_REF space {
           def value
             {:rm_type_name => ti.value,
-             :node_id => lo.value}
+             :node_id => lo.value,
+             :path => '/' + ti.value + lo.text_value}
           end
         }
       / ti:type_identifier space {
           def value
-            {rm_type_name => ti.value}
+            {:rm_type_name => ti.value,
+             :path => '/' + ti.value}
           end
         }
       end
@@ -76,7 +75,11 @@ module OpenEHR
         }
       / c_attributes '' {
           def value
-            {:attributes => c_attributes.value,
+            p c_attributes.value
+            attrs = c_attributes.value.map do |attr|
+              OpenEHR::AM::Archetype::ConstraintModel::CAttribute.new(attr)
+            end
+            {:attributes => attrs,
              :any_allowed? => false}
           end
         }
@@ -245,10 +248,7 @@ module OpenEHR
       rule c_attribute
         c_attr_head c_attr_body {
           def value
-            {:rm_attribute_name => c_attr_head.value[:id],
-             :existence => c_attr_head.value[:existence],
-             :cardinality => c_attr_head.value[:cardinality],
-             :children => c_attr_body.value}
+            c_attr_head.value.update Hash.new(:children => c_attr_body.value)
           end
         }
       end
@@ -256,24 +256,29 @@ module OpenEHR
       rule c_attr_head
         id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
           def value
-            {:id => id.value,
+            {:rm_attribute_name => id.value,
+             :path => '/' + id.value,
              :existence => c_existence.value,
              :cardinality => c_cardinality.value}
           end
         }
       / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
           def value
-            {:id => id.value, :existence => c_existence.value}
+            {:rm_attribute_name => id.value,
+             :path => '/' + id.value,
+             :existence => c_existence.value}
           end
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
           def value
-            {:id => id.value, :cardinality => c_cardinality.value}
+            {:rm_attribute_name => id.value,
+             :path => '/' + id.value,
+             :cardinality => c_cardinality.value}
           end
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space {
           def value
-            {:id => id.value}
+            {:rm_attribute_name => id.value, :path => '/' + id.value}
           end
         }
       end
