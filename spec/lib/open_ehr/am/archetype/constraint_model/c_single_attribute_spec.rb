@@ -19,10 +19,4 @@ describe CSingleAttribute do
   it 'alternative should be assigned properly' do
     @c_single_attribute.alternatives.size.should be_equal 5
   end
-
-  it 'should raise ArgumentError when alternative is nil' do
-    lambda {
-      @c_single_attribute.alternatives = nil
-    }.should raise_error ArgumentError
-  end
 end

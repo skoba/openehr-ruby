@@ -119,16 +119,38 @@ describe ADLParser do
             @definition.node_id.should == 'at0000'
           end
 
-          it 'path is /' do
-            @definition.path.should == '/SECTION[at0000]'
+          it 'root path is /' do
+            @definition.path.should == '/'
           end
 
           it 'not any allowed' do
             @definition.any_allowed?.should == false
           end
 
-          it 'rm_attribute_name is items' do
-            @definition.attributes[0].rm_attribute_name.should == 'items'
+          context 'c_attribute specs' do
+            before(:all) do
+              @attribute = @definition.attributes[0]
+            end
+
+            it 'rm_attribute_name is items' do
+              @attribute.rm_attribute_name.should == 'items'
+            end
+
+            it 'path is /items' do
+              @attribute.path.should == '/items'
+            end
+
+            it 'cardinarity is unorderd' do
+              @attribute.cardinality.should_not be_ordered
+            end
+
+            it 'lower interval of cardinality is 0' do
+              @attribute.cardinality.interval.lower.should be 0
+            end
+
+            it 'interval of cardinality is upper unbounded' do
+              @attribute.cardinality.interval.should be_upper_unbounded
+            end
           end
         end #definition
       end

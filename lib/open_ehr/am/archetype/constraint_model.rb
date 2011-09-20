@@ -308,28 +308,17 @@ module OpenEHR
           end
 
           def alternatives=(alternatives)
-            if alternatives.nil?
-              raise ArgumentError, 'alternatives are mandatory'
-            end
             @alternatives = alternatives
           end
         end
 
         class CMultipleAttribute < CAttribute
-          attr_accessor :members
-          attr_reader :cardinality
+          attr_accessor :members, :cardinality
           
           def initialize(args = { })
             super
             self.members = args[:members]
             self.cardinality = args[:cardinality]
-          end
-
-          def cardinality=(cardinality)
-            if cardinality.nil?
-              raise ArgumentError, 'cardinality is mandatory'
-            end
-            @cardinality = cardinality
           end
         end
       end # of ConstraintModel

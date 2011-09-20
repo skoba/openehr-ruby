@@ -20,10 +20,4 @@ describe CMultipleAttribute do
   it 'cardinality should be assigned properly' do
     @c_multiple_attribute.cardinality.should be_ordered
   end
-
-  it 'should raise ArgumentError when cardinality is nil' do
-    lambda {
-      @c_multiple_attribute.cardinality = nil
-    }.should raise_error ArgumentError
-  end
 end
