@@ -103,7 +103,7 @@ module OpenEHR
           end
 
           def node_id=(node_id)
-            if node_id.nil? || node_id.empty?
+            if !node_id.nil? && node_id.empty?
               raise ArgumentError, 'invalid node_id'
             end
             @node_id = node_id

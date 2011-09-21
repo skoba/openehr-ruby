@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 include OpenEHR::Parser
-
+include OpenEHR::AM::Archetype::ConstraintModel
 describe ADLParser do
 
   before (:all) do
@@ -132,6 +132,10 @@ describe ADLParser do
               @attribute = @definition.attributes[0]
             end
 
+            it 'attribute is instance of CMultipleAttribute' do
+              @attribute.should be_an_instance_of CMultipleAttribute
+            end
+
             it 'rm_attribute_name is items' do
               @attribute.rm_attribute_name.should == 'items'
             end
@@ -150,6 +154,12 @@ describe ADLParser do
 
             it 'interval of cardinality is upper unbounded' do
               @attribute.cardinality.interval.should be_upper_unbounded
+            end
+          end
+
+          context 'archetype slot specs' do
+            before(:all) do
+              @archetype_slot = @attribute.children
             end
           end
         end #definition

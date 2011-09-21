@@ -131,18 +131,27 @@ module OpenEHR
       rule archetype_slot
         c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes c_excludes SYM_END_CBLOCK {
           def value
-            {:includes => c_includes.value,
-             :excludes => c_excludes.value}
+            args = c_archetype_slot_head.value
+            args.update Hash.new(:includes => c_includes.value,
+                                 :excludes => c_excludes.value)
+            args[:path] ||= '/'
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
       / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes SYM_END_CBLOCK {
           def value
-            {:includes => c_includes.value}
+            args = c_archetype_slot_head.value
+            args.update Hash.new(:includes => c_includes.value)
+            args[:path] ||= '/'
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
       / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_excludes SYM_END_CBLOCK {
           def value
-            {:excludes => c_excludes.value}
+            args = c_archetype_slot_head.value
+            args.update Hash.new(:excludes => c_excludes.value)
+            args[:path] ||= '/'
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
       end
@@ -150,7 +159,9 @@ module OpenEHR
       rule c_archetype_slot_head
         c_archetype_slot_id white_space c_occurrences {
           def value
-            c_archetype_slot_id.value.update c_occurrences.value
+            c_archetype_slot_id.value.update Hash.new(
+              :occurrence => c_occurrences.value)
+            c_archetype_slot_id.value
           end
         }
       / c_archetype_slot_id white_space {
@@ -163,12 +174,13 @@ module OpenEHR
       rule c_archetype_slot_id
         SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF {
           def value
-            {:type =>type_identifier.value, :ref => V_LOCAL_TERM_CODE_REF.value}
+            {:rm_type_name => type_identifier.value,
+             :node_id => V_LOCAL_TERM_CODE_REF.value}
           end
         }
       / SYM_ALLOW_ARCHETYPE type_identifier {
           def value
-            {:type => type_identifier.value}
+            {:rm_type_name => type_identifier.value}
           end
         }
       end

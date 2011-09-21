@@ -37,11 +37,11 @@ describe CObject do
     @c_object.node_id.should == 'ac0001'
   end
 
-  it 'should raise ArgumentError when node_id was assigned nil' do
-    lambda {
-      @c_object.node_id = nil
-    }.should raise_error ArgumentError
-  end
+  # it 'should raise ArgumentError when node_id was assigned nil' do
+  #   lambda {
+  #     @c_object.node_id = nil
+  #   }.should raise_error ArgumentError
+  # end
 
   it 'should raise ArgumentError when node_id was assigned empty' do
     lambda {
