@@ -89,7 +89,7 @@ module OpenEHR
           attr_reader :rm_type_name, :node_id, :occurrences
 
           def initialize(args = { })
-            super(args)
+            super
             self.rm_type_name = args[:rm_type_name]
             self.node_id = args[:node_id]
             self.occurrences = args[:occurrences]
@@ -110,9 +110,9 @@ module OpenEHR
           end
 
           def occurrences=(occurrences)
-            # if occurrences.nil?
-            #   raise ArgumentError, 'invaild occurrences'
-            # end
+            if occurrences.nil?
+              raise ArgumentError, 'invaild occurrences'
+            end
             @occurrences = occurrences
           end
 
