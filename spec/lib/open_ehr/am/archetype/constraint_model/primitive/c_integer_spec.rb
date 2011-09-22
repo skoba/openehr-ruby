@@ -13,6 +13,10 @@ describe CInteger do
     @c_integer.should be_an_instance_of CInteger
   end
 
+  it 'type is DvInteger' do
+    @c_integer.type.should == 'DvInteger'
+  end
+
   it 'should raise ArgumentError if both range and list are nil' do
     lambda {
       @c_integer.list = nil

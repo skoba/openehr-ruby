@@ -21,6 +21,10 @@ describe CTime do
     @c_time.should be_an_instance_of CTime
   end
 
+  it 'type is DvTime' do
+    @c_time.type.should == 'DvTime'
+  end
+
   it 'minute_validity should be assigned' do
     @c_time.minute_validity.should be_equal ValidityKind::MANDATORY
   end

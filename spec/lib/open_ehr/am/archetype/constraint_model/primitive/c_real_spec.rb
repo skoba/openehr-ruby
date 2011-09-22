@@ -11,4 +11,8 @@ describe CReal do
   it 'should be an instance of CReal' do
     @c_real.should be_an_instance_of CReal
   end
+
+  it 'type is DvReal' do
+    @c_real.type.should == 'DvReal'
+  end
 end

@@ -25,6 +25,10 @@ describe CDuration do
     @c_duration.should be_an_instance_of CDuration
   end
 
+  it 'type is DvDuration' do
+    @c_duration.type.should == 'DvDuration'
+  end
+
   it 'years_allowed should be assigned properly' do
     @c_duration.years_allowed.should be_true
   end

@@ -1,6 +1,0 @@
-K 13
-svn:mergeinfo
-V 162
-/ruby/branches/0.5.0/lib/adl_parser/test/adl/openEHR-EHR-ACTION.imaging.v1.adl:165-168
-/ruby/trunk/lib/adl_parser/test/adl/openEHR-EHR-ACTION.imaging.v1.adl:2-115
-END

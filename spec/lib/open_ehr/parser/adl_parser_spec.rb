@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 include OpenEHR::Parser
 include OpenEHR::AM::Archetype::ConstraintModel
+include OpenEHR::AM::Archetype::Assertion
 
 describe ADLParser do
 
@@ -163,6 +164,42 @@ describe ADLParser do
 
               it 'is an instance of ArchetypeSlot' do
                 @archetype_slot.should be_an_instance_of ArchetypeSlot
+              end
+
+              it 's rm type name is EVALUATION' do
+                @archetype_slot.rm_type_name.should == 'EVALUATION'
+              end
+
+              it 's lower of occurrences should be 0' do
+                @archetype_slot.occurrences.lower.should be 0
+              end
+
+              it 's upper of occurrences should be 1' do
+                @archetype_slot.occurrences.upper.should be 1
+              end
+
+              context 'assertions' do
+                before(:all) do
+                  @includes = @archetype_slot.includes
+                end
+
+                context '1st assertion' do
+                  before(:all) do
+                    @assertion0 = @includes[0]
+                  end
+
+                  it 'assertion0 should be an instance of assertion' do
+                    @assertion0.should be_an_instance_of Assertion
+                  end
+
+                  it 'expression type of assertion0 is Boolean' do
+                    @assertion0.expression.type.should == 'Boolean'
+                  end
+
+                  it 'expression value of assertion0 is /clinical_synopsis\.v1/' do
+                    @assertion0.expression.item.should == '/clinical_synopsis\.v1/'
+                  end
+                end
               end
             end
           end

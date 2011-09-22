@@ -14,6 +14,10 @@ describe CPrimitive do
     @c_primitive.should be_an_instance_of CPrimitive
   end
 
+  it 'type is ANY' do
+    @c_primitive.type.should == 'ANY'
+  end
+
   it 'default value should be assigned properly' do
     @c_primitive.default_value.value.should == 'DEFAULT'
   end

@@ -5,12 +5,13 @@ module OpenEHR
       module ConstraintModel
         module Primitive
           class CPrimitive
-            attr_reader :default_value
+            attr_reader :default_value, :type
             attr_accessor :assumed_value
 
             def initialize(args = { })
               self.default_value = args[:default_value]
               self.assumed_value = args[:assumed_value]
+              @type = 'ANY'
             end
 
             def default_value=(default_value)
@@ -33,6 +34,7 @@ module OpenEHR
               @true_valid = args[:true_valid]
               @false_valid = args[:false_valid]
               super(args)
+              @type = 'DvBoolean'
             end
 
             def default_value=(default_value)
@@ -80,6 +82,7 @@ module OpenEHR
               consistency(args[:pattern], args[:list])
               @pattern = args[:pattern]
               @list = args[:list]
+              @type = 'DvText'
             end
 
             def pattern=(pattern)
@@ -108,6 +111,7 @@ module OpenEHR
               consistency(args[:list], args[:range])
               @list = args[:list]
               @range = args[:range]
+              @type = 'DvInteger'
             end
 
             def list=(list)
@@ -129,7 +133,10 @@ module OpenEHR
           end
 
           class CReal < CInteger
-
+            def initialize(args = { })
+              super
+              @type = 'DvReal'
+            end
           end
 
           module CDateModule
@@ -169,6 +176,7 @@ module OpenEHR
               self.timezone_validity = args[:timezone_validity]
               self.day_validity = args[:day_validity]
               self.month_validity = args[:month_validity]
+              @type = 'DvDate'
             end
           end
 
@@ -215,6 +223,7 @@ module OpenEHR
               self.millisecond_validity = args[:millisecond_validity]
               self.second_validity = args[:second_validity]
               self.minute_validity = args[:minute_validity]
+              @type = 'DvTime'
             end
           end
 
@@ -231,6 +240,7 @@ module OpenEHR
               self.hour_validity = args[:hour_vaildity]
               self.day_validity = args[:day_validity]
               self.month_validity = args[:day_validity]
+              @type = 'DvDateTime'
             end
 
             def hour_validity=(hour_validity)
@@ -273,6 +283,7 @@ module OpenEHR
               self.weeks_allowed = args[:weeks_allowed]
               self.years_allowed = args[:years_allowed]
               self.range = args[:range]
+              @type = 'DvDuration'
             end
 
             def range=(range)

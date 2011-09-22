@@ -22,6 +22,10 @@ describe CBoolean do
     @c_boolean.should be_false_valid
   end
 
+  it 'type should be DvBoolean' do
+    @c_boolean.type.should == 'DvBoolean'
+  end
+
   it 'should raise ArgumentError when both true_valid and false_valid are false' do
     lambda {
       @c_boolean.true_valid = false

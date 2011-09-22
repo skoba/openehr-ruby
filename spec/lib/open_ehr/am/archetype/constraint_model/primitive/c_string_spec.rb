@@ -14,6 +14,10 @@ describe CString do
     @c_string.should be_an_instance_of CString
   end
 
+  it 'type is DvText' do
+    @c_string.type.should == 'DvText'
+  end
+
   it 'default should be assigned properly' do
     @c_string.default_value.value.should == 'default'
   end

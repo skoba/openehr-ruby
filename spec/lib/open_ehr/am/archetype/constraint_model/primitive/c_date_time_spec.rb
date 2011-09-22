@@ -26,6 +26,10 @@ describe CDateTime do
     @c_date_time.should be_an_instance_of CDateTime
   end
 
+  it 'type is DvDateTime' do
+    @c_date_time.type.should == 'DvDateTime'
+  end
+
   it 'hour_validity should be assigned properly' do
     @c_date_time.hour_validity.should be_equal ValidityKind::MANDATORY
   end
