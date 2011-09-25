@@ -5,13 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{open_ehr}
-  s.version = "0.6.2"
+  s.version = "0.9.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = %q{2011-05-09}
+  s.authors = [%q{Shinji KOBAYASHI}, %q{Akimichi Tatsukawa}]
+  s.date = %q{2011-09-25}
   s.description = %q{This project is an implementation of the openEHR specification on Ruby.}
   s.email = %q{skoba@moss.gr.jp}
+  s.executables = [%q{adl_validator.rb}]
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -26,8 +27,8 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "bin/adl_validator.rb",
     "doc/openehr_terminology.xml",
-    "lib/#open_ehr.rb#",
     "lib/open_ehr.rb",
     "lib/open_ehr/am.rb",
     "lib/open_ehr/am/archetype.rb",
@@ -41,6 +42,16 @@ Gem::Specification.new do |s|
     "lib/open_ehr/am/open_ehr_profile/data_types/text.rb",
     "lib/open_ehr/assumed_library_types.rb",
     "lib/open_ehr/parser.rb",
+    "lib/open_ehr/parser/adl.rb",
+    "lib/open_ehr/parser/adl_grammar.tt",
+    "lib/open_ehr/parser/adl_parser.rb",
+    "lib/open_ehr/parser/cadl_grammar.tt",
+    "lib/open_ehr/parser/dadl.rb",
+    "lib/open_ehr/parser/dadl_grammar.tt",
+    "lib/open_ehr/parser/exception.rb",
+    "lib/open_ehr/parser/scanner/adl_scanner.rb",
+    "lib/open_ehr/parser/shared_token_grammar.tt",
+    "lib/open_ehr/parser/validator.rb",
     "lib/open_ehr/parser/xml_perser.rb",
     "lib/open_ehr/rm.rb",
     "lib/open_ehr/rm/common.rb",
@@ -124,6 +135,48 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/assumed_library_types/iso8601_time_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/iso8601_timezone_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/time_definitions_spec.rb",
+    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.assumed_types.v1.adl",
+    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.basic_types.v1.adl",
+    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.basic_types_fail.v1.adl",
+    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.most_minimal.v1.adl",
+    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.structure_test1.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ACTION.imaging.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ACTION.referral.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.auscultation-chest.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.auscultation.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.dimensions-circumference.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.dimensions.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-abdomen.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-chest.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-fetus.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic-joint.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic-lymphnode.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-nervous_system.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-uterus.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-COMPOSITION.discharge.v1draft.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-COMPOSITION.encounter.v1draft.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-EVALUATION.adverse.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-INSTRUCTION.medication.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-INSTRUCTION.referral.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.Laboratory_request.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.follow_up.v1draft.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.imaging.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.medication-formulation.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.medication.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.referral.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-OBSERVATION.apgar.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-OBSERVATION.blood_pressure.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-OBSERVATION.body_mass_index.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.findings.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.reason_for_encounter.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.summary.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.vital_signs.v1.adl",
+    "spec/lib/open_ehr/parser/adl/openEHR-EHR-cadl_sample.v1.adl",
+    "spec/lib/open_ehr/parser/adl_parser_spec.rb",
+    "spec/lib/open_ehr/parser/base_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/archetyped_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_details_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_spec.rb",
@@ -243,9 +296,9 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/skoba/ruby-impl-openehr}
-  s.licenses = ["The openEHR Open Source Software license(mozilla tri-license)"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.7.2}
+  s.licenses = [%q{The openEHR Open Source Software license(mozilla tri-license)}]
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{1.8.7}
   s.summary = %q{Ruby implementation of the openEHR specification}
 
   if s.respond_to? :specification_version then
@@ -258,9 +311,17 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<builder>, [">= 0"])
       s.add_runtime_dependency(%q<jeweler>, [">= 0"])
       s.add_runtime_dependency(%q<i18n>, [">= 0"])
+      s.add_runtime_dependency(%q<treetop>, [">= 0"])
+      s.add_runtime_dependency(%q<polyglot>, [">= 0"])
+      s.add_runtime_dependency(%q<rdoc>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<guard-rspec>, [">= 0"])
-      s.add_development_dependency(%q<spork>, [">= 0"])
+      s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
+      s.add_development_dependency(%q<spork>, [">= 0.9.0.rc2"])
+      s.add_development_dependency(%q<guard-spork>, [">= 0"])
+      s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<rb-inotify>, [">= 0"])
+      s.add_development_dependency(%q<libnotify>, [">= 0"])
     else
       s.add_dependency(%q<xml-simple>, [">= 0"])
       s.add_dependency(%q<activesupport>, [">= 0"])
@@ -268,9 +329,17 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<builder>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<i18n>, [">= 0"])
+      s.add_dependency(%q<treetop>, [">= 0"])
+      s.add_dependency(%q<polyglot>, [">= 0"])
+      s.add_dependency(%q<rdoc>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<guard-rspec>, [">= 0"])
-      s.add_dependency(%q<spork>, [">= 0"])
+      s.add_dependency(%q<ruby-debug19>, [">= 0"])
+      s.add_dependency(%q<spork>, [">= 0.9.0.rc2"])
+      s.add_dependency(%q<guard-spork>, [">= 0"])
+      s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<rb-inotify>, [">= 0"])
+      s.add_dependency(%q<libnotify>, [">= 0"])
     end
   else
     s.add_dependency(%q<xml-simple>, [">= 0"])
@@ -279,9 +348,17 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<builder>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<i18n>, [">= 0"])
+    s.add_dependency(%q<treetop>, [">= 0"])
+    s.add_dependency(%q<polyglot>, [">= 0"])
+    s.add_dependency(%q<rdoc>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<guard-rspec>, [">= 0"])
-    s.add_dependency(%q<spork>, [">= 0"])
+    s.add_dependency(%q<ruby-debug19>, [">= 0"])
+    s.add_dependency(%q<spork>, [">= 0.9.0.rc2"])
+    s.add_dependency(%q<guard-spork>, [">= 0"])
+    s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<rb-inotify>, [">= 0"])
+    s.add_dependency(%q<libnotify>, [">= 0"])
   end
 end
 

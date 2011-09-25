@@ -8,6 +8,7 @@ gem 'jeweler'
 gem 'i18n'
 gem 'treetop'
 gem 'polyglot'
+gem 'rdoc'
 
 group :development, :test do
   gem 'rspec'
