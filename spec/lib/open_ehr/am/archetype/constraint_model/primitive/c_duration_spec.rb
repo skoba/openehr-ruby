@@ -10,6 +10,7 @@ describe CDuration do
     range = stub(Interval, :upper => assumed_value, :lower => default_value)
     @c_duration = CDuration.new(:assumed_value => assumed_value,
                                 :default_value => default_value,
+                                :type => 'Boolean',
                                 :range => range,
                                 :years_allowed => true,
                                 :months_allowed => false,
@@ -26,7 +27,7 @@ describe CDuration do
   end
 
   it 'type is DvDuration' do
-    @c_duration.type.should == 'DvDuration'
+    @c_duration.type.should == 'Boolean'
   end
 
   it 'years_allowed should be assigned properly' do

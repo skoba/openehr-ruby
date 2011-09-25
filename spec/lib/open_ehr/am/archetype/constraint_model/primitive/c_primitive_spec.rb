@@ -22,12 +22,6 @@ describe CPrimitive do
     @c_primitive.default_value.value.should == 'DEFAULT'
   end
 
-  it 'should raise ArgumentError when default_value is nil' do
-    lambda {
-      @c_primitive.default_value = nil
-    }.should raise_error ArgumentError
-  end
-
   it 'assumed_value should be assigned properly' do
     @c_primitive.assumed_value.value.should == 'ASSUMED'
   end
@@ -39,5 +33,9 @@ describe CPrimitive do
   it 'should not be true when assumed_value is not assigned' do
     @c_primitive.assumed_value = nil
     @c_primitive.should_not have_assumed_value
+  end
+
+  it 'type should not empty' do
+    expect {@c_primitive.type = ''}.to raise_error
   end
 end

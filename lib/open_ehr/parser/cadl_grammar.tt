@@ -379,42 +379,48 @@ module OpenEHR
       rule cardinality_spec
         occurrence_spec ';' white_space SYM_ORDERED ';' white_space SYM_UNIQUE {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
-                            :is_unique => true,
-                            :is_orderd => true)
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_orderd => true)
           end
         }
       / occurrence_spec ';' white_space SYM_ORDERED {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
-                            :is_orderd => true)
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_orderd => true)
           end
         }
       / occurrence_spec ';' white_space SYM_UNORDERD ';' white_space SYM_UNIQUE {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
-                            :is_unique => true,
-                            :is_orderd => false)
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_orderd => false)
           end
         }
       / occurrence_spec ';' white_space SYM_UNORDERD {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
-                            :is_orderd => false)
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_orderd => false)
           end
         }
       / occurrence_spec SYM_UNIQUE ';' white_space SYM_ORDERED {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
-                            :is_unique => true,
-                            :is_orderd => true)
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_orderd => true)
           end
         }
       / occurrence_spec SYM_UNIQUE ';' white_space SYM_UNORDERD {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(:interval => occurrence_spec.value,
-                            :is_unique => true,
-                            :is_ordered => false)
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_ordered => false)
           end
         }
       / occurrence_spec SYM_UNIQUE {
@@ -450,8 +456,9 @@ module OpenEHR
         }
       / cardinality_limit_value '' {
           def value
-            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => cardinality_limit_value.value,
-                         :upper => cardinality_limit_value.value)
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => cardinality_limit_value.value,
+              :upper => cardinality_limit_value.value)
           end
         }
       end
@@ -554,22 +561,26 @@ module OpenEHR
       rule c_string_spec
         string_list_value ',' SYM_LIST_CONTINUE {
           def value
-            string_list_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              :list => string_list_value.value)
           end
         }
       / string_list_value '' {
           def value
-            string_list_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              :list => string_list_value.value, :type => 'Boolean')
           end
         }
-      / V_REGEXP '' {
+      / pat:V_REGEXP '' {
           def value
-            V_REGEXP.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              :pattern => pat.value, :type => 'Boolean')
           end
         }
       / V_STRING '' {
           def value
-            V_STRING.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              :list => [V_STRING.value])
           end
         }
       end
@@ -577,19 +588,21 @@ module OpenEHR
       rule c_string
         c_string_spec (';' string_value)? {
           def value
+            c_string_spec.value
           end
         }
       end
 
       rule c_boolean_spec
-        SYM_TRUE (',' SYM_FALSE)?
+        SYM_TRUE (',' SYM_FALSE)? {
+        }
       / SYM_FALSE (',' SYM_TRUE)?
       end
 
       rule c_boolean
         c_boolean_spec ';' boolean_value {
           def value
-                        
+            c_boolean_spec.value
           end
         }
       / c_boolean_spec '' {
@@ -658,8 +671,7 @@ module OpenEHR
       rule boolean_expression
         boolean_node '' {
           def value
-            OpenEHR::AM::Archetype::Assertion::ExprItem.new(
-              :type => 'Boolean', :value => boolean_node.value)
+            boolean_node.value
           end
         }
       end
@@ -673,11 +685,11 @@ module OpenEHR
         }
       / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK {
           def value
-            {:path => relative_path.value,
-             :leaf => OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
-                        :item => c_primitive.value,
-                        :type => c_primitive.value.type,
-                        :reference_type => 'constraint')
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :item => c_primitive.value,
+              :type => c_primitive.value.type,
+              :path => relative_path.value,
+              :reference_type => 'constraint')
           end
         }
       / SYM_NOT boolean_leaf {

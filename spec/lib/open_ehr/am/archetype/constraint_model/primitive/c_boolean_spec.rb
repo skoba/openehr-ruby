@@ -6,6 +6,7 @@ describe CBoolean do
   before(:each) do
     default_value = DvBoolean.new(:value => true)
     @c_boolean = CBoolean.new(:default_value => true,
+                              :type => 'Boolean',
                               :true_valid => true,
                               :false_valid => true)
   end
@@ -23,7 +24,7 @@ describe CBoolean do
   end
 
   it 'type should be DvBoolean' do
-    @c_boolean.type.should == 'DvBoolean'
+    @c_boolean.type.should == 'Boolean'
   end
 
   it 'should raise ArgumentError when both true_valid and false_valid are false' do

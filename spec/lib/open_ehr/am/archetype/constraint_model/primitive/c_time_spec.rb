@@ -11,6 +11,7 @@ describe CTime do
                          :upper => ISO8601Time.new('23:55:59'))
     @c_time = CTime.new(:default_value => default_value,
                         :assumed_value => assumed_value,
+                        :type => 'Boolean',
                         :range => range,
                         :minute_validity => ValidityKind::MANDATORY,
                         :second_validity => ValidityKind::OPTIONAL,
@@ -22,7 +23,7 @@ describe CTime do
   end
 
   it 'type is DvTime' do
-    @c_time.type.should == 'DvTime'
+    @c_time.type.should == 'Boolean'
   end
 
   it 'minute_validity should be assigned' do

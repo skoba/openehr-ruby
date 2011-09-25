@@ -12,6 +12,7 @@ describe CDateTime do
     @c_date_time =
       CDateTime.new(:default_value => default_value,
                     :assumed_value => assumed_value,
+                    :type => 'Boolean',
                     :range => range,
                     :month_validity => ValidityKind::MANDATORY,
                     :day_validity => ValidityKind::MANDATORY,
@@ -27,7 +28,7 @@ describe CDateTime do
   end
 
   it 'type is DvDateTime' do
-    @c_date_time.type.should == 'DvDateTime'
+    @c_date_time.type.should == 'Boolean'
   end
 
   it 'hour_validity should be assigned properly' do

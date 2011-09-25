@@ -6,6 +6,7 @@ describe CInteger do
   before(:each) do
     @c_integer = CInteger.new(:default_value => 3,
                               :assumed_value => 2,
+                              :type => 'Integer',
                               :list => [1,2])
   end
 
@@ -14,7 +15,7 @@ describe CInteger do
   end
 
   it 'type is DvInteger' do
-    @c_integer.type.should == 'DvInteger'
+    @c_integer.type.should == 'Integer'
   end
 
   it 'should raise ArgumentError if both range and list are nil' do

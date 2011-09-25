@@ -197,7 +197,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of assertion0 is /clinical_synopsis\.v1/' do
-                    @assertion0.expression.item.should == '/clinical_synopsis\.v1/'
+                    @assertion0.expression.item.pattern.should == '/clinical_synopsis\.v1/'
                   end
                 end
               end

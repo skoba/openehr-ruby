@@ -21,10 +21,6 @@ describe CDate do
     @c_date.should be_an_instance_of CDate
   end
 
-  it 'type should be DvDate' do
-    @c_date.type.should == 'DvDate'
-  end
-
   it 'range should be assigned properly' do
     @c_date.range.upper.month.should be_equal 12
   end
