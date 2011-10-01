@@ -47,6 +47,10 @@ module OpenEHR
           def definition
             arch_definition.value
           end
+
+          def ontology
+            arch_ontology.value
+          end
         }
       end
 
@@ -148,7 +152,14 @@ module OpenEHR
       end
 
       rule arch_ontology
-        SYM_ONTOLOGY V_DADL_TEXT space
+        SYM_ONTOLOGY ontology:V_DADL_TEXT space {
+          def value
+            term_definitions = ontology.value[:term_definitions]
+            
+#            OpenEHR::AM:Archetype::Ontology::ArchetypeOntology.new(
+term_definitions
+          end
+        }
       end
     end
   end

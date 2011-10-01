@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 include OpenEHR::Parser
 include OpenEHR::AM::Archetype::ConstraintModel
 include OpenEHR::AM::Archetype::Assertion
+include OpenEHR::AM::Archetype::Ontology
 
 describe ADLParser do
 
@@ -188,7 +189,7 @@ describe ADLParser do
                     @assertion0 = @includes[0]
                   end
 
-                  it 'assertion0 should be an instance of assertion' do
+                  it 'assertion0 should be an instance of Assertion' do
                     @assertion0.should be_an_instance_of Assertion
                   end
 
@@ -200,10 +201,122 @@ describe ADLParser do
                     @assertion0.expression.item.pattern.should == '/clinical_synopsis\.v1/'
                   end
                 end
+
+                context '2nd assertion' do
+                  before(:all) do
+                    @assertion1 = @includes[1]
+                  end
+
+                  it 'assertion1 is an instanse of Assertion' do
+                    @assertion1.should be_an_instance_of Assertion
+                  end
+
+                  it 'Assertion1 type is Boolean' do
+                    @assertion1.expression.type.should == 'Boolean'
+                  end
+
+                  it 'expression value of assertion1 is /problem\.v1/' do
+                    @assertion1.expression.item.pattern.should ==
+                      '/problem\.v1/'
+                  end
+                end
+
+                context '3rd assertion' do
+                  before(:all) do
+                    @assertion2 = @includes[2]
+                  end
+
+                  it 'assertion2 is an instanse of Assertion' do
+                    @assertion2.should be_an_instance_of Assertion
+                  end
+
+                  it 'Assertion2 type is Boolean' do
+                    @assertion2.expression.type.should == 'Boolean'
+                  end
+
+                  it 'expression value of Assertion2 is /problem\.v1/' do
+                    @assertion2.expression.item.pattern.should ==
+                      '/problem-diagnosis\.v1/'
+                  end
+                end
+
+                context '4th assertion' do
+                  before(:all) do
+                    @assertion3 = @includes[3]
+                  end
+
+                  it 'assertion3 is an instanse of Assertion' do
+                    @assertion3.should be_an_instance_of Assertion
+                  end
+
+                  it 'Assertion3 type is Boolean' do
+                    @assertion3.expression.type.should == 'Boolean'
+                  end
+
+                  it 'expression value of assertion3 is /problem\.v1/' do
+                    @assertion3.expression.item.pattern.should ==
+                      '/problem-diagnosis-histological\.v1/'
+                  end
+                end
+
+                context '5th assertion' do
+                  before(:all) do
+                    @assertion4 = @includes[4]
+                  end
+
+                  it 'assertion4 is an instanse of Assertion' do
+                    @assertion4.should be_an_instance_of Assertion
+                  end
+
+                  it 'Assertion4 type is Boolean' do
+                    @assertion4.expression.type.should == 'Boolean'
+                  end
+
+                  it 'expression value of assertion4 is /problem\.v1/' do
+                    @assertion4.expression.item.pattern.should ==
+                      '/problem-genetic\.v1/'
+                  end
+                end
+
+                context '6th assertion' do
+                  before(:all) do
+                    @assertion5 = @includes[5]
+                  end
+
+                  it 'assertion5 is an instanse of Assertion' do
+                    @assertion5.should be_an_instance_of Assertion
+                  end
+
+                  it 'Assertion5 type is Boolean' do
+                    @assertion5.expression.type.should == 'Boolean'
+                  end
+
+                  it 'expression value of assertion5 is /problem\.v1/' do
+                    @assertion5.expression.item.pattern.should ==
+                      '/risk\.v1/'
+                  end
+                end
+
+                context '7th assertion(is null)' do
+                  it '7th assersion is nil' do
+                    @includes[6].should be_nil
+                  end
+                end
               end
             end
           end
         end #definition
+
+        context 'ontology section' do
+          before(:all) do
+            @archetype_ontology = @archetype.ontology
+          end
+
+          it 'is an ArchtypeOntology instance' do
+            @archetype_ontology.should be_an_instance_of ArchetypeOntology
+          end
+
+        end
       end
     end
   end

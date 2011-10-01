@@ -28,7 +28,8 @@ module OpenEHR
                                       :original_language => @result.original_language,
                                       :translation => @result.translations,
                                       :description => @result.description,
-                                      :definition => @result.definition)
+                                      :definition => @result.definition,
+                                      :ontology => @result.ontology)
         return archetype
       end
 
