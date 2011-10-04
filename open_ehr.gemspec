@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{open_ehr}
-  s.version = "0.9.0"
+  s.version = "0.9.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Shinji KOBAYASHI}, %q{Akimichi Tatsukawa}]
-  s.date = %q{2011-09-25}
+  s.date = %q{2011-10-04}
   s.description = %q{This project is an implementation of the openEHR specification on Ruby.}
   s.email = %q{skoba@moss.gr.jp}
   s.executables = [%q{adl_validator.rb}]
@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
     "Gemfile.lock",
     "Guardfile",
     "History.txt",
-    "Manifest.txt",
     "PostInstall.txt",
     "README.rdoc",
     "Rakefile",
