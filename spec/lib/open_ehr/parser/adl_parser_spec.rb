@@ -316,6 +316,24 @@ describe ADLParser do
             @archetype_ontology.should be_an_instance_of ArchetypeOntology
           end
 
+          it 'term_definitions parsed and assigned properly' do
+            @archetype_ontology.term_definition(:lang => 'en',
+               :code => 'at0000')[:text].should == 'Summary'
+          end
+
+          it 'description term_definitions parsed and assigned properly' do
+            @archetype_ontology.term_definition(:lang => 'en',
+               :code => 'at0000')[:description].should ==
+                 'A heading for conclusions and other evaluations'
+          end
+
+          it 'term_codes should be assigned properly' do
+            @archetype_ontology.term_codes.should == ['at0000']
+          end
+
+          it 'ArchetypeOntology has en lang' do
+            @archetype_ontology.should have_language 'en'
+          end
         end
       end
     end

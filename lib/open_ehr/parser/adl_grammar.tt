@@ -154,10 +154,18 @@ module OpenEHR
       rule arch_ontology
         SYM_ONTOLOGY ontology:V_DADL_TEXT space {
           def value
-            term_definitions = ontology.value[:term_definitions]
-            
-#            OpenEHR::AM:Archetype::Ontology::ArchetypeOntology.new(
-term_definitions
+            ao = ontology.value[:term_definitions]
+            term_definitions = {}
+            ao.map do |lang, term_defs|
+              items = term_defs[:items]
+              terms = items.map do |code, item|
+                OpenEHR::AM::Archetype::Ontology::ArchetypeTerm.new(
+                  :code => code.to_s, :items => item)
+              end
+              term_definitions[lang.to_s] = terms
+            end
+            OpenEHR::AM::Archetype::Ontology::ArchetypeOntology.new(
+              :term_definitions => term_definitions)
           end
         }
       end
