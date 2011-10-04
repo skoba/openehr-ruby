@@ -4,6 +4,9 @@ require 'polyglot'
 require 'treetop'
 
 include OpenEHR::Parser
+include OpenEHR::AM::Archetype
+include OpenEHR::RM::DataTypes::Text
+include OpenEHR::RM::Support::Identification
 
 module OpenEHR
   module Parser
@@ -22,14 +25,21 @@ module OpenEHR
       end
 
       def parse
-        archetype = ArchetypeMock.new(:archetype_id => @result.archetype_id,
-                                      :adl_version => @result.adl_version,
-                                      :concept => @result.concept,
-                                      :original_language => @result.original_language,
-                                      :translation => @result.translations,
-                                      :description => @result.description,
-                                      :definition => @result.definition,
-                                      :ontology => @result.ontology)
+        terminology_id = TerminologyID.new(:value => 'ISO_639-1')
+        original_language = CodePhrase.new(
+          :terminology_id => terminology_id,
+          :code_string => @result.original_language)
+        archetype_id = ArchetypeID.new(:value => @result.archetype_id)
+        definition = @result.definition
+        ontology = @result.ontology
+        archetype = Archetype.new(:archetype_id => archetype_id,
+                                  :adl_version => @result.adl_version,
+                                  :concept => @result.concept,
+                                  :original_language => original_language,
+                                  :translation => @result.translations,
+                                  :description => @result.description,
+                                  :definition => @result.definition,
+                                  :ontology => @result.ontology)
         return archetype
       end
 

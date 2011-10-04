@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 include OpenEHR::Parser
+include OpenEHR::AM::Archetype
 include OpenEHR::AM::Archetype::ConstraintModel
 include OpenEHR::AM::Archetype::Assertion
 include OpenEHR::AM::Archetype::Ontology
@@ -25,8 +26,13 @@ describe ADLParser do
           @archetype = @ap.parse
         end
 
+        it 'archetype is an instance of Archetype' do
+          @archetype.should be_an_instance_of Archetype
+        end
+
         it 'archetype_id should be openEHR-EHR-SECTION-summary' do
-          @archetype.archetype_id.should == 'openEHR-EHR-SECTION.summary.v1'
+          @archetype.archetype_id.value.should == 
+            'openEHR-EHR-SECTION.summary.v1'
         end
 
         it 'adl_version should be 1.4' do
@@ -38,7 +44,8 @@ describe ADLParser do
         end
 
         it 'original language is ISO_639-1::en' do
-          @archetype.original_language.should == 'ISO_639-1::en'
+          @archetype.original_language.code_string.should ==
+            'ISO_639-1::en'
         end
 
         context 'description' do

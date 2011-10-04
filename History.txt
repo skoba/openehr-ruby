@@ -1,11 +1,15 @@
-=== 0.6.1 2011-05-09
+=== 0.9.1 2011-10-04
+Archetype instance generated from ADL file.
 
-* First gem package release
+=== 0.9.0 2011-09
+* Fixed ADL parser and AOM generation
+
+=== 0.7.0 2011-05
+* Fixed ADL parser library
 
 === 0.6.2 2011-05-09
 * Fixed some package hierachy
 
-=== 0.7.0 2011-05
-* Fixed ADL parser library
-=== 0.9.0 2011-09
-* Fixed ADL parser and AOM generation
+=== 0.6.1 2011-05-09
+
+* First gem package release
