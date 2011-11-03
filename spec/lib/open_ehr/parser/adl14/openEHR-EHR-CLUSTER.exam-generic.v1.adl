@@ -1,0 +1,139 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-CLUSTER.exam-generic.v1
+specialize
+	openEHR-EHR-CLUSTER.exam.v1
+
+concept
+	[at0000.1]	-- Examination of a named body part
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"unknown">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"A generic cluster for recording findings on physical examination.">
+			use = <"">
+			keywords = <"examination", "physical">
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"Initial">
+	other_contributors = <>
+
+definition
+	CLUSTER[at0000.1] matches {	-- Examination of a named body part
+		items cardinality matches {0..*; unordered} matches {
+			ELEMENT[at0.9] matches {	-- Object
+				value matches {
+					DV_TEXT matches {*}
+				}
+			}
+			CLUSTER[at0004] occurrences matches {0..1} matches {	-- Normal statements
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0005] occurrences matches {0..*} matches {	-- Normal statement
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+				}
+			}
+			ELEMENT[at0002] occurrences matches {0..1} matches {	-- Clinical description
+				value matches {
+					DV_TEXT matches {*}
+				}
+			}
+			CLUSTER[at0008] occurrences matches {0..1} matches {	-- Findings
+				items cardinality matches {0..*; unordered} matches {
+					allow_archetype CLUSTER occurrences matches {0..*} matches {
+						include
+							archetype_id/value matches {/palpation\.v1draft/}
+							archetype_id/value matches {/auscultation\.v1draft/}
+							archetype_id/value matches {/inspection\.v1draft/}
+							archetype_id/value matches {/percussion\.v1draft/}
+						exclude
+							archetype_id/value matches {/.*/}
+					}
+					CLUSTER[at0.1] occurrences matches {0..1} matches {	-- Size
+						items cardinality matches {0..*; unordered} matches {
+							allow_archetype CLUSTER occurrences matches {0..1} matches {
+								include
+									archetype_id/value matches {/dimensions\.v1/}
+									archetype_id/value matches {/size\.v1draft/}
+							}
+						}
+					}
+					CLUSTER[at0003] occurrences matches {0..1} matches {	-- Detail
+						items cardinality matches {0..*; unordered} matches {
+							allow_archetype CLUSTER occurrences matches {0..1} matches {
+								include
+									archetype_id/value matches {/exam-generic\.v1/}
+							}
+						}
+					}
+				}
+			}
+			ELEMENT[at0006] occurrences matches {0..*} matches {	-- Image
+				value matches {
+					DV_MULTIMEDIA matches {
+						media_type matches {
+							[openEHR::
+							426, 
+							427, 
+							429]
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0.1"] = <
+					description = <"Information about the size of the object for examination">
+					text = <"Size">
+				>
+				["at0.9"] = <
+					description = <"The object of examination">
+					text = <"Object">
+				>
+				["at0000"] = <
+					description = <"Generic examination cluster for describing a finding on physical examination">
+					text = <"Examination">
+				>
+				["at0000.1"] = <
+					description = <"Generic examination cluster for describing a finding on physical examination">
+					text = <"Examination of a named body part">
+				>
+				["at0002"] = <
+					description = <"Textural description of the part examined">
+					text = <"Clinical description">
+				>
+				["at0003"] = <
+					description = <"More focused examination findings">
+					text = <"Detail">
+				>
+				["at0004"] = <
+					description = <"A group of statements about the normality of the examination">
+					text = <"Normal statements">
+				>
+				["at0005"] = <
+					description = <"A specific statement of normality">
+					text = <"Normal statement">
+				>
+				["at0006"] = <
+					description = <"Drawing or image of the area examined">
+					text = <"Image">
+				>
+				["at0008"] = <
+					description = <"Clinical findings">
+					text = <"Findings">
+				>
+			>
+		>
+	>

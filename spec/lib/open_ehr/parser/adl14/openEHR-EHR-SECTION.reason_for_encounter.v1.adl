@@ -1,0 +1,51 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-SECTION.reason_for_encounter.v1
+
+concept
+	[at0000]	-- Reason for encounter
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["date"] = <"9/01/2007">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"A heading to display the reason for encounter">
+			use = <"To record a symptom, problem or other reason for encounter">
+			keywords = <"rfe", "reason">
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"Initial">
+	other_contributors = <>
+
+definition
+	SECTION[at0000] matches {	-- Reason for encounter
+		items cardinality matches {0..*; unordered} matches {
+			allow_archetype OBSERVATION occurrences matches {1..*} matches {
+				include
+					archetype_id/value matches {/.*/}
+			}
+			allow_archetype EVALUATION occurrences matches {0..1} matches {
+				include
+					archetype_id/value matches {/.*/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"The reason(s) for this particular encounter">
+					text = <"Reason for encounter">
+				>
+			>
+		>
+	>

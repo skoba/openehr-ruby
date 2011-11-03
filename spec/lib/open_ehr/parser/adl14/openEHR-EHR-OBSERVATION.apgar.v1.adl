@@ -1,0 +1,545 @@
+archetype (adl_version=1.4)
+    openEHR-EHR-OBSERVATION.apgar.v1
+
+concept
+    [at0000]	-- Apgar score
+language
+    original_language = <[ISO_639-1::en]>
+    translations = <
+        ["de"] = <
+            language = <[ISO_639-1::de]>
+            author = <
+                ["name"] = <"Jasmin Buck, Sebastian Garde">
+                ["organisation"] = <"University of Heidelberg, Central Queensland University">
+            >
+        >
+        ["en-us"] = <
+            language = <[ISO_639-1::en-us]>
+            author = <
+                ["name"] = <"????">
+            >
+        >
+    >
+description
+    original_author = <
+        ["name"] = <"Sam Heard">
+        ["organisation"] = <"Ocean Informatics">
+        ["date"] = <"18/05/2004">
+        ["email"] = <"sam.heard@oceaninformatics.biz">
+    >
+    details = <
+        ["en-us"] = <
+            language = <[ISO_639-1::en-us]>
+            purpose = <"Record Apgar index or assessment for newborn. The root time of the event series is always birth.">
+            use = <"Allows recording of infant well-being at 1,2,5 and or 10 mintues after birth. The total may be recorded alone - if this is all that is available - but all five ordinal values should be completed in order that the total can be calculated. The total is the sum of the five ordinal values (min 0, max 10).">
+            keywords = <"apgar", "index", "score", "newborn">
+            misuse = <"Only partially completing the score and adding less than five values to give the total.">
+        >
+        ["en"] = <
+            language = <[ISO_639-1::en]>
+            purpose = <"Record Apgar index or assessment for newborn. The root time of the event series is always birth.">
+            use = <"Allows recording of infant well-being at 1,2,5 and or 10 mintues after birth. The total may be recorded alone - if this is all that is available - but all five ordinal values should be completed in order that the total can be calculated. The total is the sum of the five ordinal values (min 0, max 10).">
+            keywords = <"apgar", "newborn", "index", "score">
+            misuse = <"Only partially completing the score and adding less than five values to give the total.">
+        >
+        ["de"] = <
+            language = <[ISO_639-1::de]>
+            purpose = <"Zur Dokumentation des Apgar Wertes oder Beurteilung f%G�%@r Neugeborene. Der zu Grunde liegende Zeitpunkt der Ereignisreihe ist immer die Geburt.">
+            use = <"Erm%G�%@glicht die Dokumentation des Wohlergehens des S%G�%@uglings 1, 2, 5 und/ oder 10 Minuten nach der Geburt. Die Summe kann einzeln dokumentiert werden - falls nur diese verf%G�%@gbar ist - es sollten aber alle f%G�%@nf Zahlenwerte vervollst%G�%@ndigt werden, damit die Summe errechnet werden kann. Die Gesamtsumme ist die Summe der f%G�%@nf Zahlenwerte (minimal 0, maximal 10).">
+            keywords = <"Apgar", "Neugeborenes", "Index", "Wert">
+            misuse = <"Nur teilweise Vervollst%G�%@ndigung der Werte und Addieren von weniger als f%G�%@nf Werten zur Gesamtsumme.">
+        >
+    >
+    lifecycle_state = <"AuthorDraft">
+    other_contributors = <>
+
+definition
+    OBSERVATION[at0000] matches {	-- Apgar score
+        data matches {
+            HISTORY[at0002] matches {	-- history
+                events cardinality matches {1..*; unordered} matches {
+                    POINT_EVENT[at0003] occurrences matches {0..1} matches {	-- 1 minute
+                        offset matches {
+                            DV_DURATION matches {
+                                value matches {|PT1M|}
+                            }
+                        }
+                        data matches {
+                            ITEM_LIST[at0001] matches {	-- structure
+                                items cardinality matches {1..6; ordered} matches {
+                                    ELEMENT[at0005] occurrences matches {0..1} matches {	-- Heart rate
+                                        value matches {
+                                            0|[local::at0006], 	-- No heart beat
+                                            1|[local::at0007], 	-- Less than 100 beats per minute
+                                            2|[local::at0008]  	-- Greater than or equal to 100 beats per minute
+                                        }
+                                    }
+                                    ELEMENT[at0009] occurrences matches {0..1} matches {	-- Breathing
+                                        value matches {
+                                            0|[local::at0010], 	-- No effort
+                                            1|[local::at0011], 	-- Moderate effort
+                                            2|[local::at0012]  	-- Crying
+                                        }
+                                    }
+                                    ELEMENT[at0013] occurrences matches {0..1} matches {	-- Muscle tone
+                                        value matches {
+                                            0|[local::at0014], 	-- Limp
+                                            1|[local::at0015], 	-- Some flexing of arms and legs
+                                            2|[local::at0016]  	-- Active motion
+                                        }
+                                    }
+                                    ELEMENT[at0017] occurrences matches {0..1} matches {	-- Reflex response
+                                        value matches {
+                                            0|[local::at0018], 	-- No response to airways suction
+                                            1|[local::at0019], 	-- Grimace during airways suction
+                                            2|[local::at0020]  	-- Grimace and cough/sneeze during airways suction
+                                        }
+                                    }
+                                    ELEMENT[at0021] occurrences matches {0..1} matches {	-- Colour
+                                        value matches {
+                                            0|[local::at0022], 	-- Whole body is blue or pale
+                                            1|[local::at0023], 	-- Good colour in body, hands or feet blue 
+                                            2|[local::at0024]  	-- Completely pink or good colour
+                                        }
+                                    }
+                                    ELEMENT[at0025] matches {	-- Total
+                                        value matches {
+                                            DV_COUNT matches {
+                                                magnitude matches {|0..10|}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    POINT_EVENT[at0026] occurrences matches {0..1} matches {	-- 2 minute
+                        offset matches {
+                            DV_DURATION matches {
+                                value matches {|PT2M|}
+                            }
+                        }
+                        data matches {
+                            use_node ITEM_LIST /data[at0002]/events[at0003]/data[at0001]
+                        }
+                    }
+                    POINT_EVENT[at0027] occurrences matches {0..1} matches {	-- 5 minute
+                        offset matches {
+                            DV_DURATION matches {
+                                value matches {|PT5M|}
+                            }
+                        }
+                        data matches {
+                            use_node ITEM_LIST /data[at0002]/events[at0003]/data[at0001]
+                        }
+                    }
+                    POINT_EVENT[at0028] occurrences matches {0..1} matches {	-- 10 minute
+                        offset matches {
+                            DV_DURATION matches {
+                                value matches {|PT10M|}
+                            }
+                        }
+                        data matches {
+                            use_node ITEM_LIST /data[at0002]/events[at0003]/data[at0001]
+                        }
+                    }
+                }
+            }
+        }
+        protocol matches {
+            ITEM_LIST[at0029] matches {	-- List
+                items cardinality matches {0..*; unordered} matches {
+                    ELEMENT[at0030] occurrences matches {0..1} matches {	-- Notes on measurement
+                        value matches {
+                            DV_TEXT matches {*}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+ontology
+    terminologies_available = <"LNC205", ...>
+    term_definitions = <
+        ["en"] = <
+            items = <
+                ["at0000"] = <
+                    description = <"Clinical score derived from assessment of breathing, colour, muscle tone, heart rate and reflex response usually taken at 1, 5 and 10 minutes after birth">
+                    text = <"Apgar score">
+                >
+                ["at0001"] = <
+                    description = <"@ internal @">
+                    text = <"structure">
+                >
+                ["at0002"] = <
+                    description = <"@ internal @">
+                    text = <"history">
+                >
+                ["at0003"] = <
+                    description = <"Apgar score at one minute from birth">
+                    text = <"1 minute">
+                >
+                ["at0005"] = <
+                    description = <"Assessment of heart function in the new born">
+                    text = <"Heart rate">
+                >
+                ["at0006"] = <
+                    description = <"No heart beat is present (palpation at base of umbilical cord)">
+                    text = <"No heart beat">
+                >
+                ["at0007"] = <
+                    description = <"Heart rate of less than 100 beats per minute">
+                    text = <"Less than 100 beats per minute">
+                >
+                ["at0008"] = <
+                    description = <"Heart rate of greater than or equal to 100 beats per minute">
+                    text = <"Greater than or equal to 100 beats per minute">
+                >
+                ["at0009"] = <
+                    description = <"Assessment of the neonate's breathing effort">
+                    text = <"Breathing">
+                >
+                ["at0010"] = <
+                    description = <"No effort to breath">
+                    text = <"No effort">
+                >
+                ["at0011"] = <
+                    description = <"Some effort to breath, moving chest">
+                    text = <"Moderate effort">
+                >
+                ["at0012"] = <
+                    description = <"Crying or breathing normally">
+                    text = <"Crying">
+                >
+                ["at0013"] = <
+                    description = <"Assessment of the baby's muscle tone">
+                    text = <"Muscle tone">
+                >
+                ["at0014"] = <
+                    description = <"Limp or floppy and not moving spontaneously">
+                    text = <"Limp">
+                >
+                ["at0015"] = <
+                    description = <"Some movement and flexion of the arms or legs">
+                    text = <"Some flexing of arms and legs">
+                >
+                ["at0016"] = <
+                    description = <"Active and mobile">
+                    text = <"Active motion">
+                >
+                ["at0017"] = <
+                    description = <"Assessment of the response of the baby to suction from a nostril">
+                    text = <"Reflex response">
+                >
+                ["at0018"] = <
+                    description = <"No gag or response to suction of the airway">
+                    text = <"No response to airways suction">
+                >
+                ["at0019"] = <
+                    description = <"Grimace only as reaction to airways suction">
+                    text = <"Grimace during airways suction">
+                >
+                ["at0020"] = <
+                    description = <"Grimace and cough, sneeze or gag as response to airway suction">
+                    text = <"Grimace and cough/sneeze during airways suction">
+                >
+                ["at0021"] = <
+                    description = <"The colour of the skin on the body and trunk and limbs">
+                    text = <"Colour">
+                >
+                ["at0022"] = <
+                    description = <"The body is pale or blue in color">
+                    text = <"Whole body is blue or pale">
+                >
+                ["at0023"] = <
+                    description = <"The body is pink, hands and feet pale or blue">
+                    text = <"Good colour in body, hands or feet blue ">
+                >
+                ["at0024"] = <
+                    description = <"Pink or good color to whole body">
+                    text = <"Completely pink or good colour">
+                >
+                ["at0025"] = <
+                    description = <"The total of the ordinal scores for each parameter">
+                    text = <"Total">
+                >
+                ["at0026"] = <
+                    description = <"Apgar score 2 minutes after birth">
+                    text = <"2 minute">
+                >
+                ["at0027"] = <
+                    description = <"Apgar score 5 minutes after birth">
+                    text = <"5 minute">
+                >
+                ["at0028"] = <
+                    description = <"Apgar score 10 minutes after birth">
+                    text = <"10 minute">
+                >
+                ["at0029"] = <
+                    description = <"@ internal @">
+                    text = <"List">
+                >
+                ["at0030"] = <
+                    description = <"Notes on measurement of the apgar">
+                    text = <"Notes on measurement">
+                >
+            >
+        >
+        ["en-us"] = <
+            items = <
+                ["at0000"] = <
+                    description = <"Clinical score derived from assessment of breathing, colour, muscle tone, heart rate and reflex response usually taken at 1, 5 and 10 minutes after birth">
+                    text = <"Apgar score">
+                >
+                ["at0001"] = <
+                    description = <"@ internal @">
+                    text = <"structure">
+                >
+                ["at0002"] = <
+                    description = <"@ internal @">
+                    text = <"history">
+                >
+                ["at0003"] = <
+                    description = <"Apgar score at one minute from birth">
+                    text = <"1 minute">
+                >
+                ["at0005"] = <
+                    description = <"Assessment of heart function in the new born">
+                    text = <"Heart rate">
+                >
+                ["at0006"] = <
+                    description = <"No heart beat is present - palpation of the base of umbilical cord">
+                    text = <"No heart beat">
+                >
+                ["at0007"] = <
+                    description = <"Less than 100 beats per minute">
+                    text = <"Less than 100 beats per minute">
+                >
+                ["at0008"] = <
+                    description = <"Heart rate of greater than or equal to 100 beats per minute">
+                    text = <"Greater than or equal to 100 beats per minute">
+                >
+                ["at0009"] = <
+                    description = <"Assessment of the neonate's breathing effort">
+                    text = <"Breathing">
+                >
+                ["at0010"] = <
+                    description = <"No effort to breath">
+                    text = <"No effort">
+                >
+                ["at0011"] = <
+                    description = <"Some effort to breath">
+                    text = <"Moderate effort">
+                >
+                ["at0012"] = <
+                    description = <"Crying or breathing normally">
+                    text = <"Crying">
+                >
+                ["at0013"] = <
+                    description = <"Assessment of the baby's muscle tone">
+                    text = <"Muscle tone">
+                >
+                ["at0014"] = <
+                    description = <"Limp or floppy and not moving spontaneously">
+                    text = <"Limp">
+                >
+                ["at0015"] = <
+                    description = <"Some movement and flexion of the arms or legs">
+                    text = <"Some flexing of arms and legs">
+                >
+                ["at0016"] = <
+                    description = <"Active and mobile">
+                    text = <"Active motion">
+                >
+                ["at0017"] = <
+                    description = <"Assessment of the response of the baby to suction from a nostril">
+                    text = <"Reflex response">
+                >
+                ["at0018"] = <
+                    description = <"No gag or response to suction of the airway">
+                    text = <"No response to airways suction">
+                >
+                ["at0019"] = <
+                    description = <"Grimace only as reaction to airways suction">
+                    text = <"Grimace during airways suction">
+                >
+                ["at0020"] = <
+                    description = <"Grimace and cough, sneeze or gag as response to airway suction">
+                    text = <"Grimace and cough/sneeze during airways suction">
+                >
+                ["at0021"] = <
+                    description = <"The color of the skin on the body, trunk and limbs">
+                    text = <"Color">
+                >
+                ["at0022"] = <
+                    description = <"The body is gray or blue in color">
+                    text = <"Whole body is gray">
+                >
+                ["at0023"] = <
+                    description = <"The body is pink, hands and feet gray or blue">
+                    text = <"Good color in body, hands or feet blue">
+                >
+                ["at0024"] = <
+                    description = <"Pink or good color to whole body">
+                    text = <"Completely pink or good color">
+                >
+                ["at0025"] = <
+                    description = <"The total of the ordinal scores for each parameter">
+                    text = <"Score">
+                >
+                ["at0026"] = <
+                    description = <"Apgar score 2 minutes after birth">
+                    text = <"2 minute">
+                >
+                ["at0027"] = <
+                    description = <"Apgar score 5 minutes after birth">
+                    text = <"5 minute">
+                >
+                ["at0028"] = <
+                    description = <"Apgar score 10 minutes after birth">
+                    text = <"10 minute">
+                >
+                ["at0029"] = <
+                    description = <"@ internal @">
+                    text = <"List">
+                >
+                ["at0030"] = <
+                    description = <"Any notes on the measurement of the apgar">
+                    text = <"Notes on measurement">
+                >
+            >
+        >
+        ["de"] = <
+            items = <
+                ["at0000"] = <
+                    description = <"Klinischer Wert, abgeleitet von der Beurteilung der Atmung, der Hautfarbe, dem Muskeltonus, der Herzfrequenz und der Reaktion von Reflexen, %G�%@blicherweise 1, 5 und 10 Minuten nach der Geburt erhoben">
+                    text = <"Apgar Wert">
+                >
+                ["at0001"] = <
+                    description = <"@ internal @">
+                    text = <"Structure">
+                >
+                ["at0002"] = <
+                    description = <"@ internal @">
+                    text = <"History">
+                >
+                ["at0003"] = <
+                    description = <"Apgar Wert 1 Minute nach der Geburt">
+                    text = <"1 Minute">
+                >
+                ["at0005"] = <
+                    description = <"Beurteilung der Herzfunktion des Neubegorenen">
+                    text = <"Herzfrequenz">
+                >
+                ["at0006"] = <
+                    description = <"Kein Herzschlag vorhanden (Palpation am Ende der Nabelschnur)">
+                    text = <"Kein Herzschlag">
+                >
+                ["at0007"] = <
+                    description = <"Herzfrequenz von weniger als 100 Schl%G�%@gen pro Minute">
+                    text = <"Weniger als 100 Schl%G�%@ge pro Minute">
+                >
+                ["at0008"] = <
+                    description = <"Herzfrequenz von mehr als oder genau 100 Schl%G�%@gen pro Minute">
+                    text = <"Mehr als oder genau 100 Schl%G�%@ge pro Minute">
+                >
+                ["at0009"] = <
+                    description = <"Beurteilung des Atmungsbestreben des Neugeborenen">
+                    text = <"Atmung">
+                >
+                ["at0010"] = <
+                    description = <"Kein Bestreben zu atmen">
+                    text = <"Kein Bestreben">
+                >
+                ["at0011"] = <
+                    description = <"Etwas bestrebt zu atmen, bewegter Brustkorb">
+                    text = <"Geringes Bestreben">
+                >
+                ["at0012"] = <
+                    description = <"Normales Schreien oder normale Atmung">
+                    text = <"Schreien">
+                >
+                ["at0013"] = <
+                    description = <"Beurteilung des Muskeltonus des Neugeborenen">
+                    text = <"Muskeltonus">
+                >
+                ["at0014"] = <
+                    description = <"Schlaff oder schlapp und keine spontane Bewegung">
+                    text = <"Schlaff">
+                >
+                ["at0015"] = <
+                    description = <"Etwas Bewegung und Beugen der Arme oder der Beine">
+                    text = <"Beugen der Arme und Beine">
+                >
+                ["at0016"] = <
+                    description = <"Lebhaft und beweglich">
+                    text = <"Lebhafte Bewegung">
+                >
+                ["at0017"] = <
+                    description = <"Beurteilung der Reaktion des Neugeborenen auf die Absaugung der Nasenl%G�%@cher">
+                    text = <"Reflexantwort">
+                >
+                ["at0018"] = <
+                    description = <"kein W%G�%@rgen oder keine Reaktion auf das Absaugen der Atemwege">
+                    text = <"Keine Reaktion auf die Absaugung der Atemwege">
+                >
+                ["at0019"] = <
+                    description = <"Grimasse als einzige Reaktion auf das Absaugen der Atemwege">
+                    text = <"Grimasse w%G�%@hrend der Absaugung der Atemwege">
+                >
+                ["at0020"] = <
+                    description = <"Grimasse und husten, niesen oder w%G�%@rgen als Reaktion auf die Absaugung der Atemwege">
+                    text = <"Grimasse und Husten/Niesen w%G�%@hrend der Absaugung der Atemwege ">
+                >
+                ["at0021"] = <
+                    description = <"Die Farbe der Haut am K%G�%@rper, am Rumpf und an den Gliedern">
+                    text = <"Hautfarbe">
+                >
+                ["at0022"] = <
+                    description = <"Der K%G�%@rper ist blass oder blau gef%G�%@rbt">
+                    text = <"Gesamter K%G�%@rper ist blau oder blass">
+                >
+                ["at0023"] = <
+                    description = <"Der K%G�%@rper ist rosig, H%G�%@nde und F%G��%@e sind blass oder blau">
+                    text = <"Gesunde K%G�%@rperfarbe, blaue H%G�%@nde oder F%G��%@e">
+                >
+                ["at0024"] = <
+                    description = <"Rosige oder gesunde F%G�%@rbung des gesamten K%G�%@rpers">
+                    text = <"Vollst%G�%@ndig gesunde oder rosige Farbe">
+                >
+                ["at0025"] = <
+                    description = <"Die Summe der Zahlenwerte aller Parameter">
+                    text = <"Summe">
+                >
+                ["at0026"] = <
+                    description = <"Apgar Wert 2 Minuten nach der Geburt">
+                    text = <"2 Minuten">
+                >
+                ["at0027"] = <
+                    description = <"Apgar Wert 5 Minuten nach der Geburt">
+                    text = <"5 Minuten">
+                >
+                ["at0028"] = <
+                    description = <"Apgar Wert 10 Minuten nach der Geburt">
+                    text = <"10 Minuten">
+                >
+                ["at0029"] = <
+                    description = <"@ internal @">
+                    text = <"List">
+                >
+                ["at0030"] = <
+                    description = <"Anmerkungen zur Messung des Apgar Wertes">
+                    text = <"Anmerkungen zur Messung">
+                >
+            >
+        >
+    >
+    term_binding = <
+        ["LNC205"] = <
+            items = <
+                ["/data[at0002]/events[at0003]/data[at0001]/items[at0025]"] = <[LNC205::9272-6]>
+                ["/data[at0002]/events[at0028]/data/items[at0025]"] = <[LNC205::9271-8]>
+            >
+        >
+    >
