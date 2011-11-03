@@ -18,22 +18,22 @@ module OpenEHR
       end
 
       rule type_identifier
-        '(' id:V_TYPE_IDENTIFIER ')' {
+        '(' id:V_TYPE_IDENTIFIER ')' white_space {
           def value
             id.value
           end
         }
-      / '(' id:V_GENERIC_TYPE_IDENTIFIER ')' {
+      / '(' id:V_GENERIC_TYPE_IDENTIFIER ')' white_space {
           def value
             id.value
           end
         }
-      / id:V_TYPE_IDENTIFIER '' {
+      / id:V_TYPE_IDENTIFIER white_space {
           def value
             id.value
           end
         }
-      / id:V_GENERIC_TYPE_IDENTIFIER '' {
+      / id:V_GENERIC_TYPE_IDENTIFIER space {
           def value
             id.value
           end

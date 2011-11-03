@@ -40,9 +40,11 @@ Terminology and Demographic server will be implemented in other
 project.
 
 = Authors
+* Main codes
 Akimichi Tatsukawa, Shinji Kobayashi
-
 openEHR.jp, <http://openehr.jp>
+
+* ADL parser test cases are derived from Java and Eiffel.
 
 = Copyright
 The software, including all files in this directory and
@@ -67,4 +69,3 @@ Public Licence (GPL) and Lesser GNU General Public Licence (LGPL). See
 the Mozilla relicensing FAQ for details of this license. This in no
 way constrains the way in which software created by other
 organisations is licenced.
-

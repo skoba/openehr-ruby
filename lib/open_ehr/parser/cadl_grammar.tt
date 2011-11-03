@@ -122,18 +122,22 @@ module OpenEHR
       end
 
       rule archetype_internal_ref
-        SYM_USE_NODE type_identifier c_occurrences object_path {
+        SYM_USE_NODE type_identifier c_occurrences object_path space {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef(
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(
               :rm_type_name => type_identifier.value,
               :occurrences => c_occurrences.value,
               :path => object_path.value)
           end
         }
-      / SYM_USE_NODE type_identifier object_path {
+      / SYM_USE_NODE type_identifier object_path space {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef(
-              :rm_type_name => type_identifier.value, :path => object_path)
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(
+              :rm_type_name => type_identifier.value,
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :lower => 1, :upper => 1),
+              :path => object_path.value,
+              :target_path => object_path.value)
            end
         }
       end
@@ -251,13 +255,13 @@ module OpenEHR
       end
 
       rule c_attributes
-        c_attribute more_attr:(c_attribute)* {
+        c_attribute more_attr:(c_attribute white_space)* {
           def value
             attributes.map {|c| c.value}
           end
 
           def attributes
-            [c_attribute] + more_attr.elements.map {|e| e.attribute}
+            [c_attribute] + more_attr.elements.map {|e| e.c_attribute}
           end
         }
       end
@@ -577,10 +581,10 @@ module OpenEHR
               :pattern => pat.value, :type => 'Boolean')
           end
         }
-      / V_STRING '' {
+      / str:V_STRING '' {
           def value
             OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
-              :list => [V_STRING.value])
+              :list => [str.value])
           end
         }
       end
@@ -763,6 +767,12 @@ module OpenEHR
       end
 
 # path block
+      rule object_path
+        movable_path
+      / absolute_path
+      / relative_path
+      end
+
       rule movable_path
          SYM_MOVABLE_LEADER relative_path {
            def value

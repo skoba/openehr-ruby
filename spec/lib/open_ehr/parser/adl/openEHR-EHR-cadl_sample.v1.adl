@@ -1,9 +1,0 @@
-SECTION[at0000] matches {	-- Summary
-	items cardinality matches {0..*; unordered} matches {
-		allow_archetype EVALUATION occurrences matches {0..1} matches {
-			include
-				archetype_id/value matches {/clinical_synopsis\.v1/}				archetype_id/value matches {/problem\.v1/}					archetype_id/value matches {/problem-diagnosis\.v1/}
-				archetype_id/value matches {/problem-diagnosis-histological\.v1/}
-				archetype_id/value matches {/problem-genetic\.v1/}
-	}
-}

@@ -21,7 +21,7 @@ module OpenEHR
       end
 
       rule attr_vals
-        first:attr_val second:(';'? attr_val)* {
+        first:attr_val second:(';'? space attr_val space)* {
           def value
             val = {first.id.to_sym => first.value}
             second.elements.each do |e|

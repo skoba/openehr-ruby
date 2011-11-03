@@ -13,10 +13,10 @@ module OpenEHR
 
       rule archetype 
         arch_identification 
-        arch_specialisation?
+        spec:(arch_specialisation)?
         arch_concept
-        arch_language?
-        arch_description?
+        lang:(arch_language)?
+        desc:(arch_description)?
         arch_definition
         arch_invariant?
         arch_ontology {
@@ -33,15 +33,15 @@ module OpenEHR
 	  end
 
 	  def original_language
-            elements[3].original_language
+            lang.original_language
           end
 
           def translations
-            elements[3].translations
+            lang.translations
           end
 
           def description
-            elements[4].values
+            desc.values unless desc.empty?
           end
 
           def definition
@@ -61,48 +61,55 @@ module OpenEHR
 	  end
 
 	  def adl_version
-	    head.adl_version
+	    head.value[:adl_version]
 	  end
+
+          def is_controlled?
+            head.value[:is_controlled?]
+          end
         }
       end
 
       rule arch_head
-        SYM_ARCHETYPE m:arch_meta_data? {
-	  def adl_version
-            m.adl_version
+        SYM_ARCHETYPE m:arch_meta_data {
+	  def value
+            m.value
 	  end
 	}
+      / SYM_ARCHETYPE {
+          def value
+            Hash.new
+          end
+        }
       end
 
       rule arch_meta_data
         '(' arch_meta_data_items ')' space {
-	   def adl_version
-             arch_meta_data_items.adl_version
+	   def value
+             arch_meta_data_items.value
            end
          }
       end
 
       rule arch_meta_data_items
-        item:arch_meta_data_item (';' other_item:arch_meta_data_item)* {
-          def adl_version
-  	    item.adl_version
-          end
-
-	  def is_controled?
-	    item.is_controled? or other_item.map {|i| i.is_controled}
+        item:arch_meta_data_item other_item:(';' arch_meta_data_item)* {
+          def value
+	    v = item.value
+            other_item.elements.map {|i| i.arch_meta_data_item.value}
+            v
 	  end
         }
       end
 
       rule arch_meta_data_item
         SYM_ADL_VERSION SYM_EQ V_VERSION_STRING space {
-	  def adl_version
-	    elements[2].text_value
+	  def value
+            {:adl_version => elements[2].text_value}
           end
         }
       / SYM_IS_CONTROLED space {
-          def is_controled?
-	    true if elements[0]
+          def value
+	    {:is_controled? => true} # if elements[0]
           end
         }
       end
