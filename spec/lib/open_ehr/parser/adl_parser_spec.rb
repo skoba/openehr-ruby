@@ -39,7 +39,7 @@ describe ADLParser do
           @archetype.adl_version.should == '1.4'
         end
 
-        it 'concept should be at0000]' do
+        it 'concept should be at0000' do
           @archetype.concept.should == 'at0000'
         end
 
