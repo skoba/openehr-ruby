@@ -28,10 +28,11 @@ module OpenEHR
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
               :lower => 1, :upper => 1)
             if node.root?
-              args[:path] ||= '/'
+              node.path = '/'
             else
-              args[:path] ||= node.path + '[' + args[:node_id] + ']'
+              node.path = node.path + '[' + args[:node_id] + ']'
             end
+            args[:path] = node.path
             args.update body.value(node)
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
           end
@@ -39,7 +40,14 @@ module OpenEHR
       / c_complex_object_head '' {
           def value(node)
             args = c_complex_object_head.value
-            args[:path] ||= node.path
+            args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => 1, :upper => 1)
+            if node.root?
+              node.path = '/'
+            else
+              node.path = node.path + '[' + args[:node_id] + ']'
+            end
+            args[:path] = node.path
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
               :lower => 1, :upper => 1)
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
@@ -77,7 +85,7 @@ module OpenEHR
 
       rule c_complex_object_body
         c_any '' {
-          def value(node = nil)
+          def value(node)
             {:any_allowed? => true}
           end
         }
@@ -91,12 +99,12 @@ module OpenEHR
 
       rule c_object
         c_complex_object '' {
-          def value(node = nil)
+          def value(node)
             c_complex_object.value(node)
           end
         }
       / archetype_slot '' {
-          def value(node = nil)
+          def value(node)
             archetype_slot.value(node)
           end
         }
@@ -125,7 +133,7 @@ module OpenEHR
 
       rule archetype_internal_ref
         SYM_USE_NODE type_identifier c_occurrences object_path space {
-          def value(node = nil)
+          def value(node)
             OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(
               :rm_type_name => type_identifier.value,
               :occurrences => c_occurrences.value,
@@ -150,7 +158,7 @@ module OpenEHR
             args = c_archetype_slot_head.value
             args[:includes] = c_includes.value
             args[:excludes] = c_excludes.value
-            args[:path] ||= node.path
+            args[:path] = node.path
             OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
@@ -158,7 +166,7 @@ module OpenEHR
           def value(node = nil)
             args = c_archetype_slot_head.value
             args[:includes] = c_includes.value
-            args[:path] ||= node.path
+            args[:path] = node.path
             OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
@@ -166,7 +174,7 @@ module OpenEHR
           def value(node = nil)
             args = c_archetype_slot_head.value
             args[:excludes] = c_excludes.value
-            args[:path] ||= node.path
+            args[:path] = node.path
             OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
@@ -273,7 +281,6 @@ module OpenEHR
           def value(node)
             val = c_attr_head.value(node)
             child_node = ArchetypeNode.new(node)
-#            child_node.path = (node.root? ? '/' : node.path + '/') + val.rm_attribute_name
             child_node.path = node.path
             val.children = c_attr_body.value(child_node)
             val
@@ -283,8 +290,7 @@ module OpenEHR
 
       rule c_attr_head
         id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
-          def value(node = nil)
-#p node.path
+          def value(node)
             node.path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
              :rm_attribute_name => id.value,
@@ -294,8 +300,7 @@ module OpenEHR
           end
         }
       / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
-          def value(node = nil)
-#p node.path
+          def value(node)
             node.path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
              :rm_attribute_name => id.value,
@@ -304,8 +309,7 @@ module OpenEHR
           end
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
-          def value(node = nil)
-#p node.path
+          def value(node)
             node.path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
              :rm_attribute_name => id.value,
@@ -314,11 +318,11 @@ module OpenEHR
           end
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space {
-          def value(node = nil)
-#p node.path
-            node.path = (node.root? ? '/' : (node.path + '/')) + id.value
+          def value(node)
+
+            path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
-             :rm_attribute_name => id.value, :path => node.path)
+             :rm_attribute_name => id.value, :path => path)
           end
         }
       end

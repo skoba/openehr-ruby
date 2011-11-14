@@ -23,16 +23,27 @@ describe ADLParser do
      @wheels = @root.attributes[0]
     end
 
-    it 'wheels path is /whees' do
+    it 'wheels path is /wheels' do
       @wheels.path.should == '/wheels'
     end
 
-    context 'first wheel path' do
+    context 'first wheel' do
       before do
         @first_wheel = @wheels.children[0]
       end
-      it 'first wheel path is /wheels[at0001]' do
+
+      it 'path is /wheels[at0001]' do
         @first_wheel.path.should == '/wheels[at0001]'
+      end
+
+      it 'description path is /wheels[at0001]/description' do
+        description = @first_wheel.attributes[0]
+        description.path.should == '/wheels[at0001]/description'
+      end
+
+      it 'wheel parts path is /wheels[at0001]/parts' do
+        wheel_parts = @first_wheel.attributes[1]
+        wheel_parts.path.should == '/wheels[at0001]/parts'
       end
     end
   end
