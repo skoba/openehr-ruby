@@ -1,18 +1,17 @@
-require 'treetop'
-
 module OpenEHR
   module Parser
-    class ArchetypeNode
-      def initialize(parent)
-        @parent = parent
-      end
+    module CADL
+      class ArchetypeNode
+        attr_reader :parent
+        attr_accessor :path
 
-      def parent
-        
-      end
+        def initialize(parent = nil)
+          @parent = parent
+        end
 
-      def path
-        @path ||= '/'
+        def root?
+          return parent.nil?
+        end
       end
     end
   end
