@@ -30,7 +30,8 @@ module OpenEHR
             if node.root?
               node.path = '/'
             else
-              node.path = node.path + '[' + args[:node_id] + ']'
+p node.path
+              node.path = node.parent.path + '[' + args[:node_id] + ']'
             end
             args[:path] = node.path
             args.update body.value(node)
@@ -319,7 +320,6 @@ module OpenEHR
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space {
           def value(node)
-
             path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
              :rm_attribute_name => id.value, :path => path)
