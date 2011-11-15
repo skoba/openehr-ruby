@@ -30,8 +30,7 @@ module OpenEHR
             if node.root?
               node.path = '/'
             else
-p node.path
-              node.path = node.parent.path + '[' + args[:node_id] + ']'
+              node.path = node.path + '[' + args[:node_id] + ']'
             end
             args[:path] = node.path
             args.update body.value(node)
@@ -282,7 +281,7 @@ p node.path
           def value(node)
             val = c_attr_head.value(node)
             child_node = ArchetypeNode.new(node)
-            child_node.path = node.path
+            child_node.path = val.path
             val.children = c_attr_body.value(child_node)
             val
           end
@@ -302,19 +301,19 @@ p node.path
         }
       / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
           def value(node)
-            node.path = (node.root? ? '/' : (node.path + '/')) + id.value
+            path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
              :rm_attribute_name => id.value,
-             :path => node.path,
+             :path => path,
              :existence => c_existence.value)
           end
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
           def value(node)
-            node.path = (node.root? ? '/' : (node.path + '/')) + id.value
+            path = (node.root? ? '/' : (node.path + '/')) + id.value
             OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
              :rm_attribute_name => id.value,
-             :path => node.path,
+             :path => path,
              :cardinality => c_cardinality.value)
           end
         }
