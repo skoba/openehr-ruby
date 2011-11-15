@@ -19,7 +19,7 @@ describe ADLParser do
   end
 
   context 'wheels' do
-    before do
+    before(:all) do
      @wheels = @root.attributes[0]
     end
 
@@ -28,7 +28,7 @@ describe ADLParser do
     end
 
     context 'first wheel' do
-      before do
+      before(:all) do
         @first_wheel = @wheels.children[0]
       end
 
@@ -44,6 +44,37 @@ describe ADLParser do
       it 'wheel parts path is /wheels[at0001]/parts' do
         wheel_parts = @first_wheel.attributes[1]
         wheel_parts.path.should == '/wheels[at0001]/parts'
+      end
+
+      context 'under first wheel part node' do
+        before(:all) do
+          @wheel_part_node = @first_wheel.attributes[1].children[0]
+        end
+        
+        it 'wheel part node path is /wheels[at0001]/parts[at0002]' do
+          @wheel_part_node.path.should == '/wheels[at0001]/parts[at0002]'
+        end
+
+        context 'somthing of wheel part' do
+          before(:all) do
+            @something = @wheel_part_node.attributes[0]
+          end
+
+          it 'something of WHEEL_PART path is /wheels[at0001]/parts[at0002]/something' do
+            @something.path.should == '/wheels[at0001]/parts[at0002]/something'
+          end
+        end
+
+        context 'somthing else of wheel part' do
+          before(:all) do
+            @something_else = @wheel_part_node.attributes[1]
+          end
+
+          it 'something else of WHEEL_PART path is /wheels[at0001]/parts[at0002]/something_else' do
+            @something_else.path.should ==
+              '/wheels[at0001]/parts[at0002]/something_else'
+          end
+        end
       end
     end
   end
