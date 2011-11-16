@@ -4,15 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{open_ehr}
-  s.version = "0.9.1"
+  s.name = "open_ehr"
+  s.version = "0.9.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Shinji KOBAYASHI}, %q{Akimichi Tatsukawa}]
-  s.date = %q{2011-10-04}
-  s.description = %q{This project is an implementation of the openEHR specification on Ruby.}
-  s.email = %q{skoba@moss.gr.jp}
-  s.executables = [%q{adl_validator.rb}]
+  s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
+  s.date = "2011-11-16"
+  s.description = "This project is an implementation of the openEHR specification on Ruby."
+  s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -26,7 +25,6 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "bin/adl_validator.rb",
     "doc/openehr_terminology.xml",
     "lib/open_ehr.rb",
     "lib/open_ehr/am.rb",
@@ -45,10 +43,10 @@ Gem::Specification.new do |s|
     "lib/open_ehr/parser/adl_grammar.tt",
     "lib/open_ehr/parser/adl_parser.rb",
     "lib/open_ehr/parser/cadl_grammar.tt",
+    "lib/open_ehr/parser/cadl_node.rb",
     "lib/open_ehr/parser/dadl.rb",
     "lib/open_ehr/parser/dadl_grammar.tt",
     "lib/open_ehr/parser/exception.rb",
-    "lib/open_ehr/parser/scanner/adl_scanner.rb",
     "lib/open_ehr/parser/shared_token_grammar.tt",
     "lib/open_ehr/parser/validator.rb",
     "lib/open_ehr/parser/xml_perser.rb",
@@ -134,47 +132,99 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/assumed_library_types/iso8601_time_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/iso8601_timezone_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/time_definitions_spec.rb",
-    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.assumed_types.v1.adl",
-    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.basic_types.v1.adl",
-    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.basic_types_fail.v1.adl",
-    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.most_minimal.v1.adl",
-    "spec/lib/open_ehr/parser/adl/adl-test-ENTRY.structure_test1.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ACTION.imaging.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ACTION.referral.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.auscultation-chest.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.auscultation.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.dimensions-circumference.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.dimensions.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-abdomen.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-chest.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-fetus.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic-joint.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic-lymphnode.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-generic.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-nervous_system.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-CLUSTER.exam-uterus.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-COMPOSITION.discharge.v1draft.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-COMPOSITION.encounter.v1draft.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-EVALUATION.adverse.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-INSTRUCTION.medication.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-INSTRUCTION.referral.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.Laboratory_request.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.follow_up.v1draft.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.imaging.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.medication-formulation.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.medication.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-ITEM_TREE.referral.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-OBSERVATION.apgar.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-OBSERVATION.blood_pressure.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-OBSERVATION.body_mass_index.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.findings.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.reason_for_encounter.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.summary.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-SECTION.vital_signs.v1.adl",
-    "spec/lib/open_ehr/parser/adl/openEHR-EHR-cadl_sample.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.assumed_types.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.basic_types.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.basic_types_fail.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.most_minimal.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.structure_test1.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-SOME_TYPE.generic_type_basic.draft.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-SOME_TYPE.generic_type_use_node.draft.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-car.paths.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-car.use_node.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-composition.dv_coded_text.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_bindings.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_desc_missing_purpose.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_description.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_description2.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_identification.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_internal_ref.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_internal_ref2.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_language.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_language_no_accreditation.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_language_order_of_translation_details.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_ontology.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_slot.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_slot.test2.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.archetype_uncommonkeys.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.basic_types.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_code_phrase.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_ordinal.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_empty.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_full.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_full2.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_full3.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_item_units_only.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_list.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_property.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.c_dv_quantity_reversed.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.constraint_binding.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.constraint_ref.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.datetime.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.domain_types.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.durations.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.empty_other_contributors.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.missing_language.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.mixed_node_types.draft.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.most_minimal.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.multi_language.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.special_string.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.structure_test1.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.structure_test2.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.term_binding.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.term_binding2.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.testtranslations.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.translations_author_language.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.translations_language_author.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.unicode_BOM_support.test.adl",
+    "spec/lib/open_ehr/parser/adl14/adl-test-entry.unicode_support.test.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ACTION.imaging.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ACTION.referral.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.auscultation-chest.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.auscultation.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.dimensions-circumference.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.dimensions.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-abdomen.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-chest.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-fetus.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-generic-joint.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-generic-lymphnode.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-generic-mass.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-generic.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-nervous_system.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-CLUSTER.exam-uterus.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-COMPOSITION.discharge.v1draft.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-COMPOSITION.encounter.v1draft.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-EVALUATION.adverse.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-EVALUATION.columna_vertebral.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-INSTRUCTION.medication.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-INSTRUCTION.referral.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ITEM_TREE.Laboratory_request.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ITEM_TREE.follow_up.v1draft.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ITEM_TREE.imaging.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ITEM_TREE.medication-formulation.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ITEM_TREE.medication.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-ITEM_TREE.referral.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-OBSERVATION.apgar.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-OBSERVATION.blood_pressure.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-OBSERVATION.body_mass_index.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-OBSERVATION.testassumedvalue.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.findings.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.reason_for_encounter.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.summary.v1.adl",
+    "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.vital_signs.v1.adl",
     "spec/lib/open_ehr/parser/adl_parser_spec.rb",
+    "spec/lib/open_ehr/parser/adl_path_spec.rb",
     "spec/lib/open_ehr/parser/base_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/archetyped_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_details_spec.rb",
@@ -290,15 +340,14 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/serializer/sample_archetype_spec.rb",
     "spec/lib/open_ehr/serializer/xml_serializer_spec.rb",
     "spec/lib/open_ehr/terminology/open_ehr_terminology_spec.rb",
-    "spec/rcov.opts",
     "spec/spec.opts",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/skoba/ruby-impl-openehr}
-  s.licenses = [%q{The openEHR Open Source Software license(mozilla tri-license)}]
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.7}
-  s.summary = %q{Ruby implementation of the openEHR specification}
+  s.homepage = "http://github.com/skoba/ruby-impl-openehr"
+  s.licenses = ["The openEHR Open Source Software license(mozilla tri-license)"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.10"
+  s.summary = "Ruby implementation of the openEHR specification"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
