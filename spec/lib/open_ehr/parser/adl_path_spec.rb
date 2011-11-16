@@ -46,18 +46,18 @@ describe ADLParser do
         wheel_parts.path.should == '/wheels[at0001]/parts'
       end
 
-      context 'under first wheel part node' do
+      context 'parts node' do
         before(:all) do
-          @wheel_part_node = @first_wheel.attributes[1].children[0]
+          @parts_node = @first_wheel.attributes[1].children[0]
         end
         
-        it 'wheel part node path is /wheels[at0001]/parts[at0002]' do
-          @wheel_part_node.path.should == '/wheels[at0001]/parts[at0002]'
+        it 'parts node path is /wheels[at0001]/parts[at0002]' do
+          @parts_node.path.should == '/wheels[at0001]/parts[at0002]'
         end
 
         context 'somthing of wheel part' do
           before(:all) do
-            @something = @wheel_part_node.attributes[0]
+            @something = @parts_node.attributes[0]
           end
 
           it 'something of WHEEL_PART path is /wheels[at0001]/parts[at0002]/something' do
@@ -67,7 +67,7 @@ describe ADLParser do
 
         context 'somthing else of wheel part' do
           before(:all) do
-            @something_else = @wheel_part_node.attributes[1]
+            @something_else = @parts_node.attributes[1]
           end
 
           it 'something else of WHEEL_PART path is /wheels[at0001]/parts[at0002]/something_else' do
@@ -75,6 +75,105 @@ describe ADLParser do
               '/wheels[at0001]/parts[at0002]/something_else'
           end
         end
+      end
+    end
+
+    context 'second wheel' do
+      before(:all) do
+        @second_wheel = @wheels.children[1]
+      end
+
+      it 'path is /wheels[at0003]' do
+        @second_wheel.path.should == '/wheels[at0003]'
+      end
+
+      it 'description path is /wheels[at0003]/description' do
+        description = @second_wheel.attributes[0]
+        description.path.should == '/wheels[at0003]/description'
+      end
+
+      it 'wheel parts path is /wheels[at0003]/parts' do
+        wheel_parts = @second_wheel.attributes[1]
+        wheel_parts.path.should == '/wheels[at0003]/parts'
+      end
+
+      context 'parts node' do
+        before(:all) do
+          @parts_node = @second_wheel.attributes[1].children[0]
+        end
+
+        it 'wheel parts node path is /wheels[at0003]/parts' do
+          @parts_node.path.should == '/wheels[at0003]/parts'
+        end
+
+        it 'wheel parts node target path is /wheels[at0001]/parts[at0002]' do
+          @parts_node.target_path.should == '/wheels[at0001]/parts[at0002]'
+        end
+      end
+    end
+
+    context 'third wheel' do
+      before(:all) do
+        @third_wheel = @wheels.children[2]
+      end
+
+      it 'path is /wheels[at0004]' do
+        @third_wheel.path.should == '/wheels[at0004]'
+      end
+
+      it 'description path is /wheels[at0004]/description' do
+        description = @third_wheel.attributes[0]
+        description.path.should == '/wheels[at0004]/description'
+      end
+
+      context 'parts node' do
+        before(:all) do
+          @parts_node = @third_wheel.attributes[1].children[0]
+        end
+
+        it 'parts node path is /wheels[at0004]/parts' do
+          @parts_node.path.should == '/wheels[at0004]/parts'
+        end
+
+        it 'parts node target path is /wheels[at0001]/parts[at0002]' do
+          @parts_node.target_path.should == '/wheels[at0001]/parts[at0002]'
+        end
+      end
+    end
+
+    context 'fourth wheel' do
+      before(:all) do
+        @fourth_wheel = @wheels.children[3]
+      end
+
+      it 'path is /wheels[at0005]' do
+        @fourth_wheel.path.should == '/wheels[at0005]'
+      end
+
+      it 'description path is /wheels[at0005]/description' do
+        description = @fourth_wheel.attributes[0]
+        description.path.should == '/wheels[at0005]/description'
+      end
+
+      context 'parts node' do
+        before(:all) do
+          @parts_node = @fourth_wheel.attributes[1].children[0]
+        end
+
+        it 'parts node path is /wheels[at0005]/parts' do
+          @parts_node.path.should == '/wheels[at0005]/parts'
+        end
+
+        it 'parts node target path is /engine[at0001]/parts[at0002]' do
+          @parts_node.target_path.should == '/engine[at0001]/parts[at0002]'
+        end
+      end
+    end
+
+    context 'fifhth wheel' do
+      it 'fifth wheel is nil' do
+        fifth_wheel = @wheels.children[4]
+        fifth_wheel.should be_nil
       end
     end
   end

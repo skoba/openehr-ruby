@@ -3,7 +3,7 @@ module OpenEHR
     module CADL
       class ArchetypeNode
         attr_reader :parent
-        attr_accessor :path
+        attr_accessor :path, :id
 
         def initialize(parent = nil)
           @parent = parent
