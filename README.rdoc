@@ -5,7 +5,7 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-0.9.0b
+Release-0.9.2
 
 = Requirements
 
@@ -20,7 +20,7 @@ Release-0.9.0b
 
 == DESCRIPTION:
 
-This is the beta version 0.9.0 release of Ruby openEHR implementation
+This is the beta version 0.9.2 release of Ruby openEHR implementation
 project. This release is still experimental preview of our work based
 on openEHR specification release 1.0.2. We implemented almost of the
 specifications of the openEHR.  The work is still in progress. The
@@ -30,8 +30,8 @@ quickly with Ruby on Rails.
 Parser is nearly performing completely. We now consider to descrive
 archetype as another formalism such as YAML, instead of ADL.
 
-Almost all classes passed the test constructed by rspec2 (formaly used
-test/unit). These test specification are under /spec.
+Almost all classes passed the test constructed by RSpec2 (formaly used
+test/unit). These test specifications are under /spec.
 
 Some specifications are not well determined yet, such as rm/security
 and so on. We postponed to implement such classes.
@@ -44,7 +44,8 @@ project.
 Akimichi Tatsukawa, Shinji Kobayashi
 openEHR.jp, <http://openehr.jp>
 
-* ADL parser test cases are derived from Java and Eiffel.
+* ADL parser test cases are derived from Java and Eiffel
+reference implementation project of the openEHR.
 
 = Copyright
 The software, including all files in this directory and

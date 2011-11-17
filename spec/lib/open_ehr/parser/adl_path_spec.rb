@@ -1,9 +1,6 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 include OpenEHR::Parser
 include OpenEHR::AM::Archetype
-include OpenEHR::AM::Archetype::ConstraintModel
-include OpenEHR::AM::Archetype::Assertion
-include OpenEHR::AM::Archetype::Ontology
 
 describe ADLParser do
   before(:all) do
@@ -13,7 +10,6 @@ describe ADLParser do
     @root = ap.parse.definition
   end
 
-  
   it 'root path is /' do
     @root.path.should == '/'
   end

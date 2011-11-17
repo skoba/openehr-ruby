@@ -1,5 +1,5 @@
 archetype (adl_version=1.4)
-	adl-test-ENTRY.archetype_identification.draft
+	adl-test-ENTRY.archetype_identification.v1
 
 concept 
 	[at0000]	--  test
