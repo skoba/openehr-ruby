@@ -3,11 +3,14 @@ module OpenEHR
     module Archetype
       module Ontology
         class ArchetypeOntology
-          attr_accessor :specialisation_depth
+          attr_accessor :specialisation_depth, :primary_language
           attr_accessor :term_attribute_names, :term_bindings
+          attr_accessor :languages_available
           attr_reader :term_definitions, :constraint_definitions
 
           def initialize(args = { })
+            self.primary_language = args[:primary_language]
+            self.languages_available = args[:languages_available]
             self.specialisation_depth = args[:specialisation_depth]
             self.term_definitions = args[:term_definitions]
             if args[:constraint_definitions]

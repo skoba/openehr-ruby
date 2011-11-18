@@ -42,18 +42,6 @@ module OpenEHR
                                   :ontology => @result.ontology)
         return archetype
       end
-
-# temporary class for parser building
-
-      class ArchetypeMock
-        def initialize(args = { })
-          @params = args
-        end
-
-        def method_missing(name)
-          @params[name]
-        end
-      end
     end
   end # of Parser
 end # of OpenEHR

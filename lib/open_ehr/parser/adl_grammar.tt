@@ -41,7 +41,7 @@ module OpenEHR
           end
 
           def description
-            desc.values unless desc.empty?
+            desc.value unless desc.empty?
           end
 
           def definition
@@ -55,9 +55,9 @@ module OpenEHR
       end
 
       rule arch_identification
-        head:arch_head V_ARCHETYPE_ID space {
+        head:arch_head id:V_ARCHETYPE_ID space {
 	  def archetype_id
-            elements[1].text_value
+            id.value
 	  end
 
 	  def adl_version
@@ -102,9 +102,9 @@ module OpenEHR
       end
 
       rule arch_meta_data_item
-        SYM_ADL_VERSION SYM_EQ V_VERSION_STRING space {
+        SYM_ADL_VERSION SYM_EQ ver:V_VERSION_STRING space {
 	  def value
-            {:adl_version => elements[2].text_value}
+            {:adl_version => ver.value}
           end
         }
       / SYM_IS_CONTROLED space {
@@ -121,7 +121,7 @@ module OpenEHR
           end
 
 	  def archetype_id
-	    arch_id.text_value
+	    arch_id.value
 	  end
         }
       end
@@ -140,8 +140,37 @@ module OpenEHR
 
       rule arch_description
         SYM_DESCRIPTION desc:V_DADL_TEXT space {
-          def values
-            desc.value
+          def value
+            params = desc.value
+            details = params[:details].map do |lang, attrs|
+              term_id, la = attrs[:language].split('::')
+              terminology_id = 
+                OpenEHR::RM::Support::Identification::TerminologyID.new(
+                  :value => term_id)
+              item =
+                misuse = attrs[:misuse].empty? ? nil : attrs[:misuse]
+                OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
+                  :language => OpenEHR::RM::DataTypes::Text::CodePhrase.new(
+                                :terminology_id => term_id,
+                                :code_string => la),
+                  :purpose => attrs[:purpose],
+                  :keywords => attrs[:keywords],
+                  :use => attrs[:use],
+                  :misuse => misuse,
+                  :copyright => attrs[:copyright],
+                  :original_resource_uri => attrs[:original_resource_uri],
+                  :other_details => attrs[:other_details])
+              {lang => item}
+            end
+            other_contributers = params[:other_contributors]
+            other_contributors = other_contributors.value unless other_contributors
+            OpenEHR::RM::Common::Resource::ResourceDescription.new(
+              :original_author => params[:original_author],
+              :other_contributors => other_contributors,
+              :lifecycle_state => params[:lifecycle_state],
+              :details => details,
+              :resource_package_uri => params[:archetype_package_uri],
+              :other_details => params[:other_details])
           end
         }
       end
@@ -163,7 +192,7 @@ module OpenEHR
           def value
             ao = ontology.value[:term_definitions]
             term_definitions = {}
-            ao.map do |lang, term_defs|
+            ao.each do |lang, term_defs|
               items = term_defs[:items]
               terms = items.map do |code, item|
                 OpenEHR::AM::Archetype::Ontology::ArchetypeTerm.new(

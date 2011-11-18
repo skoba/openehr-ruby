@@ -1,12 +1,12 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 include OpenEHR::Parser
-include OpenEHR::AM::Archetype
+
 
 describe ADLParser do
   before(:all) do
     adl_dir = File.dirname(__FILE__) + '/adl14/'
     adl_path_test_file = 'adl-test-car.paths.test.adl'
-    ap = OpenEHR::Parser::ADLParser.new(adl_dir + adl_path_test_file)
+    ap = ADLParser.new(adl_dir + adl_path_test_file)
     @root = ap.parse.definition
   end
 

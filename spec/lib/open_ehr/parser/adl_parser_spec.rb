@@ -13,7 +13,7 @@ describe ADLParser do
 
   context 'openEHR-EHR-SECTION-summary.v1.adl' do
     before(:all) do
-      @ap = OpenEHR::Parser::ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
+      @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
     end
 
     it 'is an instance fo ADLParser' do
@@ -55,7 +55,7 @@ describe ADLParser do
 
           context 'original author' do
             before(:all) do
-              @original_author = @description[:original_author]
+              @original_author = @description.original_author
             end
 
             it 'name is Sam Heard' do

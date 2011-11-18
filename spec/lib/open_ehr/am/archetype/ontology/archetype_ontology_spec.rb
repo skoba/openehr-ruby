@@ -16,7 +16,9 @@ describe ArchetypeOntology do
     bind = {'at0000' => code_phrase}
     term_bindings = {'SNOMED-CT(2003)' => [bind]}
     @archetype_ontology =
-      ArchetypeOntology.new(:term_definitions => term_definitions,
+      ArchetypeOntology.new(:primary_language => "ja",
+                            :languages_available => ['ja', 'en'],
+                            :term_definitions => term_definitions,
                             :constraint_definitions => constraint_definitions,
                             :term_bindings => term_bindings,
                             :specialisation_depth => 0)
@@ -28,6 +30,14 @@ describe ArchetypeOntology do
 
   it 'specialisation depth should be assigned properly' do
     @archetype_ontology.specialisation_depth.should be_equal 0
+  end
+
+  it 'primary language is ja' do
+    @archetype_ontology.primary_language.should == 'ja'
+  end
+
+  it 'languages available are ja, en' do
+    @archetype_ontology.languages_available.should == ['ja', 'en']
   end
 
   it 'term_definition should be assigned properly' do

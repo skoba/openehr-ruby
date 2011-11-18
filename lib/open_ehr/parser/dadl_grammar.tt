@@ -23,23 +23,19 @@ module OpenEHR
       rule attr_vals
         first:attr_val second:(';'? space attr_val space)* {
           def value
-            val = {first.id.to_sym => first.value}
-            second.elements.each do |e|
-              val[e.attr_val.id.to_sym] = e.attr_val.value
-            end
-            val
-          end    
+            attrs.inject({ }) {|val, a| val.update a.value}
+          end
+
+          def attrs
+            [first] + second.elements.map {|e| e.attr_val}
+          end
         }
       end
 
       rule attr_val
         attr_id SYM_EQ object_block {
-          def id
-            attr_id.value
-          end
-
           def value
-            object_block.value
+            {attr_id.value.to_sym =>  object_block.value}
           end
         }
       end
@@ -99,25 +95,17 @@ module OpenEHR
       end
 
       rule keyed_objects
-        keyed_object+ {
+        keyed_object+  {
           def value
-            val = {}
-            elements.each do |e|
-              val[e.key.to_sym] = e.value
-            end
-            val
+            elements.inject({ }) {|val, e| val.update e.value}
           end
         }
       end
 
       rule keyed_object
         object_key SYM_EQ object_block {
-          def key
-            object_key.value
-          end
-
           def value
-            object_block.value
+            {object_key.value.to_sym => object_block.value}
           end
         }
       end
@@ -132,9 +120,9 @@ module OpenEHR
 
       rule single_attr_object_block
         type_identifier? untyped_single_attr_object_block {
-           def value
-             untyped_single_attr_object_block.value
-           end
+          def value
+            untyped_single_attr_object_block.value
+          end
         }
       end
 
@@ -182,12 +170,12 @@ module OpenEHR
             simple_list_value.value
           end
         }
-      / simple_interval_value {
+      / simple_interval_value '' {
           def value
             simple_interval_value.value
           end
         }
-      / term_code_list_value {
+      / term_code_list_value '' {
           def value
             term_code_list_value.value
           end
@@ -326,7 +314,7 @@ module OpenEHR
             date_time_interval_value.value
           end
         }
-      / duration_interval_value {
+      / duration_interval_value '' {
           def value
             duration_interval_value.value
           end
@@ -342,8 +330,20 @@ module OpenEHR
       end
 
       rule term_code_list_value
-        term_code (',' term_code)+ 
-      / term_code ',' SYM_LIST_CONTINUE
+        first:term_code more:(',' term_code)+ {
+          def value
+            term_codes.map {|t| t.value}
+          end
+
+          def term_codes
+            [first] + more.elements.map {|e| e.term_code}
+          end
+        }
+      / term_code ',' SYM_LIST_CONTINUE {
+          def value
+            [term_code.value]
+          end
+        }
       end
 
       rule uri_value
