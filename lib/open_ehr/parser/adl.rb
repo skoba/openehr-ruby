@@ -1,3 +1,7 @@
+include OpenEHR::RM::Support::Identification
+include OpenEHR::RM::Common::Resource
+include OpenEHR::RM::DataTypes::Text
+
 module OpenEHR
   module Parser
     module ADLGrammar
@@ -6,12 +10,46 @@ module OpenEHR
       end
 
       class ArchLanguage < Base
-        def original_language
-          lang.value[:original_language]
+        def value
+          Language.new(lang.value)
         end
+      end
 
-        def translations
-          lang.value[:translations]
+
+      class Language
+        attr_reader :original_language, :translations
+        
+        def initialize(value)
+          self.original_language = value['original_language']
+          self.translations = value['translations']
+        end
+        
+        def original_language=(original_language)
+          @original_language = code2lang original_language
+        end
+        
+        def translations=(translations)
+          if translations.nil?
+            @translations = nil
+          else
+            tr = translations.inject({ }) do |trans, lang|
+              code, details  = lang
+              td = TranslationDetails.new(
+                     :language => code2lang(details['language']),
+                     :author => details['author'],
+                     :accreditation => details['accreditation'],
+                     :other_details => details['other_details'])
+              trans.update Hash[code, td]
+            end
+            @translations = tr
+          end
+        end
+        
+        protected
+        def code2lang(code)
+          ti, la = code.split '::'
+          ti = TerminologyID.new(:value => ti)
+          CodePhrase.new(:code_string => la, :terminology_id => ti)
         end
       end
     end

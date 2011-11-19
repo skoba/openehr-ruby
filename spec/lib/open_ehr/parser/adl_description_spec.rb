@@ -107,12 +107,12 @@ describe ADLParser do
           end
 
           it 'ligne guide is http://guidelines.are.us/wherever/fr' do
-            @original_resource_uri[:'ligne guide'].should ==
+            @original_resource_uri['ligne guide'].should ==
               'http://guidelines.are.us/wherever/fr'
           end
 
           it 'medline is http://some%20medline%20ref' do
-            @original_resource_uri[:medline].should == 'http://some%20medline%20ref'
+            @original_resource_uri['medline'].should == 'http://some%20medline%20ref'
           end
         end
       end
@@ -148,6 +148,17 @@ describe ADLParser do
       it 'other 2 is detals 2' do
         @other_details['other 2'].should == 'details 2'
       end
+    end
+  end
+
+  context 'failed for empty other contributors' do
+    before(:all) do
+      adl_dir = File.dirname(__FILE__) + '/adl14/'
+      @ap = ADLParser.new(adl_dir + 'adl-test-entry.archetype_description2.test.adl')
+    end
+
+    it 'fails empty other comtributors' do
+      @ap.parse.should raise_error
     end
   end
 end

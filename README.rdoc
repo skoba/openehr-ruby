@@ -12,9 +12,8 @@ Release-0.9.3
 * Ruby 1.9.2 reccomended
 * RubyGems
 * Tested with Ruby 1.9.2 on Linux and FreeBSD.
-* If you use early version of Ruby 1.8, you should
-  prepare racc runtime environment and some
-  adjustment. We do not support Ruby 1.6 anymore.
+* It would work with some adjustment on Ruby 1.8 or earlier,
+  but not confirmed.
 * It should work on other platforms with Ruby
   support as well.
 

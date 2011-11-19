@@ -33,7 +33,7 @@ module OpenEHR
                                   :adl_version => @result.adl_version,
                                   :concept => @result.concept,
                                   :original_language => original_language,
-                                  :translation => @result.translations,
+                                  :translations => @result.translations,
                                   :description => @result.description,
                                   :definition => @result.definition,
                                   :ontology => @result.ontology)

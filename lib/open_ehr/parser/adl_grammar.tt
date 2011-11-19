@@ -33,15 +33,11 @@ module OpenEHR
 	  end
 
 	  def original_language
-            tid, la = lang.original_language.split('::')
-            OpenEHR::RM::DataTypes::Text::CodePhrase.new(
-              :terminology_id => 
-                OpenEHR::RM::Support::Identification::TerminologyID.new(:value => tid),
-              :code_string => la)
+            lang.value.original_language
           end
 
           def translations
-            lang.translations
+            lang.value.translations
           end
 
           def description
@@ -147,40 +143,34 @@ module OpenEHR
           def value
             params = desc.value
             details = { }
-            params[:details].each do |lang, attrs|
-              term_id, la = attrs[:language].split('::')
+            params['details'].each do |lang, attrs|
+              term_id, la = attrs['language'].split('::')
               terminology_id = 
                 OpenEHR::RM::Support::Identification::TerminologyID.new(
                   :value => term_id)
-              misuse = attrs[:misuse].empty? ? nil : attrs[:misuse]
+              misuse = attrs['misuse'].empty? ? nil : attrs['misuse']
               item =
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
                   :language => OpenEHR::RM::DataTypes::Text::CodePhrase.new(
                                 :terminology_id => terminology_id,
                                 :code_string => la),
-                  :purpose => attrs[:purpose],
-                  :keywords => attrs[:keywords],
-                  :use => attrs[:use],
+                  :purpose => attrs["purpose"],
+                  :keywords => attrs["keywords"],
+                  :use => attrs["use"],
                   :misuse => misuse,
-                  :copyright => attrs[:copyright],
-                  :original_resource_uri => attrs[:original_resource_uri],
-                  :other_details => attrs[:other_details])
-              details[lang.to_s] = item
+                  :copyright => attrs['copyright'],
+                  :original_resource_uri => attrs['original_resource_uri'],
+                  :other_details => attrs['other_details'])
+              details[lang] = item
             end
-            oc = params[:other_contributors].nil? ? nil : params[:other_contributors].values
-            original_author = key_s params[:original_author]
-            other_details = key_s params[:other_details] if params[:other_details] 
+            oc = params['other_contributors'].nil? ? nil : params['other_contributors'].values
             OpenEHR::RM::Common::Resource::ResourceDescription.new(
-              :original_author => original_author,
+              :original_author => params['original_author'],
               :other_contributors => oc,
-              :lifecycle_state => params[:lifecycle_state],
+              :lifecycle_state => params['lifecycle_state'],
               :details => details,
-              :resource_package_uri => params[:archetype_package_uri],
-              :other_details => other_details)
-          end
-
-          def key_s(hash)
-            hash.inject({ }) {|h,i| h.update Hash[i[0].to_s,i[1]]}
+              :resource_package_uri => params['archetype_package_uri'],
+              :other_details => params['other_details'])
           end
         }
       end
@@ -200,15 +190,15 @@ module OpenEHR
       rule arch_ontology
         SYM_ONTOLOGY ontology:V_DADL_TEXT space {
           def value
-            ao = ontology.value[:term_definitions]
+            ao = ontology.value['term_definitions']
             term_definitions = {}
             ao.each do |lang, term_defs|
-              items = term_defs[:items]
+              items = term_defs['items']
               terms = items.map do |code, item|
                 OpenEHR::AM::Archetype::Ontology::ArchetypeTerm.new(
-                  :code => code.to_s, :items => item)
+                  :code => code, :items => item)
               end
-              term_definitions[lang.to_s] = terms
+              term_definitions[lang] = terms
             end
             OpenEHR::AM::Archetype::Ontology::ArchetypeOntology.new(
               :term_definitions => term_definitions)

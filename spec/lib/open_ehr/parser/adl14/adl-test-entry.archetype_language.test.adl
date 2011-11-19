@@ -1,5 +1,5 @@
 archetype 
-	adl-test-ENTRY.archetype_language.draft
+	adl-test-ENTRY.archetype_language.v1
 	
 concept 
 	[at0000]	--  test
