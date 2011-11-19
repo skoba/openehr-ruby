@@ -43,9 +43,8 @@ describe ADLParser do
           @archetype.concept.should == 'at0000'
         end
 
-        it 'original language is ISO_639-1::en' do
-          @archetype.original_language.code_string.should ==
-            'ISO_639-1::en'
+        it 'original language is en' do
+          @archetype.original_language.code_string.should == 'en'
         end
 
         context 'description' do
@@ -77,7 +76,7 @@ describe ADLParser do
 
           context 'details' do
             before(:all) do
-              @details = @description[:details]
+              @details = @description.details
             end
 
             context 'en details' do
@@ -85,33 +84,33 @@ describe ADLParser do
                 @en = @details[:en]
               end
 
-              it 'language is ISO_639-1::en' do
-                @en[:language].should == 'ISO_639-1::en'
+              it 'language is en' do
+                @en.language.code_string.should == 'en'
               end 
 
               it 'purpose is A heading...' do
-                @en[:purpose].should == "A heading containing summary information based on particular evaluation entries"
+                @en.purpose.should == "A heading containing summary information based on particular evaluation entries"
               end
 
               it 'use is A heading for...' do
-                @en[:use].should == "A heading for organising clinical data under a heading of summary"
+                @en.use.should == "A heading for organising clinical data under a heading of summary"
               end
 
               it 'keywords are review, conclusions, risk' do
-                @en[:keywords].should == ['review', 'conclusions', 'risk']
+                @en.keywords.should == ['review', 'conclusions', 'risk']
               end
 
-              it 'misuse should empty' do
-                @en[:misuse].should == ''
+              it 'misuse should be nil' do
+                @en.misuse.should be_nil
               end
             end
 
             it 'lifecycle_state is Initial' do
-              @description[:lifecycle_state].should == 'Initial'
+              @description.lifecycle_state.should == 'Initial'
             end
 
             it 'other_contributors is nil' do
-              @description[:other_contributors].should be_nil
+              @description.other_contributors.should be_nil
             end
           end # of details
         end # of description

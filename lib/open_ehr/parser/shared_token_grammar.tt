@@ -525,9 +525,9 @@ module OpenEHR
       end
 
       rule date_time_value
-        V_ISO8601_EXTENDED_DATE_TIME {
+        dt:V_ISO8601_EXTENDED_DATE_TIME '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(text_value)
+            OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(dt.text_value)
           end
         }
       end
@@ -626,9 +626,9 @@ module OpenEHR
       end
 
       rule duration_value
-        V_ISO8601_DURATION {
+        V_ISO8601_DURATION '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601Duration(text_value)
+            OpenEHR::AssumedLibraryTypes::ISO8601Duration(V_ISO8601_DURATION.text_value)
           end
         }
       end

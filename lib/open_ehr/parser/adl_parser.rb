@@ -25,10 +25,7 @@ module OpenEHR
       end
 
       def parse
-        terminology_id = TerminologyID.new(:value => 'ISO_639-1')
-        original_language = CodePhrase.new(
-          :terminology_id => terminology_id,
-          :code_string => @result.original_language)
+        original_language = @result.original_language
         archetype_id = ArchetypeID.new(:value => @result.archetype_id)
         definition = @result.definition
         ontology = @result.ontology

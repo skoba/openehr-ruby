@@ -17,7 +17,6 @@ describe ADLParser do
     it 'lifecycle state is AuthorDraft' do
       @description.lifecycle_state.should == 'AuthorDraft'
     end
-
     it 'resource package uri is www.aihw.org.au/data_sets/diabetic_archetypes.html' do
       @description.resource_package_uri.should == 'www.aihw.org.au/data_sets/diabetic_archetypes.html'
     end

@@ -33,7 +33,11 @@ module OpenEHR
 	  end
 
 	  def original_language
-            lang.original_language
+            tid, la = lang.original_language.split('::')
+            OpenEHR::RM::DataTypes::Text::CodePhrase.new(
+              :terminology_id => 
+                OpenEHR::RM::Support::Identification::TerminologyID.new(:value => tid),
+              :code_string => la)
           end
 
           def translations
@@ -142,13 +146,14 @@ module OpenEHR
         SYM_DESCRIPTION desc:V_DADL_TEXT space {
           def value
             params = desc.value
-            details = params[:details].map do |lang, attrs|
+            details = { }
+            params[:details].each do |lang, attrs|
               term_id, la = attrs[:language].split('::')
               terminology_id = 
                 OpenEHR::RM::Support::Identification::TerminologyID.new(
                   :value => term_id)
+              misuse = attrs[:misuse].empty? ? nil : attrs[:misuse]
               item =
-                misuse = attrs[:misuse].empty? ? nil : attrs[:misuse]
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
                   :language => OpenEHR::RM::DataTypes::Text::CodePhrase.new(
                                 :terminology_id => term_id,
@@ -160,13 +165,12 @@ module OpenEHR
                   :copyright => attrs[:copyright],
                   :original_resource_uri => attrs[:original_resource_uri],
                   :other_details => attrs[:other_details])
-              {lang => item}
+              details[lang] = item
             end
-            other_contributers = params[:other_contributors]
-            other_contributors = other_contributors.value unless other_contributors
+            oc = params[:other_contributors].values if params[:other_contributors]
             OpenEHR::RM::Common::Resource::ResourceDescription.new(
               :original_author => params[:original_author],
-              :other_contributors => other_contributors,
+              :other_contributors => oc,
               :lifecycle_state => params[:lifecycle_state],
               :details => details,
               :resource_package_uri => params[:archetype_package_uri],
