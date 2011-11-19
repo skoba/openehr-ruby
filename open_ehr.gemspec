@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "open_ehr"
-  s.version = "0.9.2"
+  s.version = "0.9.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2011-11-16"
+  s.date = "2011-11-19"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -223,6 +223,8 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.reason_for_encounter.v1.adl",
     "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.summary.v1.adl",
     "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.vital_signs.v1.adl",
+    "spec/lib/open_ehr/parser/adl_description_spec.rb",
+    "spec/lib/open_ehr/parser/adl_identification_spec.rb",
     "spec/lib/open_ehr/parser/adl_parser_spec.rb",
     "spec/lib/open_ehr/parser/adl_path_spec.rb",
     "spec/lib/open_ehr/parser/base_spec.rb",
