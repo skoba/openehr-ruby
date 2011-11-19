@@ -58,19 +58,19 @@ describe ADLParser do
             end
 
             it 'name is Sam Heard' do
-              @original_author[:name].should == 'Sam Heard'
+              @original_author['name'].should == 'Sam Heard'
             end
 
             it 'organisation is Ocean Informatics' do
-              @original_author[:organisation].should == 'Ocean Informatics'
+              @original_author['organisation'].should == 'Ocean Informatics'
             end
 
             it 'date is 9/01/2007' do
-              @original_author[:date].should == '9/01/2007'
+              @original_author['date'].should == '9/01/2007'
             end
 
             it 'email is sam.heard@oceaninformatics.biz' do
-              @original_author[:email].should == 'sam.heard@oceaninformatics.biz'
+              @original_author['email'].should == 'sam.heard@oceaninformatics.biz'
             end
           end
 
@@ -81,7 +81,7 @@ describe ADLParser do
 
             context 'en details' do
               before(:all) do
-                @en = @details[:en]
+                @en = @details['en']
               end
 
               it 'language is en' do

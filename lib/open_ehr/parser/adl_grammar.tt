@@ -156,7 +156,7 @@ module OpenEHR
               item =
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
                   :language => OpenEHR::RM::DataTypes::Text::CodePhrase.new(
-                                :terminology_id => term_id,
+                                :terminology_id => terminology_id,
                                 :code_string => la),
                   :purpose => attrs[:purpose],
                   :keywords => attrs[:keywords],
@@ -165,16 +165,22 @@ module OpenEHR
                   :copyright => attrs[:copyright],
                   :original_resource_uri => attrs[:original_resource_uri],
                   :other_details => attrs[:other_details])
-              details[lang] = item
+              details[lang.to_s] = item
             end
-            oc = params[:other_contributors].values if params[:other_contributors]
+            oc = params[:other_contributors].nil? ? nil : params[:other_contributors].values
+            original_author = key_s params[:original_author]
+            other_details = key_s params[:other_details] if params[:other_details] 
             OpenEHR::RM::Common::Resource::ResourceDescription.new(
-              :original_author => params[:original_author],
+              :original_author => original_author,
               :other_contributors => oc,
               :lifecycle_state => params[:lifecycle_state],
               :details => details,
               :resource_package_uri => params[:archetype_package_uri],
-              :other_details => params[:other_details])
+              :other_details => other_details)
+          end
+
+          def key_s(hash)
+            hash.inject({ }) {|h,i| h.update Hash[i[0].to_s,i[1]]}
           end
         }
       end
