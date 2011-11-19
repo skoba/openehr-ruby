@@ -5,7 +5,7 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-0.9.2
+Release-0.9.3
 
 = Requirements
 
@@ -20,7 +20,7 @@ Release-0.9.2
 
 == DESCRIPTION:
 
-This is the beta version 0.9.2 release of Ruby openEHR implementation
+This is the beta version 0.9.3 release of Ruby openEHR implementation
 project. This release is still experimental preview of our work based
 on openEHR specification release 1.0.2. We implemented almost of the
 specifications of the openEHR.  The work is still in progress. The
