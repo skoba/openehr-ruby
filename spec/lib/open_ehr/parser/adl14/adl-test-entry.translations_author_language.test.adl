@@ -1,5 +1,5 @@
 archetype 
-	adl-test-ENTRY.translation_author_language.draft
+	adl-test-ENTRY.translation_author_language.v1
 	
 concept 
 	[at0000]	--  test
