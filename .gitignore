@@ -16,6 +16,7 @@ doc
 
 # bundler
 .bundle
+*.lock
 
 # jeweler generated
 pkg
