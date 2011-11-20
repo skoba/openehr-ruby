@@ -33,6 +33,7 @@ module OpenEHR
             else
               args[:path] = node.path + '[' + args[:node_id] + ']'
             end
+p args, body.value(node)
             args.update body.value(node)
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
           end

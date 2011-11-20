@@ -5,8 +5,8 @@ include OpenEHR::Parser
 describe ADLParser do
   context 'Language author parsing behavior' do
     before(:all) do
-      TARGET_ADL_FILE = 'adl-test-entry.translations_author_language.test.adl'
-      ap = ADLParser.new(ADL14DIR + TARGET_ADL_FILE)
+      target_adl_file = 'adl-test-entry.translations_author_language.test.adl'
+      ap = ADLParser.new(ADL14DIR + target_adl_file)
       archetype = ap.parse
       @translations = archetype.translations
     end
