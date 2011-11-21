@@ -5,8 +5,8 @@ include OpenEHR::Parser
 describe ADLParser do
   context 'Language' do
     before(:all) do
-      TARGET_ADL_FILE = 'adl-test-entry.archetype_language.test.adl'
-      ap = ADLParser.new(ADL14DIR + TARGET_ADL_FILE)
+      target_adl_file = 'adl-test-entry.archetype_language.test.adl'
+      ap = ADLParser.new(ADL14DIR + target_adl_file)
       @archetype = ap.parse
     end
 

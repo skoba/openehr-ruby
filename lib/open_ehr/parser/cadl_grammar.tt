@@ -29,11 +29,10 @@ module OpenEHR
               :lower => 1, :upper => 1)
             node.id = args[:node_id]
             if node.root?
-              args[:path] = '/'
+              args[:path] = node.path
             else
               args[:path] = node.path + '[' + args[:node_id] + ']'
             end
-p args, body.value(node)
             args.update body.value(node)
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
           end
@@ -44,11 +43,9 @@ p args, body.value(node)
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
               :lower => 1, :upper => 1)
             if node.root?
-              node.path = '/'
+              args[:path] = node.path
             else
-              node.id = args[:node_id]
-p args[:rm_type_name]
-              node.path +=  '[' + args[:node_id] + ']'
+              args[:path] = node.path + '[' + args[:node_id] + ']'
             end
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
           end
@@ -58,7 +55,7 @@ p args[:rm_type_name]
       rule c_complex_object_head
         c_complex_object_id c_occurrences {
           def value
-            c_complex_object_id.value.update c_occurrences.value
+            c_complex_object_id.value[:occurrences] = c_occurrences.value
             c_complex_object_id.value
           end
         }
@@ -86,13 +83,12 @@ p args[:rm_type_name]
       rule c_complex_object_body
         c_any '' {
           def value(node)
-            {:any_allowed? => true}
+            Hash[:attributes => c_any.value(node)]
           end
         }
       / c_attributes '' {
-          def value(node = nil)
-            {:attributes => c_attributes.value(node),
-             :any_allowed? => false}
+          def value(node)
+            Hash[:attributes => c_attributes.value(node)]
           end
         }
       end
@@ -262,7 +258,14 @@ p args[:rm_type_name]
       end
 
       rule c_any
-        '*' space
+        '*' space {
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::CAttribute.new(
+              :path => node.path, :rm_attribute_name => node.id,
+              :exsitence => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :lower => 1, :upper => 1))
+          end
+        }
       end
 
       rule c_attributes
@@ -718,8 +721,7 @@ p args[:rm_type_name]
             boolean_leaf.value
           end
         }
-      / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression {
-          def value
+      / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression {          def value
             p elements
           end
         }

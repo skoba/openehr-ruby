@@ -12,6 +12,10 @@ module OpenEHR
         def root?
           return parent.nil?
         end
+
+        def path
+          @path || '/'
+        end
       end
     end
   end
