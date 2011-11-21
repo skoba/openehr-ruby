@@ -1,5 +1,5 @@
 archetype
-	adl-test-entry.archetype_internal_ref.test
+	adl-test-entry.archetype_internal_ref.v1
 
 concept
 	[at0000]
