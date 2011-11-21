@@ -18,22 +18,22 @@ module OpenEHR
       end
 
       rule type_identifier
-        '(' id:V_TYPE_IDENTIFIER ')' white_space {
+        '(' id:V_GENERIC_TYPE_IDENTIFIER ')' white_space {
           def value
             id.value
           end
         }
-      / '(' id:V_GENERIC_TYPE_IDENTIFIER ')' white_space {
+      / id:V_GENERIC_TYPE_IDENTIFIER white_space {
+          def value
+            id.value
+          end
+        }
+      / '(' id:V_TYPE_IDENTIFIER ')' white_space {
           def value
             id.value
           end
         }
       / id:V_TYPE_IDENTIFIER white_space {
-          def value
-            id.value
-          end
-        }
-      / id:V_GENERIC_TYPE_IDENTIFIER space {
           def value
             id.value
           end
@@ -172,7 +172,7 @@ module OpenEHR
       end
 
       rule real_value
-        ('+' / '-') V_REAL {
+        ('+' / '-')? V_REAL {
           def value
             text_value.to_f
           end
@@ -253,10 +253,10 @@ module OpenEHR
                   :lower_included => false)
           end
         }
-      / SYM_INTERVAL_DELIM SYM_GE real_value SYM_INTERVAL_DELIM {
+      / SYM_INTERVAL_DELIM SYM_GE lo:real_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => up.value,
+                  :lower => lo.value,
                   :upper_unbounded => true,
                   :lower_included => true)
           end
@@ -839,19 +839,19 @@ module OpenEHR
       end
 
       rule SYM_GE
-        '=>'
+        '=>' / '>=' white_space
       end
 
       rule SYM_LE
-        '<='
+        '<=' / '=>' white_space
       end
 
       rule SYM_LT
-        '<'
+        '<' white_space
       end
 
       rule SYM_GT
-        '>'
+        '>' white_space
       end
 
       rule SYM_START_DBLOCK
@@ -1139,7 +1139,7 @@ module OpenEHR
       end
 
       rule V_GENERIC_TYPE_IDENTIFIER
-        [A-Z] IDCHAR* '<' [a-zA-Z0-9,_<>]+ '>' {
+        [A-Z] IDCHAR* '<' [a-zA-Z0-9,_]+ '>' {  # <>
           def value
             text_value
           end

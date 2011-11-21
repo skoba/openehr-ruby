@@ -39,7 +39,7 @@ module OpenEHR
 
             def default_value=(default_value)
               super
-              default_value_consistency(default_value)
+              default_value_consistency(default_value) unless default_value.nil?
             end
 
             def true_valid=(true_valid)
@@ -68,7 +68,7 @@ module OpenEHR
             end
 
             def default_value_consistency(default_value)
-              if (!@true_valid && default_value) || (!@false_valid && !default_value)
+              if (!@true_valid && default_value) || ((!@false_valid) && (!default_value))
                 raise ArgumentError, 'default value inconsistency'
               end
             end

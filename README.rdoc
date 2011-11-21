@@ -10,7 +10,6 @@ Release-0.9.3
 = Requirements
 
 * Ruby 1.9.2 reccomended
-* RubyGems
 * Tested with Ruby 1.9.2 on Linux and FreeBSD.
 * It would work with some adjustment on Ruby 1.8 or earlier,
   but not confirmed.

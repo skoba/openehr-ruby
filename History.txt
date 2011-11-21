@@ -1,3 +1,6 @@
+=== 0.9.3 2011-11-19
+Bug fix around ADL parser
+
 === 0.9.1 2011-10-04
 Archetype instance generated from ADL file.
 

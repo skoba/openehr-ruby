@@ -7,14 +7,11 @@ module OpenEHR
 
         def initialize(parent = nil)
           @parent = parent
+          @path = '/' if parent.nil?
         end
 
         def root?
           return parent.nil?
-        end
-
-        def path
-          @path || '/'
         end
       end
     end

@@ -148,7 +148,8 @@ module OpenEHR
               terminology_id = 
                 OpenEHR::RM::Support::Identification::TerminologyID.new(
                   :value => term_id)
-              misuse = attrs['misuse'].empty? ? nil : attrs['misuse']
+              misuse = attrs['misuse']
+              misuse = nil if misuse.nil? or misuse.empty?
               item =
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
                   :language => OpenEHR::RM::DataTypes::Text::CodePhrase.new(

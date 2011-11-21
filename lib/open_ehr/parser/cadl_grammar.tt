@@ -28,10 +28,10 @@ module OpenEHR
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
               :lower => 1, :upper => 1)
             node.id = args[:node_id]
-            if node.root?
+            if node.root? or node.id.nil?
               args[:path] = node.path
             else
-              args[:path] = node.path + '[' + args[:node_id] + ']'
+              args[:path] = node.path + '[' + node.id + ']'
             end
             args.update body.value(node)
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
@@ -42,11 +42,8 @@ module OpenEHR
             args = c_complex_object_head.value
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
               :lower => 1, :upper => 1)
-            if node.root?
-              args[:path] = node.path
-            else
-              args[:path] = node.path + '[' + args[:node_id] + ']'
-            end
+            node.id = args[:node_id]
+            args[:path] = node.path
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
           end
         }
@@ -94,9 +91,19 @@ module OpenEHR
       end
 
       rule c_object
-        c_complex_object '' {
+        c_primitive_object '' {
+          def value(node)
+            c_primitive_object.value
+          end
+        }
+      /  c_complex_object '' {
           def value(node)
             c_complex_object.value(node)
+          end
+        }
+      / constraint_ref '' {
+          def value(node = nil)
+            constraint_ref.value
           end
         }
       / archetype_slot '' {
@@ -107,16 +114,6 @@ module OpenEHR
       / archetype_internal_ref '' {
           def value(node = nil)
             archetype_internal_ref.value(node)
-          end
-        }
-      / constraint_ref '' {
-          def value(node = nil)
-            constraint_ref.value
-          end
-        }
-      / c_primitive_object '' {
-          def value(node = nil)
-            c_primitive_object.value
           end
         }
       / V_C_DOMAIN_TYPE '' {
@@ -295,7 +292,13 @@ module OpenEHR
       rule c_attr_head
         id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
           def value(node)
-            path = (node.root? ? '/' : (node.path + "[#{node.id}]" + '/')) + id.value
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
             OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
              :rm_attribute_name => id.value,
              :path => path,
@@ -305,7 +308,13 @@ module OpenEHR
         }
       / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
           def value(node)
-            path = (node.root? ? '/' : (node.path + "[#{node.id}]" + '/')) + id.value
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
              :rm_attribute_name => id.value,
              :path => path,
@@ -314,7 +323,13 @@ module OpenEHR
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
           def value(node)
-            path = (node.root? ? '/' : (node.path + "[#{node.id}]" + '/')) + id.value
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
             OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
              :rm_attribute_name => id.value,
              :path => path,
@@ -323,7 +338,13 @@ module OpenEHR
         }
       / id:(V_ATTRIBUTE_IDENTIFIER) white_space {
           def value(node)
-            path = (node.root? ? '/' : (node.path + "[#{node.id}]" + '/')) + id.value
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
              :rm_attribute_name => id.value, :path => path)
           end
@@ -516,7 +537,7 @@ module OpenEHR
             integer_interval_value.value
           end
         }
-      / occurrence_spec {
+      / occurrence_spec '' {
           def value
             occurrence_spec.value
           end
@@ -524,62 +545,184 @@ module OpenEHR
       end
 
       rule c_integer
-        c_integer_spec (';' integer_value)?
+        c_integer_spec '' {
+          def value
+            c_integer_spec.value
+          end
+        }
+      / c_integer_spec ';' integer_value {
+          def value
+            c_integer_spec.value
+          end
+        }
       end
 
       rule c_real_spec
-        real_value
-      / real_list_value
-      / real_interval_value
+        real_value '' {
+          def value
+            real_value.value
+          end
+        }
+      / real_list_value '' {
+          def value
+            real_list_value.value
+          end
+        }
+      / real_interval_value '' {
+          def value
+            real_interval_value.value
+          end
+        }
       end
 
       rule c_real
-        c_real_spec (';' real_value)?
+        c_real_spec '' {
+          def value
+            c_real_spec.value
+          end
+        }
+      / c_real_spec ';' real_value {
+          def value
+           c_real_spec.assumed_value = real_value.value
+          end
+        }
       end
 
       rule c_date_constraint
-        V_ISO8601_DATE_CONSTRAINT_PATTERN
-      / date_value
-      / date_interval_value
+        V_ISO8601_DATE_CONSTRAINT_PATTERN '' {
+          def value
+            V_ISO8601_DATE_CONSTRAINT_PATTERN.value
+          end
+        }
+      / date_value '' {
+          def value
+            date_value.value
+          end
+        }
+      / date_interval_value '' {
+          def value
+            date_interval_value.value
+          end
+        }
       end
 
       rule c_date
-        c_date_constraint (';' date_value)?
+        c_date_constraint '' {
+          def value
+            c_date_constraint.value
+          end
+        }
+      / c_date_constraint ';' date_value {
+          def value
+            c_date_constraint.value
+          end
+        }
       end
 
       rule c_time_constraint
-        V_ISO8601_TIME_CONSTRAINT_PATTERN
-      / time_value
-      / time_interval_value
+        V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
+          def value
+            V_ISO8601_TIME_CONSTRAINT_PATTERN.value
+          end
+        }
+      / time_value '' {
+          def value
+            time_value.value
+          end
+        }
+      / time_interval_value {
+          def value
+            time_interval_value.value
+          end
+        }
       end
 
       rule c_time
-        c_time_constraint (';' time_value)?
+        c_time_constraint '' {
+          def value
+            c_time_constraint.value
+          end
+        }
+      / c_time_constraint ';' time_value {
+          def value
+            c_time_constraint.value
+          end
+        }    
       end
 
       rule c_date_time_constraint
-        V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
-      / date_time_value
-      / date_time_interval_value
+        V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN '' {
+          def value
+            V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN.value
+          end
+        }
+      / date_time_value '' {
+          def value
+            date_time_value.value
+          end
+        }
+      / date_time_interval_value '' {
+          def value
+            date_time_interval_value.value
+          end
+        }
       end
 
       rule c_date_time
-        c_date_time_constraint
-      / c_date_time_constraint ';' date_time_value
+        c_date_time_constraint '' {
+          def value
+            c_date_time_constraint.value
+          end
+        }
+      / c_date_time_constraint ';' date_time_value {
+          def value
+            c_date_time_constraint.value
+          end
+        }
       end
 
       rule c_duration_constraint
-        duration_pattern ('/' duration_interval_pattern)?
-      / duration_value
-      / duration_interval_value
+        duration_pattern '' {
+          def value
+            duration_pattern.value
+          end
+        }
+      / duration_pattern '/' duration_interval_pattern {
+          def value
+            duration_interval_patternl.value
+          end
+        }
+      / duration_value {
+          def value
+            duration_value.value
+          end
+        }
+      / duration_interval_value {
+          def value
+            duration_interval_value.value
+          end
+        }
       end
 
       rule duration_pattern
-        V_ISO8601_TIME_CONSTRAINT_PATTERN
+        V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
+          def value
+            V_ISO8601_TIME_CONSTRAINT_PATTERN.value
+          end
+        }
       end
 
       rule c_duration
-        c_duration_constraint (';' duration_value)?
+        c_duration_constraint '' {
+          def value
+            c_duration_constraint.value
+          end
+        }
+      / c_duration_constraint ';' duration_value {
+          def value
+            c_duration_constraint.value
+          end
+        }
       end
 
       rule c_string_spec
@@ -618,20 +761,40 @@ module OpenEHR
       end
 
       rule c_boolean_spec
-        SYM_TRUE (',' SYM_FALSE)? {
+        SYM_TRUE '' {
+          def value
+            {:true_valid => true, :false_valid => false}
+          end
         }
-      / SYM_FALSE (',' SYM_TRUE)?
+      / SYM_TRUE ',' SYM_FALSE {
+          def value
+            {:true_valid => true, :false_valid => true}
+          end
+        }
+      / SYM_FALSE '' {
+          def value
+            {:true_valid => false, :false_valid => true}
+          end
+        }
+      / SYM_FALSE ',' SYM_TRUE {
+          def value
+            {:true_valid => true, :false_valid => true}
+          end
+        }
       end
 
       rule c_boolean
         c_boolean_spec ';' boolean_value {
           def value
-            c_boolean_spec.value
+            c_boolean_spec.value[:assumed_value] = boolean_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
+              c_boolean_spec.value)
           end
         }
       / c_boolean_spec '' {
           def value
-            c_boolean_spec.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
+              c_boolean_spec.value)
           end
         }
       end
