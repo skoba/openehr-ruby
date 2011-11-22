@@ -1,3 +1,6 @@
+=== 0.9.4 2011-11-22
+Bug fix around ADL parser, ArchetypeOntology
+
 === 0.9.3 2011-11-19
 Bug fix around ADL parser
 
