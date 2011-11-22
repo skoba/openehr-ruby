@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "open_ehr"
-  s.version = "0.9.3"
+  s.version = "0.9.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2011-11-19"
+  s.date = "2011-11-22"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     "Gemfile",
-    "Gemfile.lock",
     "Guardfile",
     "History.txt",
     "PostInstall.txt",
@@ -223,11 +222,22 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.reason_for_encounter.v1.adl",
     "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.summary.v1.adl",
     "spec/lib/open_ehr/parser/adl14/openEHR-EHR-SECTION.vital_signs.v1.adl",
+    "spec/lib/open_ehr/parser/adl_archetype_internal_ref2_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_internal_ref_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_internal_ref_with_generics_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_ontology_binding_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_ontology_spec.rb",
     "spec/lib/open_ehr/parser/adl_description_spec.rb",
     "spec/lib/open_ehr/parser/adl_identification_spec.rb",
+    "spec/lib/open_ehr/parser/adl_language_no_accreditation_spec.rb",
+    "spec/lib/open_ehr/parser/adl_language_order_spec.rb",
+    "spec/lib/open_ehr/parser/adl_language_spec.rb",
+    "spec/lib/open_ehr/parser/adl_language_translation_author_language_spec.rb",
+    "spec/lib/open_ehr/parser/adl_language_translation_language_author_spec.rb",
     "spec/lib/open_ehr/parser/adl_parser_spec.rb",
     "spec/lib/open_ehr/parser/adl_path_spec.rb",
     "spec/lib/open_ehr/parser/base_spec.rb",
+    "spec/lib/open_ehr/parser/parser_spec_helper.rb",
     "spec/lib/open_ehr/rm/common/archetyped/archetyped_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_details_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_spec.rb",
@@ -348,7 +358,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/skoba/ruby-impl-openehr"
   s.licenses = ["The openEHR Open Source Software license(mozilla tri-license)"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.11"
   s.summary = "Ruby implementation of the openEHR specification"
 
   if s.respond_to? :specification_version then
