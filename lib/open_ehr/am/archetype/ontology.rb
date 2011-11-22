@@ -6,6 +6,7 @@ module OpenEHR
           attr_accessor :specialisation_depth, :primary_language
           attr_accessor :term_attribute_names, :term_bindings
           attr_accessor :languages_available, :terminologies_available
+          attr_accessor :constraint_bindings
           attr_reader :term_definitions, :constraint_definitions
 
           def initialize(args = { })
@@ -18,6 +19,7 @@ module OpenEHR
               self.constraint_definitions = args[:constraint_definitions]
             end
             self.term_bindings = args[:term_bindings]
+            self.constraint_bindings = args[:constraint_bindings]
           end
 
           def term_definitions=(term_definitions)
@@ -39,8 +41,8 @@ module OpenEHR
             end
           end
 
-          def constraint_binding(a_terminology, a_code)
-            
+          def constraint_binding(args = {})
+            return @constraint_bindings[args[:terminology]][args[:code]]
           end
 
           def constraint_definitions=(constraint_definitions)
@@ -56,7 +58,12 @@ module OpenEHR
           end
 
           def has_terminology?(a_terminology)
-            return @term_bindings.has_key? a_terminology
+            if !@terminologies_available.nil? &&
+                (@terminologies_available.include? a_terminology)
+              return true
+            else
+              return false
+            end
           end
 
           def term_binding(args = { })

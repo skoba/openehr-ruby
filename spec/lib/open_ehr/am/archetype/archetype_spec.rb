@@ -14,7 +14,7 @@ describe Archetype do
     definition = stub(CComplexObject, :rm_type_name => 'SECTION')
     items = {:text => 'Physical examination'}
     term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
-    ontology = ArchetypeOntology.new(:specialisation_depth => 1, :term_definitions => {'ja' => [term1]})
+    ontology = ArchetypeOntology.new(:specialisation_depth => 1, :term_definitions => {'ja' => {'at0000' =>term1}})
     uid = HierObjectID.new(:value => 'ABCD::1')
     parent_archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-SECTION.physical_examination.v1')
     invariants = stub(Set, :size => 2)

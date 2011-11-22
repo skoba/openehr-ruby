@@ -68,7 +68,7 @@ module OpenEHR
         end
 
         def concept_name(a_lang)
-          return @ontology.term_definition(:lang => a_lang, :code => @concept)[:text]
+          return @ontology.term_definition(:lang => a_lang, :code => @concept).items[:text]
         end
 
         def constraint_references_valid?

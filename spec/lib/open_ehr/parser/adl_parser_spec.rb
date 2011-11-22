@@ -324,12 +324,12 @@ describe ADLParser do
 
           it 'term_definitions parsed and assigned properly' do
             @archetype_ontology.term_definition(:lang => 'en',
-               :code => 'at0000')['text'].should == 'Summary'
+               :code => 'at0000').items['text'].should == 'Summary'
           end
 
           it 'description term_definitions parsed and assigned properly' do
             @archetype_ontology.term_definition(:lang => 'en',
-               :code => 'at0000')['description'].should ==
+               :code => 'at0000').items['description'].should ==
                  'A heading for conclusions and other evaluations'
           end
 

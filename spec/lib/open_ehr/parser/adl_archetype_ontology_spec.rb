@@ -27,15 +27,15 @@ describe ADLParser do
       end
 
       it 's text is some text' do
-        @archetype_term['text'].should == 'some text'
+        @archetype_term.items['text'].should == 'some text'
       end
 
       it 's description is some description' do
-        @archetype_term['description'].should == 'some description'
+        @archetype_term.items['description'].should == 'some description'
       end
 
       it 's commen is some comment' do
-        @archetype_term['comment'].should == 'some comment'
+        @archetype_term.items['comment'].should == 'some comment'
       end
     end
   end

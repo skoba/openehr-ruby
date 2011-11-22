@@ -191,26 +191,55 @@ module OpenEHR
       rule arch_ontology
         SYM_ONTOLOGY ontology:V_DADL_TEXT space {
           def value
-            ao = ontology.value['term_definitions']
-            term_definitions = {}
-            ao.each do |lang, term_defs|
-              items = term_defs['items']
-              terms = items.map do |code, item|
-                OpenEHR::AM::Archetype::Ontology::ArchetypeTerm.new(
-                  :code => code, :items => item)
-              end
-              term_definitions[lang] = terms
+            ao = ontology.value
+            arc_term = Proc.new do |code, item|
+              OpenEHR::AM::Archetype::Ontology::ArchetypeTerm.new(
+                       :code => code, :items => item)
+            end
+            td = itemizer(ao['term_definitions'], arc_term)
+            cd = ao['constraint_definitions']
+            if cd
+              cd = itemizer(cd , arc_term)
+            end
+            tb = ao['term_bindings']
+            term_bind = Proc.new do |code, item|
+              term_id, code_string = item.split '::'
+              term_id = OpenEHR::RM::Support::Identification::TerminologyID.new(:value => term_id)
+              OpenEHR::RM::DataTypes::Text::CodePhrase.new(:terminology_id => term_id, :code_string => code_string)
+            end
+            if tb
+              tb = itemizer(tb, term_bind)
+            end
+            cons_bind = Proc.new do |code, item|
+              item
+            end
+            cb = ao['constraint_bindings']
+            if cb
+              cb = itemizer(cb, cons_bind)
             end
             OpenEHR::AM::Archetype::Ontology::ArchetypeOntology.new(
-              :primary_language => ontology.value['primary_language'],
-              :languages_available => ontology.value['languages_available'],
-              :terminologies_available => ontology.value['terminologies_available'],
-              :term_definitions => term_definitions,
-              :constraint_bindings => ontology.value['constraint_bindings'],
-              :term_bindings => ontology.value['term_bindings'])
+              :primary_language => ao['primary_language'],
+              :languages_available => ao['languages_available'],
+              :terminologies_available => ao['terminologies_available'],
+              :term_definitions => td,
+              :constraint_definitions => cd,
+              :term_bindings => tb,
+              :constraint_bindings => cb)
           end
+
+           def itemizer(defs, itemize)
+             defs.inject({ }) do |term_defs, langs|
+               lang, items = langs
+               terms = items['items'].inject({ }) do |items, term|
+                 code, item = term
+                 item = itemize.call code, item
+                 items.update Hash[code => item]
+               end
+               term_defs.update Hash[lang => terms]
+             end
+           end
         }
-      end
-    end
-  end
-end
+      end # of arch_ontology
+    end # of ADLGrammar
+  end # of Parser
+end # of openEHR
