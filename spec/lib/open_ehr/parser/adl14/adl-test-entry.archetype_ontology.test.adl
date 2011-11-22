@@ -1,5 +1,5 @@
 archetype
-	adl-test-ENTRY.archetype_ontology.draft
+	adl-test-ENTRY.archetype_ontology.v1
 concept 
 	[at0000]	--  empty definition test
 language

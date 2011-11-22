@@ -17,7 +17,6 @@ group :development, :test do
   gem 'spork', '>=0.9.0.rc2'
   gem 'guard-spork'
   gem 'simplecov'
-  gem 'notify'
   gem 'rb-inotify'
   gem 'libnotify'
 end

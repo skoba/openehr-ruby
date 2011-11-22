@@ -202,6 +202,8 @@ module OpenEHR
               term_definitions[lang] = terms
             end
             OpenEHR::AM::Archetype::Ontology::ArchetypeOntology.new(
+              :primary_language => ontology.value['primary_language'],
+              :languages_available => ontology.value['languages_available'],
               :term_definitions => term_definitions)
           end
         }
