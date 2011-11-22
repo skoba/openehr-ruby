@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/parser_spec_helper'
-include OpenEHR::AM::Archetype
 include OpenEHR::AM::Archetype::Ontology
 
 describe ADLParser do

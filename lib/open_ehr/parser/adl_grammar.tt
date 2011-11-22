@@ -204,7 +204,10 @@ module OpenEHR
             OpenEHR::AM::Archetype::Ontology::ArchetypeOntology.new(
               :primary_language => ontology.value['primary_language'],
               :languages_available => ontology.value['languages_available'],
-              :term_definitions => term_definitions)
+              :terminologies_available => ontology.value['terminologies_available'],
+              :term_definitions => term_definitions,
+              :constraint_bindings => ontology.value['constraint_bindings'],
+              :term_bindings => ontology.value['term_bindings'])
           end
         }
       end

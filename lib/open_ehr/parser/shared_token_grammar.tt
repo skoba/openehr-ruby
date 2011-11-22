@@ -1059,7 +1059,7 @@ module OpenEHR
       end
 
       rule V_URI
-        [a-z]+ '://' [^<>|\\{}^~"\[\] ]* {
+        [a-z]+ '://' [^<>|\\{}^~"\[\] ]* { 
           def value
             text_value
           end

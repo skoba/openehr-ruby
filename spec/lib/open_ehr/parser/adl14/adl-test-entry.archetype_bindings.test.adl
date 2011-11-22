@@ -1,5 +1,5 @@
 archetype 
-	adl-test-entry.archetype_language_order_of_translation_details.test
+	adl-test-entry.archetype_language_order_of_translation_details.v1
 	
 concept 
 	[at0000]	--  test

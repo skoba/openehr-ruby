@@ -203,9 +203,9 @@ module OpenEHR
             boolean_value.value
           end
         }
-      / character_value '' {
+      / uri_value '' {
           def value
-            character_value.value
+            uri_value.value
           end
         }
       / date_value '' {
@@ -228,14 +228,14 @@ module OpenEHR
             duration_value.value
           end
         }
-      / uri_value '' {
-          def value
-            uri_value.value
-          end
-        }
       / string_value '' {
           def value
             string_value.value
+          end
+        }
+      / character_value '' {
+          def value
+            character_value.value
           end
         }
       end
@@ -347,9 +347,9 @@ module OpenEHR
       end
 
       rule uri_value
-        V_URI '' {
+        uri:V_URI '' {
           def value
-            V_URI.value
+            uri.value
           end
         }
       end

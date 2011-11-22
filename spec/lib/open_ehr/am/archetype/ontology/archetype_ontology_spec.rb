@@ -4,20 +4,22 @@ include OpenEHR::RM::DataTypes::Text
 
 describe ArchetypeOntology do
   before(:each) do
-    items = {:text => 'Archetype Concept', :desc => 'concept description'}
-    term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
-    items = {:text => 'Blood pressure'}
-    term2 = ArchetypeTerm.new(:code => 'at0001', :items => items)
-    term_definitions = {'ja' => [term1, term2], 'en' => [term1]}
-    items = {:text => 'test', :description => 'test item'}
-    term3 = ArchetypeTerm.new(:code => 'ac0000', :items => items)
-    constraint_definitions = {'ja' => [term3]}
+    items = {'text' => 'Archetype Concept', 'desc' => 'concept description'}
+    term1 = {'at0000' => ArchetypeTerm.new(:code => 'at0000', :items => items)}
+    items = {'text' => 'Blood pressure'}
+    term2 = {'at0001' => ArchetypeTerm.new(:code => 'at0001', :items => items)}
+    term3 = {'at0002' => ArchetypeTerm.new(:code => 'at0002', :items => items)}
+    term_definitions = {'ja' => (term1.update term2), 'en' => term1}
+    items = {'text' => 'test', 'description' => 'test item'}
+    term4 = {'ac0003' => ArchetypeTerm.new(:code => 'ac0003', :items => items)}
+    constraint_definitions = {'ja' => term4}
     code_phrase = stub(CodePhrase, :code_string => '163020007')
     bind = {'at0000' => code_phrase}
-    term_bindings = {'SNOMED-CT(2003)' => [bind]}
+    term_bindings = {'SNOMED-CT(2003)' => bind}
     @archetype_ontology =
       ArchetypeOntology.new(:primary_language => "ja",
                             :languages_available => ['ja', 'en'],
+                            :terminologies_available => ['SNOMED-CT(2003)'],
                             :term_definitions => term_definitions,
                             :constraint_definitions => constraint_definitions,
                             :term_bindings => term_bindings,
@@ -40,8 +42,9 @@ describe ArchetypeOntology do
     @archetype_ontology.languages_available.should == ['ja', 'en']
   end
 
+
   it 'term_definition should be assigned properly' do
-    @archetype_ontology.term_definition(:lang => 'ja', :code => 'at0000')[:text].should == 'Archetype Concept'
+    @archetype_ontology.term_definition(:lang => 'ja', :code => 'at0000').items['text'].should == 'Archetype Concept'
   end
 
   it 'term_codes should returnd all at codes' do
@@ -49,16 +52,16 @@ describe ArchetypeOntology do
   end
 
   it 'constraint_definitions should be assigned properly' do
-    @archetype_ontology.constraint_definition(:lang => 'ja', :code => 'ac0000')[:text].
+    @archetype_ontology.constraint_definition(:lang => 'ja', :code => 'ac0003').items['text'].
       should == 'test'
   end
 
   it 'constrant_codes should return all ac codes' do
-    @archetype_ontology.constraint_codes.should == ['ac0000']
+    @archetype_ontology.constraint_codes.should == ['ac0003']
   end
 
   it 'term_bindings should be assigned properly' do
-    @archetype_ontology.term_bindings['SNOMED-CT(2003)'][0]['at0000'].
+    @archetype_ontology.term_bindings['SNOMED-CT(2003)']['at0000'].
       code_string.should == '163020007'
   end
 
@@ -84,6 +87,12 @@ describe ArchetypeOntology do
 
   it 'does not have MHLW code' do
     @archetype_ontology.should_not have_terminology 'MHLW'
+  end
+
+  it 'term binding code_string is 163020007' do
+    @archetype_ontology.term_binding(:terminology => 'SNOMED-CT(2003)',
+                                     :code => 'at0000').code_string.
+      should == '163020007'
   end
 end
                             

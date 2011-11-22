@@ -5,12 +5,13 @@ module OpenEHR
         class ArchetypeOntology
           attr_accessor :specialisation_depth, :primary_language
           attr_accessor :term_attribute_names, :term_bindings
-          attr_accessor :languages_available
+          attr_accessor :languages_available, :terminologies_available
           attr_reader :term_definitions, :constraint_definitions
 
           def initialize(args = { })
             self.primary_language = args[:primary_language]
             self.languages_available = args[:languages_available]
+            self.terminologies_available = args[:terminologies_available]
             self.specialisation_depth = args[:specialisation_depth]
             self.term_definitions = args[:term_definitions]
             if args[:constraint_definitions]
@@ -23,26 +24,19 @@ module OpenEHR
             if term_definitions.nil?
               raise ArgumentError, 'term_definitions is mandatory'
             end
-            @term_definition_map = definition_mapper(term_definitions)
             @term_definitions = term_definitions
           end
 
           def term_codes
-            return @term_definitions.values.collect {|value|
-              value.collect {|term| term.code}}.flatten.uniq
+            code_set @term_definitions
           end
 
           def constraint_codes
             if @constraint_definitions.nil?
               return nil
             else
-              return @constraint_definitions.values.collect {|value|
-                value.collect {|term| term.code}}.flatten.uniq
+              code_set @constraint_definitions
             end
-          end
-
-          def terminologies_available
-            return @term_bindings.keys
           end
 
           def constraint_binding(a_terminology, a_code)
@@ -50,16 +44,15 @@ module OpenEHR
           end
 
           def constraint_definitions=(constraint_definitions)
-            @constraint_definition_map = definition_mapper(constraint_definitions)
             @constraint_definitions = constraint_definitions
           end
 
           def constraint_definition(args = {})
-            return @constraint_definition_map[args[:lang]][args[:code]]
+            return @constraint_definitions[args[:lang]][args[:code]]
           end
 
           def has_language?(a_lang)
-            return @term_definition_map.has_key? a_lang
+            return @term_definitions.has_key? a_lang
           end
 
           def has_terminology?(a_terminology)
@@ -67,24 +60,19 @@ module OpenEHR
           end
 
           def term_binding(args = { })
-            
+            return @term_bindings[args[:terminology]][args[:code]]
           end
 
           def term_definition(args = { })
-            return @term_definition_map[args[:lang]][args[:code]]
+            return @term_definitions[args[:lang]][args[:code]]
           end
 
-          private
-          def definition_mapper(definitions)
-            map = { }
-            definitions.each do |lang, defs|
-              defs_map = { }
-              defs.each do |d|
-                defs_map[d.code] = d.items
-              end
-              map[lang] = defs_map
+          protected
+          def code_set(definitions)
+            codes = definitions.values.inject([]) do |codes, item|
+              item.keys
             end
-            return map
+            codes.uniq
           end
         end
 
