@@ -888,22 +888,26 @@ module OpenEHR
         }
       / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK {
           def value
-            attr_id = relative_path.value
-            item = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
-              :item => c_primitive.value,
-              :type => c_primitive.value.type,
-              :reference_type => 'Constant')
+            left_op = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+                        :type => 'String',
+                        :item => relative_path.value,
+                        :reference_type => 'Constant')
+            right_op = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+                        :item => c_primitive.value,
+                        :type => c_primitive.value.type,
+                        :reference_type => 'Constant')
             op = OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_MATCHES
             OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
               :type => 'Boolean',
               :operator => op,
-              :right_operand => item,
-              :left_operand => relative_path.value,
+              :right_operand => right_op,
+              :left_operand => left_op,
               :reference_type => 'Constraint')
           end
         }
       / SYM_NOT boolean_leaf {
           def value
+            
             boolean_leaf.value
           end
         }

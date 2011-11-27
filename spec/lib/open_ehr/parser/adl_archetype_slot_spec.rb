@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/parser_spec_helper'
 include OpenEHR::AM::Archetype::ConstraintModel
+include OpenEHR::AM::Archetype::ConstraintModel::Primitive
 include OpenEHR::AM::Archetype::Assertion
 
 # ticket 166
@@ -45,17 +46,148 @@ describe ADLParser do
           @item = @includes[0].expression
         end
 
-        it 'item is an instance of ExpressionBinaryOperator' do
+        it 'item is an instance of ExprBinaryOperator' do
           @item.should be_an_instance_of ExprBinaryOperator
+        end
+
+        it 'operator is OP_MATCHES' do
+          @item.operator.should == OperatorKind::OP_MATCHES
+        end
+        
+        context 'left operand' do
+          before(:all) do
+            @left_operand = @item.left_operand
+          end
+
+          it 'is instance of ExprLeaf' do
+            @left_operand.should be_an_instance_of ExprLeaf
+          end
+
+          it 's item is domain_concept' do
+            @left_operand.item.should == 'domain_concept'
+          end
+        end
+
+        context 'right operand' do
+          before(:all) do
+            @right_operand = @item.right_operand
+          end
+
+          it 'is an instance of ExprLeaf' do
+            @right_operand.should be_an_instance_of ExprLeaf
+          end
+
+          it 's item type is CString' do
+            @right_operand.item.should be_an_instance_of CString
+          end
+
+          it 's item pattern is /blood_pressure.v1/' do
+            @right_operand.item.pattern.should == '/blood_pressure.v1/'
+          end
         end
       end
     end
 
+    context 'excludes' do
+      before(:all) do
+        @excludes = @slot.excludes
+      end
 
-    it 's excludes 2 cnstraints' do
-      @slot.excludes.size.should be 2
+      it 's excludes 2 cnstraints' do
+        @excludes.size.should be 2
+      end
+
+      context '1st node' do
+        before(:all) do
+          @node = @excludes[0].expression
+        end
+
+        it 'is an instance of ExprBinaryOperator' do
+          @node.should be_an_instance_of ExprBinaryOperator
+        end
+
+        it 's operator is OP_MATCHES' do
+          @node.operator.should == OperatorKind::OP_MATCHES
+        end
+
+        context 'left operand' do
+          before(:all) do
+            @left_operand = @node.left_operand
+          end
+
+          it 'is an instance of ExprLeaf' do
+            @left_operand.should be_an_instance_of ExprLeaf
+          end
+
+          it 's item type is domain_concept' do
+            @left_operand.item.should == 'domain_concept'
+          end
+        end
+
+        context 'right operand' do
+          before(:all) do
+            @right_operand = @node.right_operand
+          end
+
+          it 'is an instance of ExprLeaf' do
+            @right_operand.should be_an_instance_of ExprLeaf
+          end
+
+          it 's item should be an instance of CString' do
+            @right_operand.item.should be_an_instance_of CString
+          end
+
+          it 's item pattern is /blood_pressure.v2/' do
+            @right_operand.item.pattern.should == '/blood_pressure.v2/'
+          end
+        end
+      end
+
+      context '2nd node' do
+        before(:all) do
+          @node = @excludes[1].expression
+        end
+
+        it 'is an instance of ExprBinaryOperator' do
+          @node.should be_an_instance_of ExprBinaryOperator
+        end
+
+        it 's operator is OP_MATCHES' do
+          @node.operator.should == OperatorKind::OP_MATCHES
+        end
+
+        context 'left operand' do
+          before(:all) do
+            @left_operand = @node.left_operand
+          end
+
+          it 'is an instance of ExprLeaf' do
+            @left_operand.should be_an_instance_of ExprLeaf
+          end
+
+          it 's item is domain_concept' do
+            @left_operand.item.should == 'domain_concept'
+          end
+        end
+
+        context 'right operand' do
+          before(:all) do
+            @right_operand = @node.right_operand
+          end
+
+          it 'is an instance of ExprLeaf' do
+            @right_operand.should be_an_instance_of ExprLeaf
+          end
+
+          it 's item type is CString' do
+            @right_operand.item.should be_an_instance_of CString
+          end
+
+          it 's item pattern is /.*/' do
+            @right_operand.item.pattern.should == '/.*/'
+          end
+        end
+      end
     end
-
-    
   end
-end
+end 
