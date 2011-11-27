@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/parser_spec_helper'
 # ticket 167
 
 describe ADLParser do
-  context 'Archetyep uncommon keys' do
+  context 'Archetype uncommon keys' do
     before(:all) do
       archetype = adl14_archetype('adl-test-entry.archetype_uncommonkeys.test.adl')
       @aterm = archetype.ontology.term_definition(:lang => 'en', :code => 'at0000')

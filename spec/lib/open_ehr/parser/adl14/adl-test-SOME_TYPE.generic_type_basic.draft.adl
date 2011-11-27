@@ -1,5 +1,5 @@
 archetype (adl_version=1.4)
-	adl-test-SOME_TYPE.generic_type_basic.draft
+	adl-test-SOME_TYPE.generic_type_basic.v1
 
 concept
 	[at0000]	-- root item
