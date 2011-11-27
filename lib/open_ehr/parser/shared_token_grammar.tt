@@ -867,7 +867,7 @@ module OpenEHR
       end
 
       rule SYM_END_CBLOCK
-        '}' space
+        '}'
       end
 
       rule SYM_ELLIPSIS
