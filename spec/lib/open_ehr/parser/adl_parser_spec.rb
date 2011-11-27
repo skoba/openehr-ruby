@@ -204,7 +204,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of assertion0 is /clinical_synopsis\.v1/' do
-                    @assertion0.expression.item.pattern.should == '/clinical_synopsis\.v1/'
+                    @assertion0.expression.right_operand.item.pattern.should == '/clinical_synopsis\.v1/'
                   end
                 end
 
@@ -222,7 +222,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of assertion1 is /problem\.v1/' do
-                    @assertion1.expression.item.pattern.should ==
+                    @assertion1.expression.right_operand.item.pattern.should ==
                       '/problem\.v1/'
                   end
                 end
@@ -241,7 +241,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of Assertion2 is /problem\.v1/' do
-                    @assertion2.expression.item.pattern.should ==
+                    @assertion2.expression.right_operand.item.pattern.should ==
                       '/problem-diagnosis\.v1/'
                   end
                 end
@@ -260,7 +260,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of assertion3 is /problem\.v1/' do
-                    @assertion3.expression.item.pattern.should ==
+                    @assertion3.expression.right_operand.item.pattern.should ==
                       '/problem-diagnosis-histological\.v1/'
                   end
                 end
@@ -279,7 +279,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of assertion4 is /problem\.v1/' do
-                    @assertion4.expression.item.pattern.should ==
+                    @assertion4.expression.right_operand.item.pattern.should ==
                       '/problem-genetic\.v1/'
                   end
                 end
@@ -298,7 +298,7 @@ describe ADLParser do
                   end
 
                   it 'expression value of assertion5 is /problem\.v1/' do
-                    @assertion5.expression.item.pattern.should ==
+                    @assertion5.expression.right_operand.item.pattern.should ==
                       '/risk\.v1/'
                   end
                 end

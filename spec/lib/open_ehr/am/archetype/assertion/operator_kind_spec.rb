@@ -26,6 +26,10 @@ describe OperatorKind do
     OperatorKind::OP_GT.should be_equal 2006
   end
 
+  it 'op_matches should be equal 2007' do
+    OperatorKind::OP_MATCHES.should be_equal 2007
+  end
+
   it 'op_not should be equal 2010' do
     OperatorKind::OP_NOT.should be_equal 2010
   end

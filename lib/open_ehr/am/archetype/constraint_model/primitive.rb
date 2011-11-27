@@ -78,6 +78,7 @@ module OpenEHR
             attr_reader :pattern, :list
 
             def initialize(args = { })
+              args[:type] = 'String'
               super
               consistency(args[:pattern], args[:list])
               @pattern = args[:pattern]

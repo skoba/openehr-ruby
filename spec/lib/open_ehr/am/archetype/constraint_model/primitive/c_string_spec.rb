@@ -6,7 +6,6 @@ describe CString do
   before(:each) do
     @default_value = DvText.new(:value => 'default')
     @c_string = CString.new(:default_value => @default_value,
-                            :type => 'Boolean',
                             :assumed_value => 'assumed',
                             :pattern => 't[a-z]st')
   end
@@ -15,8 +14,8 @@ describe CString do
     @c_string.should be_an_instance_of CString
   end
 
-  it 'type is DvText' do
-    @c_string.type.should == 'Boolean'
+  it 'type is always String' do
+    @c_string.type.should == 'String'
   end
 
   it 'default should be assigned properly' do

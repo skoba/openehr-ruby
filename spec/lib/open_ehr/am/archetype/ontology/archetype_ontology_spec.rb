@@ -42,7 +42,6 @@ describe ArchetypeOntology do
     @archetype_ontology.languages_available.should == ['ja', 'en']
   end
 
-
   it 'term_definition should be assigned properly' do
     @archetype_ontology.term_definition(:lang => 'ja', :code => 'at0000').items['text'].should == 'Archetype Concept'
   end

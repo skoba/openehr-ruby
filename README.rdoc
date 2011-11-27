@@ -9,8 +9,8 @@ Release-0.9.4
 
 = Requirements
 
-* Ruby 1.9.2 reccomended
-* Tested with Ruby 1.9.2 on Linux and FreeBSD.
+* Ruby 1.9.x reccomended
+* Tested with Ruby 1.9.3 on Linux and FreeBSD.
 * It would work with some adjustment on Ruby 1.8 or earlier,
   but not confirmed.
 * It should work on other platforms with Ruby

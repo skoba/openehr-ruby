@@ -190,10 +190,10 @@ module OpenEHR
       end
 
       rule c_archetype_slot_id
-        SYM_ALLOW_ARCHETYPE type_identifier V_LOCAL_TERM_CODE_REF {
+        SYM_ALLOW_ARCHETYPE type_identifier lt:V_LOCAL_TERM_CODE_REF {
           def value
             {:rm_type_name => type_identifier.value,
-             :node_id => V_LOCAL_TERM_CODE_REF.value}
+             :node_id => lt.value}
           end
         }
       / SYM_ALLOW_ARCHETYPE type_identifier {
@@ -728,34 +728,38 @@ module OpenEHR
       rule c_string_spec
         string_list_value ',' SYM_LIST_CONTINUE {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
-              :list => string_list_value.value)
+            {:list => string_list_value.value}
           end
         }
       / string_list_value '' {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
-              :list => string_list_value.value, :type => 'Boolean')
+            {:list => string_list_value.value}
           end
         }
       / pat:V_REGEXP '' {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
-              :pattern => pat.value, :type => 'Boolean')
+            {:pattern => pat.value}
           end
         }
       / str:V_STRING '' {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
-              :list => [str.value])
+            {:list => [str.value]}
           end
         }
       end
 
       rule c_string
-        c_string_spec (';' string_value)? {
+        c_string_spec ';' string_value {
           def value
-            c_string_spec.value
+            c_string_spec.value[:assumed_value] = string_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              c_string_spec.value)
+          end
+        }
+      / c_string_spec '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              c_string_spec.value)
           end
         }
       end
@@ -773,7 +777,7 @@ module OpenEHR
         }
       / SYM_FALSE '' {
           def value
-            {:true_valid => false, :false_valid => true}
+            {:false_valid => true, :true_valid => false}
           end
         }
       / SYM_FALSE ',' SYM_TRUE {
@@ -861,22 +865,41 @@ module OpenEHR
             boolean_node.value
           end
         }
+      / boolean_leaf '' {
+          def value
+            boolean_leaf.value
+          end
+        }
       end
 
       rule boolean_node
         SYM_EXISTS absolute_path {
           def value
-            {:operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EXISTS,
-             :path => absolute_path.value }
+            item = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :type => 'String',
+              :item => absolute_path.value,
+              :reference_type => 'CONSTANT')
+            OpenEHR::AM::Archetype::Assertion::ExprUnaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EXISTS,
+              :operand => item,
+              :precedence_overridden => true)
           end
         }
       / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK {
           def value
-            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+            attr_id = relative_path.value
+            item = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
               :item => c_primitive.value,
               :type => c_primitive.value.type,
-              :path => relative_path.value,
-              :reference_type => 'constraint')
+              :reference_type => 'Constant')
+            op = OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_MATCHES
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => op,
+              :right_operand => item,
+              :left_operand => relative_path.value,
+              :reference_type => 'Constraint')
           end
         }
       / SYM_NOT boolean_leaf {
@@ -884,11 +907,52 @@ module OpenEHR
             boolean_leaf.value
           end
         }
-      / arithmetic_expression (SYM_EQ / SYM_NE / SYM_LT / SYM_GT / SYM_LE / SYM_GE) arithmetic_expression {          def value
+      / arithmetic_leaf SYM_EQ arithmetic_expression {
+          def value
             p elements
           end
         }
-      / boolean_leaf ((SYM_AND / SYM_OR / SYM_XOR / SYM_IMPLIES) boolean_leaf)? {
+      / arithmetic_leaf SYM_NE arithmetic_expression {
+          def value
+            p elements
+          end
+        }
+      / arithmetic_leaf SYM_LT arithmetic_expression {
+          def value
+            p elements
+          end
+        }
+      / arithmetic_leaf SYM_GT arithmetic_expression {
+          def value
+            p elements
+          end
+        }
+      / arithmetic_leaf SYM_LE arithmetic_expression {
+          def value
+            p elements
+          end
+        }
+      / arithmetic_leaf SYM_GE arithmetic_expression {
+          def value
+            p elements
+          end
+        }
+      / boolean_leaf SYM_AND boolean_expression {
+          def value
+            p elements
+          end
+        }
+      / boolean_leaf SYM_OR boolean_expression {
+          def value
+            p elements
+          end
+        }
+      / boolean_leaf SYM_XOR boolean_expression {
+          def value
+            p elements
+          end
+        }
+      / boolean_leaf SYM_IMPLIES boolean_expression {
           def value
             p elements
           end
@@ -896,19 +960,25 @@ module OpenEHR
       end
 
       rule boolean_leaf
-        '(' boolean_expression ')' {
+        '(' boolean_expression ')' space {
           def value
             boolean_expression.value
           end
         }
       / SYM_TRUE {
           def value
-            true
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :type => 'Boolean',
+              :item => true,
+              :reference_type => 'CONSTANT')
           end
         }
       / SYM_FALSE {
           def value
-            false
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :type => 'Boolean',
+              :item => false,
+              :reference_type => 'CONSTANT')
           end
         }
       end
@@ -919,44 +989,97 @@ module OpenEHR
             arithmetic_node.value
           end
         }
+      / arithmetic_leaf '' {
+          def value
+            arithmetic_leaf.value
+          end
+        }
       end
 
       rule arithmetic_node
-        arithmetic_leaf (('+' / '-' / '*' / '/' / '^') arithmetic_leaf)*
+        arithmetic_leaf '+' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::
+            arithmetic_leaf.value
+          end
+        }
+      / arithmetic_leaf '-' arithmetic_expression {
+          def value
+            arithmetic_leaf.value   
+          end
+        }
+      / arithmetic_leaf '*' arithmetic_expression {
+          def value
+          end
+        }
+      / arithmetic_leaf '/' arithmetic_expression {
+          def value
+
+          end
+        }
+      / arithmetic_leaf '^' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype
+            arithmetic_leaf.value
+            OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EXP
+          end
+        }
       end
 
       rule arithmetic_leaf
-       '(' arithmetic_expression ')' {
+       '(' arithmetic_expression ')' space {
           def value
             arithmetic_expression.value
           end
         }
       / integer_value '' {
           def value
-            integer_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+              :type => 'Integer',
+              :item => integer_value.value,
+              :reference_type => 'CONSTANT')
           end
         }
       / real_value '' {
           def value
-            real_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+              :type => 'Real',
+              :item => real_value.value,
+              :reference_type => 'CONSTANT')
           end
         }
-      / absolute_path '' {
+      / absolute_path space {
           def value
-            absolute_path.value
+            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+              :type => 'String',
+              :item => absolute_path.value,
+              :reference_type => 'CONSTANT')
+            
           end
         }
       end
 
 # path block
       rule object_path
-        movable_path
-      / absolute_path
-      / relative_path
+        movable_path '' {
+          def value
+            movable_path.value
+          end
+	}
+      / absolute_path '' {
+          def value
+            absolute_path.value
+          end
+        }
+      / relative_path '' {
+          def value
+            relative_path.value
+          end
+        }
       end
 
       rule movable_path
-         SYM_MOVABLE_LEADER relative_path {
+         SYM_MOVABLE_LEADER relative_path '' {
            def value
              text_value
            end
@@ -964,7 +1087,7 @@ module OpenEHR
       end
 
       rule absolute_path
-        '/' relative_path? {
+        '/' relative_path? '' {
            def value
              text_value
            end
@@ -972,7 +1095,7 @@ module OpenEHR
       end
 
       rule relative_path
-        path_segment ('/' path_segment)* {
+        path_segment ('/' path_segment)* '' {
           def value
             text_value
           end
@@ -980,7 +1103,7 @@ module OpenEHR
       end
 
       rule path_segment
-        V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF? {
+        V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF? '' {
           def value
             text_value
           end

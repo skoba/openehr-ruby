@@ -1,5 +1,5 @@
 archetype
-	adl-test-entry.archetype_slot.test
+	adl-test-entry.archetype_slot.v1
 
 concept
 	[at0000]
