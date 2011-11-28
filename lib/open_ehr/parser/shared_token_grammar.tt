@@ -152,10 +152,10 @@ module OpenEHR
                   :lower_included => false)
           end
         }
-      / SYM_INTERVAL_DELIM SYM_GE integer_value SYM_INTERVAL_DELIM {
+      / SYM_INTERVAL_DELIM SYM_GE iv:integer_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => up.value,
+                  :lower => iv.value,
                   :upper_unbounded => true,
                   :lower_included => true)
           end
@@ -164,7 +164,7 @@ module OpenEHR
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
                   :lower => val.value,
-                  :lower => val.value,
+                  :upper => val.value,
                   :upper_included => true,
                   :lower_included => true)
           end

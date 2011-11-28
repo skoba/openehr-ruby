@@ -34,6 +34,7 @@ module OpenEHR
               binary_consistency(args[:true_valid], args[:false_valid])
               @true_valid = args[:true_valid]
               @false_valid = args[:false_valid]
+              args[:type] = 'Boolean'
               super(args)
             end
 
@@ -107,6 +108,7 @@ module OpenEHR
             attr_reader :list, :range
 
             def initialize(args = { })
+              args[:type] ||= 'Integer'
               super
               consistency(args[:list], args[:range])
               @list = args[:list]
@@ -133,6 +135,7 @@ module OpenEHR
 
           class CReal < CInteger
             def initialize(args = { })
+              args[:type] = 'Real'
               super
             end
           end
@@ -169,6 +172,7 @@ module OpenEHR
             include CDateModule
 
             def initialize(args = { })
+              args[:type] = 'ISO8601_DATE'
               super(args)
               self.range = args[:range]
               self.timezone_validity = args[:timezone_validity]
@@ -215,6 +219,7 @@ module OpenEHR
             include CTimeModule
 
             def initialize(args = { })
+              args[:type] = 'ISO8601_TIME'
               super
               self.range = args[:range]
               self.millisecond_validity = args[:millisecond_validity]
@@ -228,6 +233,7 @@ module OpenEHR
             attr_reader :hour_validity
 
             def initialize(args = { })
+              args[:type] = 'ISO8601_DATE_TIME'
               super
               self.timezone_validity = args[:timezone_validity]
               self.millisecond_validity = args[:millisecond_validity]
@@ -268,6 +274,7 @@ module OpenEHR
                           :seconds_allowed, :fractional_seconds_allowed
 
             def initialize(args = { })
+              args[:type] = 'ISO8601_DURATION'
               super
               self.fractional_seconds_allowed = args[:fractional_seconds_allowed]
               self.seconds_allowed = args[:seconds_allowed]

@@ -70,11 +70,11 @@ describe ADLParser do
         attr(8).assumed_value.should == 'cardio.txt'
       end
 
-      it 'nineth attribute pattern is ^mg|mg/ml|mg/g^' do
+      it 'ninth attribute pattern is ^mg|mg/ml|mg/g^' do
         attr(9).pattern.should == '^mg|mg/ml|mg/g^'
       end
 
-      it 'nineth attribute assumed value is mg' do
+      it 'ninth attribute assumed value is mg' do
         attr(9).assumed_value.should == 'mg'
       end
 
@@ -150,6 +150,388 @@ describe ADLParser do
 
       it 'sixth attribute is assumed true' do
         attr(6).assumed_value.should be_true
+      end
+    end
+
+    context 'Integer constraint' do
+      before(:all) do
+        @constraints = const(2)
+      end
+
+      context 'first attribute' do
+        it 'list is 55' do
+          attr(1).list.should == [55]
+        end
+
+        it 'assumed value is nil' do
+          attr(1).should_not have_assumed_value
+        end
+      end
+
+      context 'second attribute' do
+        it 'list is 10,20,30' do
+          attr(2).list.should == [10,20,30]
+        end
+
+        it 'assumed value is nil' do
+          attr(2).should_not have_assumed_value
+        end
+      end
+
+      context 'thrid attribute' do
+        it 'upper range is 100' do
+          attr(3).range.upper.should be 100
+        end
+
+        it 'lower range is 0' do
+          attr(3).range.lower.should be 0
+        end
+
+        it 'lower included' do
+          attr(3).range.should be_lower_included
+        end
+
+        it 'upper included' do
+          attr(3).range.should be_upper_included
+        end
+
+        it 'assumed_value is nil' do
+          attr(3).should_not have_assumed_value
+        end
+      end
+
+      context 'fourth attribute' do
+        it 'lower range is 10' do
+          attr(4).range.lower.should be 10
+        end
+
+        it 'is not lower included' do
+          attr(4).range.should_not be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          attr(4).range.should be_upper_unbounded
+        end
+
+        it 'assumed value is nil' do
+          attr(4).should_not have_assumed_value
+        end
+      end
+
+      context 'fifth attribute' do
+        it 'upper range is 10' do
+          attr(5).range.upper.should be 10
+        end
+
+        it 'is not upper included' do
+          attr(5).range.should_not be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          attr(5).range.should be_lower_unbounded
+        end
+
+        it 'assumed value is nil' do
+          attr(5).should_not have_assumed_value
+        end
+      end
+
+      context 'sixth attribute' do
+        it 'lower range is 10' do
+          attr(6).range.lower.should be 10
+        end
+
+        it 'is lower included' do
+          attr(6).range.should be_lower_included
+        end
+
+        it 'is upper_unbounded' do
+          attr(6).range.should be_upper_unbounded
+        end
+
+        it 'assumed value is nil' do
+          attr(6).should_not have_assumed_value
+        end
+      end
+
+      context 'seventh attribute' do
+        it 'upper range is 10' do
+          attr(7).range.upper.should be 10
+        end
+
+        it 'is upper included' do
+          attr(7).range.should be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          attr(7).range.should be_lower_unbounded
+        end
+
+        it 'does not have assumed value' do
+          attr(7).should_not have_assumed_value
+        end
+      end
+
+      context 'eighth attribute' do
+        it 'lower range is -10' do
+          attr(8).range.lower.should be -10
+        end
+
+        it 'upper range is -5' do
+          attr(8).range.upper.should be -5
+        end
+
+        it 'is lower included' do
+          attr(8).range.should be_lower_included
+        end
+
+        it 'is upper included' do
+          attr(8).range.should be_upper_included
+        end
+
+        it 'does not have assumed value' do
+          attr(8).should_not have_assumed_value
+        end
+      end
+
+      context 'ninth attribute' do
+        it 'list is 50' do
+          attr(9).list.should == [55]
+        end
+
+        it 'has assumed value' do
+          attr(9).should have_assumed_value
+        end
+
+        it 'assumed value is 50' do
+          attr(9).assumed_value.should be 50
+        end
+      end
+
+      context 'tenth attribute' do
+        it 'list is 10,20,30' do
+          attr(10).list.should == [10,20,30]
+        end
+
+        it 'assumed value is 20' do
+          attr(10).assumed_value.should be 20
+        end
+      end
+
+      context 'eleventh attribute' do
+        it 'lower range is 0' do
+          attr(11).range.lower.should be 0
+        end
+
+        it 'upper range is 100' do
+          attr(11).range.upper.should be 100
+        end
+
+        it 'is lower included' do
+          attr(11).range.should be_lower_included
+        end
+
+        it 'is upper included' do
+          attr(11).range.should be_upper_included
+        end
+
+        it 'assumed value is 50' do
+          attr(11).assumed_value.should be 50
+        end
+      end
+
+      context 'twelfth attribute' do
+        it 'lower range is 10' do
+          attr(12).range.lower.should be 10
+        end
+
+        it 'is not lower included' do
+          attr(12).range.should_not be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          attr(12).range.should be_upper_unbounded
+        end
+
+        it 'assumed value is 20' do
+          attr(12).assumed_value.should be 20
+        end
+      end
+
+      context 'thirteenth attribute' do
+        it 'upper range is 10' do
+          attr(13).range.upper.should be 10
+        end
+
+        it 'is not upper included' do
+          attr(13).range.should_not be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          attr(13).range.should be_lower_unbounded
+        end
+
+        it 'assumed value is 5' do
+          attr(13).assumed_value.should be 5
+        end
+      end
+
+      context 'fourteenth attribute' do
+        it 'lower range is 10' do
+          attr(14).range.lower.should be 10
+        end
+
+        it 'is lower included' do
+          attr(14).range.should be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          attr(14).range.should be_upper_unbounded
+        end
+
+        it 'assumed value is 12' do
+          attr(14).assumed_value.should be 12
+        end
+      end
+
+      context '15th attribute' do
+        it 'upper range is 10' do
+          attr(15).range.upper.should be 10
+        end
+
+        it 'is upper included' do
+          attr(15).range.should be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          attr(15).range.should be_lower_unbounded
+        end
+
+        it 'assumed value is 8' do
+          attr(15).assumed_value.should be 8
+        end
+      end
+
+      context '16th attribute' do
+        it 'lower range is -10' do
+          attr(16).range.lower.should be -10
+        end
+
+        it 'upper range is -5' do
+          attr(16).range.upper.should be -5
+        end
+
+        it 'is upper included' do
+          attr(16).range.should be_upper_included
+        end
+
+        it 'is lower included' do
+          attr(16).range.should be_lower_included
+        end
+
+        it 'assumed value is -7' do
+          attr(16).assumed_value.should be -7
+        end
+      end
+
+      context '17th attribute' do
+        it 'upper range is 100' do
+          attr(17).range.upper.should be 100
+        end
+
+        it 'lower range is 100' do
+          attr(17).range.lower.should be 100
+        end
+
+        it 'is lower included' do
+          attr(17).range.should be_lower_included
+        end
+
+        it 'is upper included' do
+          attr(17).range.should be_upper_included
+        end
+
+        it 'does not have assumed value' do
+          attr(17).should_not have_assumed_value
+        end
+      end
+
+      context '18th attribute' do
+        before(:all) do
+          @attribute = attr(18)
+        end
+
+        it 'upper range is 100' do
+          @attribute.range.upper.should be 100
+        end
+
+        it 'lower range is 0' do
+          @attribute.range.lower.should be 0
+        end
+
+        it 'is not lower inlcuded' do
+          @attribute.range.should_not be_lower_included
+        end
+
+        it 'is upper included' do
+          @attribute.range.should be_upper_included
+        end
+
+        it 'does not have assumed value' do
+          @attribute.should_not have_assumed_value
+        end
+      end
+
+      context '19th attribute' do
+        before(:all) do
+          @attribute = attr(19)
+        end
+
+        it 'upper range is 100' do
+          @attribute.range.upper.should be 100
+        end
+
+        it 'lower range is 0' do
+          @attribute.range.lower.should be 0
+        end
+
+        it 'is lower included' do
+          @attribute.range.should be_lower_included
+        end
+
+        it 'is not upper included' do
+          @attribute.range.should_not be_upper_included
+        end
+
+        it 'does not have assumed value' do
+          @attribute.should_not have_assumed_value
+        end
+      end
+
+      context '20th attribute |>0..<100|' do
+        before(:all) do
+          @attribute = attr(20)
+        end
+
+        it 'upper range is 100' do
+          @attribute.range.upper.should be 100
+        end
+
+        it 'lower range is 0' do
+          @attribute.range.lower.should be 0
+        end
+
+        it 'is not lower included' do
+          @attribute.range.should_not be_lower_included
+        end
+
+        it 'is not upper included' do
+          @attribute.range.should_not be_upper_included
+        end
+
+        it 'does not have assumed value' do
+          @attribute.should_not have_assumed_value
+        end
       end
     end
   end

@@ -523,12 +523,15 @@ module OpenEHR
       rule c_integer
         c_integer_spec ';' white_space integer_value {
           def value
-            c_integer_spec.value
+            args = c_integer_spec.value
+            args[:assumed_value] = integer_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(args)
           end
         }
       / c_integer_spec '' {
           def value
-            c_integer_spec.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(
+              c_integer_spec.value)
           end
         }
       end
@@ -536,22 +539,22 @@ module OpenEHR
       rule c_integer_spec
         integer_list_value '' {
           def value
-            integer_list_value.value
+            {:list => integer_list_value.value}
           end
         }
       / integer_interval_value '' {
           def value
-            integer_interval_value
+            {:range => integer_interval_value.value}
+          end
+        }
+      / integer_value !'..' '' {
+          def value
+            {:list => [integer_value.value]}
           end
         }
       / occurrence_spec '' {
           def value
-            occurrence_spec.value
-          end
-        }
-      / integer_value '' {
-          def value
-            integer_value.value
+            {:range => occurrence_spec.value}
           end
         }
       end
