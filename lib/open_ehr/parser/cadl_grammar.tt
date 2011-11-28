@@ -790,9 +790,10 @@ module OpenEHR
       rule c_boolean
         c_boolean_spec ';' white_space boolean_value {
           def value
-            c_boolean_spec.value[:assumed_value] = boolean_value.value
+            args = c_boolean_spec.value
+            args[:assumed_value] = boolean_value.value
             OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
-              c_boolean_spec.value)
+              args)
           end
         }
       / c_boolean_spec '' {
