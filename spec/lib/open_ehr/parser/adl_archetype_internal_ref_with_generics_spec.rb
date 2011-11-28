@@ -97,15 +97,15 @@ describe ADLParser do
                 end
 
                 it 's lower is 37.0' do
-                  @magnitude.children[0].lower.should == 37.0
+                  @magnitude.children[0].range.lower.should == 37.0
                 end
 
                 it 'is lower included' do
-                  @magnitude.children[0].should be_lower_included
+                  @magnitude.children[0].range.should be_lower_included
                 end
 
                 it 'is upper unbounded' do
-                  @magnitude.children[0].should be_upper_unbounded
+                  @magnitude.children[0].range.should be_upper_unbounded
                 end
               end
             end
@@ -177,15 +177,15 @@ describe ADLParser do
                 end
 
                 it 's magnitude lower is 39.0' do
-                  @magnitude.children[0].lower.should == 39.0
+                  @magnitude.children[0].range.lower.should == 39.0
                 end
 
                 it 's magnitude lower included' do
-                  @magnitude.children[0].should be_lower_included
+                  @magnitude.children[0].range.should be_lower_included
                 end
 
                 it 's upper unbounded' do
-                  @magnitude.children[0].should be_upper_unbounded
+                  @magnitude.children[0].range.should be_upper_unbounded
                 end
               end
             end

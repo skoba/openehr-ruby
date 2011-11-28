@@ -562,17 +562,17 @@ module OpenEHR
       rule c_real_spec
         real_list_value '' {
           def value
-            real_list_value.value
+            {:list => real_list_value.value}
           end
         }
       / real_interval_value '' {
           def value
-            real_interval_value.value
+            {:range => real_interval_value.value}
           end
         }
       / real_value '' {
           def value
-            real_value.value
+            {:list => [real_value.value]}
           end
         }
       end
@@ -580,12 +580,15 @@ module OpenEHR
       rule c_real
         c_real_spec ';' white_space real_value {
           def value
-            c_real_spec.value
+            args = c_real_spec.value
+            args[:assumed_value] = real_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new(args)
           end
         }
       / c_real_spec '' {
           def value
-            c_real_spec.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new(
+              c_real_spec.value)
           end
         }
       end
