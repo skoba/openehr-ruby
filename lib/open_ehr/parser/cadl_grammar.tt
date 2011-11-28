@@ -596,12 +596,17 @@ module OpenEHR
       rule c_date_constraint
         date_interval_value '' {
           def value
-            date_interval_value.value
+            {:range => date_interval_value.value}
+          end
+        }
+      / date_list_value '' {
+          def value
+            {:list => date_list_value.value}
           end
         }
       / date_value '' {
           def value
-            date_value.value
+            {:list => [date_value.value]}
           end
         }
       / con:V_ISO8601_DATE_CONSTRAINT_PATTERN '' {
@@ -614,12 +619,16 @@ module OpenEHR
       rule c_date
         c_date_constraint ';' white_space date_value {
           def value
-            c_date_constraint.value
+            args = c_date_constraint.value
+            args[:assumed_value] = date_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new(
+              args)
           end
         }
       / c_date_constraint '' {
           def value
-            c_date_constraint.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new(
+              c_date_constraint.value)
           end
         }
       end
@@ -731,7 +740,7 @@ module OpenEHR
       end
 
       rule c_string_spec
-        string_list_value ',' SYM_LIST_CONTINUE {
+        string_list_value ',' white_space SYM_LIST_CONTINUE {
           def value
             {:list => string_list_value.value}
           end

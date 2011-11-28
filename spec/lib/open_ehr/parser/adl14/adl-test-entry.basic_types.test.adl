@@ -115,7 +115,7 @@ definition
                 date_attr10 matches {|> 2004-09-20|}
                 date_attr11 matches {|>= 2004-09-20|}
 
-                -- date_attr12 matches {2001-12-25, ...} -- Not currently in ADL syntax
+                date_attr12 matches {2001-12-25, ...} -- Not currently in ADL syntax
                 
                 -- with assumed values
                 date_attr13 matches {yyyy-mm-dd; 2000-01-01}

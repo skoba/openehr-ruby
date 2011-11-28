@@ -325,7 +325,8 @@ module OpenEHR
       rule date_value
         ed:V_ISO8601_EXTENDED_DATE '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601Date.new(ed.text_value)
+            OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(
+              :value => ed.text_value)
           end
         }
       end
@@ -340,7 +341,7 @@ module OpenEHR
             [date_value] + more_dates.elements.map {|d| d.date_value}
           end
         }
-      / date_value ',' SYM_LIST_CONTINUE {
+      / date_value ',' white_space SYM_LIST_CONTINUE {
           def value
             [date_value.value]
           end

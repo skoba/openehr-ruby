@@ -141,8 +141,8 @@ module OpenEHR
           end
 
           module CDateModule
-            attr_accessor :range, :timezone_validity
-            attr_reader :month_validity, :day_validity
+            attr_accessor :timezone_validity, :day_validity, :range, :list
+            attr_reader :month_validity, :day_validity, :range, :pattern
 
             def month_validity=(month_validity)
               if (month_validity == ValidityKind::OPTIONAL &&
@@ -155,12 +155,21 @@ module OpenEHR
               @month_validity = month_validity
             end
 
-            def day_validity=(day_validity)
-              @day_validity = day_validity
+            def pattern=(pattern)
+              @pattern = pattern if valid_pattern?(pattern)
             end
 
             def validity_is_range?
               return !@range.nil?
+            end
+
+            protected
+            def valid_pattern?(pattern)
+              if /^([Yy?X]{4})(-([Mm?X]{2})(-([Dd?X]{2}))?)?$/ =~ pattern
+                true
+              else
+                false
+              end
             end
 
             private
@@ -173,8 +182,12 @@ module OpenEHR
 
             def initialize(args = { })
               args[:type] = 'ISO8601_DATE'
-              super(args)
-              self.range = args[:range]
+              super
+              @range = args[:range]
+              if args[:pattern]
+                self.pattern = args[:pattern]
+              end
+              self.list = args[:list]
               self.timezone_validity = args[:timezone_validity]
               self.day_validity = args[:day_validity]
               self.month_validity = args[:month_validity]
