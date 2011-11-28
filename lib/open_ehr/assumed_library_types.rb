@@ -131,6 +131,12 @@ module OpenEHR
       def self.valid_month?(mo)
         mo >= 1 and mo <= MONTH_IN_YEAR
       end
+
+      protected
+      def nilthenzero(value)
+        return value ? value : 0
+      end
+
     end # end of TimeDefinitions
 
     module ISO8601DateModule
@@ -195,10 +201,6 @@ module OpenEHR
         else year % 4 == 0
         end
       end
-    end
-
-    def nilthenzero(value)
-      return value ? value : 0
     end
 
     class ISO8601Date < TimeDefinitions
@@ -472,6 +474,8 @@ module OpenEHR
         end
         if $8.nil?
           self.timezone = nil
+        elsif $8 == 'Z'
+          self.timezone = $8
         else
           self.timezone = $9+$10
         end

@@ -71,7 +71,7 @@ module OpenEHR
       end
 
       rule integer_value
-        ('+' / '-')? V_INTEGER {
+        [+-]? V_INTEGER '' {
           def value
             text_value.to_i
           end
@@ -79,7 +79,7 @@ module OpenEHR
       end
 
       rule integer_list_value
-        integer_value (',' white_space more_i:(integer_value))* {
+        integer_value more_i:(',' white_space integer_value)+ {
           def value
             integers.map { |i| i.value }
           end
@@ -180,7 +180,7 @@ module OpenEHR
       end
 
       rule real_list_value
-        real_value (',' white_space more_i:(real_value) '')* {
+        real_value  more_i:(',' white_space real_value)* {
           def value
             reals.map { |i| i.value }
           end
@@ -265,7 +265,7 @@ module OpenEHR
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
                   :lower => val.value,
-                  :lower => val.value,
+                  :upper => val.value,
                   :upper_included => true,
                   :lower_included => true)
           end
@@ -323,9 +323,9 @@ module OpenEHR
       end
 
       rule date_value
-        V_ISO8601_EXTENDED_DATE '' {
+        ed:V_ISO8601_EXTENDED_DATE '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601Date.new(V_ISO8601_EXTENDED_DATE.text_value)
+            OpenEHR::AssumedLibraryTypes::ISO8601Date.new(ed.text_value)
           end
         }
       end
@@ -404,10 +404,10 @@ module OpenEHR
                   :lower_included => false)
           end
         }
-      / SYM_INTERVAL_DELIM SYM_GE date_value SYM_INTERVAL_DELIM {
+      / SYM_INTERVAL_DELIM SYM_GE val:date_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => up.value,
+                  :lower => val.value,
                   :upper_unbounded => true,
                   :lower_included => true)
           end
@@ -416,7 +416,7 @@ module OpenEHR
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
                   :lower => val.value,
-                  :lower => val.value,
+                  :upper => val.value,
                   :upper_included => true,
                   :lower_included => true)
           end
@@ -424,15 +424,15 @@ module OpenEHR
       end
 
       rule time_value
-        V_ISO8601_EXTENDED_TIME '' {
+        ti:V_ISO8601_EXTENDED_TIME '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601Time(V_ISO8601_EXTENDED_TIME.text_value)
+            OpenEHR::AssumedLibraryTypes::ISO8601Time.new(ti.text_value)
           end
         }
       end
 
       rule time_list_value
-        time_value more_t:(',' time_value)+ {
+        time_value (',' white_space more_t:time_value)+ {
           def value
             times.map {|t| t.value}
           end
@@ -505,10 +505,10 @@ module OpenEHR
                   :lower_included => false)
           end
         }
-      / SYM_INTERVAL_DELIM SYM_GE time_value SYM_INTERVAL_DELIM {
+      / SYM_INTERVAL_DELIM SYM_GE tv:time_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => up.value,
+                  :lower => tv.value,
                   :upper_unbounded => true,
                   :lower_included => true)
           end
@@ -517,7 +517,7 @@ module OpenEHR
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
                   :lower => val.value,
-                  :lower => val.value,
+                  :upper => val.value,
                   :upper_included => true,
                   :lower_included => true)
           end
@@ -533,7 +533,7 @@ module OpenEHR
       end
 
       rule date_time_list_value
-        date_time_value more_dt:(',' date_time_value)+ {
+        date_time_value (',' more_dt:date_time_value)+ {
           def value
             date_times.map {|t| t.value}
           end
@@ -606,10 +606,10 @@ module OpenEHR
                   :lower_included => false)
           end
         }
-      / SYM_INTERVAL_DELIM SYM_GE date_time_value SYM_INTERVAL_DELIM {
+      / SYM_INTERVAL_DELIM SYM_GE dt:date_time_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => up.value,
+                  :lower => dt.value,
                   :upper_unbounded => true,
                   :lower_included => true)
           end
@@ -618,7 +618,7 @@ module OpenEHR
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
                   :lower => val.value,
-                  :lower => val.value,
+                  :upper => val.value,
                   :upper_included => true,
                   :lower_included => true)
           end
@@ -839,11 +839,11 @@ module OpenEHR
       end
 
       rule SYM_GE
-        '=>' / '>=' white_space
+        ('=>' / '>=') white_space
       end
 
       rule SYM_LE
-        '<=' / '=>' white_space
+        ('<=' / '=>') white_space
       end
 
       rule SYM_LT
@@ -1103,7 +1103,7 @@ module OpenEHR
       end
 
       rule V_ISO8601_EXTENDED_TIME
-        [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? ('Z' / [+-] [0-9] 4..4)? / [0-2] [0-9] ':' [0-6] [0-9] (Z / [+-] [0-9] 4..4)?
+        [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? ('Z' / [+-] [0-9] 4..4)? / [0-2] [0-9] ':' [0-6] [0-9] ('Z' / [+-] [0-9] 4..4)?
       end
 
       rule V_ISO8601_EXTENDED_DATE
@@ -1123,7 +1123,7 @@ module OpenEHR
       end
 
       rule V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
-        [yY] [yY] [yY] [yY] '-' [mM?X] [mM?X] '-' [dD?X] [dD?X] [Tt] [hH?X] [hH?X] ':' [mM?X] [mM?X] ':' [sS?X] [sS?X]
+        [yY] [yY] [yY] [yY] '-' [mM?X] [mM?X] '-' [dD?X] [dD?X] [Tt ] [hH?X] [hH?X] ':' [mM?X] [mM?X] ':' [sS?X] [sS?X]
       end
 
       rule V_ISO8601_DURATION_CONSTRAINT_PATTERN
@@ -1155,7 +1155,7 @@ module OpenEHR
       end
 
       rule V_INTEGER
-        [0-9] {
+        [0-9]+ [eE] [+-]? [0-9] {
           def value
             text_value.to_i
           end
@@ -1165,7 +1165,7 @@ module OpenEHR
             text_value.to_i
           end
         }	
-      / [0-9]+ [eE] [+-]? [0-9] {
+      / [0-9] {
           def value
             text_value.to_i
           end
@@ -1173,7 +1173,7 @@ module OpenEHR
       end
 
       rule V_REAL
-        [0-9] '.' [0-9]+ / [1-9] [0-9]+ '.' [0-9]+ / [0-9]+ '.' [0-9]+ [eE] [+-]? [0-9]+ {
+        [0-9]+ '.' [0-9]+ [eE] [+-]? [0-9]+ / [1-9] [0-9]+ '.' [0-9]+ / [0-9] '.' [0-9]+ {
           def value
             text_value.to_f
           end

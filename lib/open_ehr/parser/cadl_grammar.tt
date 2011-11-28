@@ -211,19 +211,9 @@ module OpenEHR
       end
 
       rule c_primitive
-        c_integer '' {
+        c_date_time '' {
           def value
-            c_integer.value
-          end
-        }	
-      / c_real '' {
-          def value
-            c_real.value
-          end
-        }
-      / c_date '' {
-          def value
-            c_date.value
+            c_date_time.value
           end
         }
       / c_time '' {
@@ -231,9 +221,9 @@ module OpenEHR
             c_time.value
           end
         }
-      / c_date_time '' {
+      / c_date '' {
           def value
-            c_date_time.value
+            c_date.value
           end
         }
       / c_duration '' {
@@ -241,14 +231,24 @@ module OpenEHR
             c_duration.value
           end
         }
-      / c_string '' {
+      / c_real '' {
           def value
-            c_string.value
+            c_real.value
           end
         }
+      / c_integer '' {
+          def value
+            c_integer.value
+          end
+        }	
       / c_boolean '' {
           def value
             c_boolean.value
+          end
+        }
+      / c_string '' {
+          def value
+            c_string.value
           end
         }
       end
@@ -485,7 +485,7 @@ module OpenEHR
       end
 
       rule occurrence_spec
-        st:(V_INTEGER) SYM_ELLIPSIS ed:cardinality_limit_value {
+        st:integer_value SYM_ELLIPSIS ed:cardinality_limit_value {
           def value
             if ed.value == '*'
               interval = OpenEHR::AssumedLibraryTypes::Interval.new(
@@ -508,7 +508,7 @@ module OpenEHR
       end
 
       rule cardinality_limit_value
-        integer_value {
+        integer_value '' {
           def value
             text_value.to_i
           end
@@ -520,20 +520,28 @@ module OpenEHR
         }
       end
 
-      rule c_integer_spec
-        cardinality_limit_value '' {
+      rule c_integer
+        c_integer_spec ';' white_space integer_value {
           def value
-            cardinality_limit_value.value
+            c_integer_spec.value
           end
         }
-      / integer_list_value '' {
+      / c_integer_spec '' {
+          def value
+            c_integer_spec.value
+          end
+        }
+      end
+
+      rule c_integer_spec
+        integer_list_value '' {
           def value
             integer_list_value.value
           end
         }
       / integer_interval_value '' {
           def value
-            integer_interval_value.value
+            integer_interval_value
           end
         }
       / occurrence_spec '' {
@@ -541,28 +549,15 @@ module OpenEHR
             occurrence_spec.value
           end
         }
-      end
-
-      rule c_integer
-        c_integer_spec '' {
+      / integer_value '' {
           def value
-            c_integer_spec.value
-          end
-        }
-      / c_integer_spec ';' integer_value {
-          def value
-            c_integer_spec.value
+            integer_value.value
           end
         }
       end
 
       rule c_real_spec
-        real_value '' {
-          def value
-            real_value.value
-          end
-        }
-      / real_list_value '' {
+        real_list_value '' {
           def value
             real_list_value.value
           end
@@ -572,25 +567,30 @@ module OpenEHR
             real_interval_value.value
           end
         }
+      / real_value '' {
+          def value
+            real_value.value
+          end
+        }
       end
 
       rule c_real
-        c_real_spec '' {
+        c_real_spec ';' white_space real_value {
           def value
             c_real_spec.value
           end
         }
-      / c_real_spec ';' real_value {
+      / c_real_spec '' {
           def value
-           c_real_spec.assumed_value = real_value.value
+            c_real_spec.value
           end
         }
       end
 
       rule c_date_constraint
-        V_ISO8601_DATE_CONSTRAINT_PATTERN '' {
+        date_interval_value '' {
           def value
-            V_ISO8601_DATE_CONSTRAINT_PATTERN.value
+            date_interval_value.value
           end
         }
       / date_value '' {
@@ -598,20 +598,20 @@ module OpenEHR
             date_value.value
           end
         }
-      / date_interval_value '' {
+      / con:V_ISO8601_DATE_CONSTRAINT_PATTERN '' {
           def value
-            date_interval_value.value
+            {:pattern => con.text_value}
           end
         }
       end
 
       rule c_date
-        c_date_constraint '' {
+        c_date_constraint ';' white_space date_value {
           def value
             c_date_constraint.value
           end
         }
-      / c_date_constraint ';' date_value {
+      / c_date_constraint '' {
           def value
             c_date_constraint.value
           end
@@ -619,9 +619,9 @@ module OpenEHR
       end
 
       rule c_time_constraint
-        V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
+        time_interval_value '' {
           def value
-            V_ISO8601_TIME_CONSTRAINT_PATTERN.value
+            time_interval_value.value
           end
         }
       / time_value '' {
@@ -629,30 +629,30 @@ module OpenEHR
             time_value.value
           end
         }
-      / time_interval_value {
+      / tc:V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
           def value
-            time_interval_value.value
+            {:pattern => tc.text_value}
           end
         }
       end
 
       rule c_time
-        c_time_constraint '' {
-          def value
-            c_time_constraint.value
-          end
-        }
-      / c_time_constraint ';' time_value {
+        c_time_constraint ';' white_space time_value {
           def value
             c_time_constraint.value
           end
         }    
+      / c_time_constraint '' {
+          def value
+            c_time_constraint.value
+          end
+        }
       end
 
       rule c_date_time_constraint
-        V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN '' {
+        date_time_interval_value '' {
           def value
-            V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN.value
+            date_time_interval_value.value
           end
         }
       / date_time_value '' {
@@ -660,20 +660,20 @@ module OpenEHR
             date_time_value.value
           end
         }
-      / date_time_interval_value '' {
+      / dtc:V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN '' {
           def value
-            date_time_interval_value.value
+            {:pattern => dtc.text_value}
           end
         }
       end
 
       rule c_date_time
-        c_date_time_constraint '' {
+        c_date_time_constraint ';' white_space date_time_value {
           def value
             c_date_time_constraint.value
           end
         }
-      / c_date_time_constraint ';' date_time_value {
+      / c_date_time_constraint '' {
           def value
             c_date_time_constraint.value
           end
@@ -686,38 +686,38 @@ module OpenEHR
             duration_pattern.value
           end
         }
-      / duration_pattern '/' duration_interval_pattern {
+      / duration_pattern '/' duration_interval_value '' {
           def value
-            duration_interval_patternl.value
+            duration_pattern.value
           end
         }
-      / duration_value {
-          def value
-            duration_value.value
-          end
-        }
-      / duration_interval_value {
+      / duration_interval_value '' {
           def value
             duration_interval_value.value
+          end
+        }
+      / duration_value '' {
+          def value
+            duration_value.value
           end
         }
       end
 
       rule duration_pattern
-        V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
+        V_ISO8601_DURATION_CONSTRAINT_PATTERN '' {
           def value
-            V_ISO8601_TIME_CONSTRAINT_PATTERN.value
+            V_ISO8601_DURATION_CONSTRAINT_PATTERN.value
           end
         }
       end
 
       rule c_duration
-        c_duration_constraint '' {
+        c_duration_constraint ';' white_space duration_value {
           def value
             c_duration_constraint.value
           end
         }
-      / c_duration_constraint ';' duration_value {
+      / c_duration_constraint '' {
           def value
             c_duration_constraint.value
           end
@@ -748,11 +748,12 @@ module OpenEHR
       end
 
       rule c_string
-        c_string_spec ';' string_value {
+        c_string_spec white_space ';' white_space string_value {
           def value
-            c_string_spec.value[:assumed_value] = string_value.value
+            args = c_string_spec.value
+            args[:assumed_value] = string_value.value
             OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
-              c_string_spec.value)
+              args)
           end
         }
       / c_string_spec '' {
@@ -764,30 +765,30 @@ module OpenEHR
       end
 
       rule c_boolean_spec
-        SYM_TRUE '' {
+        SYM_TRUE ',' white_space SYM_FALSE {
+          def value
+            {:true_valid => true, :false_valid => true}
+          end
+        }
+      / SYM_TRUE white_space '' {
           def value
             {:true_valid => true, :false_valid => false}
           end
         }
-      / SYM_TRUE ',' SYM_FALSE {
+      / SYM_FALSE white_space ',' white_space SYM_TRUE {
           def value
             {:true_valid => true, :false_valid => true}
           end
         }
-      / SYM_FALSE '' {
+      / SYM_FALSE white_space '' {
           def value
             {:false_valid => true, :true_valid => false}
-          end
-        }
-      / SYM_FALSE ',' SYM_TRUE {
-          def value
-            {:true_valid => true, :false_valid => true}
           end
         }
       end
 
       rule c_boolean
-        c_boolean_spec ';' boolean_value {
+        c_boolean_spec ';' white_space boolean_value {
           def value
             c_boolean_spec.value[:assumed_value] = boolean_value.value
             OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
