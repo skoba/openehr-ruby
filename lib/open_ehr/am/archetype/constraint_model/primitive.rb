@@ -195,9 +195,12 @@ module OpenEHR
           end
 
           module CTimeModule
-            attr_accessor :range
+            attr_accessor :range, :list
             attr_reader :minute_validity, :second_validity,
-                        :millisecond_validity
+                        :millisecond_validity, :pattern
+            def pattern=(pattern)
+              @pattern = pattern if valid_pattern? pattern
+            end
 
             def minute_validity=(minute_validity)
               if (minute_validity == ValidityKind::OPTIONAL &&
@@ -223,8 +226,17 @@ module OpenEHR
               @millisecond_validity = millisecond_validity
             end
 
+            protected
             def validity_is_range?
               return !@range.nil?
+            end
+
+            def valid_pattern?(pattern)
+              if /^([Hh?X]{2})(:([Mm?X]{2})(:([Ss?X]{2}))?)?$/ =~ pattern
+                true
+              else
+                false
+              end
             end
           end
 
@@ -234,7 +246,9 @@ module OpenEHR
             def initialize(args = { })
               args[:type] = 'ISO8601_TIME'
               super
+              self.pattern = args[:pattern]
               self.range = args[:range]
+              self.list = args[:list]
               self.millisecond_validity = args[:millisecond_validity]
               self.second_validity = args[:second_validity]
               self.minute_validity = args[:minute_validity]

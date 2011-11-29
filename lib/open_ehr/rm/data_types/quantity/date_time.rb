@@ -99,7 +99,11 @@ module OpenEHR
             end
 
             def magnitude
-              if @fractional_second.nil?
+              if @fractional_second.nil? && @second.nil? && @minute.nil?
+                return @hour * 60 * 60
+              elsif @fractional_second.nil? && @second.nil?
+                return @hour * 60 * 60 + @minute * 60
+              elsif @fractional_second.nil?
                 return @hour * 60 * 60 + @minute * 60 + @second
               else
                 return @hour * 60 * 60 + @minute * 60 + @second + @fractional_second

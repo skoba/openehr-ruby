@@ -427,13 +427,14 @@ module OpenEHR
       rule time_value
         ti:V_ISO8601_EXTENDED_TIME '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601Time.new(ti.text_value)
+            OpenEHR::RM::DataTypes::Quantity::DateTime::DvTime.new(
+              :value => ti.text_value)
           end
         }
       end
 
       rule time_list_value
-        time_value (',' white_space more_t:time_value)+ {
+        time_value more_t:(',' white_space time_value)+ {
           def value
             times.map {|t| t.value}
           end
@@ -442,7 +443,7 @@ module OpenEHR
             [time_value] + more_t.elements.map {|t| t.time_value}
           end
         }
-      / time_value ',' SYM_LIST_CONTINUE {
+      / time_value ',' white_space SYM_LIST_CONTINUE {
           def value
             [time_value.value]
           end

@@ -636,12 +636,17 @@ module OpenEHR
       rule c_time_constraint
         time_interval_value '' {
           def value
-            time_interval_value.value
+            {:range => time_interval_value.value}
+          end
+        }
+      / time_list_value '' {
+          def value
+            {:list => time_list_value.value}
           end
         }
       / time_value '' {
           def value
-            time_value.value
+            {:list => [time_value.value]}
           end
         }
       / tc:V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
@@ -654,12 +659,16 @@ module OpenEHR
       rule c_time
         c_time_constraint ';' white_space time_value {
           def value
-            c_time_constraint.value
+            args = c_time_constraint.value
+            args[:assumed_value] = time_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new(
+              args)
           end
         }    
       / c_time_constraint '' {
           def value
-            c_time_constraint.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new(
+              c_time_constraint.value)
           end
         }
       end
@@ -667,12 +676,12 @@ module OpenEHR
       rule c_date_time_constraint
         date_time_interval_value '' {
           def value
-            date_time_interval_value.value
+            {:range => date_time_interval_value.value}
           end
         }
       / date_time_value '' {
           def value
-            date_time_value.value
+            {:list => [date_time_value.value]}
           end
         }
       / dtc:V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN '' {
@@ -685,12 +694,16 @@ module OpenEHR
       rule c_date_time
         c_date_time_constraint ';' white_space date_time_value {
           def value
-            c_date_time_constraint.value
+            args = c_date_time_constraint.value
+            args[:assumed_value] = date_time_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new(
+              args)
           end
         }
       / c_date_time_constraint '' {
           def value
-            c_date_time_constraint.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new(
+              c_date_time_constraint.value)
           end
         }
       end
