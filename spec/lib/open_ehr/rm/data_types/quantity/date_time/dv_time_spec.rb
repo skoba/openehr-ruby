@@ -3,7 +3,7 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe DvTime do
   before(:each) do
-    @dv_time = DvTime.new(:value => '11:17:30.2')
+    @dv_time = DvTime.new(:value => '11:17:30.2-0900')
   end
 
   it 'should be an instance of DvTime' do
@@ -26,10 +26,14 @@ describe DvTime do
     @dv_time.fractional_second.should == 0.2
   end
 
+  it 'timezone should be -0900' do
+    @dv_time.timezone.should == '-0900'
+  end
+
   it 'magnitude should 40650.2' do
     @dv_time.magnitude.should == 40650.2
   end
-
+  
   it 'should be ' do
     diff_time = DvTime.new(:value => '15:36:48.05')
     @dv_time.diff(diff_time).value.should =='P0Y0M0W0DT4H19M17.85S'

@@ -282,8 +282,8 @@ module OpenEHR
       end
 
       def timezone=(timezone)
-        unless timezone.nil? or timezone == 'Z'
-          if /[+-](\d{2}):?(\d{2})/ =~ timezone
+        unless timezone.nil?
+          if /([+-](\d{2}):?(\d{2})|Z)/ =~ timezone
             @timezone = timezone
           else
             raise ArgumentError, "timezone invalid"
@@ -333,7 +333,7 @@ module OpenEHR
     class ISO8601Time < TimeDefinitions
       include ISO8601TimeModule, Comparable
       def initialize(string)
-        /(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?/ =~ string
+        /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ string
         if $2.nil?
           self.minute = nil
         else

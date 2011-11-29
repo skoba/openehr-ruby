@@ -96,6 +96,7 @@ module OpenEHR
               @minute = iso8601_time.minute
               @second = iso8601_time.second
               @fractional_second = iso8601_time.fractional_second
+              @timezone = iso8601_time.timezone
             end
 
             def magnitude
@@ -106,7 +107,7 @@ module OpenEHR
               elsif @fractional_second.nil?
                 return @hour * 60 * 60 + @minute * 60 + @second
               else
-                return @hour * 60 * 60 + @minute * 60 + @second + @fractional_second
+                return @hour*60*60+@minute* 60 + @second + @fractional_second
               end
             end
 
