@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
-include OpenEHR::AssumedLibraryTypes
 include OpenEHR::AM::Archetype
 include OpenEHR::AM::Archetype::ConstraintModel::Primitive
+include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe CDateTime do
   before(:each) do
-    default_value = ISO8601DateTime.new('2010-01-25T01:23:45.1')
-    assumed_value = ISO8601DateTime.new('2001-12-23T22:02:33.2')
-    range = Interval.new(:lower => ISO8601DateTime.new('1995-04-19T01:01:22'),
-                         :upper => ISO8601DateTime.new('2022-12-31T23:55:59'))
+    default_value = DvDateTime.new(:value => '2010-01-25T01:23:45.1')
+    assumed_value = DvDateTime.new(:value => '2001-12-23T22:02:33.2')
+    range = Interval.new(:lower => DvDateTime.new(:value =>'1995-04-19T01:01:22'),
+                         :upper => DvDateTime.new(:value => '2022-12-31T23:55:59'))
     @c_date_time =
       CDateTime.new(:default_value => default_value,
                     :assumed_value => assumed_value,
@@ -39,6 +39,11 @@ describe CDateTime do
       @c_date_time.hour_validity = ValidityKind::DISALLOWED
     }.should raise_error ArgumentError
   end
+
+  it 'range is properly assigned, lower value is 1995-04-19T01:01:22' do
+    @c_date_time.range.lower.value.should == '1995-04-19T01:01:22'
+  end
+
 
   it 'should not raise ArgumentError if hour_validity is DISALLOWED and minute_validity is DISALLOWED' do
     @c_date_time.second_validity = ValidityKind::DISALLOWED
@@ -106,5 +111,26 @@ describe CDateTime do
     lambda {
       @c_date_time.day_validity = ValidityKind::OPTIONAL
     }.should_not raise_error ArgumentError
+  end
+
+  describe 'pattern constraint' do
+    before(:all) do
+      @c_date_timep = CDateTime.new(:pattern => 'yyyy-mm-dd hh:mm:ss')
+    end
+
+    it 'pattern is yyyy-mm-dd hh:mm:ss' do
+      @c_date_timep.pattern.should == 'yyyy-mm-dd hh:mm:ss'
+    end
+  end
+
+  describe 'list constraint' do
+    before(:all) do
+      @c_date_timel = CDateTime.new(:list =>
+                [DvDateTime.new(:value => '2010-01-25T01:23:45.1')])
+    end
+
+    it 'first item of list is 2010-01-25T01:23:45.1' do
+      @c_date_timel.list[0].value.should == '2010-01-25T01:23:45.1'
+    end
   end
 end

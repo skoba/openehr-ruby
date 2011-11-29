@@ -262,6 +262,9 @@ module OpenEHR
             def initialize(args = { })
               args[:type] = 'ISO8601_DATE_TIME'
               super
+              self.pattern = args[:pattern]
+              self.list = args[:list]
+              self.range = args[:range]
               self.timezone_validity = args[:timezone_validity]
               self.millisecond_validity = args[:millisecond_validity]
               self.second_validity = args[:second_validity]
@@ -291,6 +294,15 @@ module OpenEHR
                 raise ArgumentError, 'day_validity is invaild'
               end
               @day_validity = day_validity
+            end
+
+            protected
+            def valid_pattern?(pattern)
+              if /^([Yy?X]{4})(-([Mm?X]{2})(-([Dd?X]{2}))?)?[T ]?([Hh?X]{2})(:([Mm?X]{2})(:([Ss?X]{2}))?)?$/ =~ pattern
+                true
+              else
+                false
+              end
             end
           end
 

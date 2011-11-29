@@ -529,7 +529,8 @@ module OpenEHR
       rule date_time_value
         dt:V_ISO8601_EXTENDED_DATE_TIME '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(dt.text_value)
+            OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(
+              :value => dt.text_value)
           end
         }
       end

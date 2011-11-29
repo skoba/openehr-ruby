@@ -2196,7 +2196,7 @@ describe ADLParser do
         end
       end
 
-      context '41th attribute |12:35|' do
+      context '41st attribute |12:35|' do
         before(:all) do
           @at = attr(41)
         end
@@ -2222,7 +2222,7 @@ describe ADLParser do
         end
       end
 
-      context '42th attribute 00:00:59,0' do
+      context '42nd attribute 00:00:59,0' do
         before(:all) do
           @at = attr(42)
         end
@@ -2233,6 +2233,688 @@ describe ADLParser do
 
         it 'does not have assumed value' do
           @at.should_not have_assumed_value
+        end
+      end
+    end
+
+    context 'DateTime constraint' do
+      before(:all) do
+        @constraints = const(6)
+      end
+
+      context '1st attribute yyyy-mm-dd hh:mm:ss' do
+        before(:all) do
+          @at = attr(1)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:mm:ss' do
+          @at.pattern.should == 'yyyy-mm-dd hh:mm:ss'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '2nd attribute yyyy-mm-dd hh:mm:??' do
+        before(:all) do
+          @at = attr(2)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:mm:??' do
+          @at.pattern.should == 'yyyy-mm-dd hh:mm:??'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+      
+      context '3rd attribute yyyy-mm-dd hh:mm:XX' do
+        before(:all) do
+          @at = attr(3)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:mm:XX' do
+          @at.pattern.should == 'yyyy-mm-dd hh:mm:XX'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+      
+      context '4th attribute yyyy-mm-dd hh:??:XX' do
+        before(:all) do
+          @at = attr(4)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:??:XX' do
+          @at.pattern.should == 'yyyy-mm-dd hh:??:XX'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '5th attribute yyyy-??-?? ??:??:??' do
+        before(:all) do
+          @at = attr(5)
+        end
+
+        it 'pattern is yyyy-??-?? ??:??:??' do
+          @at.pattern.should == 'yyyy-??-?? ??:??:??'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '6th attribute 1983-12-25T22:00:05' do
+        before(:all) do
+          @at = attr(6)
+        end
+
+        it '1st item of list is 1983-12-25T22:00:05' do
+          @at.list[0].value.should == '1983-12-25T22:00:05'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '7th attribute 2000-01-01T00:00:59' do
+        before(:all) do
+          @at = attr(7)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59' do
+          @at.list[0].value.should == '2000-01-01T00:00:59'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '8th attribute 2000-01-01T00:00:59' do
+        before(:all) do
+          @at = attr(8)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59' do
+          @at.list[0].value.should == '2000-01-01T00:00:59'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '9th attribute 2000-01-01T00:00:59,105' do
+        before(:all) do
+          @at = attr(9)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,105' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,105'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '10th attribute 2000-01-01T00:00:59Z' do
+        before(:all) do
+          @at = attr(10)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59Z' do
+          @at.list[0].value.should == '2000-01-01T00:00:59Z'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '11th attribute 2000-01-01T00:00:59+1200' do
+        before(:all) do
+          @at = attr(11)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59+1200' do
+          @at.list[0].value.should == '2000-01-01T00:00:59+1200'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '12th attribute 2000-01-01T00:00:59,500Z' do
+        before(:all) do
+          @at = attr(12)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,500Z' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,500Z'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '13th attribute 2000-01-01T00:00:59,500+1200' do
+        before(:all) do
+          @at = attr(13)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,500+1200' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,500+1200'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '14th attribute 2000-01-01T00:00:59,000Z' do
+        before(:all) do
+          @at = attr(14)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,000Z' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,000Z'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '15th attribute 2000-01-01T00:00:59,000+1200' do
+        before(:all) do
+          @at = attr(15)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,000+1200' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,000+1200'
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '16th attribute |2000-01-01T00:00:00..2000-01-02T00:00:00|' do
+        before(:all) do
+          @at = attr(16)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'upper range is 2000-01-02T00:00:00' do
+          @at.range.upper.value.should == '2000-01-02T00:00:00'
+        end
+
+        it 'is upper included' do
+          @at.range.should be_upper_included
+        end
+
+        it 'is upper included' do
+          @at.range.should be_upper_included
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '17th attribute |< 2000-01-01T00:00:00|' do
+        before(:all) do
+          @at = attr(17)
+        end
+
+        it 'upper range is 2000-01-01T00:00:00' do
+          @at.range.upper.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is not upper included' do
+          @at.range.should_not be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          @at.range.should be_lower_unbounded
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '18th attribute |<= 2000-01-01T00:00:00|' do
+        before(:all) do
+          @at = attr(18)
+        end
+
+        it 'upper range is 2000-01-01T00:00:00' do
+          @at.range.upper.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is not upper included' do
+          @at.range.should be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          @at.range.should be_lower_unbounded
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '19th attribute |> 2000-01-01T00:00:00|' do
+        before(:all) do
+          @at = attr(19)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is not lower included' do
+          @at.range.should_not be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          @at.range.should be_upper_unbounded
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '20th attribute |>= 2000-01-01T00:00:00|' do
+        before(:all) do
+          @at = attr(20)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is lower included' do
+          @at.range.should be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          @at.range.should be_upper_unbounded
+        end
+
+        it 'does not have assumed value' do
+          @at.should_not have_assumed_value
+        end
+      end
+
+      context '21st attribute yyyy-mm-dd hh:mm:ss; 2006-03-31T01:12:00|' do
+        before(:all) do
+          @at = attr(21)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:mm:ss' do
+          @at.pattern.should == 'yyyy-mm-dd hh:mm:ss'
+        end
+
+        it 'has assumed value' do
+          @at.should have_assumed_value
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '22nd attribute yyyy-mm-dd hh:mm:??; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(22)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:mm:??' do
+          @at.pattern.should == 'yyyy-mm-dd hh:mm:??'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '23rd attribute yyyy-mm-dd hh:mm:XX; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(23)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:mm:XX' do
+          @at.pattern.should == 'yyyy-mm-dd hh:mm:XX'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '24th attribute yyyy-mm-dd hh:??:XX; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(24)
+        end
+
+        it 'pattern is yyyy-mm-dd hh:??:XX' do
+          @at.pattern.should == 'yyyy-mm-dd hh:??:XX'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '25th attribute yyyy-??-?? ??:??:??; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(25)
+        end
+
+        it 'pattern is yyyy-??-?? ??:??:??' do
+          @at.pattern.should == 'yyyy-??-?? ??:??:??'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '26th attribute 1983-12-25T22:00:05; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(26)
+        end
+
+        it '1st item of list is 1983-12-25T22:00:05' do
+          @at.list[0].value.should == '1983-12-25T22:00:05'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '27th attribute 2000-01-01T00:00:59; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(27)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59' do
+          @at.list[0].value.should == '2000-01-01T00:00:59'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '28th attribute 2000-01-01T00:00:59,000; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(28)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,000' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,000'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '29th attribute 2000-01-01T00:00:59,105; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(29)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,105' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,105'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '30th attribute 2000-01-01T00:00:59Z; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(30)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59Z' do
+          @at.list[0].value.should == '2000-01-01T00:00:59Z'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '31st attribute 2000-01-01T00:00:59+1200; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(31)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59+1200' do
+          @at.list[0].value.should == '2000-01-01T00:00:59+1200'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '32nd attribute 2000-01-01T00:00:59,500Z; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(32)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,500Z' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,500Z'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '33rd attribute 2000-01-01T00:00:59,500+1200; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(33)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,500+1200' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,500+1200'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '34th attribute 2000-01-01T00:00:59,000Z; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(34)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,000Z' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,000Z'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '35th attribute 2000-01-01T00:00:59,000+1200; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(35)
+        end
+
+        it '1st item of list is 2000-01-01T00:00:59,000+1200' do
+          @at.list[0].value.should == '2000-01-01T00:00:59,000+1200'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '36th attribute |2000-01-01T00:00:00..2000-01-02T00:00:00|; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(36)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'upper range is 2000-01-02T00:00:00' do
+          @at.range.upper.value.should == '2000-01-02T00:00:00'
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '37th attribute |< 2000-01-01T00:00:00|; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(37)
+        end
+
+        it 'upper range is 2000-01-01T00:00:00' do
+          @at.range.upper.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is not upper included' do
+          @at.range.should_not be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          @at.range.should be_lower_unbounded
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '38th attribute |<= 2000-01-01T00:00:00|; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(38)
+        end
+
+        it 'upper range is 2000-01-01T00:00:00' do
+          @at.range.upper.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is not upper included' do
+          @at.range.should be_upper_included
+        end
+
+        it 'is lower unbounded' do
+          @at.range.should be_lower_unbounded
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '39th attribute |> 2000-01-01T00:00:00|; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(39)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is not lower included' do
+          @at.range.should_not be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          @at.range.should be_upper_unbounded
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '40th attribute |>= 2000-01-01T00:00:00|; 2006-03-31T01:12:00' do
+        before(:all) do
+          @at = attr(40)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'is lower included' do
+          @at.range.should be_lower_included
+        end
+
+        it 'is upper unbounded' do
+          @at.range.should be_upper_unbounded
+        end
+
+        it 'asssumed value is 2006-03-31T01:12:00' do
+          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+        end
+      end
+
+      context '41th attribute yyyy-??-??T??:??:??' do
+        before(:all) do
+          @at = attr(41)
+        end
+
+        it 'pattern is yyyy-??-??T??:??:??' do
+          @at.pattern.should == 'yyyy-??-??T??:??:??'
+        end
+      end
+
+      context '42th attribute |2000-01-01T00:00:00|' do
+        before(:all) do
+          @at = attr(36)
+        end
+
+        it 'lower range is 2000-01-01T00:00:00' do
+          @at.range.lower.value.should == '2000-01-01T00:00:00'
+        end
+
+        it 'upper range is 2000-01-02T00:00:00' do
+          @at.range.upper.value.should == '2000-01-02T00:00:00'
+        end
+
+        it 'is upper included' do
+          @at.range.should be_upper_included
+        end
+
+        it 'is upper included' do
+          @at.range.should be_upper_included
         end
       end
     end
