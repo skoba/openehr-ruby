@@ -1,5 +1,5 @@
 archetype 	
-	adl-test-ENTRY.test.draft
+	adl-test-ENTRY.test.v1
 
 concept 
 	[at0000]	--  basic data types test 1

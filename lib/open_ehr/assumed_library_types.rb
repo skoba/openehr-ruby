@@ -437,7 +437,7 @@ module OpenEHR
     class ISO8601DateTime < ISO8601Date
       include ISO8601DateTimeModule
       def initialize(string)
-        unless /(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?/ =~ string
+        unless /(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?/ =~ string
           raise ArgumentError, 'format invalid'
         else
           self.year = $1.to_i
@@ -467,17 +467,15 @@ module OpenEHR
         else
           self.hour = $4.to_i
         end
-        if $7.nil? or $7.empty?
+        if $8.nil? or $8.empty?
           self.fractional_second = nil
         else
-          self.fractional_second = ("0."+$7).to_f
+          self.fractional_second = ("0."+$8).to_f
         end
-        if $8.nil?
+        if $9.nil?
           self.timezone = nil
-        elsif $8 == 'Z'
-          self.timezone = $8
         else
-          self.timezone = $9+$10
+          self.timezone = $9
         end
       end
 

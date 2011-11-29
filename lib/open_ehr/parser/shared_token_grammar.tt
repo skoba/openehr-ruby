@@ -45,7 +45,7 @@ module OpenEHR
           def value
             true
           end
-        }
+          }
       / SYM_FALSE {
           def value
             false
