@@ -615,7 +615,7 @@ module OpenEHR
     class ISO8601Duration
       include ISO8601DurationModule
       def initialize(str)
-        /^P((\d+)Y)?((\d+)M)?((\d+)W)?((\d)D)?(T((\d+)H)?((\d+)M)?((\d+)(\.\d+)?S)?)?$/ =~ str
+        /^P((\d+)[Yy])?((\d+)[Mm])?((\d+)[Ww])?((\d)[dD])?(T((\d+)[Hh])?((\d+)[Mm])?((\d+)(\.\d+)?[Ss])?)?$/ =~ str
         self.years = $2.to_i
         self.months = $4.to_i
         self.weeks = $6.to_i

@@ -78,7 +78,7 @@ definition
                 	}
                 	ELEMENT[at1006] matches {	-- duration
 
-                		value matches {PDTH} -- ; P1d}
+                		value matches {PDTH; P1d}
                 	}
                 	
                 	ELEMENT[at1010] matches {	-- duration interval
