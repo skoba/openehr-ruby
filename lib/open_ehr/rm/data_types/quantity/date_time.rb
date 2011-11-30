@@ -192,16 +192,12 @@ module OpenEHR
             end
           end
 
-          class DvDuration < DvAmount
+          class DvDuration < DvTemporal
             include AssumedLibraryTypes::ISO8601DurationModule
             attr_reader :value
             
             def initialize(args = { })
-              self.value = args[:value]
-              self.magnitude_status = args[:magnitude_status]
-              self.normal_range = args[:normal_range]
-              self.normal_status = args[:normal_status]
-              self.other_reference_ranges = args[:other_reference_ranges]
+              super
             end
 
             def value=(value)
@@ -219,13 +215,25 @@ module OpenEHR
             end
 
             def magnitude
-              return ((((@year + @month/MONTH_IN_YEAR)*NOMINAL_DAYS_IN_MONTH) +
-                @week * DAYS_IN_WEEK + @days) * HOURS_IN_DAY * MINUTES_IN_HOUR*
-                SECONDS_IN_MINUTE) + @second + @fractional_second
+              months = 0
+              months += @months if @months
+              months += @years * MONTH_IN_YEAR if @years
+              days = 0
+              days += months * NOMINAL_DAYS_IN_MONTH if months
+              days += @weeks * DAYS_IN_WEEK if @weeks
+              days += @days if @days
+              hours = 0
+              hours += days * HOURS_IN_DAY if days
+              hours += @hours if @hours
+              minutes = 0
+              minutes += hours * MINUTES_IN_HOUR if hours
+              minutes += @minutes if @minutes
+              seconds = 0
+              seconds += @seconds if @seconds
+              seconds += @fractional_second if @fractional_second
+              seconds += minutes * SECONDS_IN_MINUTE if minutes
+              return seconds
             end
-            
-            undef magnitude=
-
           end
         end # of DateTime
       end # of Quantity

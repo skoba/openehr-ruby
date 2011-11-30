@@ -1,24 +1,16 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
+include OpenEHR::RM::DataTypes::Quantity::DateTime
 include OpenEHR::AssumedLibraryTypes
-include OpenEHR::AM::Archetype
 include OpenEHR::AM::Archetype::ConstraintModel::Primitive
 
 describe CDuration do
-  before(:each) do
-    assumed_value = stub(ISO8601Duration, :year => 2)
-    default_value = stub(ISO8601Duration, :month => 3)
-    range = stub(Interval, :upper => assumed_value, :lower => default_value)
+  before(:all) do
+    assumed_value = DvDuration.new(:value => 'P2Y')
+    default_value = DvDuration.new(:value => 'P3M')
+    range = Interval.new(:upper => assumed_value, :lower => default_value)
     @c_duration = CDuration.new(:assumed_value => assumed_value,
                                 :default_value => default_value,
-                                :range => range,
-                                :years_allowed => true,
-                                :months_allowed => false,
-                                :weeks_allowed => true,
-                                :days_allowed => false,
-                                :hours_allowed => true,
-                                :minutes_allowed => false,
-                                :seconds_allowed => true,
-                                :fractional_seconds_allowed => false)
+                                :range => range)
   end
 
   it 'should be an instance of CDuration' do
@@ -29,45 +21,21 @@ describe CDuration do
     @c_duration.type.should == 'ISO8601_DURATION'
   end
 
-  it 'years_allowed should be assigned properly' do
-    @c_duration.years_allowed.should be_true
+  it 'upper range is 2 years' do
+    @c_duration.range.upper.value.should == 'P2Y'
   end
 
-  it 'months_allowed should be assigned properly' do
-    @c_duration.months_allowed.should be_false
+  it 'lower range is 3 months year' do
+    @c_duration.range.lower.value.should == 'P3M'
   end
 
-  it 'weeks_allowed should be assigned properly' do
-    @c_duration.weeks_allowed.should be_true
-  end
+  context 'list constraint' do
+    before(:all) do
+      @c_duration = CDuration.new(:list => [DvDuration.new(:value => 'PT0s')])
+    end
 
-  it 'days_allowed should be assigned properly' do
-    @c_duration.days_allowed.should be_false
-  end
-
-  it 'hours_allowed should be assigned properly' do
-    @c_duration.hours_allowed.should be_true
-  end
-
-  it 'minutes_allowed should be assigned properly' do
-    @c_duration.minutes_allowed.should be_false
-  end
-
-  it 'seconds_allowed should be assigned properly' do
-    @c_duration.seconds_allowed.should be_true
-  end
-
-  it 'fractional_seconds_allowed should be assigned properly' do
-    @c_duration.fractional_seconds_allowed.should be_false
-  end
-
-  it 'should raise ArgumentError if range is nil and all parameters are not allowed' do
-    @c_duration.years_allowed = false
-    @c_duration.weeks_allowed = false
-    @c_duration.hours_allowed = false
-    @c_duration.seconds_allowed = false
-    lambda {
-      @c_duration.range = nil
-    }.should raise_error ArgumentError
+    it '1st item of the list value is PT0s' do
+      @c_duration.list[0].value.should == 'PT0s'
+    end
   end
 end

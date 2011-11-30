@@ -629,9 +629,10 @@ module OpenEHR
       end
 
       rule duration_value
-        V_ISO8601_DURATION '' {
+        du:V_ISO8601_DURATION '' {
           def value
-            OpenEHR::AssumedLibraryTypes::ISO8601Duration(V_ISO8601_DURATION.text_value)
+            OpenEHR::RM::DataTypes::Quantity::DateTime::DvDuration.new(
+              :value => du.text_value)
           end
         }
       end
@@ -648,7 +649,7 @@ module OpenEHR
         }
       / duration_value ',' SYM_LIST_CONTINUE {
           def value
-            [duration_valuel.value]
+            [duration_value.value]
           end
         }
       end
@@ -710,10 +711,10 @@ module OpenEHR
                   :lower_included => false)
           end
         }
-      / SYM_INTERVAL_DELIM SYM_GE duration_value SYM_INTERVAL_DELIM {
+      / SYM_INTERVAL_DELIM SYM_GE val:duration_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => up.value,
+                  :lower => val.value,
                   :upper_unbounded => true,
                   :lower_included => true)
           end
@@ -721,7 +722,7 @@ module OpenEHR
       / SYM_INTERVAL_DELIM val:duration_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
-                  :lower => val.value,
+                  :upper => val.value,
                   :lower => val.value,
                   :upper_included => true,
                   :lower_included => true)
@@ -958,7 +959,7 @@ module OpenEHR
       end
 
       rule SYM_UNIQUE
-        [Uu] [Nn] [Ii] [Qq] [Uu] [Ee] white_space
+        [Uu] [Nn] [Ii] [Qq] [Uu] [Ee] space
       end
 
       rule SYM_INFINITY
@@ -1114,7 +1115,7 @@ module OpenEHR
       end
 
       rule V_ISO8601_DURATION
-        'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH])? ([0-9]+ [mM])? ([0-9]+ [sS])?
+        'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? ('T' ([0-9]+ [hH])? ([0-9]+ [mM])? ([0-9]+ ('.' [0-9]+)? [sS])?)?
       end
 
       rule V_ISO8601_DATE_CONSTRAINT_PATTERN
@@ -1130,7 +1131,13 @@ module OpenEHR
       end
 
       rule V_ISO8601_DURATION_CONSTRAINT_PATTERN
-        'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH]? [mM]? [sS]? / 'P' [yY]? [mM]? [wW]? [dD]?
+        'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH] [mM]? [sS]?
+      / 'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH]? [mM] [sS]?
+      / 'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH]? [mM]? [sS]
+      / 'P' [yY] [mM]? [wW]? [dD]?
+      / 'P' [yY]? [mM] [wW]? [dD]?
+      / 'P' [yY]? [mM]? [wW] [dD]?
+      / 'P' [yY]? [mM]? [wW]? [dD]
       end
 
       rule V_TYPE_IDENTIFIER

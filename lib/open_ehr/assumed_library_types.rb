@@ -80,7 +80,7 @@ module OpenEHR
       end
     end # end of Interval
   
-    class TimeDefinitions < Any
+    module TimeDefinitions #< Any
       DAYS_IN_LEAP_YEAR = 366
       DAYS_IN_WEEK = 7
       DAYS_IN_YEAR = 365
@@ -140,23 +140,24 @@ module OpenEHR
     end # end of TimeDefinitions
 
     module ISO8601DateModule
+      include TimeDefinitions
       attr_reader :year, :month, :day
 
       def year=(year)
-        unless ISO8601Date.valid_year?(year)
+        unless TimeDefinitions.valid_year?(year)
           raise ArgumentError, "Year is not valid"
         end
         @year = year
       end
 
       def month=(month)
-        raise ArgumentError, "Month is not valid" unless month.nil? or ISO8601Date.valid_month?(month)
+        raise ArgumentError, "Month is not valid" unless month.nil? or TimeDefinitions.valid_month?(month)
         @month = month
       end
 
       def day=(day)
         
-        raise ArgumentError, "Day is not valid" unless day.nil? or ISO8601Date.valid_day?(@year, @month, day)
+        raise ArgumentError, "Day is not valid" unless day.nil? or TimeDefinitions.valid_day?(@year, @month, day)
         @day = day
       end
 
@@ -203,7 +204,7 @@ module OpenEHR
       end
     end
 
-    class ISO8601Date < TimeDefinitions
+    class ISO8601Date
       include ISO8601DateModule, Comparable
       def initialize(string)
         /(\d{4})(?:-(\d{2})(?:-(\d{2})?)?)?/ =~ string
@@ -239,10 +240,11 @@ module OpenEHR
     end # end of ISO8601_DATE
 
     module ISO8601TimeModule
+      include TimeDefinitions
       attr_reader :hour, :minute, :second, :fractional_second, :timezone
 
       def hour=(hour)
-        unless ISO8601Time.valid_hour?(hour, @minute, @second)
+        unless TimeDefinitions.valid_hour?(hour, @minute, @second)
           raise ArgumentError, "hour is not valid"
         end
         @hour = hour
@@ -253,7 +255,7 @@ module OpenEHR
       end
 
       def minute=(minute)
-        raise ArgumentError, "minute is not valid" if !minute.nil? and !ISO8601Time.valid_minute?(minute)
+        raise ArgumentError, "minute is not valid" if !minute.nil? and !TimeDefinitions.valid_minute?(minute)
         @minute = minute
       end
 
@@ -263,7 +265,7 @@ module OpenEHR
 
       def second=(second)
         raise ArgumentError, "minute not defined" if @minute.nil? and !second.nil?
-        raise ArgumentError, "second is not valid" if !second.nil? and !ISO8601Time.valid_second?(second)
+        raise ArgumentError, "second is not valid" if !second.nil? and !TimeDefinitions.valid_second?(second)
         @second = second
       end
 
@@ -330,7 +332,7 @@ module OpenEHR
       end
     end
 
-    class ISO8601Time < TimeDefinitions
+    class ISO8601Time
       include ISO8601TimeModule, Comparable
       def initialize(string)
         /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ string
@@ -378,12 +380,12 @@ module OpenEHR
             return false
           end
           if !mm.nil? 
-            if !self.valid_minute?(mm.to_i)
+            if !TimeDefinitions.valid_minute?(mm.to_i)
               return false
             end
           end
           if !ss.nil? 
-            if !self.valid_second?(ss.to_i)
+            if !TimeDefinitions.valid_second?(ss.to_i)
               return false
             end
           end
@@ -519,6 +521,7 @@ module OpenEHR
     end # end of ISO8601Timezone
 
     module ISO8601DurationModule
+      include TimeDefinitions
       attr_reader :years, :months, :weeks, :days
       attr_reader :hours, :minutes, :seconds, :fractional_second
 
@@ -609,7 +612,7 @@ module OpenEHR
       end
     end
 
-    class ISO8601Duration < TimeDefinitions
+    class ISO8601Duration
       include ISO8601DurationModule
       def initialize(str)
         /^P((\d+)Y)?((\d+)M)?((\d+)W)?((\d)D)?(T((\d+)H)?((\d+)M)?((\d+)(\.\d+)?S)?)?$/ =~ str

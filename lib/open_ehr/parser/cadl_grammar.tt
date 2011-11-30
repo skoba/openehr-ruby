@@ -211,7 +211,12 @@ module OpenEHR
       end
 
       rule c_primitive
-        c_date_time '' {
+        c_duration '' {
+          def value
+            c_duration.value
+          end
+        }
+      / c_date_time '' {
           def value
             c_date_time.value
           end
@@ -224,11 +229,6 @@ module OpenEHR
       / c_date '' {
           def value
             c_date.value
-          end
-        }
-      / c_duration '' {
-          def value
-            c_duration.value
           end
         }
       / c_real '' {
@@ -474,6 +474,12 @@ module OpenEHR
               :is_unique => true)
           end
         }
+      / occurrence_spec space {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value)
+          end
+        }
       end
 
       rule c_occurrences
@@ -709,45 +715,49 @@ module OpenEHR
       end
 
       rule c_duration_constraint
-        duration_pattern '' {
+        duration_pattern '/' duration_interval_value '' {
           def value
-            duration_pattern.value
+            {:pattern => duration_pattern.value}
           end
         }
-      / duration_pattern '/' duration_interval_value '' {
+      / duration_pattern '' {
           def value
-            duration_pattern.value
+            {:pattern => duration_pattern.value}
           end
         }
       / duration_interval_value '' {
           def value
-            duration_interval_value.value
+            {:range => duration_interval_value.value}
           end
         }
       / duration_value '' {
           def value
-            duration_value.value
+            {:list => [duration_value.value]}
           end
         }
       end
 
       rule duration_pattern
-        V_ISO8601_DURATION_CONSTRAINT_PATTERN '' {
+        dp:V_ISO8601_DURATION_CONSTRAINT_PATTERN '' {
           def value
-            V_ISO8601_DURATION_CONSTRAINT_PATTERN.value
+            dp.text_value
           end
         }
       end
 
       rule c_duration
-        c_duration_constraint ';' white_space duration_value {
+        c_duration_constraint ';' white_space duration_value '' {
           def value
-            c_duration_constraint.value
+            args = c_duration_constraint.value
+            args[:assumed_value] = duration_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(
+              args)
           end
         }
-      / c_duration_constraint '' {
+      / c_duration_constraint !';' '' {
           def value
-            c_duration_constraint.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(
+              c_duration_constraint.value)
           end
         }
       end

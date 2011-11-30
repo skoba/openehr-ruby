@@ -1,5 +1,5 @@
 archetype 	
-	adl-test-ENTRY.test.draft
+	adl-test-ENTRY.test.v1
 
 concept 
 	[at0000]	--  basic data types test 1
@@ -54,9 +54,6 @@ definition
 					ELEMENT[at1013] matches {	-- duration with fractional seconds
                 		value matches {|PT1.1s|}
                 	}
-                	ELEMENT[at1014] matches {	-- duration with mixed Pattern and Interval 
-						value matches {PTS/|PT0S..PT120S|}
-					}				
                 	-- matches {PT30s, PT45s, PT1m0s, PT2m0s} -- Not currently in ADL syntax
                 	-- matches {|P1d +/PT4h|}
                 }           	
@@ -80,7 +77,8 @@ definition
                 		value matches {|<=PT1h|; P1d}
                 	}
                 	ELEMENT[at1006] matches {	-- duration
-                		value matches {PDTH; P1d}
+
+                		value matches {PDTH} -- ; P1d}
                 	}
                 	
                 	ELEMENT[at1010] matches {	-- duration interval

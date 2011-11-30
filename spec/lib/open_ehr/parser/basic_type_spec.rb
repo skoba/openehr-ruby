@@ -4,21 +4,21 @@ include OpenEHR::AM::Archetype
 
 # ticket 170
 
-def attr(index)
-  return @constraints[index-1].children[0]
-end
-
-def const(index)
-  return @attributes[index].children[0].attributes
-end
-
-
 describe ADLParser do
   context 'Basic Generic type' do
+    def attr(index)
+      return @constraints[index-1].children[0]
+    end
+
+    def const(index)
+      return @attributes[index].children[0].attributes
+    end
+
     before(:all) do
       archetype = adl14_archetype('adl-test-entry.basic_types.test.adl')
       @attributes = archetype.definition.attributes
     end
+
 
     context 'String constraint' do
       before(:all) do

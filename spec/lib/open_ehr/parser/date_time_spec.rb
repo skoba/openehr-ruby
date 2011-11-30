@@ -1,8 +1,7 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/parser_spec_helper'
-include OpenEHR::AM::Archetype
 
-# ticket 170
+# ticket 177
 
 def attr(index)
   return @constraints[index-1].children[0]
