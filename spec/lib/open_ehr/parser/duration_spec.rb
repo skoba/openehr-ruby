@@ -467,7 +467,7 @@ describe ADLParser do
         end
 
         it 'assumed value minutes is 12' do
-          @at.assumed_value.value.minutes.should be 12
+          @at.assumed_value.minutes.should be 12
         end
       end
     end
