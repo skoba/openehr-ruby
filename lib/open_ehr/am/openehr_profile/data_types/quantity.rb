@@ -1,19 +1,18 @@
-module OpenEhr
+module OpenEHR
   module AM
-    module OpenEHR_Profile
+    module OpenEHRProfile
       module DataTypes
-
         module Quantity
-          class C_DV_QUANTITY < OpenEhr::AM::Archetype::Constraint_Model::C_DOMAIN_TYPE
+          class CDvQuantity < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
           end
           
-          class C_DV_ORDINAL < OpenEhr::AM::Archetype::Constraint_Model::C_DOMAIN_TYPE
+          class CDvOrdinal < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
           end
 
-          class C_QUANTITY_ITEM
+          class CQuantityItem
           end
         end
-      end # of Data_Types
-    end # of OpenEHR Profile
-  end # of RM
+      end # of DataTypes
+    end # of OpenEHRProfile
+  end # of AM
 end # of OpenEHR

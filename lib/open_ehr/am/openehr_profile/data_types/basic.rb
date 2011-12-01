@@ -1,29 +1,27 @@
-module OpenEhr
+module OpenEHR
   module AM
-    module OpenEHR_Profile
+    module OpenEHRProfile
       module DataTypes
         module Basic
-          class C_DV_STATE
+          class CDvState
           end
 
-          class STATE_MACHINE
+          class StateMachine
           end
 
-          class STATE
+          class State
           end
 
-          class TERMINAL_STATE < STATE
+          class TerminalState < State
           end
 
-          class NON_TERMINAL_STATE < STATE
+          class NonTerminalState < State
           end
 
-          class TRANSITION
+          class Transition
           end
         end
-
-        
-      end # of Data_Types
+      end # of DataTypes
     end # of OpenEHR Profile
-  end # of RM
+  end # of AM
 end # of OpenEHR
