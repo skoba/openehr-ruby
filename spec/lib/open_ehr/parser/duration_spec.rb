@@ -433,7 +433,7 @@ describe ADLParser do
 
 # at1007 - at1009 was skiped
 
-      context '7th attribute |PT10M|; P1d' do
+      context '7th attribute |PT10M|; PT12M' do
         before(:all) do
           @at = attr(7)
         end
@@ -462,8 +462,12 @@ describe ADLParser do
           @at.range.should be_lower_included
         end
 
-        it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+        it 'assumed value is PT12M' do
+          @at.assumed_value.value.should == 'PT12M'
+        end
+
+        it 'assumed value minutes is 12' do
+          @at.assumed_value.value.minutes.should be 12
         end
       end
     end
