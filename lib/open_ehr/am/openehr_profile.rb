@@ -3,7 +3,8 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 module OpenEHR
   module AM
-    autoload :Archetype, 'am/archetype'
-    autoload :OpenEHRProfile, 'am/openehr_profile'
+    module OpenEHRProfile
+      autoload :DataTypes, 'openehr_profile/data_types'
+    end
   end
 end

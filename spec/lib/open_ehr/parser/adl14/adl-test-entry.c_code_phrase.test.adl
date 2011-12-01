@@ -1,5 +1,5 @@
 archetype
-	adl-test-ENTRY.c_code_phrase.test
+	adl-test-ENTRY.c_code_phrase.v1
 
 concept
 	[at0000]

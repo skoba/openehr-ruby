@@ -1102,6 +1102,15 @@ module OpenEHR
         }
       end
 
+      rule V_TERM_CODE
+        '[' code:([a-zA-Z0-9()._\-]+) '::' white_space {
+          def value
+            OpenEHR::RM::Support::Identification::TerminologyID.new(
+              :value => code.text_value)
+          end
+        }
+      end
+
       rule V_ISO8601_EXTENDED_DATE_TIME
         ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? ('Z' / [+-] [0-9] 4..4)? ) / ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ':' [0-6] [0-9] ('Z' / [+-] [0-9] 4..4)?) / ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ('Z' / [+-] [0-9] 4..4)?)
       end

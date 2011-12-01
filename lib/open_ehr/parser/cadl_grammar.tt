@@ -101,6 +101,11 @@ module OpenEHR
             c_complex_object.value(node)
           end
         }
+      / vtc:V_TERM_CODE_CONSTRAINT '' {
+          def value(node)
+            vtc.value
+          end
+        }
       / constraint_ref '' {
           def value(node = nil)
             constraint_ref.value
@@ -856,6 +861,56 @@ module OpenEHR
             text_value
           end
         }      
+      end
+
+      rule code_string
+        NAMECHAR+ '' {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule code_string_list
+        first:code_string more:(',' space code_string)+ space {
+          def value
+            codes.map {|c| c.value}
+          end
+
+          def codes
+            [first] + more.elements.map {|e| e.code_string}
+          end
+        }
+      end
+
+      rule code_string_spec
+        code_string_list '' {
+          def value
+            code_string_list.value
+          end
+        }
+      / code_string '' {
+          def value
+            code_string.value
+          end
+          }
+      end
+
+      rule V_TERM_CODE_CONSTRAINT
+        ti:V_TERM_CODE code_string_spec ';' space code_string ']' space {
+          def value
+            
+          end
+        }
+      / V_TERM_CODE code_string_spec ']' space {
+          def value
+          end
+        }
+      / V_TERM_CODE ']' space {
+          def value
+            
+          end
+        }
       end
 
       rule V_C_DOMAIN_TYPE
