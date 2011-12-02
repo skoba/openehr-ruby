@@ -325,7 +325,7 @@ module OpenEHR
       rule date_value
         ed:V_ISO8601_EXTENDED_DATE '' {
           def value
-            OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(
               :value => ed.text_value)
           end
         }
@@ -427,7 +427,7 @@ module OpenEHR
       rule time_value
         ti:V_ISO8601_EXTENDED_TIME '' {
           def value
-            OpenEHR::RM::DataTypes::Quantity::DateTime::DvTime.new(
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvTime.new(
               :value => ti.text_value)
           end
         }
@@ -529,7 +529,7 @@ module OpenEHR
       rule date_time_value
         dt:V_ISO8601_EXTENDED_DATE_TIME '' {
           def value
-            OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(
               :value => dt.text_value)
           end
         }
@@ -631,7 +631,7 @@ module OpenEHR
       rule duration_value
         du:V_ISO8601_DURATION '' {
           def value
-            OpenEHR::RM::DataTypes::Quantity::DateTime::DvDuration.new(
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvDuration.new(
               :value => du.text_value)
           end
         }
@@ -1105,7 +1105,7 @@ module OpenEHR
       rule V_TERM_CODE
         '[' code:([a-zA-Z0-9()._\-]+) '::' white_space {
           def value
-            OpenEHR::RM::Support::Identification::TerminologyID.new(
+            ::OpenEHR::RM::Support::Identification::TerminologyID.new(
               :value => code.text_value)
           end
         }

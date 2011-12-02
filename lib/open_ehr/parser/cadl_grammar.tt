@@ -1,6 +1,7 @@
 require 'shared_token_grammar'
 require 'open_ehr/assumed_library_types'
 require 'open_ehr/am/archetype/constraint_model'
+require 'open_ehr/am/openehr_profile/data_types/text'
 require 'cadl_node'
 
 module OpenEHR
@@ -103,7 +104,7 @@ module OpenEHR
         }
       / vtc:V_TERM_CODE_CONSTRAINT '' {
           def value(node)
-            vtc.value
+            vtc.value(node)
           end
         }
       / constraint_ref '' {
@@ -891,24 +892,40 @@ module OpenEHR
         }
       / code_string '' {
           def value
-            code_string.value
+            [code_string.value]
           end
           }
       end
 
       rule V_TERM_CODE_CONSTRAINT
         ti:V_TERM_CODE code_string_spec ';' space code_string ']' space {
-          def value
-            
+          def value(node)
+            ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+              :rm_type_name => 'CodePhrase',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, :lower => 1),
+              :terminology_id => ti.value, :code_list => code_string_spec.value,
+              :assumed_value => code_string.value,
+              :path => node.path)
           end
         }
-      / V_TERM_CODE code_string_spec ']' space {
-          def value
+      / ti:V_TERM_CODE code_string_spec ']' space {
+          def value(node)
+            ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+              :rm_type_name => 'CodePhrase',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, :lower => 1),
+              :terminology_id => ti.value, :code_list => code_string_spec.value,
+              :path => node.path)
           end
         }
-      / V_TERM_CODE ']' space {
-          def value
-            
+      / ti:V_TERM_CODE ']' space {
+          def value(node)
+            ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+              :rm_type_name => 'CodePhrase',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, :lower => 1),
+              :terminology_id => ti.value, :code_list => [], :path => node.path)
           end
         }
       end

@@ -53,5 +53,6 @@ rescue LoadError
   require 'rspec'
 end
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'open_ehr'
+#$:.unshift(File.dirname(__FILE__) + '/../lib')
+$:.unshift(File.dirname(__FILE__) + '/..')
+require 'lib/open_ehr'

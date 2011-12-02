@@ -11,7 +11,7 @@ describe ADLParser do
     end
 
     it 'is an array' do
-      p @attributes
+      @attributes.should be_an_instance_of Array
     end
   end
 end

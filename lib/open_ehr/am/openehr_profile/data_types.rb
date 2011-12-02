@@ -5,6 +5,7 @@ module OpenEHR
     module OpenEHRProfile
       module DataTypes
         autoload :Text, 'data_types/text'
+
       end
     end
   end
