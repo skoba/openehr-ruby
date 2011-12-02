@@ -1,10 +1,11 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/parser_spec_helper'
-
+require 'open_ehr/am/openehr_profile/data_types/text'
+include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text
 # ticket 171
 
 describe ADLParser do
-  context 'CodePhase type' do
+  context 'CCodePhase type' do
     before(:all) do
       archetype = adl14_archetype('adl-test-entry.c_code_phrase.test.adl')
       @attributes = archetype.definition.attributes
@@ -17,6 +18,10 @@ describe ADLParser do
     context '1st constraint is icd10::F43.00,F43.01,F32.02' do
       before(:all) do
         @at = attr(1)
+      end
+
+      it 'at is an instance of CCodePhrase' do
+        @at.should be_an_instance_of CCodePhrase
       end
 
       it 'terminology id is icd10' do

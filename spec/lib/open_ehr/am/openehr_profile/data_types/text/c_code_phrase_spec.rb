@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
-
 include ::OpenEHR::RM::DataTypes::Text
 include ::OpenEHR::AssumedLibraryTypes
 include ::OpenEHR::RM::Support::Identification

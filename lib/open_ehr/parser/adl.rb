@@ -1,6 +1,6 @@
+require 'open_ehr/rm/data_types/text'
 include OpenEHR::RM::Support::Identification
 include OpenEHR::RM::Common::Resource
-include OpenEHR::RM::DataTypes::Text
 
 module OpenEHR
   module Parser
@@ -15,8 +15,8 @@ module OpenEHR
         end
       end
 
-
       class Language
+        include OpenEHR::RM::DataTypes::Text
         attr_reader :original_language, :translations
         
         def initialize(value)
@@ -25,7 +25,7 @@ module OpenEHR
         end
         
         def original_language=(original_language)
-          @original_language = code2lang original_language
+          @original_language = original_language
         end
         
         def translations=(translations)
@@ -35,7 +35,7 @@ module OpenEHR
             tr = translations.inject({ }) do |trans, lang|
               code, details  = lang
               td = TranslationDetails.new(
-                     :language => code2lang(details['language']),
+                     :language => details['language'],
                      :author => details['author'],
                      :accreditation => details['accreditation'],
                      :other_details => details['other_details'])

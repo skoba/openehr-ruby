@@ -144,17 +144,11 @@ module OpenEHR
             params = desc.value
             details = { }
             params['details'].each do |lang, attrs|
-              term_id, la = attrs['language'].split('::')
-              terminology_id = 
-                OpenEHR::RM::Support::Identification::TerminologyID.new(
-                  :value => term_id)
               misuse = attrs['misuse']
               misuse = nil if misuse.nil? or misuse.empty?
               item =
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
-                  :language => OpenEHR::RM::DataTypes::Text::CodePhrase.new(
-                                :terminology_id => terminology_id,
-                                :code_string => la),
+                  :language => attrs['language'],
                   :purpose => attrs["purpose"],
                   :keywords => attrs["keywords"],
                   :use => attrs["use"],
@@ -203,9 +197,7 @@ module OpenEHR
             end
             tb = ao['term_bindings']
             term_bind = Proc.new do |code, item|
-              term_id, code_string = item.split '::'
-              term_id = OpenEHR::RM::Support::Identification::TerminologyID.new(:value => term_id)
-              OpenEHR::RM::DataTypes::Text::CodePhrase.new(:terminology_id => term_id, :code_string => code_string)
+              item
             end
             if tb
               tb = itemizer(tb, term_bind)

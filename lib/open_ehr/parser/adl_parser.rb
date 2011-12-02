@@ -5,7 +5,6 @@ require 'treetop'
 
 include OpenEHR::Parser
 include OpenEHR::AM::Archetype
-include OpenEHR::RM::DataTypes::Text
 include OpenEHR::RM::Support::Identification
 
 module OpenEHR
@@ -17,7 +16,7 @@ module OpenEHR
         Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
         ap = ADLGrammarParser.new
         @result = ap.parse(data)
-        if @result.nil?
+        unless @result
           puts ap.failure_reason
           puts ap.failure_line
           puts ap.failure_column

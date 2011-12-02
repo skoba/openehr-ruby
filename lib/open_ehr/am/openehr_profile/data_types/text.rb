@@ -1,10 +1,10 @@
-include OpenEHR::AM::Archetype::ConstraintModel
-
+$:.unshift(File.dirname(__FILE__))
 module OpenEHR
   module AM
     module OpenEHRProfile
       module DataTypes
         module Text
+          include OpenEHR::AM::Archetype::ConstraintModel
           class CCodePhrase < CDomainType
             attr_accessor :terminology_id, :code_list
 

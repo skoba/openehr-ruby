@@ -1072,9 +1072,12 @@ module OpenEHR
       end
 
       rule V_QUALIFIED_TERM_CODE_REF
-        '[' qtc:(NAMECHAR_PAREN+ '::' NAMECHAR+) ']' {
+        '[' ti:(NAMECHAR_PAREN+) '::' cs:(NAMECHAR+) ']' {
           def value
-            qtc.text_value
+            term_id = OpenEHR::RM::Support::Identification::TerminologyID.new(
+              :value => ti.text_value)
+            OpenEHR::RM::DataTypes::Text::CodePhrase.new(
+              :terminology_id => term_id, :code_string => cs.text_value)
           end
         }
       end
@@ -1125,7 +1128,13 @@ module OpenEHR
       end
 
       rule V_ISO8601_DURATION
-        'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? ('T' ([0-9]+ [hH])? ([0-9]+ [mM])? ([0-9]+ ('.' [0-9]+)? [sS])?)?
+        'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH]) ([0-9]+ [mM])? ([0-9]+ ('.' [0-9]+)? [sS])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH])? ([0-9]+ [mM]) ([0-9]+ ('.' [0-9]+)? [sS])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH])? ([0-9]+ [mM])? ([0-9]+ ('.' [0-9]+)? [sS])?
+      / 'P' ([0-9]+ [yY]) ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM]) ([0-9]+ [wW])? ([0-9]+ [dD])? 
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW]) ([0-9]+ [dD])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])
       end
 
       rule V_ISO8601_DATE_CONSTRAINT_PATTERN

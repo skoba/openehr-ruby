@@ -1,5 +1,5 @@
 archetype
-	adl-test-ENTRY.c_dv_ordinal.test
+	adl-test-ENTRY.c_dv_ordinal.v1
 
 concept
 	[at0000]

@@ -3,10 +3,21 @@ module OpenEHR
     module OpenEHRProfile
       module DataTypes
         module Quantity
-          class CDvQuantity < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
+          include OpenEHR::AM::Archetype::ConstraintModel
+
+          class CDvQuantity < CDomainType
           end
           
-          class CDvOrdinal < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
+          class CDvOrdinal < CDomainType
+            attr_accessor :list
+            def initialize(args = { })
+              super
+              self.list = args[:list]
+            end
+
+            def any_allowed?
+              @list.nil?
+            end
           end
 
           class CQuantityItem

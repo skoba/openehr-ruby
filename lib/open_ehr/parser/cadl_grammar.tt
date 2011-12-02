@@ -92,19 +92,24 @@ module OpenEHR
       end
 
       rule c_object
-        c_primitive_object '' {
+        c_ordinal '' {
+          def value(node)
+            c_ordinal.value(node)
+          end
+        }
+      / c_primitive_object '' {
           def value(node)
             c_primitive_object.value
           end
         }
-      /  c_complex_object '' {
+      / c_complex_object '' {
           def value(node)
             c_complex_object.value(node)
           end
         }
-      / vtc:V_TERM_CODE_CONSTRAINT '' {
+      / c_code_phrase '' {
           def value(node)
-            vtc.value(node)
+            c_code_phrase.value(node)
           end
         }
       / constraint_ref '' {
@@ -217,9 +222,9 @@ module OpenEHR
       end
 
       rule c_primitive
-        c_duration '' {
+        c_boolean '' {
           def value
-            c_duration.value
+            c_boolean.value
           end
         }
       / c_date_time '' {
@@ -237,6 +242,11 @@ module OpenEHR
             c_date.value
           end
         }
+      / c_duration '' {
+          def value
+            c_duration.value
+          end
+        }
       / c_real '' {
           def value
             c_real.value
@@ -247,11 +257,6 @@ module OpenEHR
             c_integer.value
           end
         }	
-      / c_boolean '' {
-          def value
-            c_boolean.value
-          end
-        }
       / c_string '' {
           def value
             c_string.value
@@ -726,7 +731,7 @@ module OpenEHR
             {:pattern => duration_pattern.value}
           end
         }
-      / duration_pattern '' {
+     / duration_pattern '' {
           def value
             {:pattern => duration_pattern.value}
           end
@@ -760,7 +765,7 @@ module OpenEHR
               args)
           end
         }
-      / c_duration_constraint !';' '' {
+      / c_duration_constraint '' {
           def value
             OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(
               c_duration_constraint.value)
@@ -897,7 +902,7 @@ module OpenEHR
           }
       end
 
-      rule V_TERM_CODE_CONSTRAINT
+      rule c_code_phrase
         ti:V_TERM_CODE code_string_spec ';' space code_string ']' space {
           def value(node)
             ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
@@ -926,6 +931,53 @@ module OpenEHR
               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
                                 :upper => 1, :lower => 1),
               :terminology_id => ti.value, :code_list => [], :path => node.path)
+          end
+        }
+      end
+
+      rule SYM_C_DV_ORDINAL
+        'C_DV_ORDINAL' space 
+      end
+
+      rule c_ordinal
+        c_ordinal_spec ';' space integer_value space {
+          def value(node)
+            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new
+          end
+        }
+      / c_ordinal_spec space '' {
+          def value(node)
+          end
+        }
+      / SYM_C_DV_ORDINAL SYM_LT white_space SYM_GT space {
+          def value(node)
+          end
+      }
+      end
+
+      rule c_ordinal_spec
+        ordinal_list '' {
+          def value(node)
+          end
+        }
+      / ordinal '' {
+          def value(node)
+          end
+        }
+      end
+
+      rule ordinal_list
+        ordinal (',' space ordinal)+ {
+          def value(node)
+
+          end
+        }
+      end
+
+      rule ordinal
+        integer_value SYM_INTERVAL_DELIM V_QUALIFIED_TERM_CODE_REF !SYM_INTERVAL_DELIM '' {
+          def value
+            
           end
         }
       end
@@ -1018,7 +1070,7 @@ module OpenEHR
               :reference_type => 'Constraint')
           end
         }
-      / SYM_NOT boolean_leaf {
+      / SYM_NOT boolean_leaf '' {
           def value
             OpenEHR::AM::Archetype::Assertion::ExprUnaryOperator.new(
               :type => 'Boolean',
@@ -1135,7 +1187,7 @@ module OpenEHR
             boolean_expression.value
           end
         }
-      / SYM_TRUE {
+      / SYM_TRUE '' {
           def value
             OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
               :type => 'Boolean',
@@ -1143,7 +1195,7 @@ module OpenEHR
               :reference_type => 'CONSTANT')
           end
         }
-      / SYM_FALSE {
+      / SYM_FALSE '' {
           def value
             OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
               :type => 'Boolean',
