@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "open_ehr"
-  s.version = "0.9.4"
+  s.version = "0.9.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2011-11-22"
+  s.date = "2011-12-02"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -28,14 +28,15 @@ Gem::Specification.new do |s|
     "lib/open_ehr.rb",
     "lib/open_ehr/am.rb",
     "lib/open_ehr/am/archetype.rb",
-    "lib/open_ehr/am/archetype/archetype_description/archetype_description.rb",
     "lib/open_ehr/am/archetype/assertion.rb",
     "lib/open_ehr/am/archetype/constraint_model.rb",
     "lib/open_ehr/am/archetype/constraint_model/primitive.rb",
     "lib/open_ehr/am/archetype/ontology.rb",
-    "lib/open_ehr/am/open_ehr_profile/data_types/basic.rb",
-    "lib/open_ehr/am/open_ehr_profile/data_types/quantity.rb",
-    "lib/open_ehr/am/open_ehr_profile/data_types/text.rb",
+    "lib/open_ehr/am/openehr_profile.rb",
+    "lib/open_ehr/am/openehr_profile/data_types.rb",
+    "lib/open_ehr/am/openehr_profile/data_types/basic.rb",
+    "lib/open_ehr/am/openehr_profile/data_types/quantity.rb",
+    "lib/open_ehr/am/openehr_profile/data_types/text.rb",
     "lib/open_ehr/assumed_library_types.rb",
     "lib/open_ehr/parser.rb",
     "lib/open_ehr/parser/adl.rb",
@@ -124,6 +125,7 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/am/archetype/ontology/archetype_ontology_spec.rb",
     "spec/lib/open_ehr/am/archetype/ontology/archetype_term_spec.rb",
     "spec/lib/open_ehr/am/archetype/validity_kind_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/text/c_code_phrase_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/interval_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/iso8601_date_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/iso8601_date_time_spec.rb",
@@ -227,6 +229,9 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/parser/adl_archetype_internal_ref_with_generics_spec.rb",
     "spec/lib/open_ehr/parser/adl_archetype_ontology_binding_spec.rb",
     "spec/lib/open_ehr/parser/adl_archetype_ontology_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_slot_cluster_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_slot_spec.rb",
+    "spec/lib/open_ehr/parser/adl_archetype_uncommon_term_keys_spec.rb",
     "spec/lib/open_ehr/parser/adl_description_spec.rb",
     "spec/lib/open_ehr/parser/adl_identification_spec.rb",
     "spec/lib/open_ehr/parser/adl_language_no_accreditation_spec.rb",
@@ -237,6 +242,11 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/parser/adl_parser_spec.rb",
     "spec/lib/open_ehr/parser/adl_path_spec.rb",
     "spec/lib/open_ehr/parser/base_spec.rb",
+    "spec/lib/open_ehr/parser/basic_generic_type_spec.rb",
+    "spec/lib/open_ehr/parser/basic_type_spec.rb",
+    "spec/lib/open_ehr/parser/code_phrase_spec.rb",
+    "spec/lib/open_ehr/parser/date_time_spec.rb",
+    "spec/lib/open_ehr/parser/duration_spec.rb",
     "spec/lib/open_ehr/parser/parser_spec_helper.rb",
     "spec/lib/open_ehr/rm/common/archetyped/archetyped_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_details_spec.rb",
@@ -295,6 +305,7 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/rm/data_types/encapsulated/dv_parsable_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_date_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_date_time_spec.rb",
+    "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_duration_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_tempral_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_time_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/dv_absolute_quantity_spec.rb",
