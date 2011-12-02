@@ -1,3 +1,6 @@
+=== 0.9.5 2011-12-02
+Bug fix around ADL parser, data types, constranit
+
 === 0.9.4 2011-11-22
 Bug fix around ADL parser, ArchetypeOntology
 
