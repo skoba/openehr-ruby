@@ -12,6 +12,7 @@ module OpenEHR
               super
               self.terminology_id = args[:terminology_id]
               self.code_list = args[:code_list]
+              self.assumed_value = args[:assumed_value]
             end
           end
         end # of Text

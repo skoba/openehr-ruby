@@ -1,4 +1,5 @@
 require 'open_ehr/assumed_library_types'
+require 'open_ehr/rm/data_types/quantity'
 
 module OpenEHR
   module Parser
