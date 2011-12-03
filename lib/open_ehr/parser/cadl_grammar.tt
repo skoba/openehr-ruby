@@ -94,7 +94,13 @@ module OpenEHR
       rule c_object
         c_ordinal '' {
           def value(node)
-            c_ordinal.value(node)
+            args = c_ordinal.value
+            args[:path] = node.path
+            args[:rm_type_name] = 'DvOrdinal'
+            args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
+              :upper => 1, :lower => 1)
+            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new(
+             args)
           end
         }
       / c_primitive_object '' {
@@ -941,43 +947,57 @@ module OpenEHR
 
       rule c_ordinal
         c_ordinal_spec ';' space integer_value space {
-          def value(node)
-            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new
+          def value
+            args = c_ordinal_spec.value
+            args[:assumed_value] = integer_value.value
+            args
           end
         }
       / c_ordinal_spec space '' {
-          def value(node)
+          def value
+            c_ordinal_spec.value
           end
         }
       / SYM_C_DV_ORDINAL SYM_LT white_space SYM_GT space {
-          def value(node)
+          def value
+            {:list => nil}
           end
       }
       end
 
       rule c_ordinal_spec
         ordinal_list '' {
-          def value(node)
+          def value
+            {:list => ordinal_list.value}
           end
         }
       / ordinal '' {
-          def value(node)
+          def value
+            {:list => [ordinal.value]}
           end
         }
       end
 
       rule ordinal_list
-        ordinal (',' space ordinal)+ {
-          def value(node)
+        first:ordinal more:(',' space ordinal)+ {
+          def value
+            ordinals.map {|o| o.value}
+          end
 
+          def ordinals
+            [first] + more.elements.map {|e| e.ordinal}
           end
         }
       end
 
       rule ordinal
-        integer_value SYM_INTERVAL_DELIM V_QUALIFIED_TERM_CODE_REF !SYM_INTERVAL_DELIM '' {
+        integer_value SYM_INTERVAL_DELIM vqtc:V_QUALIFIED_TERM_CODE_REF !SYM_INTERVAL_DELIM '' {
           def value
-            
+            symbol = ::OpenEHR::RM::DataTypes::Text::DvCodedText.new(
+              :value => vqtc.text_value, :defining_code => vqtc.value)
+            ::OpenEHR::RM::DataTypes::Quantity::DvOrdinal.new(
+                :value => integer_value.value,
+                :symbol => symbol)
           end
         }
       end
