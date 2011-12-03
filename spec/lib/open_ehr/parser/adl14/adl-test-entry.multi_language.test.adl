@@ -1,5 +1,5 @@
 archetype
-	adl-test-ENTRY.multi-language.draft
+	adl-test-ENTRY.multi-language.v1
 concept
 	[at0000]	--  empty definition test
 
