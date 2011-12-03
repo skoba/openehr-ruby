@@ -1,5 +1,5 @@
 archetype (adl_version=1.4)
-	openEHR-EHR-COMPOSITION.dv_coded_text.test
+	openEHR-EHR-COMPOSITION.dv_coded_text.v1
 
 concept
 	[at0000]	-- Problem list
