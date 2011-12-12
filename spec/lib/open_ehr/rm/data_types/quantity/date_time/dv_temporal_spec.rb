@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
+require 'open_ehr/rm/data_types/quantity/date_time'
 include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe DvTemporal do

@@ -3,14 +3,16 @@
 # Ticket refs #49
 #require 'assumed_library_types'
 require 'date'
-include OpenEHR::RM::DataTypes::Quantity
-include OpenEHR::AssumedLibraryTypes
+require 'open_ehr/rm/data_types/quantity'
 
 module OpenEHR
   module RM
     module DataTypes
       module Quantity
         module DateTime
+          include OpenEHR::RM::DataTypes::Quantity
+          include OpenEHR::AssumedLibraryTypes
+
           class DvTemporal < DvAbsoluteQuantity
             def initialize(args = {})
               self.value = args[:value]
