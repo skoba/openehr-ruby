@@ -90,7 +90,7 @@ describe ADLParser do
     context 'constraint bindings' do
       it 'terminology SNOMED-CT, constraint code is ac0001' do
         @ontology.constraint_binding(:terminology => 'SNOMED-CT',
-                                     :code => 'ac0001').should ==
+                                     :code => 'ac0001').value.should ==
           'http://openEHR.org/testconstraintbinding'
       end
     end

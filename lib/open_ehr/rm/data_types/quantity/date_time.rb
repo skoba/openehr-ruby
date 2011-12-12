@@ -1,7 +1,7 @@
 # This module is implementation of the UML:
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109696321450_28117_5362Report.html
 # Ticket refs #49
-#require 'assumed_library_types'
+require 'open_ehr/assumed_library_types'
 require 'date'
 require 'open_ehr/rm/data_types/quantity'
 
@@ -11,7 +11,6 @@ module OpenEHR
       module Quantity
         module DateTime
           include OpenEHR::RM::DataTypes::Quantity
-          include OpenEHR::AssumedLibraryTypes
 
           class DvTemporal < DvAbsoluteQuantity
             def initialize(args = {})
@@ -34,7 +33,8 @@ module OpenEHR
           end
 
           class DvDate < DvTemporal
-            include ISO8601DateModule
+            include OpenEHR::AssumedLibraryTypes::ISO8601DateModule
+            include OpenEHR::AssumedLibraryTypes
 
             DAYS_IN_MONTH = [0,31,28,31,30,31,30,31,31,30,31,30,31]
 
@@ -89,6 +89,7 @@ module OpenEHR
           end
           
           class DvTime < DvTemporal
+            include OpenEHR::AssumedLibraryTypes
             include ISO8601TimeModule
 
             def value=(value)
@@ -195,7 +196,7 @@ module OpenEHR
           end
 
           class DvDuration < DvTemporal
-            include AssumedLibraryTypes::ISO8601DurationModule
+            include OpenEHR::AssumedLibraryTypes::ISO8601DurationModule
             attr_reader :value
             
             def initialize(args = { })

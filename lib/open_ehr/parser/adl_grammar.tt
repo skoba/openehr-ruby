@@ -195,7 +195,7 @@ module OpenEHR
             if cd
               cd = itemizer(cd , arc_term)
             end
-            tb = ao['term_bindings']
+            tb = ao['term_bindings'] || ao['term_binding']
             term_bind = Proc.new do |code, item|
               item
             end
@@ -203,9 +203,9 @@ module OpenEHR
               tb = itemizer(tb, term_bind)
             end
             cons_bind = Proc.new do |code, item|
-              item
+	      OpenEHR::RM::DataTypes::URI::DvUri.new(:value => item)
             end
-            cb = ao['constraint_bindings']
+            cb = ao['constraint_bindings'] || ao['constraint_binding']
             if cb
               cb = itemizer(cb, cons_bind)
             end
