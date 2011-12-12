@@ -119,8 +119,8 @@ module OpenEHR
           end
         }
       / constraint_ref '' {
-          def value(node = nil)
-            constraint_ref.value
+          def value(node)
+            constraint_ref.value(node)
           end
         }
       / archetype_slot '' {
@@ -860,9 +860,13 @@ module OpenEHR
       end
 
       rule constraint_ref
-        V_LOCAL_TERM_CODE_REF '' {
-          def value
-            V_LOCAL_TERM_CODE_REF.value
+        vltcr:V_LOCAL_TERM_CODE_REF '' {
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::ConstraintRef.new(
+              :path => node.path,
+              :rm_type_name => 'ConstraintRef',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(:upper => 1, :lower => 1),
+              :reference => vltcr.value)
           end
         }
       end
