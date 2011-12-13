@@ -1,14 +1,12 @@
 # ticket #175
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/parser_spec_helper'
-include OpenEHR::AM::Archetype::Ontology
 
 describe ADLParser do
   context 'Constraint Bindings' do
     before(:all) do
       at = adl14_archetype('adl-test-entry.constraint_binding.test.adl')
       @ao = at.ontology
-
     end
 
     it 'contraint bindings size is two' do
