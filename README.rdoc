@@ -18,15 +18,21 @@ Release-0.9.5
 
 == DESCRIPTION:
 
-This is the beta version 0.9.4 release of Ruby openEHR implementation
+This is the beta version 0.9.5 release of Ruby openEHR implementation
 project. This release is still experimental preview of our work based
 on openEHR specification release 1.0.2. We implemented almost of the
 specifications of the openEHR.  The work is still in progress. The
 intention is to have a sample EHR to utilize all over the world
 quickly with Ruby on Rails.
 
-Parser is nearly performing completely. We now consider to descrive
-archetype as another formalism such as YAML, instead of ADL.
+This package includes:
+* ADL 1.4 parser
+* AM/RM packages based on the openEHR specification 1.0.2
+
+This package excludes:
+* ADL serializer(in progress)
+* ADL validator(in progress)
+* Data store/retrieve would be separate to the other project.
 
 Almost all classes passed the test constructed by RSpec2 (formaly used
 test/unit). These spec files are under /spec.
@@ -35,7 +41,7 @@ Some specifications are not well determined yet, such as rm/security
 and so on. We postponed to implement such classes.
 
 Terminology and Demographic server will be implemented in other
-project.
+project. 
 
 = Authors
 * Main codes

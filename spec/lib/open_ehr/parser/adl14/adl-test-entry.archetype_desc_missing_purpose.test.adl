@@ -1,5 +1,5 @@
 archetype 
-	adl-test-ENTRY.archetype_description_missing_purpose.draft
+	adl-test-ENTRY.archetype_description_missing_purpose.v1
 	
 concept 
 	[at0000]	--  test

@@ -146,10 +146,11 @@ module OpenEHR
             params['details'].each do |lang, attrs|
               misuse = attrs['misuse']
               misuse = nil if misuse.nil? or misuse.empty?
+              purpose = attrs['purpose'] || '__unknown__' # for backward compat.
               item =
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
                   :language => attrs['language'],
-                  :purpose => attrs["purpose"],
+                  :purpose => purpose,
                   :keywords => attrs["keywords"],
                   :use => attrs["use"],
                   :misuse => misuse,
