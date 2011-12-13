@@ -1,5 +1,5 @@
 archetype (adl_version=1.4)
-	adl-test-OUTER.mixed_types.draft
+	adl-test-OUTER.mixed_types.v1
 
 concept
 	[at0000]	-- outer object

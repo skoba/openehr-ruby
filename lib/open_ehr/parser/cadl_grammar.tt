@@ -198,7 +198,10 @@ module OpenEHR
         }
       / c_archetype_slot_id white_space {
           def value(node)
-            c_archetype_slot_id.value
+            args = c_archetype_slot_id.value(node)
+            args[:occurrences] = OpenEHR::AssumedLibraryTypes::Interval.new(
+              :upper => 1, :lower => 1)
+            args
           end
         }
       end
