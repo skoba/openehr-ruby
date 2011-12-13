@@ -1218,9 +1218,9 @@ module OpenEHR
       end
 
       rule V_STRING
-        '"' str:((!'"' . / '\"')*) '"' {
+        '"' str:(('\"' / !'"' .)*) '"' {
           def value
-            str.text_value
+            str.text_value.tr_s('\\\\', '\\')
           end
         }
       end

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/parser_spec_helper'
 
 describe ADLParser do
-  context 'Mixed node types' do
+  context 'Most minimal ADL' do
     before(:all) do
       @archetype = adl14_archetype('adl-test-entry.most_minimal.test.adl')
     end
