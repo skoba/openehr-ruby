@@ -51,6 +51,11 @@ describe Interval do
     @interval.has?(1).should_not be_true
   end
 
+  it 'should be equal lower and upper is same' do
+    interval = Interval.new(:upper => 10, :lower => 1)
+    @interval.should == interval
+  end
+
   describe Interval, 'when lower included' do
     before do
       @interval.lower_included = true

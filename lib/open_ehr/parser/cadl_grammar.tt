@@ -53,8 +53,9 @@ module OpenEHR
       rule c_complex_object_head
         c_complex_object_id c_occurrences {
           def value
-            c_complex_object_id.value[:occurrences] = c_occurrences.value
-            c_complex_object_id.value
+            args = c_complex_object_id.value
+            args[:occurrences] = c_occurrences.value
+            args
           end
         }
       / c_complex_object_id '' {
@@ -422,12 +423,12 @@ module OpenEHR
       rule existence_spec
         lo:V_INTEGER SYM_ELLIPSIS up:V_INTEGER {
           def value
-            OpenEHR::AssumedTypesLibrary::Interval.new(:lower => lo.value, :upper => up.value)
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value, :upper => up.value)
           end
         }
       / V_INTEGER '' {
           def value
-            OpenEHR::AssumedTypesLibrary::Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
           end
         }
       end
@@ -514,11 +515,10 @@ module OpenEHR
         st:integer_value SYM_ELLIPSIS ed:cardinality_limit_value {
           def value
             if ed.value == '*'
-              interval = OpenEHR::AssumedLibraryTypes::Interval.new(
-                 :lower => st.value,
-                 :upper_unbounded => true)
+              OpenEHR::AssumedLibraryTypes::Interval.new(
+                 :lower => st.value)
             else
-              interval = OpenEHR::AssumedLibraryTypes::Interval.new(
+              OpenEHR::AssumedLibraryTypes::Interval.new(
                 :lower => st.value,
                 :upper => ed.value)
             end

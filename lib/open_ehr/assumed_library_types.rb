@@ -64,6 +64,11 @@ module OpenEHR
         end
       end
 
+      def ==(value)
+        return (@lower == value.lower) && (@upper == value.upper) &&
+          (@lower_included == value.lower_included?) &&
+            (@upper_included == value.upper_included?)
+      end
       private
 
       def check_lower_upper(lower, upper)
