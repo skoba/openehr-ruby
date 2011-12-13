@@ -33,11 +33,11 @@ module OpenEHR
 	  end
 
 	  def original_language
-            lang.value.original_language
+            lang.value.original_language unless lang.empty?
           end
 
           def translations
-            lang.value.translations
+            lang.value.translations unless lang.empty?
           end
 
           def description

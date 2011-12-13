@@ -2,10 +2,10 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 require 'polyglot'
 require 'treetop'
-
 include OpenEHR::Parser
 include OpenEHR::AM::Archetype
 include OpenEHR::RM::Support::Identification
+include OpenEHR::RM::DataTypes::Text
 
 module OpenEHR
   module Parser
@@ -24,10 +24,17 @@ module OpenEHR
       end
 
       def parse
-        original_language = @result.original_language
         archetype_id = ArchetypeID.new(:value => @result.archetype_id)
         definition = @result.definition
         ontology = @result.ontology
+        original_language = nil
+        if @result.original_language
+          original_language = @result.original_language
+        else
+          terminology_id = TerminologyID.new(:value => 'ISO639-1')
+          original_language = CodePhrase.new(:terminology_id => terminology_id,
+                                      :code_string =>ontology.primary_language)
+        end
         archetype = Archetype.new(:archetype_id => archetype_id,
                                   :adl_version => @result.adl_version,
                                   :concept => @result.concept,

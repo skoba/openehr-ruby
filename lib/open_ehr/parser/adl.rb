@@ -11,7 +11,7 @@ module OpenEHR
 
       class ArchLanguage < Base
         def value
-          Language.new(lang.value)
+          return Language.new(lang.value)
         end
       end
 
