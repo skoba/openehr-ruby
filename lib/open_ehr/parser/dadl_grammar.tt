@@ -160,7 +160,12 @@ module OpenEHR
       end
 
       rule primitive_object_value
-        term_code '' {
+        term_code_list_value '' {
+          def value
+            term_code_list_value.value
+          end
+        }
+      / term_code '' {
           def value
             term_code.value
           end
@@ -173,11 +178,6 @@ module OpenEHR
       / simple_interval_value '' {
           def value
             simple_interval_value.value
-          end
-        }
-      / term_code_list_value '' {
-          def value
-            term_code_list_value.value
           end
         }
       / simple_value '' {

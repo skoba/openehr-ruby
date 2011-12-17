@@ -198,7 +198,11 @@ module OpenEHR
             end
             tb = ao['term_bindings'] || ao['term_binding']
             term_bind = Proc.new do |code, item|
-              item
+              unless item.class == Array
+                [item]
+              else
+                item
+              end
             end
             if tb
               tb = itemizer(tb, term_bind)

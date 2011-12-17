@@ -78,11 +78,11 @@ describe ADLParser do
         end
 
         it 'terminology id is SNOMED-CT' do
-          @term.terminology_id.value.should == 'SNOMED-CT'
+          @term[0].terminology_id.value.should == 'SNOMED-CT'
         end
 
         it 'code_string is 123456' do
-          @term.code_string.should == '123456'
+          @term[0].code_string.should == '123456'
         end
       end
     end
