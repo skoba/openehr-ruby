@@ -1,5 +1,5 @@
 ﻿archetype
-	adl-test-ENTRY.unicode_BOM_support.draft
+	adl-test-ENTRY.unicode_BOM_support.v1
 concept 
 	[at0000]	--  empty definition test
 language

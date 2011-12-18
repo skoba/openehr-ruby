@@ -12,10 +12,12 @@ module OpenEHR
     class ADLParser < Base
       def initialize(filename)
         super(filename)
-        data = File.read(filename)
+        file = File.open(filename, 'r:bom|utf-8')
+        data = file.read
         Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
         ap = ADLGrammarParser.new
         @result = ap.parse(data)
+        file.close
         unless @result
           puts ap.failure_reason
           puts ap.failure_line
