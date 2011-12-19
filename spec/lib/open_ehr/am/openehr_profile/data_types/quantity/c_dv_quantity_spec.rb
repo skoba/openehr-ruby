@@ -1,6 +1,5 @@
 # ticket 199
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
-#require 'open_ehr/am/openehr_profile/data_types/quantity'
 include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 include ::OpenEHR::RM::DataTypes::Text
 include OpenEHR::AssumedLibraryTypes

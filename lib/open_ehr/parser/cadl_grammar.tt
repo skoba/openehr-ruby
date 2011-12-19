@@ -93,7 +93,11 @@ module OpenEHR
       end
 
       rule c_object
-        c_ordinal '' {
+        c_dv_quantity '' {
+          def value(node)
+          end
+        }	   
+      / c_ordinal '' {
           def value(node)
             args = c_ordinal.value
             args[:path] = node.path
@@ -1007,6 +1011,73 @@ module OpenEHR
                 :symbol => symbol)
           end
         }
+      end
+
+      rule c_dv_quantity
+        c_dv_quantity_spec {
+          def value=(node)
+          end
+        }
+      end
+
+      rule c_dv_quantity_spec
+        SYM_C_DV_QUANTITY SYM_START_DBLOCK property? quantity_list? assumed_quantity_value? SYM_END_DBLOCK
+      end
+
+      rule SYM_C_DV_QUANTITY
+        'C_DV_QUANTITY' space
+      end
+
+      rule property
+        SYM_PROPERTY SYM_EQ SYM_START_DBLOCK V_QUALIFIED_TERM_CODE_REF SYM_END_DBLOCK
+      end
+
+      rule SYM_PROPERTY
+        'property' space
+      end
+
+      rule quantity_list
+        SYM_QUANTITY_LIST SYM_EQ SYM_START_DBLOCK c_dv_quantity_items SYM_END_DBLOCK
+      end
+
+      rule assumed_quantity_value
+        SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK V_STRING SYM_END_DBLOCK
+        SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK real_value SYM_END_DBLOCK
+        SYM_PRECISION SYM_EQ SYM_START_DBLOCK integer_value SYM_END_DBLOCK
+        SYM_END_DBLOCK
+      end
+
+      rule SYM_QUANTITY_LIST
+        'list' space
+      end
+
+      rule c_dv_quantity_items
+        c_dv_quantity_item+
+      end
+
+      rule c_dv_quantity_item
+        '[' V_STRING ']' white_space SYM_EQ SYM_START_DBLOCK
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK V_STRING SYM_END_DBLOCK
+        SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK real_interval_value SYM_END_DBLOCK
+        SYM_PRECISION SYM_EQ SYM_START_DBLOCK integer_interval_value SYM_END_DBLOCK
+        SYM_END_DBLOCK
+      end
+
+      rule SYM_UNITS
+        'units' space
+      end
+
+      rule SYM_MAGNITUDE
+        'magnitude' space
+      end
+
+      rule SYM_PRECISION
+        'precision' space
+      end
+
+      rule SYM_ASSUMED_VALUE
+        'assumed_value' space
       end
 
       rule V_C_DOMAIN_TYPE
