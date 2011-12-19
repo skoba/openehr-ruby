@@ -21,6 +21,29 @@ module OpenEHR
           end
 
           class CQuantityItem
+            attr_accessor :magnitude, :precision
+            attr_reader :units
+
+            def initialize(args = { })
+              self.magnitude = args[:magnitude]
+              self.precision = args[:precision]
+              self.units = args[:units]
+            end
+
+            def units=(units)
+              if units.nil? or units.empty?
+                raise ArgumentError, 'units are mandatory'
+              end
+              @units = units
+            end
+
+            def precision_unconstrained?
+              if @precision.upper == -1 && @precision.lower == -1
+                return true
+              else
+                return false
+              end
+            end
           end
         end
       end # of DataTypes
