@@ -6,6 +6,21 @@ module OpenEHR
           include OpenEHR::AM::Archetype::ConstraintModel
 
           class CDvQuantity < CDomainType
+            attr_accessor :property, :list
+
+            def initialize(args = { })
+              super
+              self.property = args[:property]
+              self.list = args[:list]
+            end
+
+            def any_allowed?
+              if @property.nil? && @list.nil?
+                return true
+              else
+                return false
+              end
+            end
           end
           
           class CDvOrdinal < CDomainType
