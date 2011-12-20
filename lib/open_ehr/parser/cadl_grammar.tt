@@ -95,6 +95,7 @@ module OpenEHR
       rule c_object
         c_dv_quantity '' {
           def value(node)
+            c_dv_quantity.value(node)
           end
         }	   
       / c_ordinal '' {
@@ -1014,14 +1015,20 @@ module OpenEHR
       end
 
       rule c_dv_quantity
-        c_dv_quantity_spec {
-          def value=(node)
+        SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        prop:property? ql:quantity_list? aqv:assumed_quantity_value?
+        SYM_END_DBLOCK {
+          def value(node)
+            property = prop.value unless prop.empty?
+            list = ql.value(node) unless ql.empty?
+            av = aqv.value unless aqv.empty?
+            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity.new(
+              :path => node.path, :rm_type_name => 'DvQuantity',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :upper => 1, :lower => 1),
+              :property => property, :list => list, :assumed_value => av)
           end
         }
-      end
-
-      rule c_dv_quantity_spec
-        SYM_C_DV_QUANTITY SYM_START_DBLOCK property? quantity_list? assumed_quantity_value? SYM_END_DBLOCK
       end
 
       rule SYM_C_DV_QUANTITY
@@ -1029,7 +1036,12 @@ module OpenEHR
       end
 
       rule property
-        SYM_PROPERTY SYM_EQ SYM_START_DBLOCK V_QUALIFIED_TERM_CODE_REF SYM_END_DBLOCK
+        SYM_PROPERTY SYM_EQ SYM_START_DBLOCK
+          prop:V_QUALIFIED_TERM_CODE_REF SYM_END_DBLOCK {
+          def value
+            prop.value
+          end
+        }
       end
 
       rule SYM_PROPERTY
@@ -1037,31 +1049,66 @@ module OpenEHR
       end
 
       rule quantity_list
-        SYM_QUANTITY_LIST SYM_EQ SYM_START_DBLOCK c_dv_quantity_items SYM_END_DBLOCK
+        SYM_QUANTITY_LIST SYM_EQ SYM_START_DBLOCK
+        c_quantity_items SYM_END_DBLOCK {
+          def value(node)
+            c_quantity_items.value(node)
+          end
+        }
       end
 
       rule assumed_quantity_value
         SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK
-        SYM_UNITS SYM_EQ SYM_START_DBLOCK V_STRING SYM_END_DBLOCK
-        SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK real_value SYM_END_DBLOCK
-        SYM_PRECISION SYM_EQ SYM_START_DBLOCK integer_value SYM_END_DBLOCK
-        SYM_END_DBLOCK
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?
+        SYM_END_DBLOCK {
+          def value
+            magnitude, precision = nil
+            magnitude = mag.val.value unless mag.empty?
+            precision = prec.val.value unless prec.empty?
+            OpenEHR::RM::DataTypes::Quantity::DvQuantity.new(
+              :units => units.value,
+              :magnitude => magnitude,
+              :precision => precision)
+          end
+        }
       end
 
       rule SYM_QUANTITY_LIST
         'list' space
       end
 
-      rule c_dv_quantity_items
-        c_dv_quantity_item+
+      rule c_quantity_items
+        c_quantity_item more_cdv:(c_quantity_item white_space)* {
+          def value(node)
+            quantities.map {|q| q.value(node)}
+          end
+
+          def quantities
+            [c_quantity_item] + more_cdv.elements.map {|e| e.c_quantity_item}
+          end
+        }
       end
 
-      rule c_dv_quantity_item
+      rule c_quantity_item
         '[' V_STRING ']' white_space SYM_EQ SYM_START_DBLOCK
-        SYM_UNITS SYM_EQ SYM_START_DBLOCK V_STRING SYM_END_DBLOCK
-        SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK real_interval_value SYM_END_DBLOCK
-        SYM_PRECISION SYM_EQ SYM_START_DBLOCK integer_interval_value SYM_END_DBLOCK
-        SYM_END_DBLOCK
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK int:real_interval_value SYM_END_DBLOCK)?
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK int:integer_interval_value SYM_END_DBLOCK)?
+        SYM_END_DBLOCK {
+          def value(node)
+            magnitude, precision = nil
+            magnitude = mag.int.value unless mag.empty?
+            precision = prec.int.value unless prec.empty?
+            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(
+              :path => node.path, :rm_type_name => 'DvQuantity',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :upper => 1, :lower => 1),
+              :units => units.value,
+              :magnitude => magnitude, :precision => precision)
+          end
+        }
       end
 
       rule SYM_UNITS
