@@ -3,7 +3,21 @@ module OpenEHR
     module OpenEHRProfile
       module DataTypes
         module Basic
-          class CDvState
+          include OpenEHR::AM::Archetype::ConstraintModel
+
+          class CDvState < CDomainType
+            attr_reader :value
+
+            def initialize(args = { })
+              args[:rm_type_name] = 'DvState'
+              super
+              self.value = args[:value]
+            end
+
+            def value=(value)
+              raise ArgumentError, 'value is mandatory' if value.nil?
+              @value = value
+            end
           end
 
           class StateMachine
