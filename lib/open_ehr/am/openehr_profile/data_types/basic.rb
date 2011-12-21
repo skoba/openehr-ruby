@@ -25,6 +25,7 @@ module OpenEHR
           end
 
           class TerminalState < State
+
           end
 
           class NonTerminalState < State
