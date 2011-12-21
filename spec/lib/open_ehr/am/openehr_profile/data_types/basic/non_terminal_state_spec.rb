@@ -30,7 +30,7 @@ describe NonTerminalState do
     expect {@non_terminal_state.transitions = Set.new}.to raise_error
   end
 
-  it 'does not error if transitions is nil' do
-    expect {@non_terminal_state.transitions = nil}.not_to raise_error
+  it 'raise error if transitions is nil' do
+    expect {@non_terminal_state.transitions = nil}.to raise_error
   end
 end

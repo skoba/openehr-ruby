@@ -7,6 +7,18 @@ module OpenEHR
           end
 
           class StateMachine
+            attr_reader :states
+
+            def initialize(args = { })
+              self.states = args[:states]
+            end
+
+            def states=(states)
+              if states.nil? or states.empty?
+                raise ArgumentError, 'states are mandatory'
+              end
+              @states = states
+            end
           end
 
           class State
@@ -36,7 +48,7 @@ module OpenEHR
             end
 
             def transitions=(transitions)
-              if !transitions.nil? && transitions.empty?
+              if transitions.nil? or transitions.empty?
                 raise ArgumentError, 'transition should not be empty'
               end
               @transitions = transitions
