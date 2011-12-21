@@ -1017,18 +1017,22 @@ module OpenEHR
       rule c_dv_quantity
         SYM_C_DV_QUANTITY SYM_START_DBLOCK
         prop:property? ql:quantity_list? aqv:assumed_quantity_value?
-        SYM_END_DBLOCK {
-          def value(node)
-            property = prop.value unless prop.empty?
-            list = ql.value(node) unless ql.empty?
-            av = aqv.value unless aqv.empty?
-            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity.new(
-              :path => node.path, :rm_type_name => 'DvQuantity',
-              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
-                :upper => 1, :lower => 1),
-              :property => property, :list => list, :assumed_value => av)
-          end
-        }
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        prop:property? aqv:assumed_quantity_value? ql:quantity_list?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        aqv:assumed_quantity_value? prop:property? ql:quantity_list?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        aqv:assumed_quantity_value? ql:quantity_list? prop:property?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        ql:quantity_list? aqv:assumed_quantity_value? prop:property?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        ql:quantity_list? prop:property? aqv:assumed_quantity_value?
+        SYM_END_DBLOCK <CDvQuantityItems>
       end
 
       rule SYM_C_DV_QUANTITY
@@ -1058,21 +1062,36 @@ module OpenEHR
       end
 
       rule assumed_quantity_value
-        SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK
+        SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
         SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
-        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?
-        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?
-        SYM_END_DBLOCK {
-          def value
-            magnitude, precision = nil
-            magnitude = mag.val.value unless mag.empty?
-            precision = prec.val.value unless prec.empty?
-            OpenEHR::RM::DataTypes::Quantity::DvQuantity.new(
-              :units => units.value,
-              :magnitude => magnitude,
-              :precision => precision)
-          end
-        }
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_END_DBLOCK <AssumedValueItems>
       end
 
       rule SYM_QUANTITY_LIST

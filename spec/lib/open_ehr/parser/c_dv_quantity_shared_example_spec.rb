@@ -6,10 +6,9 @@ include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 require 'open_ehr/rm/data_types/quantity'
 include ::OpenEHR::RM::DataTypes::Quantity
 
-describe ADLParser do
-  describe CDvQuantity do
+shared_examples 'c_dv_quantity' do
+  context 'CDvQuantity item order change' do
     before(:all) do
-      archetype = adl14_archetype('adl-test-entry.c_dv_quantity_full.test.adl')
       @c_dv_quantity = archetype.definition.attributes[0].children[0].attributes[0].children[0].attributes[0].children[0]
     end
 
@@ -125,5 +124,23 @@ describe ADLParser do
         end
       end
     end
+  end
+end
+
+describe 'items start with property' do
+  it_behaves_like 'c_dv_quantity' do
+    let(:archetype) {adl14_archetype('adl-test-entry.c_dv_quantity_full.test.adl')}
+  end
+end
+
+describe 'items start with list' do
+  it_behaves_like 'c_dv_quantity' do
+    let(:archetype) {adl14_archetype('adl-test-entry.c_dv_quantity_full2.test.adl')}
+  end
+end
+
+describe 'items start with assumed_value' do
+  it_behaves_like 'c_dv_quantity' do
+    let(:archetype) {adl14_archetype('adl-test-entry.c_dv_quantity_full3.test.adl')}
   end
 end

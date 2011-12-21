@@ -1,5 +1,5 @@
 archetype
-	adl-test-ENTRY.c_dv_quantity_empty.test
+	adl-test-ENTRY.c_dv_quantity_empty.v1
 
 concept
 	[at0000]
