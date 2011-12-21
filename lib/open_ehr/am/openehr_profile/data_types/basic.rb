@@ -29,6 +29,18 @@ module OpenEHR
           end
 
           class NonTerminalState < State
+            attr_reader :transitions
+            def initialize(args = { })
+              super
+              self.transitions = args[:transitions]
+            end
+
+            def transitions=(transitions)
+              if !transitions.nil? && transitions.empty?
+                raise ArgumentError, 'transition should not be empty'
+              end
+              @transitions = transitions
+            end
           end
 
           class Transition

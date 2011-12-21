@@ -5,7 +5,7 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-0.9.5
+Release-1.0.0b
 
 = Requirements
 
@@ -18,12 +18,15 @@ Release-0.9.5
 
 == DESCRIPTION:
 
-This is the beta version 0.9.5 release of Ruby openEHR implementation
-project. This release is still experimental preview of our work based
-on openEHR specification release 1.0.2. We implemented almost of the
-specifications of the openEHR.  The work is still in progress. The
-intention is to have a sample EHR to utilize all over the world
-quickly with Ruby on Rails.
+This is the fist stable branch version 1.0.0 release of Ruby openEHR
+implementation project. This release is based on openEHR specification
+release 1.0.2. We implemented almost of the specifications of the openEHR.
+The work is still in progress to implement related tools, such as
+archetype validator or serializer.
+The intention is to have a sample EHR to utilize all over the world
+quickly with Ruby on Rails for many other porject.
+From this release we changed license from MPL 1.1 to Apache 2.0 license,
+as regards to the other openEHR aretefact license.
 
 This package includes:
 * ADL 1.4 parser
@@ -60,17 +63,18 @@ All Rights Reserved.
 
 = License
 
-This product is under openEHR Open Source Software License
+This product is under Apache 2.0 license
 
-The openEHR Foundation has used the Mozilla Tri-license 1.1 on all
-software copyrighted to the Foundation. Therefore, we release this
-product under Mozilla Tri-license at now, but the openEHR foundation
-is discussing about lincense for the resouces. We would change our
-license for this package after the decision. The Mozilla tri-licence
-essentially provides the user a choice of licence conditionsunder
-which to operate with any given piece of software, being: the Mozilla
-Public licence (MPL), and the Free Software Foundation GNU General
-Public Licence (GPL) and Lesser GNU General Public Licence (LGPL). See
-the Mozilla relicensing FAQ for details of this license. This in no
-way constrains the way in which software created by other
-organisations is licenced.
+   Copyright [2011] Shinji Kobayashi, Akimichi Tatsukawa, openEHR.jp
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.

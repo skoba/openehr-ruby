@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 
 module OpenEHR
-  VERSION = '0.9.5'
+  VERSION = '1.0.0b'
   autoload :AssumedLibraryTypes, 'open_ehr/assumed_library_types'
   autoload :RM, 'open_ehr/rm'
   autoload :AM, 'open_ehr/am'
