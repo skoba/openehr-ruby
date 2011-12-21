@@ -10,6 +10,18 @@ module OpenEHR
           end
 
           class State
+            attr_reader :name
+
+            def initialize(args = { })
+              self.name = args[:name]
+            end
+
+            def name=(name)
+              if name.nil? or name.empty?
+                raise ArgumentError, 'Invalid name'
+              end
+              @name = name
+            end
           end
 
           class TerminalState < State
