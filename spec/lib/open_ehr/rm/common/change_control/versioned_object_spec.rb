@@ -40,7 +40,6 @@ describe VersionedObject do
     uid = HierObjectID.new(:value => 'STU::VWX::5')
     owner_id = stub(ObjectRef, :namespace => 'test')
     time_created = DvDateTime.new(:value => '2009-11-09T09:53:22')
-    object_id = stub(ObjectID, :value => 'unique')
     all_versions = [version1, version2, version3]
     @versioned_object = VersionedObject.new(:uid => uid,
                                             :owner_id => owner_id,

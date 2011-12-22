@@ -11,10 +11,10 @@ describe OriginalVersion do
     uid = ObjectVersionID.new(:value => 'ABCD::EFG::2')
     preceding_version_uid = ObjectVersionID.new(:value => 'HIJ::KLM::1')
     commit_audit = stub(AuditDetails, :committer => 'UNKNOWN', :empty? => false)
-    object_id = stub(ObjectID, :value => 'unique')
+    objectid = stub(ObjectID, :value => 'unique')
     contribution = ObjectRef.new(:namespace => 'local',
                                  :type => 'CONTRIBUTION',
-                                 :id => object_id)
+                                 :id => objectid)
     defining_code = stub(CodePhrase, :code_string => '532')
     lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
     signature = '4760271533c2866579dde347ad28dd79e4aad933'

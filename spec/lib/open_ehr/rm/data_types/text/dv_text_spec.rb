@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../../../../../spec_helper'
 include OpenEHR::RM::DataTypes::Text
 include OpenEHR::RM::Support::Identification
+include OpenEHR::RM::DataTypes::URI
 
 describe DvText do
   before(:each) do
@@ -9,10 +10,15 @@ describe DvText do
                               :code_string => 'ja')
     encoding = CodePhrase.new(:terminology_id => terminology_id,
                               :code_string => 'utf-8')
+    term = stub(CodePhrase, :code_string => 'C92')
+    term_mapping = stub(TermMapping, :target => term)
+    hyperlink = stub(DvUri, :value => 'http://openehr.jp/ruby')
     @dv_text = DvText.new(:value => 'test',
                           :formatting => 'font = 12pt',
                           :language => language,
-                          :encoding => encoding)
+                          :encoding => encoding,
+                          :mappings => [term_mapping],
+                          :hyperlink => hyperlink)
   end
 
   it 'should be an instance of DvText' do
@@ -43,9 +49,25 @@ describe DvText do
     lambda{@dv_text.formatting = ""}.should raise_error(ArgumentError)
   end
 
-  it 'should be mapping list'
+  it 'has 1 mapping' do
+    @dv_text.mappings.size.should be 1
+  end
 
-  it 'should be hyperlink'
+  it '1st item of mappings is C92' do
+    @dv_text.mappings[0].target.code_string.should == 'C92'
+  end
+
+  it 'raise error if mappings are empty' do
+    expect {@dv_text.mappings = Array.new}.to raise_error
+  end
+
+  it 'does not raise error if mappings are nil' do
+    expect {@dv_text.mappings = nil}.not_to raise_error
+  end
+
+  it 'hyperlink is http://openehr.jp/ruby' do
+    @dv_text.hyperlink.value.should == 'http://openehr.jp/ruby'
+  end
 
   it 's language code_string should be ja' do
     @dv_text.language.code_string.should == 'ja'

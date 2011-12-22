@@ -11,7 +11,6 @@ describe ImportedVersion do
     uid = ObjectVersionID.new(:value => 'ABCD::EFG::2')
     preceding_version_uid = ObjectVersionID.new(:value => 'HIJ::KLM::1')
     commit_audit = stub(AuditDetails, :committer => 'UNKNOWN', :empty? => false)
-    object_id = stub(ObjectID, :value => 'unique')
     contribution = ObjectRef.new(:namespace => 'local',
                                  :type => 'CONTRIBUTION',
                                  :id => object_id)

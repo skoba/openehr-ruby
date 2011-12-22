@@ -83,6 +83,7 @@ module OpenEHR
         class DvText < OpenEHR::RM::DataTypes::Basic::DataValue
           attr_reader :formatting, :hyperlink, :mappings,
                       :language, :encoding
+          attr_accessor :hyperlink
 
           def initialize(args = {})
             super(args)
@@ -90,6 +91,7 @@ module OpenEHR
             self.encoding = args[:encoding]
             self.mappings = args[:mappings]
             self.language = args[:language]
+            self.hyperlink = args[:hyperlink]
           end
 
           def value=(value)
@@ -114,17 +116,16 @@ module OpenEHR
             end
             @encoding = encoding
           end
+
           def mappings=(mappings)
-            if !mappings.nil? and !mappings.instance_of? Set
-              raise ArgumentError, "mapping(s) is(are) not valid"
-            elsif !mappings.nil? and mappings.instance_of? Set and
-                mappings.empty?
-              raise ArgumentError, "mapping(s) is(are) not valid"
+            if !mappings.nil? && mappings.empty?
+              raise ArgumentError, 'mappings should not be empty'
             end
             @mappings = mappings
           end
+
           def language=(language)
-            if !@language.nil? and language.empty?
+            if !language.nil? and language.code_string.empty?
               raise ArgumentError, "langage is not valid"
             end
             @language = language

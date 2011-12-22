@@ -3,8 +3,8 @@ include OpenEHR::RM::Support::Identification
 
 describe AccessGroupRef do
   before(:each) do
-    object_id = ObjectID.new(:value => 'deadbeefbabe')
-    @access_group_ref = AccessGroupRef.new(:id => object_id,
+    objectid = ObjectID.new(:value => 'deadbeefbabe')
+    @access_group_ref = AccessGroupRef.new(:id => objectid,
                                            :type => 'ACCESS_GROUP',
                                            :namespace => 'unknown')
   end

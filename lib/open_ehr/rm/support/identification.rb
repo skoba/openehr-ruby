@@ -18,8 +18,8 @@ module OpenEHR
             @value = value            
           end
 
-          def ==(object_id)
-            self.value == object_id.value
+          def ==(oid)
+            self.value == oid.value
           end
         end # of ObjectID
 
@@ -239,15 +239,15 @@ module OpenEHR
         end
 
         class ObjectVersionID < UIDBasedID
-          attr_reader :object_id, :creating_system_id, :version_tree_id
+          attr_reader :creating_system_id, :version_tree_id
 
           def initialize(args= {})
-            super(args)
+            super
           end
 
           def value=(value)
             if /^(\S+)::(\S+)::((\d|\.)+)$/ =~ value
-              self.object_id = UID.new(:value => $1)
+              self.objectid = UID.new(:value => $1)
               self.creating_system_id = UID.new(:value => $2)
               self.version_tree_id = VersionTreeID.new(:value => $3)
             else
@@ -256,14 +256,18 @@ module OpenEHR
           end
 
           def value
-            return @object_id.value + '::' + 
+            return @oid.value + '::' + 
               @creating_system_id.value + '::' +
               @version_tree_id.value
           end
 
-          def object_id=(object_id)
-            raise ArgumentError, 'object_id is mandatory' if object_id.nil?
-            @object_id = object_id
+          def objectid
+            return @oid
+          end
+
+          def objectid=(oid)
+            raise ArgumentError, 'object_id is mandatory' if oid.nil?
+            @oid = oid
           end
 
           def creating_system_id=(creating_system_id)

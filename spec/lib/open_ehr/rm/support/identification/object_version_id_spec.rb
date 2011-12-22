@@ -4,7 +4,6 @@ include OpenEHR::RM::Support::Identification
 describe ObjectVersionID do
   before(:each) do
     @object_version_id = ObjectVersionID.new(:value => 'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2')
-
   end
 
   it 'should be an instance of ObjectVersionID' do
@@ -19,8 +18,8 @@ describe ObjectVersionID do
     @object_version_id.is_branch?.should be_false
   end
 
-  it 'should have valid object_id' do
-    @object_version_id.object_id.value.should ==
+  it 'should have valid objectid' do
+    @object_version_id.objectid.value.should ==
       'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC'
   end
 
@@ -37,7 +36,7 @@ describe ObjectVersionID do
 
   it 'should raise ArgumentError with nil object id' do
     lambda {
-      @object_version_id.object_id = nil
+      @object_version_id.objectid = nil
     }.should raise_error ArgumentError
   end
 

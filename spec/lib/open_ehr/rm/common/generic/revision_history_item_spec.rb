@@ -4,7 +4,7 @@ include OpenEHR::RM::Support::Identification
 
 describe RevisionHistoryItem do
   before(:each)do
-    version_id = stub(ObjectVersionID, :object_id => 'RIO')
+    version_id = stub(ObjectVersionID, :objectid => 'RIO')
     audits = stub(Array, :size => 30, :empty? => false)
     @revision_history_item =
       RevisionHistoryItem.new(:version_id => version_id,
@@ -15,8 +15,8 @@ describe RevisionHistoryItem do
     @revision_history_item.should be_an_instance_of RevisionHistoryItem
   end
 
-  it 's version_id.object_id should be RIO' do
-    @revision_history_item.version_id.object_id.should == 'RIO'
+  it 's version_id.objectid should be RIO' do
+    @revision_history_item.version_id.objectid.should == 'RIO'
   end
 
   it 's audits.size should be 30' do

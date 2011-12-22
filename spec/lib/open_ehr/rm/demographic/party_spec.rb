@@ -66,9 +66,7 @@ describe Party do
   end
 
   it 'should raise ArgumentError when identities are empty' do
-    lambda {
-      @party.identities = Set.new
-    }
+    expect {@party.identities = Set.new}.to raise_error
   end
 
   it 'type should be alias of name' do
