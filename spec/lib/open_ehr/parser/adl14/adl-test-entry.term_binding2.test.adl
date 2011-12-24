@@ -1,5 +1,5 @@
 archetype
-	adl-test-ENTRY.term_binding.draft
+	adl-test-ENTRY.term_binding.v1
 concept
 	[at0000]	--  path-based binding test
 language

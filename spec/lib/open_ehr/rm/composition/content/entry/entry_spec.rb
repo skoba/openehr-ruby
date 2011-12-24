@@ -41,7 +41,12 @@ describe Entry do
     }.should raise_error ArgumentError
   end
 
-  it 'should raise ArgumentError with invalid language code'
+  it 'should raise ArgumentError with invalid language code' do
+    terminology_id = TerminologyID.new(:value => 'ISO639-1')
+    invalid_language = CodePhrase.new(:code_string => 'jj',
+                                      :terminology_id => terminology_id)
+    expect {@entry.language = invalid_language}.to raise_error ArgumentError
+  end
 
   it 'encoding should be assigned properly' do
     @entry.encoding.code_string.should == 'UTF-8'
@@ -53,7 +58,12 @@ describe Entry do
     }.should raise_error ArgumentError
   end
 
-  it 'should raise ArgumentError with invalid encoding'
+  it 'should raise ArgumentError with invalid encoding' do
+    terminology_id = TerminologyID.new(:value => 'ISO639-1')
+    invalid_encoding = CodePhrase.new(:terminology_id => terminology_id,
+                                      :code_string => 'inv-19')
+    expect {@entry.encoding = invalid_encoding}.to raise_error ArgumentError
+  end
 
   it 'subject should be assigned properly' do
     @entry.subject.external_ref.type.should == 'entry'

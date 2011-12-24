@@ -266,7 +266,7 @@ module OpenEHR
           end
 
           def objectid=(oid)
-            raise ArgumentError, 'object_id is mandatory' if oid.nil?
+            raise ArgumentError, 'objectid is mandatory' if oid.nil?
             @oid = oid
           end
 

@@ -3,6 +3,7 @@
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109264528523_312165_346Report.html
 # refs #56
 include OpenEHR::RM::Composition::Content
+require 'locale/info'
 
 module OpenEHR
   module RM
@@ -24,11 +25,17 @@ module OpenEHR
 
             def language=(language)
               raise ArgumentError, 'language is mandatory' if language.nil?
+              unless Locale::Info.language_code? language.code_string
+                raise ArgumentError, 'language code is invalid'
+              end
               @language = language
             end
 
             def encoding=(encoding)
-              raise ArgumentError, 'encoding is mandatory' if encoding.nil?
+              if encoding.nil?
+                raise ArgumentError, 'encoding is mandatory'
+              end
+              Encoding.find(encoding.code_string)
               @encoding = encoding
             end
 
