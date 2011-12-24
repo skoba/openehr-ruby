@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "open_ehr"
-  s.version = "0.9.5"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2011-12-02"
+  s.date = "2011-12-24"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -125,6 +125,15 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/am/archetype/ontology/archetype_ontology_spec.rb",
     "spec/lib/open_ehr/am/archetype/ontology/archetype_term_spec.rb",
     "spec/lib/open_ehr/am/archetype/validity_kind_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/basic/c_dv_state_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/basic/non_terminal_state_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/basic/state_machine_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/basic/state_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/basic/terminal_state_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/basic/transition_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/quantity/c_dv_ordinal_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/quantity/c_dv_quantity_spec.rb",
+    "spec/lib/open_ehr/am/openehr_profile/data_types/quantity/c_quantity_item_spec.rb",
     "spec/lib/open_ehr/am/openehr_profile/data_types/text/c_code_phrase_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/interval_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/iso8601_date_spec.rb",
@@ -244,10 +253,31 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/parser/base_spec.rb",
     "spec/lib/open_ehr/parser/basic_generic_type_spec.rb",
     "spec/lib/open_ehr/parser/basic_type_spec.rb",
+    "spec/lib/open_ehr/parser/c_dv_quantity_any_allowed_spec.rb",
+    "spec/lib/open_ehr/parser/c_dv_quantity_shared_example_for_lacked_items_spec.rb",
+    "spec/lib/open_ehr/parser/c_dv_quantity_shared_example_spec.rb",
+    "spec/lib/open_ehr/parser/cdv_ordinal_parse_spec.rb",
     "spec/lib/open_ehr/parser/code_phrase_spec.rb",
+    "spec/lib/open_ehr/parser/constraint_binding_spec.rb",
+    "spec/lib/open_ehr/parser/constraint_ref_spec.rb",
     "spec/lib/open_ehr/parser/date_time_spec.rb",
     "spec/lib/open_ehr/parser/duration_spec.rb",
+    "spec/lib/open_ehr/parser/dv_coded_text_parse_spec.rb",
+    "spec/lib/open_ehr/parser/empty_other_contributors_spec.rb",
+    "spec/lib/open_ehr/parser/missing_language_spec.rb",
+    "spec/lib/open_ehr/parser/missing_purpose_spec.rb",
+    "spec/lib/open_ehr/parser/mixed_node_types_spec.rb",
+    "spec/lib/open_ehr/parser/most_minimal_adl_spec.rb",
+    "spec/lib/open_ehr/parser/multi_language_spec.rb",
     "spec/lib/open_ehr/parser/parser_spec_helper.rb",
+    "spec/lib/open_ehr/parser/path_based_terminology_binding_spec.rb",
+    "spec/lib/open_ehr/parser/special_string_spec.rb",
+    "spec/lib/open_ehr/parser/structure_comment_spec.rb",
+    "spec/lib/open_ehr/parser/structure_nested_comments_spec.rb",
+    "spec/lib/open_ehr/parser/structure_spec.rb",
+    "spec/lib/open_ehr/parser/term_binding_spec.rb",
+    "spec/lib/open_ehr/parser/unicode_bom_spec.rb",
+    "spec/lib/open_ehr/parser/unicode_support_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/archetyped_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_details_spec.rb",
     "spec/lib/open_ehr/rm/common/archetyped/feeder_audit_spec.rb",
@@ -306,7 +336,7 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_date_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_date_time_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_duration_spec.rb",
-    "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_tempral_spec.rb",
+    "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_temporal_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/date_time/dv_time_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/dv_absolute_quantity_spec.rb",
     "spec/lib/open_ehr/rm/data_types/quantity/dv_amount_spec.rb",
@@ -369,7 +399,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/skoba/ruby-impl-openehr"
   s.licenses = ["The openEHR Open Source Software license(mozilla tri-license)"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.11"
+  s.rubygems_version = "1.8.12"
   s.summary = "Ruby implementation of the openEHR specification"
 
   if s.respond_to? :specification_version then
