@@ -82,7 +82,7 @@ module OpenEHR
       rule c_complex_object_body
         c_any '' {
           def value(node)
-            Hash[:attributes => c_any.value(node)]
+            Hash[:attributes => [c_any.value(node)]]
           end
         }
       / c_attributes '' {
@@ -283,7 +283,7 @@ module OpenEHR
         '*' space {
           def value(node)
             OpenEHR::AM::Archetype::ConstraintModel::CAttribute.new(
-              :path => node.path, :rm_attribute_name => node.id,
+              :path => node.path, :rm_attribute_name => 'ANY',
               :exsitence => OpenEHR::AssumedLibraryTypes::Interval.new(
                 :lower => 1, :upper => 1))
           end
@@ -387,7 +387,7 @@ module OpenEHR
       rule c_attr_values
         c_any '' {
           def value(node)
-            c_any.value
+            [c_any.value(node)]
           end
         }
       / c_object more_co:(c_object '')* {

@@ -1,5 +1,8 @@
+=== 1.0.1 2012-01-15
+C_ANY related fix
+
 === 1.0.0 2011-12-24
-First stable release
+First stable release 
 
 === 0.9.5 2011-12-02
 Bug fix around ADL parser, data types, constranit

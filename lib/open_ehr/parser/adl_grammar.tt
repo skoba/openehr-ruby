@@ -159,7 +159,10 @@ module OpenEHR
                   :other_details => attrs['other_details'])
               details[lang] = item
             end
-            oc = params['other_contributors'].nil? ? nil : params['other_contributors'].values
+            oc = params['other_contributors']
+	    if oc.instance_of? Hash
+              oc = oc.values
+            end
             OpenEHR::RM::Common::Resource::ResourceDescription.new(
               :original_author => params['original_author'],
               :other_contributors => oc,

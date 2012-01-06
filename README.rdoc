@@ -5,11 +5,11 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-1.0.0
+Release-1.0.1
 
 = Requirements
 
-* Ruby 1.9.x reccomended
+* Ruby 1.9.2 or later recommended
 * Tested with Ruby 1.9.3 on Linux and FreeBSD.
 * It would work with some adjustment on Ruby 1.8 or earlier,
   but not confirmed.
@@ -18,7 +18,7 @@ Release-1.0.0
 
 == DESCRIPTION:
 
-This is the fist stable branch version 1.0.0 release of Ruby openEHR
+This is the fist stable branch version 1.0.x release of Ruby openEHR
 implementation project. This release is based on openEHR specification
 release 1.0.2. We implemented almost of the specifications of the openEHR.
 The work is still in progress to implement related tools, such as
@@ -26,7 +26,7 @@ archetype validator or serializer.
 The intention is to have a sample EHR to utilize all over the world
 quickly with Ruby on Rails for many other porject.
 From this release we changed license from MPL 1.1 to Apache 2.0 license,
-as regards to the other openEHR aretefact license.
+as regards to the other openEHR artefact license.
 
 This package includes:
 * ADL 1.4 parser
@@ -37,14 +37,14 @@ This package excludes:
 * ADL validator(in progress)
 * Data store/retrieve would be separate to the other project.
 
-Almost all classes passed the test constructed by RSpec2 (formaly used
-test/unit). These spec files are under /spec.
+Almost all classes passed the test constructed by RSpec2. These spec
+files are under /spec.
 
 Some specifications are not well determined yet, such as rm/security
 and so on. We postponed to implement such classes.
 
 Terminology and Demographic server will be implemented in other
-project. 
+projects. 
 
 = Authors
 * Main codes
