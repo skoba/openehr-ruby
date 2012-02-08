@@ -65,7 +65,7 @@ All Rights Reserved.
 
 This product is under Apache 2.0 license
 
-   Copyright [2011] Shinji Kobayashi, Akimichi Tatsukawa, openEHR.jp
+   Copyright [2012] Shinji Kobayashi, Akimichi Tatsukawa, openEHR.jp
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -14,9 +14,8 @@ group :development, :test do
   gem 'rspec'
   gem 'guard-rspec'
   gem 'ruby-debug19'
-  gem 'spork', '>=0.9.0.rc2'
+  gem 'spork', '~> 0.9.0'
   gem 'guard-spork'
   gem 'simplecov'
-  gem 'rb-inotify'
   gem 'libnotify'
 end
