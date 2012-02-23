@@ -2,8 +2,10 @@
 # ItemStructure module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109346709572_859750_3810Report.html
 # refs #54
+$:.unshift(File.dirname(__FILE__))
+
 require 'set'
-include OpenEHR::RM::DataStructures
+#include OpenEHR::RM::DataStructures
 module OpenEHR
   module RM
     module DataStructures
