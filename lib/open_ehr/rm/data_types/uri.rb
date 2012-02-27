@@ -51,7 +51,7 @@ module OpenEHR
           end
 
           def scheme
-            @rui.scheme
+            @uri.scheme
           end
 
           def value=(value)
@@ -59,7 +59,7 @@ module OpenEHR
             parse(value)
           end
 
-          private
+          protected
 
           def parse(value)
             @uri = ::URI.parse(value)
@@ -69,12 +69,12 @@ module OpenEHR
 
         class DvEhrUri < DvUri
           def initialize(value)
-            super(value)
+            super
           end
 
           def value=(value)
             raise ArgumentError, "scheme must be ehr" if !(value =~ /^ehr/i)
-            @value = parse(value)
+            parse(value)
           end
         end # of DV_EHR_URI
       end # of URI
