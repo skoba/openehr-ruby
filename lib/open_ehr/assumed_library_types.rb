@@ -84,7 +84,52 @@ module OpenEHR
         @upper = upper
       end
     end # end of Interval
-  
+
+    class Timezone
+      attr_reader :hour, :minute, :value
+
+      def initialize(value)
+        self.value = value
+      end
+
+      def value=(value)
+        unless value.nil?
+          if /((([+-](\d{2})):?(\d{2}))|Z)/ =~ value
+            @value = value
+            if $1 == 'Z'
+              @hour, @minute = 0,0
+            else
+              @hour = $3.to_i
+              @minute = $5.to_i
+            end
+          else
+            raise ArgumentError, "timezone invalid"
+          end
+        else
+          @value = nil
+        end
+      end
+
+      def sign
+        unless @hour
+          return nil
+        end
+        if @hour < 0
+          return -1
+        else
+          return +1
+        end
+      end
+
+      def to_s
+        return value
+      end
+
+      alias_method :as_string, :to_s
+      alias_method :hours, :hour
+      alias_method :minutes, :minute
+    end
+
     module TimeDefinitions #< Any
       DAYS_IN_LEAP_YEAR = 366
       DAYS_IN_WEEK = 7
@@ -246,7 +291,7 @@ module OpenEHR
 
     module ISO8601TimeModule
       include TimeDefinitions
-      attr_reader :hour, :minute, :second, :fractional_second, :timezone
+      attr_reader :hour, :minute, :second, :fractional_second
 
       def hour=(hour)
         unless TimeDefinitions.valid_hour?(hour, @minute, @second)
@@ -289,15 +334,15 @@ module OpenEHR
       end
 
       def timezone=(timezone)
-        unless timezone.nil?
-          if /([+-](\d{2}):?(\d{2})|Z)/ =~ timezone
-            @timezone = timezone
-          else
-            raise ArgumentError, "timezone invalid"
-          end
+        unless timezone.nil? or timezone.empty?
+          @timezone = Timezone.new(timezone)
         else
           @timezone = nil
         end
+      end
+
+      def timezone
+        @timezone.to_s
       end
 
       def is_decimal_sign_comma?
@@ -321,7 +366,7 @@ module OpenEHR
             if !@fractional_second.nil?
               s += "." + @fractional_second.to_s[2..-1]
               if !@timezone.nil?
-                s += @timezone
+                s += @timezone.to_s
               end
             end
           end
@@ -394,26 +439,25 @@ module OpenEHR
               return false
             end
           end
-          if !tz.nil? and tz != "Z"
-            if /[+-](\d{2}):?(\d{2})/ =~ tz
-              h = $1; m = $2
-              if h.to_i < 0 or h.to_i >= HOURS_IN_DAY
-                return false
-              end
-              if m.to_i < 0 or m.to_i >= MINUTES_IN_HOUR
-                return false
-              end
+          unless tz.nil?
+            timezone = Timezone.new(tz)
+            if timezone.hour < 0 or timezone.hour >= HOURS_IN_DAY
+              return false
             end
+            if timezone.minute < 0 or timezone.minute >= MINUTES_IN_HOUR
+              return false
+            end
+            return true
+          else
+            return false
           end
-          return true
-        else
-          return false
         end
       end
     end # end of ISO8601_TIME
 
     module ISO8601DateTimeModule
       include ISO8601DateModule, ISO8601TimeModule
+
       def as_string
         if (!@year.nil? and !@month.nil? and !@day.nil?)
           s = Date.new(@year, @month, @day).to_s
@@ -430,18 +474,18 @@ module OpenEHR
               s += ":" + sprintf("%02d", @second)
               unless @fractional_second.nil?
                 s += "." + @fractional_second.to_s[2..-1]
-                unless @timezone.nil?
-                  s += @timezone
-                end
               end
             end
+          end
+          unless @timezone.nil?
+            s += @timezone.to_s
           end
         end
         return s
       end
     end
 
-    class ISO8601DateTime < ISO8601Date
+    class ISO8601DateTime
       include ISO8601DateTimeModule
       def initialize(string)
         unless /(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?/ =~ string
@@ -498,31 +542,41 @@ module OpenEHR
     end
   
     class ISO8601Timezone
-      attr_accessor :sign, :hour, :minute
-
       def initialize(string)
-        unless /(Z|(([+-])(\d{2}):?(\d{2})))/ =~ string
-          raise ArgumentError, 'invaild format'
-        end
-        if $1 == 'Z'
-          @sign, @hour, @minute = +1, 0, 0
+        @timezone = Timezone.new(string)
+      end
+
+      def hour
+        return @timezone.hour
+      end
+
+      def minute
+        return @timezone.minute
+      end
+
+      def sign
+        if @timezone.hour < 0
+          return -1
         else
-          @sign, @hour, @minute = ($3+'1').to_i, $4.to_i , $5.to_i
+          return +1
         end
       end
 
       def is_gmt?
-        @sign == +1 and @hour == 0 and @minute == 0
+        return (@timezone.hour == 0 and @timezone.minute == 0)
       end
 
       def as_string
-        if @sign == +1
-          s = "+"
-        elsif @sign == -1
-          s = "-"
+        if @timezone.hour < 0
+          s = ''
+        else
+          s = '+'
         end
-        sprintf("%s%02d%02d", s, @hour, @minute)
+        sprintf("%s%02d%02d", s, @timezone.hour, @timezone.minute)
       end
+
+      alias to_s as_string
+      alias gmt? is_gmt?
     end # end of ISO8601Timezone
 
     module ISO8601DurationModule

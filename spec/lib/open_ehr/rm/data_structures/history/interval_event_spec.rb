@@ -6,9 +6,9 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe IntervalEvent do
   before(:each) do
-    time = DvDateTime.new(:value => '2009-11-12T10:19:33')
+    time = DvDateTime.new(:value => '2009-11-12T10:19:33Z')
     state = stub(ItemStructure, :archetype_node_id => 'at0002')
-    origin = DvDateTime.new(:value => '2009-11-11T10:20:40')
+    origin = DvDateTime.new(:value => '2009-11-11T10:20:40Z')
     parent = stub(History, :origin => origin)
     math_function = stub(DvCodedText, :value => 'mean')
     width = DvDuration.new(:value => 'P0Y2M1W3DT5H7M3S')
@@ -38,6 +38,6 @@ describe IntervalEvent do
   end
 
   it 'should subtract time for interval start time' do
-    @interval_event.interval_start_time.value.should == '2009-09-09T05:12:30+09:00'
+    @interval_event.interval_start_time.value.should == '2009-09-09T05:12:30Z'
   end
 end

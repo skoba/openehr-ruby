@@ -3,7 +3,7 @@ $:.unshift(File.dirname(__FILE__))
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109599337877_94556_1510Report.html
 # Ticket refs #50
 
-require 'assumed_library_types'
+require 'open_ehr/assumed_library_types'
 
 module OpenEHR
   module RM

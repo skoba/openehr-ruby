@@ -148,10 +148,21 @@ module OpenEHR
             end
 
             def magnitude
+              hour, minute = @hour, @minute
+              if @timezone
+                if @timezone.sign == -1
+                  hour -= @timezone.hour
+                  minute -= @timezone.minute
+                elsif @timezone.sign == +1
+                  hour += @timezone.hour
+                  minute += @timezone.minute
+                end
+              end
               seconds = (((@year * 365.24 +
                            @month * 30.42 +
-                           @day) * 24 + @hour) * 60 +
-                         @minute) * 60 + @second
+                           @day) * 24 +
+                           hour) * 60 +
+                           minute) * 60 + @second
               if @fractional_second.nil?
                 return seconds
               else
@@ -190,6 +201,7 @@ module OpenEHR
 
             private
             def split_date_time(date_time)
+p date_time.as_string
               /^(.*)T(.*)$/ =~ date_time.as_string
               return DvDate.new(:value => $1), DvTime.new(:value => $2)
             end
