@@ -35,23 +35,23 @@ module OpenEHR
           end
 
           def value
-            @value.to_s
+            @value
           end
 
           def fragment_id
-            @value.fragment
+            @uri.fragment
           end
 
           def path
-            @value.path
+            @uri.path
           end
 
           def query
-            @value.query
+            @uri.query
           end
 
           def scheme
-            @value.scheme
+            @rui.scheme
           end
 
           def value=(value)
@@ -62,7 +62,8 @@ module OpenEHR
           private
 
           def parse(value)
-            @value = ::URI.parse(value)
+            @uri = ::URI.parse(value)
+            @value = value
           end
         end
 
