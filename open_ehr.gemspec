@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "open_ehr"
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2012-01-06"
+  s.date = "2012-02-27"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".rspec",
+    ".travis.yml",
     "Gemfile",
     "Guardfile",
     "History.txt",
@@ -143,6 +144,7 @@ Gem::Specification.new do |s|
     "spec/lib/open_ehr/assumed_library_types/iso8601_time_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/iso8601_timezone_spec.rb",
     "spec/lib/open_ehr/assumed_library_types/time_definitions_spec.rb",
+    "spec/lib/open_ehr/assumed_library_types/timezone_spec.rb",
     "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.assumed_types.v1.adl",
     "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.basic_types.v1.adl",
     "spec/lib/open_ehr/parser/adl14/adl-test-ENTRY.basic_types_fail.v1.adl",
@@ -402,7 +404,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/skoba/ruby-impl-openehr"
   s.licenses = ["The openEHR Open Source Software license(mozilla tri-license)"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.13"
+  s.rubygems_version = "1.8.11"
   s.summary = "Ruby implementation of the openEHR specification"
 
   if s.respond_to? :specification_version then
@@ -421,10 +423,9 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<guard-rspec>, [">= 0"])
       s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
-      s.add_development_dependency(%q<spork>, [">= 0.9.0.rc2"])
+      s.add_development_dependency(%q<spork>, ["~> 1.0rc"])
       s.add_development_dependency(%q<guard-spork>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
-      s.add_development_dependency(%q<rb-inotify>, [">= 0"])
       s.add_development_dependency(%q<libnotify>, [">= 0"])
     else
       s.add_dependency(%q<xml-simple>, [">= 0"])
@@ -439,10 +440,9 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<guard-rspec>, [">= 0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
-      s.add_dependency(%q<spork>, [">= 0.9.0.rc2"])
+      s.add_dependency(%q<spork>, ["~> 1.0rc"])
       s.add_dependency(%q<guard-spork>, [">= 0"])
       s.add_dependency(%q<simplecov>, [">= 0"])
-      s.add_dependency(%q<rb-inotify>, [">= 0"])
       s.add_dependency(%q<libnotify>, [">= 0"])
     end
   else
@@ -458,10 +458,9 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<guard-rspec>, [">= 0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])
-    s.add_dependency(%q<spork>, [">= 0.9.0.rc2"])
+    s.add_dependency(%q<spork>, ["~> 1.0rc"])
     s.add_dependency(%q<guard-spork>, [">= 0"])
     s.add_dependency(%q<simplecov>, [">= 0"])
-    s.add_dependency(%q<rb-inotify>, [">= 0"])
     s.add_dependency(%q<libnotify>, [">= 0"])
   end
 end
