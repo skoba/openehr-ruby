@@ -201,7 +201,6 @@ module OpenEHR
 
             private
             def split_date_time(date_time)
-p date_time.as_string
               /^(.*)T(.*)$/ =~ date_time.as_string
               return DvDate.new(:value => $1), DvTime.new(:value => $2)
             end
