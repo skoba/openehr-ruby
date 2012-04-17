@@ -1,3 +1,6 @@
+=== 1.1.0
+open_ehr package will change to openehr.
+
 === 1.0.2 2012-02-27
 Some bugs indicated form Travis-CI
 

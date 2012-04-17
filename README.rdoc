@@ -5,7 +5,7 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-1.0.2
+Release-1.1.0
 
 = Requirements
 
@@ -18,11 +18,13 @@ Release-1.0.2
 
 == DESCRIPTION:
 
-This is the fist stable branch version 1.0.x release of Ruby openEHR
-implementation project. This release is based on openEHR specification
-release 1.0.2. We implemented almost of the specifications of the openEHR.
+This is a stable release of Ruby openEHR implementation project.
+This release is based on openEHR specification release 1.0.2.
+We implemented almost of the specifications of the openEHR.
 The work is still in progress to implement related tools, such as
-archetype validator or serializer.
+archetype validator or serializer. Formerly, we named this package
+as open_ehr, but changed to openehr from release 1.1.0. 1.0.x versions
+are obsoleted.
 The intention is to have a sample EHR to utilize all over the world
 quickly with Ruby on Rails for many other porject.
 From this release we changed license from MPL 1.1 to Apache 2.0 license,

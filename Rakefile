@@ -14,9 +14,9 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "open_ehr"
+  gem.name = "openehr"
   gem.homepage = "http://github.com/skoba/ruby-impl-openehr"
-  gem.license = "Apache license ver 2"
+  gem.license = "Apache 2.0 license"
   gem.summary = %Q{Ruby implementation of the openEHR specification}
   gem.description = %Q{This project is an implementation of the openEHR specification on Ruby.}
   gem.email = "skoba@moss.gr.jp"
