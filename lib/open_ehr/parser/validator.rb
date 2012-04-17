@@ -1,8 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__))
 require 'parser.rb'
 
-
-module OpenEhr
+module OpenEHR
   module ADL
 
     class Validator

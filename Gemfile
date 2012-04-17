@@ -9,6 +9,7 @@ gem 'i18n'
 gem 'treetop'
 gem 'polyglot'
 gem 'rdoc'
+gem 'sqlite3'
 
 group :development, :test do
   gem 'rspec'

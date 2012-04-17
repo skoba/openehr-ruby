@@ -1,6 +1,6 @@
 # This module is related to the ticket #47
 
-module OpenEhr
+module OpenEHR
   module RM
     module DataTypes
       module TimeSpecification
