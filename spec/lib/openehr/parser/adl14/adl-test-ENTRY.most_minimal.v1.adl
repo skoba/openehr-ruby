@@ -1,0 +1,27 @@
+archetype (adl_version=1.4)
+	adl-test-ENTRY.most_minimal.v1
+
+concept
+	[at0000]	-- most minimal
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"unknown">
+	>
+	lifecycle_state = <>
+
+definition
+	ENTRY[at0000] matches {*}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"most minimal">
+					text = <"most minimal">
+				>
+			>
+		>
+	>

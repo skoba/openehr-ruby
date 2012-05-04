@@ -1,0 +1,275 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ACTION.imaging.v1
+
+concept
+	[at0000]	-- Imaging investigation
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["date"] = <"17/04/2006">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record actions regarding imaging investigations.">
+			use = <"">
+			keywords = <"Xray", "ultrasound", "MRI", "magnetic resonance", "CT", "scan", "tomography">
+			misuse = <"Not used for recording the findings of the investigation; use openEHR-EHR-OBSERVATION.imaging for the findings.">
+		>
+	>
+	lifecycle_state = <"AuthorDraft">
+	other_contributors = <>
+
+definition
+	ACTION[at0000] matches {	-- Imaging investigation
+		ism_transition matches {
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::524]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0001]}		-- Planned
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::524]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0004]}		-- Requested
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::527]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0002]}		-- Postponed
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::528]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0003]}		-- Cancelled
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::529]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0005]}		-- Appointment made
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::529]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0006]}		-- Resheduled
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0007]}		-- Commenced
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0008]}		-- Investigation complete
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0009]}		-- Reported
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0011]}		-- Report communicated
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::245]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0012]}		-- Further imaging required
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::530]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0013]}		-- Imaging suspended
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::531]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0014]}		-- Imaging aborted
+					}
+				}
+			}
+			ISM_TRANSITION matches {
+				current_state matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[openehr::532]}
+					}
+				}
+				careflow_step matches {
+					DV_CODED_TEXT matches {
+						defining_code matches {[local::at0010]}		-- Completed
+					}
+				}
+			}
+		}
+		description matches {
+			allow_archetype ITEM_TREE occurrences matches {0..1} matches {
+				include
+					archetype_id/value matches {/imaging\.v1/}
+				exclude
+					archetype_id/value matches {/.*/}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"An action related to an investigation by an imaging technique">
+					text = <"Imaging investigation">
+				>
+				["at0001"] = <
+					description = <"Imaging investigation is planned">
+					text = <"Planned">
+				>
+				["at0002"] = <
+					description = <"Imaging investigation is postponed">
+					text = <"Postponed">
+				>
+				["at0003"] = <
+					description = <"Imaging investigation is cancelled">
+					text = <"Cancelled">
+				>
+				["at0004"] = <
+					description = <"Imaging investigation has been requested">
+					text = <"Requested">
+				>
+				["at0005"] = <
+					description = <"Imaging investigation scheduled for specific date and time">
+					text = <"Appointment made">
+				>
+				["at0006"] = <
+					description = <"Appointment for imaging investigation has been altered">
+					text = <"Resheduled">
+				>
+				["at0007"] = <
+					description = <"Imaging investigation has commenced">
+					text = <"Commenced">
+				>
+				["at0008"] = <
+					description = <"The imaging investigation has been completed; awaiting report">
+					text = <"Investigation complete">
+				>
+				["at0009"] = <
+					description = <"The imaging investigation has been reported">
+					text = <"Reported">
+				>
+				["at0010"] = <
+					description = <"The imaging investigation is completed and report processed">
+					text = <"Completed">
+				>
+				["at0011"] = <
+					description = <"The imaging investigation has been reported and communicated to the referer">
+					text = <"Report communicated">
+				>
+				["at0012"] = <
+					description = <"The investigator has established that further imaging is required">
+					text = <"Further imaging required">
+				>
+				["at0013"] = <
+					description = <"The imaging was not able to be completed">
+					text = <"Imaging suspended">
+				>
+				["at0014"] = <
+					description = <"The imaging investigation was not and will not be completed.">
+					text = <"Imaging aborted">
+				>
+			>
+		>
+	>

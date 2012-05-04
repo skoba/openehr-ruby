@@ -1,0 +1,293 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-CLUSTER.exam-uterus.v1
+specialize
+	openEHR-EHR-CLUSTER.exam.v1
+
+concept
+	[at0000.1]	-- Examination of the uterus
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["date"] = <"08/04/2007">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"A cluster for recording findings on physical examination of the uterus.">
+			use = <"">
+			keywords = <"examination", "physical", "uterus", "pregnancy">
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"Initial">
+	other_contributors = <>
+
+definition
+	CLUSTER[at0000.1] matches {	-- Examination of the uterus
+		items cardinality matches {0..*; unordered} matches {
+			CLUSTER[at0004] occurrences matches {0..1} matches {	-- Normal statements
+				items cardinality matches {0..*; unordered} matches {
+					ELEMENT[at0005] occurrences matches {0..*} matches {	-- Normal statement
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+				}
+			}
+			ELEMENT[at0002] occurrences matches {0..1} matches {	-- Clinical description
+				value matches {
+					DV_TEXT matches {*}
+				}
+			}
+			CLUSTER[at0008] occurrences matches {0..1} matches {	-- Findings
+				items cardinality matches {0..*; unordered} matches {
+					allow_archetype CLUSTER occurrences matches {0..*} matches {
+						include
+							archetype_id/value matches {/palpation\.v1draft/}
+							archetype_id/value matches {/inspection\.v1draft/}
+						exclude
+							archetype_id/value matches {/.*/}
+					}
+					ELEMENT[at0.24] occurrences matches {0..1} matches {	-- Position
+						value matches {
+							DV_CODED_TEXT matches {
+								defining_code matches {
+									[local::
+									at0.26, 	-- Anteverted
+									at0.27]	-- Retroverted
+								}
+							}
+						}
+					}
+					CLUSTER[at0.1] occurrences matches {0..1} matches {	-- Size
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0.2] occurrences matches {0..1} matches {	-- Fundal height
+								value matches {
+									C_DV_QUANTITY <
+										property = <[openehr::122]>
+										list = <
+											["1"] = <
+												units = <"cm">
+												magnitude = <|0.0..100.0|>
+												precision = <|1|>
+											>
+										>
+									>
+								}
+							}
+							allow_archetype CLUSTER occurrences matches {0..1} matches {
+								include
+									archetype_id/value matches {/dimensions\.v1/}
+									archetype_id/value matches {/size\.v1draft/}
+							}
+							ELEMENT[at0.3] occurrences matches {0..1} matches {	-- Weeks of gestation
+								value matches {
+									DV_DURATION matches {
+										value matches {PW}
+									}
+								}
+							}
+							ELEMENT[at0.20] occurrences matches {0..1} matches {	-- Relative to anatomical markers
+								value matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[local::
+											at0.21, 	-- At symphisis pubis
+											at0.22, 	-- At umbilicus
+											at0.23]	-- At xiphisternum
+										}
+									}
+								}
+							}
+						}
+					}
+					ELEMENT[at0.4] occurrences matches {0..1} matches {	-- Assessment of liquor volume
+						value matches {
+							-3|[local::at0.5], 	-- Markedly reduced
+							-2|[local::at0.6], 	-- Reduced
+							-1|[local::at0.7], 	-- Slightly reduced
+							0|[local::at0.8], 	-- Normal
+							1|[local::at0.9], 	-- Slightly increased
+							2|[local::at0.10], 	-- Increased
+							3|[local::at0.11]  	-- Markedly increased
+						}
+					}
+					ELEMENT[at0.12] occurrences matches {0..1} matches {	-- Number of fetuses
+						value matches {
+							DV_COUNT matches {
+								magnitude matches {|>=0|}
+							}
+						}
+					}
+					CLUSTER[at0.18] occurrences matches {0..1} matches {	-- Fetus
+						items cardinality matches {1..*; unordered} matches {
+							allow_archetype CLUSTER occurrences matches {0..*} matches {
+								include
+									archetype_id/value matches {/exam-fetus\.v1/}
+							}
+						}
+					}
+					CLUSTER[at0003] occurrences matches {0..1} matches {	-- Detail
+						items cardinality matches {0..*; unordered} matches {
+							allow_archetype CLUSTER occurrences matches {0..1} matches {
+								include
+									archetype_id/value matches {/exam-generic\.v1/}
+							}
+						}
+					}
+				}
+			}
+			ELEMENT[at0006] occurrences matches {0..*} matches {	-- Image
+				value matches {
+					DV_MULTIMEDIA matches {
+						media_type matches {
+							[openEHR::
+							426, 
+							427, 
+							429]
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0.1"] = <
+					description = <"Information about the size of the object for examination">
+					text = <"Size">
+				>
+				["at0.10"] = <
+					description = <"The amount of liquor is definitely increased">
+					text = <"Increased">
+				>
+				["at0.11"] = <
+					description = <"The amount of liquor is greatly increased compared to normal for gestation">
+					text = <"Markedly increased">
+				>
+				["at0.12"] = <
+					description = <"The number of foetuses that are in the uterus">
+					text = <"Number of fetuses">
+				>
+				["at0.18"] = <
+					description = <"Information about one or more foetuses">
+					text = <"Fetus">
+				>
+				["at0.19"] = <
+					description = <"An optional identifier of the fetus">
+					text = <"Identifier">
+				>
+				["at0.2"] = <
+					description = <"The height of the uterine fundus measured from the symphysis pubis">
+					text = <"Fundal height">
+				>
+				["at0.20"] = <
+					description = <"Relative size of uterus related to anatomy of person">
+					text = <"Relative to anatomical markers">
+				>
+				["at0.21"] = <
+					description = <"*">
+					text = <"At symphisis pubis">
+				>
+				["at0.22"] = <
+					description = <"*">
+					text = <"At umbilicus">
+				>
+				["at0.23"] = <
+					description = <"*">
+					text = <"At xiphisternum">
+				>
+				["at0.24"] = <
+					description = <"Position of uterus">
+					text = <"Position">
+				>
+				["at0.25"] = <
+					description = <"Position of uterus">
+					text = <"Position">
+				>
+				["at0.26"] = <
+					description = <"Uterine fundus is tipped forward">
+					text = <"Anteverted">
+				>
+				["at0.27"] = <
+					description = <"Uterine fundus is tipped backward">
+					text = <"Retroverted">
+				>
+				["at0.28"] = <
+					description = <"*">
+					text = <"New element">
+				>
+				["at0.3"] = <
+					description = <"The size in terms of weeks of pregnancy">
+					text = <"Weeks of gestation">
+				>
+				["at0.4"] = <
+					description = <"The relative amount of liquor present in the uterus">
+					text = <"Assessment of liquor volume">
+				>
+				["at0.5"] = <
+					description = <"The amount of liquor is much less than expected">
+					text = <"Markedly reduced">
+				>
+				["at0.6"] = <
+					description = <"The amount of liquor is definitely reduced">
+					text = <"Reduced">
+				>
+				["at0.7"] = <
+					description = <"The amount of liquor is slightly reduced">
+					text = <"Slightly reduced">
+				>
+				["at0.8"] = <
+					description = <"The amount of liquor is normal for gestation">
+					text = <"Normal">
+				>
+				["at0.9"] = <
+					description = <"The amount of liquor is slightly increased">
+					text = <"Slightly increased">
+				>
+				["at0000"] = <
+					description = <"Generic examination cluster for describing a finding on physical examination">
+					text = <"Examination">
+				>
+				["at0000.1"] = <
+					description = <"For recording findings of the uterus including when pregnant">
+					text = <"Examination of the uterus">
+				>
+				["at0001"] = <
+					description = <"The object of the examination">
+					text = <"Object">
+				>
+				["at0002"] = <
+					description = <"Textural description of the part examined">
+					text = <"Clinical description">
+				>
+				["at0003"] = <
+					description = <"More focused examination findings">
+					text = <"Detail">
+				>
+				["at0004"] = <
+					description = <"A group of statements about the normality of the examination">
+					text = <"Normal statements">
+				>
+				["at0005"] = <
+					description = <"A specific statement of normality">
+					text = <"Normal statement">
+				>
+				["at0006"] = <
+					description = <"Drawing or image of the area examined">
+					text = <"Image">
+				>
+				["at0008"] = <
+					description = <"Clinical findings">
+					text = <"Findings">
+				>
+			>
+		>
+	>

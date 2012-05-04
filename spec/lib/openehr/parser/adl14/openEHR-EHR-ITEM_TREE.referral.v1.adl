@@ -1,0 +1,494 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ITEM_TREE.referral.v1
+
+concept
+	[at0000]	-- Referral data
+language
+	original_language = <[ISO_639-1::en]>
+	translations = <
+		["de"] = <
+			language = <[ISO_639-1::de]>
+			author = <
+				["name"] = <"Jasmin Buck, Sebastian Garde">
+				["organisation"] = <"University of Heidelberg, Central Queensland University">
+			>
+		>
+	>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["date"] = <"22/04/2006">
+		["email"] = <"sam.heard@oceaninformatics.biz">
+	>
+	details = <
+		["de"] = <
+			language = <[ISO_639-1::de]>
+			purpose = <"Zur Dokumentation von Informationen einer Überweisung als Teil einer Anweisung (INSTRUCTION) oder Handlung (ACTION)">
+			use = <"*">
+			misuse = <"*">
+		>
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"For recording information about a referral as part of an instruction or action.">
+			use = <"">
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"Initial">
+	other_contributors = <>
+
+definition
+	ITEM_TREE[at0000] occurrences matches {0..*} matches {	-- Referral data
+		items cardinality matches {0..*; unordered} matches {
+			ELEMENT[at0002] matches {	-- Clinical issue
+				value matches {
+					DV_TEXT matches {*}
+				}
+			}
+			ELEMENT[at0035] occurrences matches {0..1} matches {	-- Other details
+				value matches {
+					DV_TEXT matches {*}
+				}
+			}
+			CLUSTER[at0014] occurrences matches {0..1} matches {	-- Referring provider details
+				items cardinality matches {1; unordered} matches {
+					ELEMENT[at0015] matches {	-- Name of referring provider
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0017] occurrences matches {0..1} matches {	-- Role of referring provider
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0016] occurrences matches {0..1} matches {	-- Address of referring provider
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					CLUSTER[at0026] occurrences matches {0..1} matches {	-- Contact details of the referring provider
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0025] occurrences matches {0..*} matches {	-- Telephone
+								name matches {
+									DV_CODED_TEXT matches {
+										defining_code matches {
+											[local::
+											at0029, 	-- Mobile
+											at0030, 	-- Work
+											at0031, 	-- Alternative work
+											at0032, 	-- Direct work line
+											at0033]	-- Pager
+										}
+									}
+								}
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0028] occurrences matches {0..1} matches {	-- Email
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+							ELEMENT[at0027] occurrences matches {0..1} matches {	-- Faxsimile
+								value matches {
+									DV_TEXT matches {*}
+								}
+							}
+						}
+					}
+				}
+			}
+			CLUSTER[at0021] matches {	-- Secondary provider details
+				items cardinality matches {1..*; unordered} matches {
+					ELEMENT[at0022] occurrences matches {0..1} matches {	-- Name of secondary provider
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0024] occurrences matches {0..1} matches {	-- Role of secondary provider
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					ELEMENT[at0023] occurrences matches {0..1} matches {	-- Address of secondary provider
+						value matches {
+							DV_TEXT matches {*}
+						}
+					}
+					CLUSTER[at0034] occurrences matches {0..1} matches {	-- Contact details of the secondary provider
+						items cardinality matches {0..*; unordered} matches {
+							use_node ELEMENT /items[at0014]/items[at0026]/items[at0025]
+							use_node ELEMENT /items[at0014]/items[at0026]/items[at0028]
+							use_node ELEMENT /items[at0014]/items[at0026]/items[at0027]
+						}
+					}
+				}
+			}
+			CLUSTER[at0003] occurrences matches {0..1} matches {	-- Process
+				items cardinality matches {0..*; unordered} matches {
+					CLUSTER[at0004] occurrences matches {0..1} matches {	-- Urgency
+						items cardinality matches {0..*; unordered} matches {
+							ELEMENT[at0005] occurrences matches {0..1} matches {	-- Timing
+								value matches {
+									0|[local::at0006], 	-- Emergency
+									1|[local::at0007], 	-- Urgent
+									2|[local::at0008]  	-- Non-urgent
+								}
+							}
+							ELEMENT[at0009] occurrences matches {0..1} matches {	-- Impact
+								value matches {
+									0|[local::at0010], 	-- High
+									1|[local::at0011], 	-- Moderate
+									2|[local::at0012]  	-- Low
+								}
+							}
+							ELEMENT[at0013] occurrences matches {0..1} matches {	-- Maximal delay
+								value matches {
+									C_DV_QUANTITY <
+										property = <[openehr::128]>
+										list = <
+											["1"] = <
+												units = <"h">
+												magnitude = <|>0.0|>
+											>
+											["2"] = <
+												units = <"d">
+												magnitude = <|>0.0|>
+											>
+											["3"] = <
+												units = <"wk">
+												magnitude = <|>0.0|>
+											>
+											["4"] = <
+												units = <"mo">
+												magnitude = <|>0.0|>
+											>
+											["5"] = <
+												units = <"min">
+											>
+										>
+									>
+								}
+							}
+						}
+					}
+					ELEMENT[at0018] occurrences matches {0..1} matches {	-- Date referred
+						value matches {
+							DV_DATE_TIME matches {
+								value matches {yyyy-??-??T??:??:??}
+							}
+						}
+					}
+					ELEMENT[at0019] occurrences matches {0..1} matches {	-- Date first attended
+						value matches {
+							DV_DATE_TIME matches {
+								value matches {yyyy-??-??T??:??:??}
+							}
+						}
+					}
+					ELEMENT[at0020] occurrences matches {0..1} matches {	-- Date last attended
+						value matches {
+							DV_DATE_TIME matches {
+								value matches {yyyy-??-??T??:??:??}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["de"] = <
+			items = <
+				["at0000"] = <
+					description = <"Daten einer Überweisung, dokumentiert als Teil einer INSTRUCTION oder ACTION">
+					text = <"Überweisungsdaten">
+				>
+				["at0002"] = <
+					description = <"die klinische Fragestellung, die eine Behandlung eines zweiten Gesundheitdienstleisters erfordert">
+					text = <"Klinische Fragestellung">
+				>
+				["at0003"] = <
+					description = <"Informationen zum Ablauf der Überweisung">
+					text = <"Ablauf">
+				>
+				["at0004"] = <
+					description = <"Informationen zur Dringlichkeit der Überweisung">
+					text = <"Dringlichkeit">
+				>
+				["at0005"] = <
+					description = <"eine angemessene Zeitberechung des Auftrages">
+					text = <"Zeitliche Dringlichkeit ">
+				>
+				["at0006"] = <
+					description = <"die Person benötigt sofortige Behandlung">
+					text = <"Notfall">
+				>
+				["at0007"] = <
+					description = <"die Person benötigt so bald wie möglich eine Behandlung">
+					text = <"Eilig">
+				>
+				["at0008"] = <
+					description = <"die Person benötigt zum nächstmöglichen Termin eine Behandlung">
+					text = <"nicht eilig">
+				>
+				["at0009"] = <
+					description = <"der Einfluss des Zustandes auf das Leben der Person">
+					text = <"Einfluss">
+				>
+				["at0010"] = <
+					description = <"der Zustand hat einen bedeutenden Einfluss auf die Körperfunktionen der Person">
+					text = <"hoch">
+				>
+				["at0011"] = <
+					description = <"der Zustand hat einen Einfluss, aber die Person hat die meisten Körperfunktionen">
+					text = <"moderat">
+				>
+				["at0012"] = <
+					description = <"der Zustand hat geringen oder keinen Einfluss auf die Körperfunktionen der Person">
+					text = <"gering">
+				>
+				["at0013"] = <
+					description = <"Ein Angabe des maximalen Verzugs, der bis zur Behandlung der Person als vertretbar angesehen wird">
+					text = <"Maximaler Verzug">
+				>
+				["at0014"] = <
+					description = <"Informationen über überweisenden Dienstleister bzw. den ersten Dienstleister">
+					text = <"Einzelheiten des überweisenden Dienstleisters">
+				>
+				["at0015"] = <
+					description = <"Name des überweisenden Dienstleisters">
+					text = <"Name des überweisenden Dienstleisters">
+				>
+				["at0016"] = <
+					description = <"*">
+					text = <"Adresse des überweisenden Dienstleisters">
+				>
+				["at0017"] = <
+					description = <"*">
+					text = <"Aufgabe des überweisenden Dienstleisters">
+				>
+				["at0018"] = <
+					description = <"das Datum der ursprünglichen Überweisung">
+					text = <"Datum der Überweisung">
+				>
+				["at0019"] = <
+					description = <"das Datum, an dem die Person das erste Mal vom zweiten Gesundheitsdienstleister behandelt wurde">
+					text = <"Datum der ersten Behandlung">
+				>
+				["at0020"] = <
+					description = <"das Datum, an dem die Person das letzte Mal vom zweiten Gesundheitsdienstleister behandelt wurde">
+					text = <"Datum der letzten Behandlung">
+				>
+				["at0021"] = <
+					description = <"Einzelheiten des Gesundheitsdienstleisters, an den die Überweisung gerichtet ist">
+					text = <"Einzelheiten des zweiten Gesundheitsdienstleisters">
+				>
+				["at0022"] = <
+					description = <"der Name des Gesundheitsdienstleisters, an den die Überweisung gerichtet ist">
+					text = <"Name des zweiten Gesundheitsdienstleisters">
+				>
+				["at0023"] = <
+					description = <"die Adresse des Gesundheitsdienstleisters, an den die Überweisung gerichtet ist">
+					text = <"Adresse des zweiten Gesundheitsdienstleisters">
+				>
+				["at0024"] = <
+					description = <"die Aufgabe des Gesundheitsdienstleisters, an den die Überweisung gerichtet ist">
+					text = <"Aufgabe des zweiten Gesundheitsdienstleisters">
+				>
+				["at0025"] = <
+					description = <"Telefonnummern">
+					text = <"Telefon">
+				>
+				["at0026"] = <
+					description = <"die Kontakteinzelheiten des überweisenden Dienstleisters">
+					text = <"Kontakteinzelheiten des überweisenden Dienstleisters">
+				>
+				["at0027"] = <
+					description = <"die Faxnummer des Anbieters">
+					text = <"Fax">
+				>
+				["at0028"] = <
+					description = <"E-Mail Adresse des Anbieters">
+					text = <"E-Mail">
+				>
+				["at0029"] = <
+					description = <"die Nummer eines mobilen Telefons oder Handys">
+					text = <"Mobil">
+				>
+				["at0030"] = <
+					description = <"die Telefonnummer des Arbeitsplatzes">
+					text = <"Nummer">
+				>
+				["at0031"] = <
+					description = <"eine Alternative Telefonnummer">
+					text = <"alternative Nummer">
+				>
+				["at0032"] = <
+					description = <"eine Telefonnummer, die direkt zum Dienstleiter vermittlelt">
+					text = <"Durchwahl">
+				>
+				["at0033"] = <
+					description = <"eine Pagernummer zum Hinterlassen von Nachrichten">
+					text = <"Pager">
+				>
+				["at0034"] = <
+					description = <"*">
+					text = <"Kontaktdetails des zweiten Gesundheitsdienstleisters">
+				>
+				["at0035"] = <
+					description = <"andere für die Überweisung relevante Einzelheiten">
+					text = <"Andere Einzelheiten">
+				>
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					description = <"Data about a referral recorded as part of an instruction or action">
+					text = <"Referral data">
+				>
+				["at0002"] = <
+					description = <"The clinical issue that requires care from the second provider">
+					text = <"Clinical issue">
+				>
+				["at0003"] = <
+					description = <"Information about the process of the referral">
+					text = <"Process">
+				>
+				["at0004"] = <
+					description = <"information about the urgency of the referral">
+					text = <"Urgency">
+				>
+				["at0005"] = <
+					description = <"The appropriate timing of the appointment">
+					text = <"Timing">
+				>
+				["at0006"] = <
+					description = <"Person requires care immediately">
+					text = <"Emergency">
+				>
+				["at0007"] = <
+					description = <"Person requires care as soon as possible">
+					text = <"Urgent">
+				>
+				["at0008"] = <
+					description = <"Person requires care at providers convenience">
+					text = <"Non-urgent">
+				>
+				["at0009"] = <
+					description = <"The impact of the condition on the person's life">
+					text = <"Impact">
+				>
+				["at0010"] = <
+					description = <"The condition is having major impact on the person's ability to function">
+					text = <"High">
+				>
+				["at0011"] = <
+					description = <"The condition is having an impact but the person is able to function to a large extent">
+					text = <"Moderate">
+				>
+				["at0012"] = <
+					description = <"The condition is having little or no impact on the person's ability to function">
+					text = <"Low">
+				>
+				["at0013"] = <
+					description = <"An indication of the maximum delay that would be reasonable before the person is seen">
+					text = <"Maximal delay">
+				>
+				["at0014"] = <
+					description = <"Information about the referrer or primary provider">
+					text = <"Referring provider details">
+				>
+				["at0015"] = <
+					description = <"The name of the referring provider">
+					text = <"Name of referring provider">
+				>
+				["at0016"] = <
+					description = <"*">
+					text = <"Address of referring provider">
+				>
+				["at0017"] = <
+					description = <"*">
+					text = <"Role of referring provider">
+				>
+				["at0018"] = <
+					description = <"The date of the original referral">
+					text = <"Date referred">
+				>
+				["at0019"] = <
+					description = <"The date the person first attended the secondary provider">
+					text = <"Date first attended">
+				>
+				["at0020"] = <
+					description = <"The date the person last attended the second provider">
+					text = <"Date last attended">
+				>
+				["at0021"] = <
+					description = <"Details about the provider to whom the referral is directed">
+					text = <"Secondary provider details">
+				>
+				["at0022"] = <
+					description = <"The name of the provider to which the referral is directed">
+					text = <"Name of secondary provider">
+				>
+				["at0023"] = <
+					description = <"The address of the provider to which the referral is directed">
+					text = <"Address of secondary provider">
+				>
+				["at0024"] = <
+					description = <"The role of the provider to which the referral is directed">
+					text = <"Role of secondary provider">
+				>
+				["at0025"] = <
+					description = <"Telephone contact information">
+					text = <"Telephone">
+				>
+				["at0026"] = <
+					description = <"Contact details of the referring provider">
+					text = <"Contact details of the referring provider">
+				>
+				["at0027"] = <
+					description = <"The faxsimile number of the provider">
+					text = <"Faxsimile">
+				>
+				["at0028"] = <
+					description = <"Email address of the provider">
+					text = <"Email">
+				>
+				["at0029"] = <
+					description = <"The mobile or cell phone number">
+					text = <"Mobile">
+				>
+				["at0030"] = <
+					description = <"The work telephone number">
+					text = <"Work">
+				>
+				["at0031"] = <
+					description = <"An alternative work telephone number">
+					text = <"Alternative work">
+				>
+				["at0032"] = <
+					description = <"A phone number that is direct to the provider">
+					text = <"Direct work line">
+				>
+				["at0033"] = <
+					description = <"A pager number to leave messages">
+					text = <"Pager">
+				>
+				["at0034"] = <
+					description = <"*">
+					text = <"Contact details of the secondary provider">
+				>
+				["at0035"] = <
+					description = <"Other details relevant to the referral">
+					text = <"Other details">
+				>
+			>
+		>
+	>
