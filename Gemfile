@@ -10,6 +10,7 @@ gem 'treetop'
 gem 'polyglot'
 gem 'rdoc'
 gem 'sqlite3'
+gem 'activerecord'
 
 group :development, :test do
   gem 'rspec'
