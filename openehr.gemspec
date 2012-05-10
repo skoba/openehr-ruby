@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openehr"
-  s.version = "1.1.0"
+  s.version = "1.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2012-05-04"
+  s.date = "2012-05-10"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -41,15 +41,10 @@ Gem::Specification.new do |s|
     "lib/openehr/am/openehr_profile/data_types/text.rb",
     "lib/openehr/assumed_library_types.rb",
     "lib/openehr/parser.rb",
-    "lib/openehr/parser/adl.rb",
     "lib/openehr/parser/adl_grammar.tt",
+    "lib/openehr/parser/adl_helper.rb",
     "lib/openehr/parser/adl_parser.rb",
-    "lib/openehr/parser/cadl_grammar.tt",
-    "lib/openehr/parser/cadl_node.rb",
-    "lib/openehr/parser/dadl.rb",
-    "lib/openehr/parser/dadl_grammar.tt",
     "lib/openehr/parser/exception.rb",
-    "lib/openehr/parser/shared_token_grammar.tt",
     "lib/openehr/parser/validator.rb",
     "lib/openehr/parser/xml_perser.rb",
     "lib/openehr/rm.rb",
@@ -273,6 +268,7 @@ Gem::Specification.new do |s|
     "spec/lib/openehr/parser/mixed_node_types_spec.rb",
     "spec/lib/openehr/parser/most_minimal_adl_spec.rb",
     "spec/lib/openehr/parser/multi_language_spec.rb",
+    "spec/lib/openehr/parser/openehr_apgar_spec.rb",
     "spec/lib/openehr/parser/parser_spec_helper.rb",
     "spec/lib/openehr/parser/path_based_terminology_binding_spec.rb",
     "spec/lib/openehr/parser/special_string_spec.rb",
