@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
-require 'polyglot'
 require 'treetop'
+require 'polyglot'
 include OpenEHR::Parser
 include OpenEHR::AM::Archetype
 include OpenEHR::RM::Support::Identification

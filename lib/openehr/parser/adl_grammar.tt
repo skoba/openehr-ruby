@@ -1,18 +1,15 @@
-require 'shared_token_grammar'
-require 'dadl_grammar'
-require 'cadl_grammar'
-require 'adl'
+require 'openehr/assumed_library_types'
+require 'openehr/rm/data_types/quantity'
+require 'openehr/am/archetype/constraint_model'
+require 'openehr/am/openehr_profile/data_types/text'
+require 'openehr/am/openehr_profile/data_types/quantity'
+require 'adl_helper'
 
 module OpenEHR
   module Parser
     grammar ADLGrammar
-
-      include SharedToken
-      include DADLGrammar
-      include CADL
-
       rule archetype 
-        arch_identification 
+        arch_identification
         spec:(arch_specialisation)?
         arch_concept
         lang:(arch_language)?
@@ -240,6 +237,3093 @@ module OpenEHR
            end
         }
       end # of arch_ontology
+
+# cADL grammar section
+
+      rule V_CADL_TEXT
+        c_complex_object '' {
+          def value
+            c_complex_object.value
+          end
+        }
+      / assertions '' {
+          def value
+            assertions.value
+          end
+        }
+      end
+
+      rule c_complex_object
+        head:c_complex_object_head SYM_MATCHES SYM_START_CBLOCK body:c_complex_object_body SYM_END_CBLOCK space {
+          def value(node = ArchetypeNode.new)
+            args = head.value
+            args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => 1, :upper => 1)
+            node.id = args[:node_id]
+            if node.root? or node.id.nil?
+              args[:path] = node.path
+            else
+              args[:path] = node.path + '[' + node.id + ']'
+            end
+            args.update body.value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
+          end
+        }
+      / c_complex_object_head '' {
+          def value(node = ArchetypeNode.new)
+            args = c_complex_object_head.value
+            args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => 1, :upper => 1)
+            node.id = args[:node_id]
+            args[:path] = node.path
+            OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
+          end
+        }
+      end
+
+      rule c_complex_object_head
+        c_complex_object_id c_occurrences {
+          def value
+            args = c_complex_object_id.value
+            args[:occurrences] = c_occurrences.value
+            args
+          end
+        }
+      / c_complex_object_id '' {
+          def value
+            c_complex_object_id.value
+          end
+        }
+      end
+
+      rule c_complex_object_id
+        ti:type_identifier lo:V_LOCAL_TERM_CODE_REF space {
+          def value
+            {:rm_type_name => ti.value,
+             :node_id => lo.value}
+          end
+        }
+      / ti:type_identifier space {
+          def value
+            {:rm_type_name => ti.value}
+          end
+        }
+      end
+
+      rule c_complex_object_body
+        c_any '' {
+          def value(node)
+            Hash[:attributes => [c_any.value(node)]]
+          end
+        }
+      / c_attributes '' {
+          def value(node)
+            Hash[:attributes => c_attributes.value(node)]
+          end
+        }
+      end
+
+      rule c_object
+        c_dv_quantity '' {
+          def value(node)
+            c_dv_quantity.value(node)
+          end
+        }	   
+      / c_ordinal '' {
+          def value(node)
+            args = c_ordinal.value
+            args[:path] = node.path
+            args[:rm_type_name] = 'DvOrdinal'
+            args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
+              :upper => 1, :lower => 1)
+            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new(
+             args)
+          end
+        }
+      / c_primitive_object '' {
+          def value(node)
+            c_primitive_object.value
+          end
+        }
+      / c_complex_object '' {
+          def value(node)
+            c_complex_object.value(node)
+          end
+        }
+      / c_code_phrase '' {
+          def value(node)
+            c_code_phrase.value(node)
+          end
+        }
+      / constraint_ref '' {
+          def value(node)
+            constraint_ref.value(node)
+          end
+        }
+      / archetype_slot '' {
+          def value(node)
+            archetype_slot.value(node)
+          end
+        }
+      / archetype_internal_ref '' {
+          def value(node = nil)
+            archetype_internal_ref.value(node)
+          end
+        }
+      / V_C_DOMAIN_TYPE '' {
+          def value(node = nil)
+            p elemetns
+          end
+        }
+#     / ERR_V_C_DOMAIN_TYPE
+      end
+
+      rule archetype_internal_ref
+        SYM_USE_NODE type_identifier c_occurrences object_path space {
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(
+              :rm_type_name => type_identifier.value,
+              :occurrences => c_occurrences.value,
+              :path => node.path,
+              :target_path => object_path.value)
+          end
+        }
+      / SYM_USE_NODE type_identifier object_path space {
+          def value(node = nil)
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(
+              :rm_type_name => type_identifier.value,
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :lower => 1, :upper => 1),
+              :path => node.path,
+              :target_path => object_path.value)
+           end
+        }
+      end
+
+      rule archetype_slot
+        c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes c_excludes SYM_END_CBLOCK space {
+          def value(node)
+            args = c_archetype_slot_head.value(node)
+            args[:includes] = c_includes.value
+            args[:excludes] = c_excludes.value
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
+          end
+        }
+      / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_includes SYM_END_CBLOCK space {
+          def value(node)
+            args = c_archetype_slot_head.value(node)
+            args[:includes] = c_includes.value
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
+          end
+        }
+      / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK c_excludes SYM_END_CBLOCK space {
+          def value(node)
+            args = c_archetype_slot_head.value(node)
+            args[:excludes] = c_excludes.value
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
+          end
+        }
+      end
+
+      rule c_archetype_slot_head
+        c_archetype_slot_id white_space c_occurrences {
+          def value(node)
+            args = c_archetype_slot_id.value(node)
+            args[:occurrences] = c_occurrences.value
+            args
+          end
+        }
+      / c_archetype_slot_id white_space {
+          def value(node)
+            args = c_archetype_slot_id.value(node)
+            args[:occurrences] = OpenEHR::AssumedLibraryTypes::Interval.new(
+              :upper => 1, :lower => 1)
+            args
+          end
+        }
+      end
+
+      rule c_archetype_slot_id
+        SYM_ALLOW_ARCHETYPE type_identifier lt:V_LOCAL_TERM_CODE_REF {
+          def value(node)
+            {:rm_type_name => type_identifier.value,
+             :node_id => lt.value,
+             :path => node.path + "[#{lt.value}]"}
+          end
+        }
+      / SYM_ALLOW_ARCHETYPE type_identifier {
+          def value(node)
+            {:rm_type_name => type_identifier.value,
+             :path => node.path}
+          end
+        }
+      end
+
+      rule c_primitive_object
+        c_primitive '' {
+          def value
+            c_primitive.value
+          end
+        }
+      end
+
+      rule c_primitive
+        c_boolean '' {
+          def value
+            c_boolean.value
+          end
+        }
+      / c_date_time '' {
+          def value
+            c_date_time.value
+          end
+        }
+      / c_time '' {
+          def value
+            c_time.value
+          end
+        }
+      / c_date '' {
+          def value
+            c_date.value
+          end
+        }
+      / c_duration '' {
+          def value
+            c_duration.value
+          end
+        }
+      / c_real '' {
+          def value
+            c_real.value
+          end
+        }
+      / c_integer '' {
+          def value
+            c_integer.value
+          end
+        }	
+      / c_string '' {
+          def value
+            c_string.value
+          end
+        }
+      end
+
+      rule c_any
+        '*' space {
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::CAttribute.new(
+              :path => node.path, :rm_attribute_name => 'ANY',
+              :exsitence => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :lower => 1, :upper => 1))
+          end
+        }
+      end
+
+      rule c_attributes
+        c_attribute more_attr:(c_attribute white_space)* {
+          def value(node)
+            attributes.map {|c| c.value(node)}
+          end
+
+          def attributes
+            [c_attribute] + more_attr.elements.map {|e| e.c_attribute}
+          end
+        }
+      end
+
+      rule c_attribute
+        c_attr_head c_attr_body {
+          def value(node)
+            val = c_attr_head.value(node)
+            child_node = ArchetypeNode.new(node)
+            child_node.path = val.path
+            val.children = c_attr_body.value(child_node)
+            val
+          end
+        }
+      end
+
+      rule c_attr_head
+        id:(V_ATTRIBUTE_IDENTIFIER) white_space c_existence c_cardinality {
+          def value(node)
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
+            OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
+             :rm_attribute_name => id.value,
+             :path => path,
+             :existence => c_existence.value,
+             :cardinality => c_cardinality.value)
+          end
+        }
+      / id:V_ATTRIBUTE_IDENTIFIER white_space c_existence {
+          def value(node)
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
+            OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
+             :rm_attribute_name => id.value,
+             :path => path,
+             :existence => c_existence.value)
+          end
+        }
+      / id:(V_ATTRIBUTE_IDENTIFIER) white_space c_cardinality {
+          def value(node)
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
+            OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
+             :rm_attribute_name => id.value,
+             :path => path,
+             :cardinality => c_cardinality.value)
+          end
+        }
+      / id:(V_ATTRIBUTE_IDENTIFIER) white_space {
+          def value(node)
+            if node.root?
+              path = node.path + id.value
+            elsif node.id
+              path = node.path + "[#{node.id}]/" + id.value
+            elsif
+              path = node.path + '/' + id.value
+            end
+            OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(
+             :rm_attribute_name => id.value, :path => path)
+          end
+        }
+      end
+
+      rule c_attr_body
+        SYM_MATCHES SYM_START_CBLOCK c_attr_values SYM_END_CBLOCK space {
+          def value(node)
+            c_attr_values.value(node)
+          end
+        }
+      end
+
+      rule c_attr_values
+        c_any '' {
+          def value(node)
+            [c_any.value(node)]
+          end
+        }
+      / c_object more_co:(c_object '')* {
+          def value(node)
+            c_objects.map {|c| c.value(node)}
+          end
+
+          def c_objects
+            [c_object] + more_co.elements.map {|e| e.c_object }
+          end
+        }
+      end
+
+      rule c_includes
+        SYM_INCLUDE assertions {
+          def value
+            assertions.value
+          end
+        }
+      end
+
+      rule c_excludes
+        SYM_EXCLUDE assertions {
+          def value
+            assertions.value
+          end
+        }
+      end
+
+      rule c_existence
+        SYM_EXISTENCE SYM_MATCHES SYM_START_CBLOCK existence_spec SYM_END_CBLOCK space {
+          def value
+            existence_spec.value
+          end
+        }
+      end
+
+      rule existence_spec
+        lo:V_INTEGER SYM_ELLIPSIS up:V_INTEGER {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value, :upper => up.value)
+          end
+        }
+      / V_INTEGER '' {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
+          end
+        }
+      end
+
+      rule c_cardinality
+        SYM_CARDINALITY SYM_MATCHES SYM_START_CBLOCK cardinality_spec SYM_END_CBLOCK space {
+          def value
+            cardinality_spec.value
+          end
+        }
+      end
+
+      rule cardinality_spec
+        occurrence_spec ';' white_space SYM_ORDERED ';' white_space SYM_UNIQUE {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_orderd => true)
+          end
+        }
+      / occurrence_spec ';' white_space SYM_ORDERED {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_orderd => true)
+          end
+        }
+      / occurrence_spec ';' white_space SYM_UNORDERD ';' white_space SYM_UNIQUE {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_orderd => false)
+          end
+        }
+      / occurrence_spec ';' white_space SYM_UNORDERD {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_orderd => false)
+          end
+        }
+      / occurrence_spec SYM_UNIQUE ';' white_space SYM_ORDERED {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_orderd => true)
+          end
+        }
+      / occurrence_spec SYM_UNIQUE ';' white_space SYM_UNORDERD {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true,
+              :is_ordered => false)
+          end
+        }
+      / occurrence_spec SYM_UNIQUE {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value,
+              :is_unique => true)
+          end
+        }
+      / occurrence_spec space {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+              :interval => occurrence_spec.value)
+          end
+        }
+      end
+
+      rule c_occurrences
+        SYM_OCCURRENCES SYM_MATCHES SYM_START_CBLOCK occurrence_spec SYM_END_CBLOCK space {
+          def value
+            occurrence_spec.value
+          end
+        }
+      end
+
+      rule occurrence_spec
+        st:integer_value SYM_ELLIPSIS ed:cardinality_limit_value {
+          def value
+            if ed.value == '*'
+              OpenEHR::AssumedLibraryTypes::Interval.new(
+                 :lower => st.value)
+            else
+              OpenEHR::AssumedLibraryTypes::Interval.new(
+                :lower => st.value,
+                :upper => ed.value)
+            end
+          end
+        }
+      / cardinality_limit_value '' {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => cardinality_limit_value.value,
+              :upper => cardinality_limit_value.value)
+          end
+        }
+      end
+
+      rule cardinality_limit_value
+        integer_value '' {
+          def value
+            text_value.to_i
+          end
+        }
+      / '*' {
+          def value
+            '*'
+          end
+        }
+      end
+
+      rule c_integer
+        c_integer_spec ';' white_space integer_value {
+          def value
+            args = c_integer_spec.value
+            args[:assumed_value] = integer_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(args)
+          end
+        }
+      / c_integer_spec '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(
+              c_integer_spec.value)
+          end
+        }
+      end
+
+      rule c_integer_spec
+        integer_list_value '' {
+          def value
+            {:list => integer_list_value.value}
+          end
+        }
+      / integer_interval_value '' {
+          def value
+            {:range => integer_interval_value.value}
+          end
+        }
+      / integer_value !'..' '' {
+          def value
+            {:list => [integer_value.value]}
+          end
+        }
+      / occurrence_spec '' {
+          def value
+            {:range => occurrence_spec.value}
+          end
+        }
+      end
+
+      rule c_real_spec
+        real_list_value '' {
+          def value
+            {:list => real_list_value.value}
+          end
+        }
+      / real_interval_value '' {
+          def value
+            {:range => real_interval_value.value}
+          end
+        }
+      / real_value '' {
+          def value
+            {:list => [real_value.value]}
+          end
+        }
+      end
+
+      rule c_real
+        c_real_spec ';' white_space real_value {
+          def value
+            args = c_real_spec.value
+            args[:assumed_value] = real_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new(args)
+          end
+        }
+      / c_real_spec '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new(
+              c_real_spec.value)
+          end
+        }
+      end
+
+      rule c_date_constraint
+        date_interval_value '' {
+          def value
+            {:range => date_interval_value.value}
+          end
+        }
+      / date_list_value '' {
+          def value
+            {:list => date_list_value.value}
+          end
+        }
+      / date_value '' {
+          def value
+            {:list => [date_value.value]}
+          end
+        }
+      / con:V_ISO8601_DATE_CONSTRAINT_PATTERN '' {
+          def value
+            {:pattern => con.text_value}
+          end
+        }
+      end
+
+      rule c_date
+        c_date_constraint ';' white_space date_value {
+          def value
+            args = c_date_constraint.value
+            args[:assumed_value] = date_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new(
+              args)
+          end
+        }
+      / c_date_constraint '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new(
+              c_date_constraint.value)
+          end
+        }
+      end
+
+      rule c_time_constraint
+        time_interval_value '' {
+          def value
+            {:range => time_interval_value.value}
+          end
+        }
+      / time_list_value '' {
+          def value
+            {:list => time_list_value.value}
+          end
+        }
+      / time_value '' {
+          def value
+            {:list => [time_value.value]}
+          end
+        }
+      / tc:V_ISO8601_TIME_CONSTRAINT_PATTERN '' {
+          def value
+            {:pattern => tc.text_value}
+          end
+        }
+      end
+
+      rule c_time
+        c_time_constraint ';' white_space time_value {
+          def value
+            args = c_time_constraint.value
+            args[:assumed_value] = time_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new(
+              args)
+          end
+        }    
+      / c_time_constraint '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new(
+              c_time_constraint.value)
+          end
+        }
+      end
+
+      rule c_date_time_constraint
+        date_time_interval_value '' {
+          def value
+            {:range => date_time_interval_value.value}
+          end
+        }
+      / date_time_value '' {
+          def value
+            {:list => [date_time_value.value]}
+          end
+        }
+      / dtc:V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN '' {
+          def value
+            {:pattern => dtc.text_value}
+          end
+        }
+      end
+
+      rule c_date_time
+        c_date_time_constraint ';' white_space date_time_value {
+          def value
+            args = c_date_time_constraint.value
+            args[:assumed_value] = date_time_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new(
+              args)
+          end
+        }
+      / c_date_time_constraint '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new(
+              c_date_time_constraint.value)
+          end
+        }
+      end
+
+      rule c_duration_constraint
+        duration_pattern '/' duration_interval_value '' {
+          def value
+            {:pattern => duration_pattern.value}
+          end
+        }
+     / duration_pattern '' {
+          def value
+            {:pattern => duration_pattern.value}
+          end
+        }
+      / duration_interval_value '' {
+          def value
+            {:range => duration_interval_value.value}
+          end
+        }
+      / duration_value '' {
+          def value
+            {:list => [duration_value.value]}
+          end
+        }
+      end
+
+      rule duration_pattern
+        dp:V_ISO8601_DURATION_CONSTRAINT_PATTERN '' {
+          def value
+            dp.text_value
+          end
+        }
+      end
+
+      rule c_duration
+        c_duration_constraint ';' white_space duration_value '' {
+          def value
+            args = c_duration_constraint.value
+            args[:assumed_value] = duration_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(
+              args)
+          end
+        }
+      / c_duration_constraint '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(
+              c_duration_constraint.value)
+          end
+        }
+      end
+
+      rule c_string_spec
+        string_list_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            {:list => string_list_value.value}
+          end
+        }
+      / string_list_value '' {
+          def value
+            {:list => string_list_value.value}
+          end
+        }
+      / pat:V_REGEXP '' {
+          def value
+            {:pattern => pat.value}
+          end
+        }
+      / str:V_STRING '' {
+          def value
+            {:list => [str.value]}
+          end
+        }
+      end
+
+      rule c_string
+        c_string_spec white_space ';' white_space string_value {
+          def value
+            args = c_string_spec.value
+            args[:assumed_value] = string_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              args)
+          end
+        }
+      / c_string_spec '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(
+              c_string_spec.value)
+          end
+        }
+      end
+
+      rule c_boolean_spec
+        SYM_TRUE ',' white_space SYM_FALSE {
+          def value
+            {:true_valid => true, :false_valid => true}
+          end
+        }
+      / SYM_TRUE white_space '' {
+          def value
+            {:true_valid => true, :false_valid => false}
+          end
+        }
+      / SYM_FALSE white_space ',' white_space SYM_TRUE {
+          def value
+            {:true_valid => true, :false_valid => true}
+          end
+        }
+      / SYM_FALSE white_space '' {
+          def value
+            {:false_valid => true, :true_valid => false}
+          end
+        }
+      end
+
+      rule c_boolean
+        c_boolean_spec ';' white_space boolean_value {
+          def value
+            args = c_boolean_spec.value
+            args[:assumed_value] = boolean_value.value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
+              args)
+          end
+        }
+      / c_boolean_spec '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
+              c_boolean_spec.value)
+          end
+        }
+      end
+
+      rule constraint_ref
+        vltcr:V_LOCAL_TERM_CODE_REF '' {
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::ConstraintRef.new(
+              :path => node.path,
+              :rm_type_name => 'ConstraintRef',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(:upper => 1, :lower => 1),
+              :reference => vltcr.value)
+          end
+        }
+      end
+
+      rule V_REGEXP
+        (('=' / '!') '~')? (('/' ('\/' / !'/' .)* '/') / ('^' (!'^' .)* '^') ) {
+          def value
+            text_value
+          end
+        }      
+      end
+
+      rule code_string
+        NAMECHAR+ '' {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule code_string_list
+        first:code_string more:(',' space code_string)+ space {
+          def value
+            codes.map {|c| c.value}
+          end
+
+          def codes
+            [first] + more.elements.map {|e| e.code_string}
+          end
+        }
+      end
+
+      rule code_string_spec
+        code_string_list '' {
+          def value
+            code_string_list.value
+          end
+        }
+      / code_string '' {
+          def value
+            [code_string.value]
+          end
+          }
+      end
+
+      rule c_code_phrase
+        ti:V_TERM_CODE code_string_spec ';' space code_string ']' space {
+          def value(node)
+            ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+              :rm_type_name => 'CodePhrase',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, :lower => 1),
+              :terminology_id => ti.value, :code_list => code_string_spec.value,
+              :assumed_value => code_string.value,
+              :path => node.path)
+          end
+        }
+      / ti:V_TERM_CODE code_string_spec ']' space {
+          def value(node)
+            ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+              :rm_type_name => 'CodePhrase',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, :lower => 1),
+              :terminology_id => ti.value, :code_list => code_string_spec.value,
+              :path => node.path)
+          end
+        }
+      / ti:V_TERM_CODE ']' space {
+          def value(node)
+            ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+              :rm_type_name => 'CodePhrase',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, :lower => 1),
+              :terminology_id => ti.value, :code_list => [], :path => node.path)
+          end
+        }
+      end
+
+      rule SYM_C_DV_ORDINAL
+        'C_DV_ORDINAL' space 
+      end
+
+      rule c_ordinal
+        c_ordinal_spec ';' space integer_value space {
+          def value
+            args = c_ordinal_spec.value
+            args[:assumed_value] = integer_value.value
+            args
+          end
+        }
+      / c_ordinal_spec space '' {
+          def value
+            c_ordinal_spec.value
+          end
+        }
+      / SYM_C_DV_ORDINAL SYM_LT white_space SYM_GT space {
+          def value
+            {:list => nil}
+          end
+      }
+      end
+
+      rule c_ordinal_spec
+        ordinal_list '' {
+          def value
+            {:list => ordinal_list.value}
+          end
+        }
+      / ordinal '' {
+          def value
+            {:list => [ordinal.value]}
+          end
+        }
+      end
+
+      rule ordinal_list
+        first:ordinal more:(',' space ordinal)+ {
+          def value
+            ordinals.map {|o| o.value}
+          end
+
+          def ordinals
+            [first] + more.elements.map {|e| e.ordinal}
+          end
+        }
+      end
+
+      rule ordinal
+        integer_value SYM_INTERVAL_DELIM vqtc:V_QUALIFIED_TERM_CODE_REF !SYM_INTERVAL_DELIM '' {
+          def value
+            symbol = ::OpenEHR::RM::DataTypes::Text::DvCodedText.new(
+              :value => vqtc.text_value, :defining_code => vqtc.value)
+            ::OpenEHR::RM::DataTypes::Quantity::DvOrdinal.new(
+                :value => integer_value.value,
+                :symbol => symbol)
+          end
+        }
+      end
+
+      rule c_dv_quantity
+        SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        prop:property? ql:quantity_list? aqv:assumed_quantity_value?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        prop:property? aqv:assumed_quantity_value? ql:quantity_list?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        aqv:assumed_quantity_value? prop:property? ql:quantity_list?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        aqv:assumed_quantity_value? ql:quantity_list? prop:property?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        ql:quantity_list? aqv:assumed_quantity_value? prop:property?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      / SYM_C_DV_QUANTITY SYM_START_DBLOCK
+        ql:quantity_list? prop:property? aqv:assumed_quantity_value?
+        SYM_END_DBLOCK <CDvQuantityItems>
+      end
+
+      rule SYM_C_DV_QUANTITY
+        'C_DV_QUANTITY' space
+      end
+
+      rule property
+        SYM_PROPERTY SYM_EQ SYM_START_DBLOCK
+          prop:V_QUALIFIED_TERM_CODE_REF SYM_END_DBLOCK {
+          def value
+            prop.value
+          end
+        }
+      end
+
+      rule SYM_PROPERTY
+        'property' space
+      end
+
+      rule quantity_list
+        SYM_QUANTITY_LIST SYM_EQ SYM_START_DBLOCK
+        c_quantity_items SYM_END_DBLOCK {
+          def value(node)
+            c_quantity_items.value(node)
+          end
+        }
+      end
+
+      rule assumed_quantity_value
+        SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        SYM_END_DBLOCK <AssumedValueItems>
+      / SYM_ASSUMED_VALUE SYM_EQ SYM_START_DBLOCK 
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK val:real_value SYM_END_DBLOCK)?      
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK val:integer_value SYM_END_DBLOCK)?        
+        SYM_END_DBLOCK <AssumedValueItems>
+      end
+
+      rule SYM_QUANTITY_LIST
+        'list' space
+      end
+
+      rule c_quantity_items
+        c_quantity_item more_cdv:(c_quantity_item white_space)* {
+          def value(node)
+            quantities.map {|q| q.value(node)}
+          end
+
+          def quantities
+            [c_quantity_item] + more_cdv.elements.map {|e| e.c_quantity_item}
+          end
+        }
+      end
+
+      rule c_quantity_item
+        '[' V_STRING ']' white_space SYM_EQ SYM_START_DBLOCK
+        SYM_UNITS SYM_EQ SYM_START_DBLOCK units:V_STRING SYM_END_DBLOCK
+        mag:(SYM_MAGNITUDE SYM_EQ SYM_START_DBLOCK int:real_interval_value SYM_END_DBLOCK)?
+        prec:(SYM_PRECISION SYM_EQ SYM_START_DBLOCK int:integer_interval_value SYM_END_DBLOCK)?
+        SYM_END_DBLOCK {
+          def value(node)
+            magnitude, precision = nil
+            magnitude = mag.int.value unless mag.empty?
+            precision = prec.int.value unless prec.empty?
+            OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(
+              :path => node.path, :rm_type_name => 'DvQuantity',
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :upper => 1, :lower => 1),
+              :units => units.value,
+              :magnitude => magnitude, :precision => precision)
+          end
+        }
+      end
+
+      rule SYM_UNITS
+        'units' space
+      end
+
+      rule SYM_MAGNITUDE
+        'magnitude' space
+      end
+
+      rule SYM_PRECISION
+        'precision' space
+      end
+
+      rule SYM_ASSUMED_VALUE
+        'assumed_value' space
+      end
+
+      rule V_C_DOMAIN_TYPE
+        '('? [A-Z] IDCHAR* ')'? [ \n]* '<' [^>]* '>'
+      end
+
+# assertion block
+
+      rule V_ASSERTION_TEXT
+        assertions '' {
+          def value
+            assertions.value
+          end
+        }
+      end
+
+      rule assertions
+        assertion more_a:(assertion '')* {
+          def value
+            assertions.map {|a| a.value}
+          end
+
+          def assertions
+            [assertion] + more_a.elements.map {|a| a.assertion}
+          end
+        }
+      end
+
+      rule assertion
+        id:(any_identifier ':')? boolean_expression space {
+          def value
+            if (id && !id.empty?)
+              OpenEHR::AM::Archetype::Assertion::Assertion.new(
+                :tag => id.value, :expression => boolean_expression.value,
+                :string_expression => id.text_value + boolean_expression.text_value)
+            else
+              OpenEHR::AM::Archetype::Assertion::Assertion.new(
+                :expression => boolean_expression.value,
+                :string_expression => boolean_expression.text_value)
+            end
+          end
+        }
+      end
+
+      rule boolean_expression
+        boolean_node '' {
+          def value
+            boolean_node.value
+          end
+        }
+      / boolean_leaf '' {
+          def value
+            boolean_leaf.value
+          end
+        }
+      end
+
+      rule boolean_node
+        SYM_EXISTS absolute_path {
+          def value
+            item = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :type => 'String',
+              :item => absolute_path.value,
+              :reference_type => 'CONSTANT')
+            OpenEHR::AM::Archetype::Assertion::ExprUnaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EXISTS,
+              :operand => item,
+              :precedence_overridden => false)
+          end
+        }
+      / relative_path white_space SYM_MATCHES SYM_START_CBLOCK c_primitive SYM_END_CBLOCK {
+          def value
+            left_op = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+                        :type => 'String',
+                        :item => relative_path.value,
+                        :reference_type => 'Constant')
+            right_op = OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+                        :item => c_primitive.value,
+                        :type => c_primitive.value.type,
+                        :reference_type => 'Constant')
+            op = OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_MATCHES
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => op,
+              :right_operand => right_op,
+              :left_operand => left_op,
+              :reference_type => 'Constraint')
+          end
+        }
+      / SYM_NOT boolean_leaf '' {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprUnaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_NOT,
+              :operand => boolean_leaf.value,
+              :precedence_overridden => false)
+          end
+        }
+      / arithmetic_leaf SYM_EQ arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EQ,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf SYM_NE arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_NE,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf SYM_LT arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_LT,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf SYM_GT arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_GT,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf SYM_LE arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_LE,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf SYM_GE arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_GE,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / boolean_leaf SYM_AND boolean_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_AND,
+              :left_operand => boolean_leaf.value,
+              :right_operand => boolean_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / boolean_leaf SYM_OR boolean_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_OR,
+              :left_operand => boolean_leaf.value,
+              :right_operand => boolean_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / boolean_leaf SYM_XOR boolean_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_XOR,
+              :left_operand => boolean_leaf.value,
+              :right_operand => boolean_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / boolean_leaf SYM_IMPLIES boolean_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_IMPLIES,
+              :left_operand => boolean_leaf.value,
+              :right_operand => boolean_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      end
+
+      rule boolean_leaf
+        '(' boolean_expression ')' {
+          def value
+            boolean_expression.value
+          end
+        }
+      / SYM_TRUE '' {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :type => 'Boolean',
+              :item => true,
+              :reference_type => 'CONSTANT')
+          end
+        }
+      / SYM_FALSE '' {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
+              :type => 'Boolean',
+              :item => false,
+              :reference_type => 'CONSTANT')
+          end
+        }
+      end
+
+      rule arithmetic_expression
+        arithmetic_node '' {
+          def value
+            arithmetic_node.value
+          end
+        }
+      / arithmetic_leaf '' {
+          def value
+            arithmetic_leaf.value
+          end
+        }
+      end
+
+      rule arithmetic_node
+        arithmetic_leaf '+' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_PLUS,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf '-' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_MINUS,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf '*' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_MULTIPLY,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf '/' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_DIVIDE,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      / arithmetic_leaf '^' arithmetic_expression {
+          def value
+            OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(
+              :type => 'Boolean',
+              :operator => OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_EXP,
+              :left_operand => arithmetic_leaf.value,
+              :right_operand => arithmetic_expression.value,
+              :reference_type => 'Constraint')
+          end
+        }
+      end
+
+      rule arithmetic_leaf
+       '(' arithmetic_expression ')' space {
+          def value
+            arithmetic_expression.value
+          end
+        }
+      / integer_value '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+              :type => 'Integer',
+              :item => integer_value.value,
+              :reference_type => 'CONSTANT')
+          end
+        }
+      / real_value '' {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+              :type => 'Real',
+              :item => real_value.value,
+              :reference_type => 'CONSTANT')
+          end
+        }
+      / absolute_path space {
+          def value
+            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+              :type => 'String',
+              :item => absolute_path.value,
+              :reference_type => 'CONSTANT')
+            
+          end
+        }
+      end
+
+# path block
+      rule object_path
+        movable_path '' {
+          def value
+            movable_path.value
+          end
+	}
+      / absolute_path '' {
+          def value
+            absolute_path.value
+          end
+        }
+      / relative_path '' {
+          def value
+            relative_path.value
+          end
+        }
+      end
+
+      rule movable_path
+         SYM_MOVABLE_LEADER relative_path '' {
+           def value
+             text_value
+           end
+         }
+      end
+
+      rule absolute_path
+        '/' relative_path? '' {
+           def value
+             text_value
+           end
+         }
+      end
+
+      rule relative_path
+        path_segment ('/' path_segment)* '' {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule path_segment
+        V_ATTRIBUTE_IDENTIFIER V_LOCAL_TERM_CODE_REF? '' {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule SYM_MOVABLE_LEADER
+        '//'
+      end # of cADL grammar
+
+# biginning of dADL grammar
+
+      rule V_DADL_TEXT
+        attr_vals space {
+          def value
+            attr_vals.value
+          end
+        }
+      / complex_object_block space {
+          def value
+            complex_object_block.value
+          end
+        }
+      end
+
+      rule attr_vals
+        first:attr_val second:(';'? space attr_val space)* {
+          def value
+            attrs.inject({ }) {|val, a| val.update a.value}
+          end
+
+          def attrs
+            [first] + second.elements.map {|e| e.attr_val}
+          end
+        }
+      end
+
+      rule attr_val
+        attr_id SYM_EQ object_block {
+          def value
+            {attr_id.value =>  object_block.value}
+          end
+        }
+      end
+
+      rule attr_id
+        id:V_ATTRIBUTE_IDENTIFIER white_space {
+          def value
+            id.value
+          end
+        }
+      end
+
+      rule object_block
+        complex_object_block space {
+	  def value
+            complex_object_block.value
+          end
+        }
+      / primitive_object_block space {
+          def value
+            primitive_object_block.value
+          end
+        }
+      end
+
+      rule complex_object_block
+        single_attr_object_block '' {
+          def value
+            single_attr_object_block.value
+          end
+        }
+      / multiple_attr_object_block '' {
+          def value
+            multiple_attr_object_block.value
+          end
+        }
+      end
+
+      rule multiple_attr_object_block
+        type_identifier? untyped_multiple_attr_object_block {
+          def value
+            untyped_multiple_attr_object_block.value
+          end
+        }
+      end
+
+      rule untyped_multiple_attr_object_block
+        multiple_attr_object_block_head keyed_objects SYM_END_DBLOCK {
+          def value
+            keyed_objects.value
+          end
+        }
+      end
+
+      rule multiple_attr_object_block_head
+        SYM_START_DBLOCK
+      end
+
+      rule keyed_objects
+        keyed_object+  {
+          def value
+            elements.inject({ }) {|val, e| val.update e.value}
+          end
+        }
+      end
+
+      rule keyed_object
+        object_key SYM_EQ object_block {
+          def value
+            {object_key.value => object_block.value}
+          end
+        }
+      end
+
+      rule object_key
+        '[' simple_value ']' white_space {
+           def value
+             simple_value.value
+           end
+        }
+      end
+
+      rule single_attr_object_block
+        type_identifier? untyped_single_attr_object_block {
+          def value
+            untyped_single_attr_object_block.value
+          end
+        }
+      end
+
+      rule untyped_single_attr_object_block
+        single_attr_object_complex_head attr_vals SYM_END_DBLOCK {
+           def value
+             elements[1].value
+	   end
+        }
+      / single_attr_object_complex_head SYM_END_DBLOCK {
+          def value
+            nil
+          end
+        }
+      end
+
+      rule single_attr_object_complex_head
+        SYM_START_DBLOCK
+      end
+
+      rule primitive_object_block
+        type_identifier? untyped_primitive_object_block {
+	  def value
+	    untyped_primitive_object_block.value
+          end
+        }
+      end
+
+      rule untyped_primitive_object_block
+        SYM_START_DBLOCK primitive_object_value SYM_END_DBLOCK {
+	  def value
+	    primitive_object_value.value
+          end
+	}
+      end
+
+      rule primitive_object_value
+        term_code_list_value '' {
+          def value
+            term_code_list_value.value
+          end
+        }
+      / term_code '' {
+          def value
+            term_code.value
+          end
+        }
+      / simple_list_value '' {
+          def value
+            simple_list_value.value
+          end
+        }
+      / simple_interval_value '' {
+          def value
+            simple_interval_value.value
+          end
+        }
+      / simple_value '' {
+          def value
+            simple_value.value
+          end
+        }
+      end
+
+      rule simple_value
+        integer_value '' {
+          def value
+            integer_value.value
+          end
+        }
+      / real_value '' {
+          def value
+            real_value.value
+          end
+        }
+      / boolean_value '' {
+          def value
+            boolean_value.value
+          end
+        }
+      / uri_value '' {
+          def value
+            uri_value.value
+          end
+        }
+      / date_value '' {
+          def value
+            date_value.value
+          end
+        }
+      / time_value '' {
+          def value
+            time_value.value
+          end
+        }
+      / date_time_value '' {
+          def value
+            date_time_value.value
+          end
+        }
+      / duration_value '' {
+          def value
+            duration_value.value
+          end
+        }
+      / string_value '' {
+          def value
+            string_value.value
+          end
+        }
+      / character_value '' {
+          def value
+            character_value.value
+          end
+        }
+      end
+
+      rule simple_list_value
+        integer_list_value '' {
+          def value
+            integer_list_value.value
+          end
+        }
+      / real_list_value '' {
+          def value
+            real_list_value.value
+          end
+        }
+      / boolean_list_value '' {
+          def value
+            boolean_list_value.value
+          end
+        }
+      / character_list_value '' {
+          def value
+            character_list_value.value
+          end
+        }
+      / date_list_value '' {
+          def value
+            date_list_value.value
+          end
+        }
+      / time_list_value '' {
+          def value
+            time_list_value.value
+          end
+        }
+      / date_time_list_value '' {
+          def value
+            date_time_list_value.value
+          end
+        }
+      / duration_list_value '' {
+          def value
+            duration_list_value.value
+          end
+        }
+      / string_list_value '' {
+          def value
+            string_list_value.value
+          end
+        }
+      end
+
+      rule simple_interval_value
+        integer_interval_value '' {
+          def value
+            integer_interval_value.value
+          end
+        }
+      / real_interval_value '' {
+          def value
+            real_interval_value.value
+          end
+        }
+      / date_interval_value '' {
+          def value
+            date_interval_value.value
+          end
+        }
+      / time_interval_value '' {
+          def value
+            time_interval_value.value
+          end
+        }
+      / date_time_interval_value '' {
+          def value
+            date_time_interval_value.value
+          end
+        }
+      / duration_interval_value '' {
+          def value
+            duration_interval_value.value
+          end
+        }
+      end
+
+      rule term_code
+        vtref:V_QUALIFIED_TERM_CODE_REF '' {
+          def value
+            vtref.value
+          end
+        }
+      end
+
+      rule term_code_list_value
+        first:term_code more:(',' term_code)+ {
+          def value
+            term_codes.map {|t| t.value}
+          end
+
+          def term_codes
+            [first] + more.elements.map {|e| e.term_code}
+          end
+        }
+      / term_code ',' SYM_LIST_CONTINUE {
+          def value
+            [term_code.value]
+          end
+        }
+      end
+
+      rule uri_value
+        uri:V_URI '' {
+          def value
+            uri.value
+          end
+        }
+      end # of dADL grammar
+
+# beginning of shared token section
+
+      rule any_identifier
+        type_identifier '' {
+          def value
+            type_identifier.value
+          end
+        }
+      / V_ATTRIBUTE_IDENTIFIER '' {
+          def value
+            V_ATTRIBUTE_IDENTIFIER.value
+          end
+        }
+      end
+
+      rule type_identifier
+        '(' id:V_GENERIC_TYPE_IDENTIFIER ')' white_space {
+          def value
+            id.value
+          end
+        }
+      / id:V_GENERIC_TYPE_IDENTIFIER white_space {
+          def value
+            id.value
+          end
+        }
+      / '(' id:V_TYPE_IDENTIFIER ')' white_space {
+          def value
+            id.value
+          end
+        }
+      / id:V_TYPE_IDENTIFIER white_space {
+          def value
+            id.value
+          end
+        }
+      end
+
+      rule boolean_value
+        SYM_TRUE {
+          def value
+            true
+          end
+          }
+      / SYM_FALSE {
+          def value
+            false
+          end
+        }
+      end
+
+      rule boolean_list_value
+        boolean_value (',' white_space more_bool:(boolean_value ''))+ {
+          def value
+            booelans.map {|b| b.value} 
+          end
+
+          def booleans
+            [boolean_value] + more_bool.elements.map { |b| b.boolean_value }
+          end
+        }
+      / boolean_value white_space SYM_LIST_CONTINUE {
+          def value
+            [boolean_value.value]
+          end
+        }
+      end
+
+      rule integer_value
+        [+-]? V_INTEGER '' {
+          def value
+            text_value.to_i
+          end
+        }
+      end
+
+      rule integer_list_value
+        integer_value more_i:(',' white_space integer_value)+ {
+          def value
+            integers.map { |i| i.value }
+          end
+
+          def integers
+            [integer_value] + more_i.elements.map { |i| i.integer_value }
+          end
+        }
+      / integer_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            [integer_value.value]
+          end
+        }
+      end
+
+      rule integer_interval_value
+        SYM_INTERVAL_DELIM SYM_GT lo:integer_value SYM_ELLIPSIS SYM_LT up:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:integer_value SYM_ELLIPSIS up:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:integer_value SYM_ELLIPSIS SYM_LT up:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:integer_value SYM_ELLIPSIS up:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE iv:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => iv.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:integer_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
+      end
+
+      rule real_value
+        ('+' / '-')? V_REAL {
+          def value
+            text_value.to_f
+          end
+        }
+      end
+
+      rule real_list_value
+        real_value  more_i:(',' white_space real_value)* {
+          def value
+            reals.map { |i| i.value }
+          end
+
+          def reals
+            [real_value] + more_i.elements.map { |i| i.real_value }
+          end
+        }
+      / real_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            [real_value.value]
+          end
+        }
+      end
+
+      rule real_interval_value
+        SYM_INTERVAL_DELIM SYM_GT lo:real_value SYM_ELLIPSIS SYM_LT up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:real_value SYM_ELLIPSIS up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:real_value SYM_ELLIPSIS SYM_LT up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:real_value SYM_ELLIPSIS up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE lo:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:real_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
+      end
+
+      rule character_value
+        V_CHAR '' {
+           def value
+             text_value
+           end
+        }
+      end
+
+      rule character_list_value
+        character_value (',' white_space more_chars:(character_value))+ {
+          def value
+            characters.map {|c| c.value }
+          end
+
+          def characters
+            [character_value] + more_chars.elements.map {|c| c.character_value}
+          end
+        }
+      / character_value ',' SYM_LIST_CONTINUE {
+          def value
+            [character_value.value]
+          end
+        }
+      end
+
+      rule string_value
+        str:V_STRING '' {
+          def value
+            str.value
+          end
+        }
+      end
+
+      rule string_list_value
+        first:string_value second:(',' white_space string_value)+ {
+          def value
+            strings.map {|s| s.value}
+          end
+
+          def strings
+            [first] + second.elements.map {|s| s.string_value}
+          end
+        }
+      / str:V_STRING ',' white_space SYM_LIST_CONTINUE {
+          def value
+            [str.value]
+          end
+        }
+      end
+
+      rule date_value
+        ed:V_ISO8601_EXTENDED_DATE '' {
+          def value
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(
+              :value => ed.text_value)
+          end
+        }
+      end
+
+      rule date_list_value
+        date_value more_dates:(',' white_space date_value)+ {
+          def value
+            dates.map {|d| d.value}
+          end
+
+          def dates
+            [date_value] + more_dates.elements.map {|d| d.date_value}
+          end
+        }
+      / date_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            [date_value.value]
+          end
+        }
+      end
+
+      rule date_interval_value
+        SYM_INTERVAL_DELIM SYM_GT lo:date_value SYM_ELLIPSIS SYM_LT up:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:date_value SYM_ELLIPSIS up:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:date_value SYM_ELLIPSIS SYM_LT up:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:date_value SYM_ELLIPSIS up:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE val:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:date_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
+      end
+
+      rule time_value
+        ti:V_ISO8601_EXTENDED_TIME '' {
+          def value
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvTime.new(
+              :value => ti.text_value)
+          end
+        }
+      end
+
+      rule time_list_value
+        time_value more_t:(',' white_space time_value)+ {
+          def value
+            times.map {|t| t.value}
+          end
+
+          def times
+            [time_value] + more_t.elements.map {|t| t.time_value}
+          end
+        }
+      / time_value ',' white_space SYM_LIST_CONTINUE {
+          def value
+            [time_value.value]
+          end
+        }
+      end
+
+      rule time_interval_value
+        SYM_INTERVAL_DELIM SYM_GT lo:time_value SYM_ELLIPSIS SYM_LT up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:time_value SYM_ELLIPSIS up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:time_value SYM_ELLIPSIS SYM_LT up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:time_value SYM_ELLIPSIS up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE tv:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => tv.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
+      end
+
+      rule date_time_value
+        dt:V_ISO8601_EXTENDED_DATE_TIME '' {
+          def value
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(
+              :value => dt.text_value)
+          end
+        }
+      end
+
+      rule date_time_list_value
+        date_time_value (',' more_dt:date_time_value)+ {
+          def value
+            date_times.map {|t| t.value}
+          end
+
+          def date_times
+            [date_time_value] + more_dt.elements.map {|dt| dt.date_time_value}
+          end
+        }
+      / date_time_value ',' SYM_LIST_CONTINUE {
+          def value
+            [date_time_value.value]
+          end
+        }
+      end
+
+      rule date_time_interval_value
+        SYM_INTERVAL_DELIM SYM_GT lo:date_time_value SYM_ELLIPSIS SYM_LT up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:date_time_value SYM_ELLIPSIS up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:date_time_value SYM_ELLIPSIS SYM_LT up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:date_time_value SYM_ELLIPSIS up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE dt:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => dt.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:date_time_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
+      end
+
+      rule duration_value
+        du:V_ISO8601_DURATION '' {
+          def value
+            ::OpenEHR::RM::DataTypes::Quantity::DateTime::DvDuration.new(
+              :value => du.text_value)
+          end
+        }
+      end
+
+      rule duration_list_value
+        duration_value more_d:(',' duration_value)+ {
+          def value
+            durations.map {|d| d.value}
+          end
+
+          def durations
+            [duration_value] + more_d.elements.map {|d| d.duration_value}
+          end
+        }
+      / duration_value ',' SYM_LIST_CONTINUE {
+          def value
+            [duration_value.value]
+          end
+        }
+      end
+
+      rule duration_interval_value
+        SYM_INTERVAL_DELIM SYM_GT lo:duration_value SYM_ELLIPSIS SYM_LT up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:duration_value SYM_ELLIPSIS up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => false,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:duration_value SYM_ELLIPSIS SYM_LT up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM lo:duration_value SYM_ELLIPSIS up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
+                  :upper => up.value,
+                  :lower_included => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LT up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_LE up:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => up.value,
+                  :lower_unbounded => true,
+                  :upper_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GT lo:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => lo.value,
+                  :uppper_unbounded => true,
+                  :lower_included => false)
+          end
+        }
+      / SYM_INTERVAL_DELIM SYM_GE val:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :lower => val.value,
+                  :upper_unbounded => true,
+                  :lower_included => true)
+          end
+        }
+      / SYM_INTERVAL_DELIM val:duration_value SYM_INTERVAL_DELIM {
+          def value
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+                  :upper => val.value,
+                  :lower => val.value,
+                  :upper_included => true,
+                  :lower_included => true)
+          end
+        }
+      end
+
+      rule ALPHANUM
+        [a-zA-Z0-9]
+      end
+
+      rule IDCHAR
+        [a-zA-Z0-9_]
+      end
+
+      rule NAMECHAR
+        [a-zA-Z0-9\._\-]
+      end
+
+      rule NAMECHAR_SPACE
+        [a-zA-Z0-9\._\- ]
+      end
+
+      rule NAMECHAR_PAREN
+        [a-zA-Z0-9\._\-\(\)]
+      end
+
+      rule NAMESTR
+        [a-zA-Z] [a-zA-Z0-9_]+
+      end
+
+      rule space
+        COMMENT* white_space
+      end
+
+      rule COMMENT
+        white_space '--' [^\n]* "\n"
+      end
+
+      rule white_space
+        [ \t\r\n]*
+      end
+
+      rule Minus_code
+        '-'
+      end
+
+      rule Plus_Code
+        '+'
+      end
+
+      rule Star_code
+        '*'
+      end
+
+      rule Slash_code
+        '/'
+      end
+
+      rule Carret_code
+        '^'
+      end
+
+      rule Dot_code
+        '.'
+      end
+
+      rule Semicolon_code
+        ';'
+      end
+
+      rule Colon_code
+        ':'
+      end
+
+      rule Comma_code
+        ','
+      end
+
+      rule Expclamation_code
+        '!'
+      end
+
+      rule Left_parenthesis_code
+        '('
+      end
+
+      rule Right_parenthesis_code
+        ')'
+      end
+
+      rule Dollar_code
+        '$'
+      end
+
+      rule SYM_DT_UNKNOWN
+        '??'
+      end
+
+      rule Question_mark_code
+        '?'
+      end
+
+      rule SYM_INTERVAL_DELIM
+        '|'
+      end
+
+      rule Left_bracket_code
+        '[' space
+      end
+
+      rule Right_bracket_codde
+        ']'
+      end
+
+      rule SYM_EQ
+        '=' white_space
+      end
+
+      rule SYM_GE
+        ('=>' / '>=') white_space
+      end
+
+      rule SYM_LE
+        ('<=' / '=>') white_space
+      end
+
+      rule SYM_LT
+        '<' white_space
+      end
+
+      rule SYM_GT
+        '>' white_space
+      end
+
+      rule SYM_START_DBLOCK
+        '<' space
+      end
+
+      rule SYM_END_DBLOCK
+        '>' space
+      end
+
+      rule SYM_START_CBLOCK
+        '{' space
+      end
+
+      rule SYM_END_CBLOCK
+        '}'
+      end
+
+      rule SYM_ELLIPSIS
+        '..'
+      end
+
+      rule SYM_LIST_CONTINUE
+        '...'
+      end
+
+      rule SYM_INFINITY
+        [Ii] [Nn] [Ff] [Ii] [Nn] [Ii] [Tt] [Yy] space
+      end
+
+      rule SYM_ARCHETYPE
+        [Aa] [Rr] [Cc] [Hh] [Ee] [Tt] [Yy] [Pp] [Ee] space
+      end
+
+      rule SYM_MATCHES
+        ([Mm] [Aa] [Tt] [Cc] [Hh] [Ee] [Ss] / [Ii] [Ss] '_' [Ii] [Nn]) white_space
+      end
+
+      rule SYM_THEN
+        [Tt] [Hh] [Ee] [Nn] space
+      end
+
+      rule SYM_ELSE
+        [Ee] [Ll] [Ss] [Ee] space
+      end
+
+      rule SYM_AND
+        [Aa] [Nn] [Dd] space
+      end
+
+      rule SYM_OR
+        [Oo] [Rr] space
+      end
+
+      rule SYM_XOR
+        [Xx] [Oo] [Rr] space
+      end
+
+      rule SYM_NOT
+        [Nn] [Oo] [Tt] space
+      end
+
+      rule SYM_IMPLIES
+        [Ii] [Mm] [Pp] [Ll] [Ii] [Ee] [Ss] space
+      end
+
+      rule SYM_TRUE
+        [Tt] [Rr] [Uu] [Ee] space
+      end
+
+      rule SYM_FALSE
+        [Ff] [Aa] [Ll] [Ss] [Ee] space
+      end
+
+      rule SYM_FORALL
+        [Ff] [Oo] [Rr] '_' [Aa] [Ll] [Ll] space
+      end
+
+      rule SYM_EXISTS
+        [Ee] [Xx] [Ii] [Ss] [Tt] [Ss] space
+      end
+
+      rule SYM_EXISTENCE
+        [Ee] [Xx] [Ii] [Ss] [Tt] [Ee] [Nn] [Cc] [Ee] space
+      end
+
+      rule SYM_OCCURRENCES
+        [Oo] [Cc] [Cc] [Uu] [Rr] [Rr] [Ee] [Nn] [Cc] [Ee] [Ss] white_space
+      end
+
+      rule SYM_CARDINALITY
+        [Cc] [Aa] [Rr] [Dd] [Ii] [Nn] [Aa] [Ll] [Ii] [Tt] [Yy] white_space
+      end
+
+      rule SYM_ORDERED
+        [Oo] [Rr] [Dd] [Ee] [Rr] [Ee] [Dd] white_space
+      end
+
+      rule SYM_UNORDERD
+        [Uu] [Nn] [Oo] [Rr] [Dd] [Ee] [Rr] [Ee] [Dd] white_space
+      end
+
+      rule SYM_UNIQUE
+        [Uu] [Nn] [Ii] [Qq] [Uu] [Ee] space
+      end
+
+      rule SYM_INFINITY
+        [Ii] [Nn] [Ff] [Ii] [Nn] [Ii] [Tt] [Yy] space
+      end
+
+      rule SYM_USE_NODE
+        [Uu] [Ss] [Ee] '_' [Nn] [Oo] [Dd] [Ee] space
+      end
+
+      rule SYM_ALLOW_ARCHETYPE
+        ([Aa] [Ll] [Ll] [Oo] [Ww] /  [Uu] [Ss] [Ee]) '_' [Aa] [Rr] [Cc] [Hh] [Ee] [Tt] [Yy] [Pp] [Ee] space
+      end
+
+      rule SYM_INCLUDE
+        [Ii] [Nn] [Cc] [Ll] [Uu] [Dd] [Ee] space
+      end
+
+      rule SYM_EXCLUDE
+        [Ee] [Xx] [Cc] [Ll] [Uu] [Dd] [Ee] space
+      end
+
+      rule SYM_TEMPLATE_COMPONENT
+        [Tt] [Ee] [Mm] [Pp] [Ll] [Aa] [Tt] [Ee] ' _' [Cc] [Oo] [Mm] [Pp] [Oo] [Nn] [Ee] [Nn] [Tt] space
+      end
+
+      rule SYM_TEMPLATE
+        [Tt] [Ee] [Mm] [Pp] [Ll] [Aa] [Tt] [Ee] space
+      end
+
+      rule SYM_OPERATIONAL_TEMPLATE
+        [Oo] [Pp] [Ee] [Rr] [Aa] [Tt] [Ii] [Oo] [Nn] [Aa] [Ll] '_' [Tt] [Ee] [Mm] [Pp] [Ll] [Aa] [Tt] [Ee] space
+      end
+
+      rule SYM_ADL_VERSION
+        [Aa] [Dd] [Ll] '_' [Vv] [Ee] [Rr] [Ss] [Ii] [Oo] [Nn] space
+      end
+
+      rule SYM_IS_CONTROLLED
+        [Cc] [Oo] [Nn] [Tt] [Rr] [Oo] [Ll] [Ll] [Ee] [Dd] space
+      end
+
+      rule SYM_IS_GENERATED
+        [Gg] [Ee] [Nn] [Ee] [Rr] [Aa] [Tt] [Ee] [Dd] space
+      end
+
+      rule SYM_SPECIALIZE
+        [Ss] [Pp] [Ee] [Cc] [Ii] [Aa] [Ll] [Ii] [SsZz] [Ee] space
+      end    
+
+      rule SYM_CONCEPT
+        [Cc] [Oo] [Nn] [Cc] [Ee] [Pp] [Tt] space
+      end
+
+      rule SYM_LANGUAGE
+        [Ll] [Aa] [Nn] [Gg] [Uu] [Aa] [Gg] [Ee] space
+      end
+
+      rule SYM_DESCRIPTION
+        [Dd] [Ee] [Ss] [Cc] [Rr] [Ii] [Pp] [Tt] [Ii] [Oo] [Nn] space
+      end
+
+      rule SYM_DEFINITION
+        [Dd] [Ee] [Ff] [Ii] [Nn] [Ii] [Tt] [Ii] [Oo] [Nn] space
+      end
+
+      rule SYM_INVARIANT
+        [Ii] [Nn] [Vv] [Aa] [Rr] [Ii] [Aa] [Nn] [Tt] space
+      end
+
+      rule SYM_ONTOLOGY
+        [Oo] [Nn] [Tt] [Oo] [Ll] [Oo] [Gg] [Yy] space
+      end
+
+      rule SYM_ANNOTATIONS
+        [Aa] [Nn] [Nn] [Oo] [Tt] [Aa] [Tt] [Ii] [Oo] [Nn] [Ss] space
+      end
+
+      rule V_VERSION_STRING
+        [0-9]+ '.' [0-9]+ ('.' [0-9]+)* {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_ARCHETYPE_ID
+        NAMESTR ('-' NAMESTR) 2..2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]* {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_IDENTIFIER
+        [a-zA-Z] [a-zA-Z0-9_]* {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_URI
+        [a-z]+ '://' [^<>|\\{}^~"\[\] ]* { 
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_QUALIFIED_TERM_CODE_REF
+        '[' ti:(NAMECHAR_PAREN+) '::' cs:(NAMECHAR+) ']' {
+          def value
+            term_id = OpenEHR::RM::Support::Identification::TerminologyID.new(
+              :value => ti.text_value)
+            OpenEHR::RM::DataTypes::Text::CodePhrase.new(
+              :terminology_id => term_id, :code_string => cs.text_value)
+          end
+        }
+      end
+
+      rule ERR_V_QUALIFIED_TERM_CODE_REF
+        '[' er:(NAMECHAR_PAREN+ '::' NAMECHAR_SPACE+) ']' {
+          def value
+            er.text_value
+          end
+        }
+      end
+
+      rule V_LOCAL_TERM_CODE_REF
+        '[' lt:(ALPHANUM NAMECHAR*) ']' {
+          def value
+            lt.text_value
+          end
+        }
+      end
+
+      rule V_LOCAL_CODE
+        'a' [ct] [0-9\.]+ {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_TERM_CODE
+        '[' code:([a-zA-Z0-9()._\-]+) '::' white_space {
+          def value
+            ::OpenEHR::RM::Support::Identification::TerminologyID.new(
+              :value => code.text_value)
+          end
+        }
+      end
+
+      rule V_ISO8601_EXTENDED_DATE_TIME
+        ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? ('Z' / [+-] [0-9] 4..4)? ) / ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ':' [0-6] [0-9] ('Z' / [+-] [0-9] 4..4)?) / ([0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] 'T' [0-2] [0-9] ('Z' / [+-] [0-9] 4..4)?)
+      end
+
+      rule V_ISO8601_EXTENDED_TIME
+        [0-2] [0-9] ':' [0-6] [0-9] ':' [0-6] [0-9] (',' [0-9]+)? ('Z' / [+-] [0-9] 4..4)? / [0-2] [0-9] ':' [0-6] [0-9] ('Z' / [+-] [0-9] 4..4)?
+      end
+
+      rule V_ISO8601_EXTENDED_DATE
+        [0-9] 4..4 '-' [0-1] [0-9] '-' [0-3] [0-9] / [0-9] 4..4 '-' [0-1] [0-9]
+      end
+
+      rule V_ISO8601_DURATION
+        'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH]) ([0-9]+ [mM])? ([0-9]+ ('.' [0-9]+)? [sS])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH])? ([0-9]+ [mM]) ([0-9]+ ('.' [0-9]+)? [sS])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])? 'T' ([0-9]+ [hH])? ([0-9]+ [mM])? ([0-9]+ ('.' [0-9]+)? [sS])?
+      / 'P' ([0-9]+ [yY]) ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM]) ([0-9]+ [wW])? ([0-9]+ [dD])? 
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW]) ([0-9]+ [dD])?
+      / 'P' ([0-9]+ [yY])? ([0-9]+ [mM])? ([0-9]+ [wW])? ([0-9]+ [dD])
+      end
+
+      rule V_ISO8601_DATE_CONSTRAINT_PATTERN
+        [yY] [yY] [yY] [yY] '-' [mM?X] [mM?X] '-' [dD?X] [dD?X]    
+      end
+
+      rule V_ISO8601_TIME_CONSTRAINT_PATTERN
+        [hH] [hH] ':' [mM?X] [mM?X] ':' [sS?X] [sS?X]
+      end
+
+      rule V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
+        [yY] [yY] [yY] [yY] '-' [mM?X] [mM?X] '-' [dD?X] [dD?X] [Tt ] [hH?X] [hH?X] ':' [mM?X] [mM?X] ':' [sS?X] [sS?X]
+      end
+
+      rule V_ISO8601_DURATION_CONSTRAINT_PATTERN
+        'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH] [mM]? [sS]?
+      / 'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH]? [mM] [sS]?
+      / 'P' [yY]? [mM]? [wW]? [dD]? 'T' [hH]? [mM]? [sS]
+      / 'P' [yY] [mM]? [wW]? [dD]?
+      / 'P' [yY]? [mM] [wW]? [dD]?
+      / 'P' [yY]? [mM]? [wW] [dD]?
+      / 'P' [yY]? [mM]? [wW]? [dD]
+      end
+
+      rule V_TYPE_IDENTIFIER
+        [A-Z] IDCHAR* {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_GENERIC_TYPE_IDENTIFIER
+        [A-Z] IDCHAR* '<' [a-zA-Z0-9,_]+ '>' {  # <>
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_ATTRIBUTE_IDENTIFIER
+        [a-z] IDCHAR* {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_INTEGER
+        [0-9]+ [eE] [+-]? [0-9] {
+          def value
+            text_value.to_i
+          end
+        }	
+      / [1-9] [0-9]+ {
+          def value
+            text_value.to_i
+          end
+        }	
+      / [0-9] {
+          def value
+            text_value.to_i
+          end
+        }	
+      end
+
+      rule V_REAL
+        [0-9]+ '.' [0-9]+ [eE] [+-]? [0-9]+ / [1-9] [0-9]+ '.' [0-9]+ / [0-9] '.' [0-9]+ {
+          def value
+            text_value.to_f
+          end
+        }
+      end
+
+      rule V_CHAR
+        [^\\\n\"] {
+          def value
+            text_value
+          end
+        }
+      end
+
+      rule V_STRING
+        '"' str:(('\"' / !'"' .)*) '"' {
+          def value
+            str.text_value.tr_s('\\\\', '\\')
+          end
+        }
+      end # of Shared Token section
     end # of ADLGrammar
   end # of Parser
 end # of openEHR
