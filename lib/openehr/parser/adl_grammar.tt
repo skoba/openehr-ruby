@@ -333,7 +333,7 @@ module OpenEHR
           def value(node)
             args = c_ordinal.value
             args[:path] = node.path
-            args[:rm_type_name] = 'DvOrdinal'
+            args[:rm_type_name] = 'DV_ORDINAL'
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
               :upper => 1, :lower => 1)
             OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new(
