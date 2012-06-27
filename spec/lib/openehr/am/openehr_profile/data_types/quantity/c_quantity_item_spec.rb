@@ -1,18 +1,18 @@
 # ticket 203
 include OpenEHR::AssumedLibraryTypes
-include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
+#include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 
-describe CQuantityItem do
+describe ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem do
   before(:each) do
     magnitude = Interval.new(:upper => 100, :lower => 0)
     precision = Interval.new(:upper => 10, :lower => 2)
-    @c_quantity_item = CQuantityItem.new(:units => 'mg',
+    @c_quantity_item = ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(:units => 'mg',
                                          :magnitude => magnitude,
                                          :precision => precision)
   end
 
   it 'is an instance of CQuantityItem' do
-    @c_quantity_item.should be_an_instance_of CQuantityItem
+    @c_quantity_item.should be_an_instance_of ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem
   end
 
   it 'magnitude upper is 100' do
