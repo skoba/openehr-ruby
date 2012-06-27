@@ -143,13 +143,15 @@ module OpenEHR
             params['details'].each do |lang, attrs|
               misuse = attrs['misuse']
               misuse = nil if misuse.nil? or misuse.empty?
+              use = attrs['use']
+              use = nil if use.nil? or use.empty?
               purpose = attrs['purpose'] || '__unknown__' # for backward compat.
               item =
                 OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(
                   :language => attrs['language'],
                   :purpose => purpose,
                   :keywords => attrs["keywords"],
-                  :use => attrs["use"],
+                  :use => use,
                   :misuse => misuse,
                   :copyright => attrs['copyright'],
                   :original_resource_uri => attrs['original_resource_uri'],
