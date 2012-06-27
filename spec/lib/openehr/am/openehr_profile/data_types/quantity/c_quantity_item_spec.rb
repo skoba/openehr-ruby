@@ -1,6 +1,6 @@
 # ticket 203
 include OpenEHR::AssumedLibraryTypes
-include OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
+#include OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 
 describe CQuantityItem do
   before(:each) do
@@ -12,7 +12,7 @@ describe CQuantityItem do
   end
 
   it 'is an instance of CQuantityItem' do
-    @c_quantity_item.should be_an_instance_of CQuantityItem
+    @c_quantity_item.should be_an_instance_of OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem
   end
 
   it 'magnitude upper is 100' do
