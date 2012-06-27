@@ -1,3 +1,6 @@
+=== 1.1.2
+parser assigns nil for empty use in DESCRIPTION section
+
 === 1.1.1
 parser bug fixed around openehr/am/openehr_profile/data_types/quantity
 

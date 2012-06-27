@@ -5,7 +5,7 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-1.1.1
+Release-1.1.2
 
 = Requirements
 
@@ -46,7 +46,7 @@ Some specifications are not well determined yet, such as rm/security
 and so on. We postponed to implement such classes.
 
 Terminology and Demographic server will be implemented in other
-projects. 
+projects.
 
 = Authors
 * Main codes
