@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "openehr"
-  s.version = "1.1.1"
+  s.version = "1.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-  s.date = "2012-05-10"
+  s.date = "2012-06-27"
   s.description = "This project is an implementation of the openEHR specification on Ruby."
   s.email = "skoba@moss.gr.jp"
   s.extra_rdoc_files = [
@@ -226,7 +226,9 @@ Gem::Specification.new do |s|
     "spec/lib/openehr/parser/adl14/openEHR-EHR-OBSERVATION.blood_pressure.v1.adl",
     "spec/lib/openehr/parser/adl14/openEHR-EHR-OBSERVATION.body_mass_index.v1.adl",
     "spec/lib/openehr/parser/adl14/openEHR-EHR-OBSERVATION.lab_test.v1.adl",
+    "spec/lib/openehr/parser/adl14/openEHR-EHR-OBSERVATION.operation_record.v1.adl",
     "spec/lib/openehr/parser/adl14/openEHR-EHR-OBSERVATION.testassumedvalue.v1.adl",
+    "spec/lib/openehr/parser/adl14/openEHR-EHR-OBSERVATION.uterine_contractions.v1.adl",
     "spec/lib/openehr/parser/adl14/openEHR-EHR-SECTION.findings.v1.adl",
     "spec/lib/openehr/parser/adl14/openEHR-EHR-SECTION.reason_for_encounter.v1.adl",
     "spec/lib/openehr/parser/adl14/openEHR-EHR-SECTION.summary.v1.adl",
@@ -262,6 +264,7 @@ Gem::Specification.new do |s|
     "spec/lib/openehr/parser/duration_spec.rb",
     "spec/lib/openehr/parser/dv_coded_text_parse_spec.rb",
     "spec/lib/openehr/parser/empty_other_contributors_spec.rb",
+    "spec/lib/openehr/parser/empty_use_spec.rb",
     "spec/lib/openehr/parser/lab_test_parser_spec.rb",
     "spec/lib/openehr/parser/missing_language_spec.rb",
     "spec/lib/openehr/parser/missing_purpose_spec.rb",
@@ -399,7 +402,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/skoba/ruby-impl-openehr"
   s.licenses = ["Apache 2.0 license"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.11"
+  s.rubygems_version = "1.8.24"
   s.summary = "Ruby implementation of the openEHR specification"
 
   if s.respond_to? :specification_version then
