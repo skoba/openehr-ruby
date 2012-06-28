@@ -25,6 +25,5 @@ describe 'Archetypes, which has empty use' do
   adls.each do |adl|
     subject { adl14_archetype(adl) }
     it_should_behave_like 'empty use archetypes'
-    
   end
 end

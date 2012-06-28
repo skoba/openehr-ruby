@@ -1,5 +1,5 @@
 # ticket 203
-require 'openehr/am/openehr_profile/data_types/quantity'
+require File.dirname(__FILE__) + '/../../../../../../spec_helper'
 include OpenEHR::AssumedLibraryTypes
 include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 
