@@ -15,27 +15,16 @@ shared_examples 'empty use archetypes' do
   end
 end
 
-describe 'openEHR-EHR-OBSERVATION.operation_record.v1.adl' do
-  subject { adl14_archetype('openEHR-EHR-OBSERVATION.operation_record.v1.adl') }
-  it_should_behave_like 'empty use archetypes'
-end
+describe 'Archetypes, which has empty use' do
+  adls = ['openEHR-EHR-OBSERVATION.operation_record.v1.adl',
+         'openEHR-EHR-CLUSTER.exam-abdomen.v1.adl',
+         'openEHR-EHR-OBSERVATION.uterine_contractions.v1.adl',
+         'openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl',
+         'openEHR-EHR-CLUSTER.exam-uterus.v1.adl']
 
-describe 'openEHR-EHR-CLUSTER.exam-abdomen.v1.adl' do
-  subject { adl14_archetype('openEHR-EHR-CLUSTER.exam-abdomen.v1.adl') }
-  it_should_behave_like 'empty use archetypes'
-end
-
-describe 'openEHR-EHR-OBSERVATION.uterine_contractions.v1.adl' do
-  subject { adl14_archetype('openEHR-EHR-OBSERVATION.uterine_contractions.v1.adl') }
-  it_should_behave_like 'empty use archetypes'
-end
-
-describe 'openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl' do
-  subject { adl14_archetype('openEHR-EHR-CLUSTER.exam-uterine_cervix.v1.adl') }
-  it_should_behave_like 'empty use archetypes'
-end
-
-describe 'openEHR-EHR-CLUSTER.exam-uterus.v1.adl' do
-  subject { adl14_archetype('openEHR-EHR-CLUSTER.exam-uterus.v1.adl') }
-  it_should_behave_like 'empty use archetypes'
+  adls.each do |adl|
+    subject { adl14_archetype(adl) }
+    it_should_behave_like 'empty use archetypes'
+    
+  end
 end
