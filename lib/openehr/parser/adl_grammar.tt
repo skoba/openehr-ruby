@@ -975,7 +975,8 @@ module OpenEHR
       rule c_duration_constraint
         duration_pattern '/' duration_interval_value '' {
           def value
-            {:pattern => duration_pattern.value}
+            {:pattern => duration_pattern.value,
+	     :range => duration_interval_value.value}
           end
         }
      / duration_pattern '' {

@@ -4,11 +4,9 @@ include OpenEHR::RM::Support::Terminology
 describe TerminologyService do
   before(:each) do
     @ts ||= TerminologyService.new
-    @terminology_mock = mock('terminology')
   end
 
-  it 'should get terminology by its name' do
-  end
+  it 'should get terminology by its name'
 
   it 'should get code_set by its name'
 

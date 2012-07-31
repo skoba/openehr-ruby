@@ -304,6 +304,32 @@ describe ADLParser do
           @at.range.should be_lower_included
         end
       end
+
+      context '15th attribute' do
+        before(:all) do
+          @at = attr(15)
+        end
+
+        it 'has PTMS pattern' do
+          @at.pattern.should == 'PTMS'
+        end
+
+        it 'range is lower included' do
+          @at.range.should be_lower_included
+        end
+
+        it 'lower range is PT0S' do
+          @at.range.lower.value.should == 'PT0S'
+        end
+
+        it 'lower range second is 0' do
+          @at.range.lower.seconds.should == 0
+        end
+
+        it 'is not upper included' do
+          @at.range.should_not be_upper_included
+        end
+      end
     end
 
     context 'Duration with assumed value' do
