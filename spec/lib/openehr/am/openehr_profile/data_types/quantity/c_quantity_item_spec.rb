@@ -1,7 +1,8 @@
 # ticket 203
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
+require 'openehr/am/openehr_profile/data_types/quantity'
 include OpenEHR::AssumedLibraryTypes
-include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
+include OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 
 describe CQuantityItem do
   before(:each) do
