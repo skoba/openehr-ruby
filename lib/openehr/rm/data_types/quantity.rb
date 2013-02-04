@@ -13,7 +13,7 @@ module OpenEHR
 
         class DvOrdered < OpenEHR::RM::DataTypes::Basic::DataValue
           include Comparable
-          attr_accessor :normal_range, :other_refference_ranges, :normal_status
+          attr_accessor :normal_range, :other_reference_ranges, :normal_status
 
           def initialize(args = {})
             super(args)
