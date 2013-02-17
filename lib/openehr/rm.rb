@@ -11,5 +11,6 @@ module OpenEHR
     autoload :Integration, 'rm/integration'
     autoload :Security, 'rm/security'
     autoload :Support, 'rm/support'
+    autoload :Factory, 'rm/factory'
   end
 end
