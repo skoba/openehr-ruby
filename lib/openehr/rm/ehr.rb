@@ -93,7 +93,7 @@ module OpenEHR
         end
       end
 
-      class VersionedEHRAccesss < VersionedObject
+      class VersionedEHRAccess < VersionedObject
 
       end
 
