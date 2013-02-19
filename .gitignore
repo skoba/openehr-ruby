@@ -11,7 +11,7 @@ coverage
 rdoc
 
 # yard generated
-doc
+doc/
 .yardoc
 
 # bundler
@@ -26,3 +26,7 @@ log
 
 # subversion ignore
 .svn
+
+tmp
+*.gem
+*.rbc

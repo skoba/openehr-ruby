@@ -4,6 +4,6 @@ Feature: RMFactory generates RM insntances
   RM Type and attributes should be specified
 
   Scenario: RMFactory generates DvText instance
-    Given: "DV_TEXT" in archetype definition with attribute
-    When: RM Factory generates instance
-    Then: DvText instance should be available
+    Given "DV_TEXT" in archetype definition with attribute
+    When RM Factory generates instance
+    Then DvText instance should be available
