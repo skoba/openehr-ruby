@@ -46,7 +46,7 @@ module OpenEHR
 
           def initialize(args)            
             super(args)
-            self.is_terminal = args[:is_terminal]
+            self.terminal = args[:is_terminal].nil? ? args[:terminal] : args[:is_terminal]
           end
 
           def value=(v)
@@ -58,10 +58,14 @@ module OpenEHR
             @is_terminal
           end
 
+          alias terminal? is_terminal?
+
           def is_terminal=(s)
             raise ArgumentError, "terminal should not be nil" if s.nil?
             @is_terminal = s
           end
+
+          alias terminal= is_terminal=
         end # end of DvState
 
         class DvIdentifier < DataValue

@@ -36,6 +36,10 @@ describe DvState do
     @dv_state.is_terminal?.should be_false
   end
 
+  it 'should not be terminal * another expression' do
+    @dv_state.should_not be_terminal
+  end
+
   it 'should change to terminal' do
     lambda {
       @dv_state.is_terminal = true

@@ -16,6 +16,18 @@ module OpenEHR
       end
     end
 
+    class DvStateFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Basic::DvState.new(*param)
+      end
+    end
+
+    class DvIdentifierFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Basic::DvIdentifier.new(*param)
+      end
+    end
+
     class DvTextFactory
       def self.create(*param)
         OpenEHR::RM::DataTypes::Text::DvText.new(*param)
