@@ -27,9 +27,16 @@ module OpenEHR
         OpenEHR::RM::DataTypes::Text::DvCodedText.new(*param)
       end
     end
+
     class DvQuantityFactory
       def self.create(*param)
         OpenEHR::RM::DataTypes::Quantity::DvQuantity.new(*param)
+      end
+    end
+
+    class DvDateFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(*param)
       end
     end
   end
