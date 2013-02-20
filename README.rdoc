@@ -5,7 +5,7 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-1.1.5
+Release-1.1.6
 
 = Requirements
 
