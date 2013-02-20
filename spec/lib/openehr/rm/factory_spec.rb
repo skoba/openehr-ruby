@@ -17,6 +17,16 @@ module OpenEHR
         subject { Factory.create("DvQuantity", magnitude: 10, units: 'mg') }
         it { should be_an_instance_of OpenEHR::RM::DataTypes::Quantity::DvQuantity }
       end
+
+      context "DvBoolean generation" do
+        subject { Factory.create('DvBoolean', value: true) }
+        it { should be_an_instance_of OpenEHR::RM::DataTypes::Basic::DvBoolean }
+      end
+
+      context "DvCodedText generation" do
+        subject { Factory.create('DV_CODED_TEXT', value: 'C089', defining_code: double()) }
+        it { should be_an_instance_of OpenEHR::RM::DataTypes::Text::DvCodedText }
+      end
     end
   end
 end
