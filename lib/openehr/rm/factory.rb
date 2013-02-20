@@ -58,6 +58,24 @@ module OpenEHR
       end
     end
 
+    class DvOrderedFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Quantity::DvOrdered.new(*param)
+      end
+    end
+
+    class DvIntervalFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Quantity::DvInterval.new(*param)
+      end
+    end
+
+    class ReferenceRangeFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Quantity::ReferenceRange.new(*param)
+      end
+    end
+
     class DvQuantityFactory
       def self.create(*param)
         OpenEHR::RM::DataTypes::Quantity::DvQuantity.new(*param)
