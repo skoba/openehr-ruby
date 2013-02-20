@@ -1,22 +1,8 @@
 require 'rubygems'
 require 'bundler'
 require "bundler/gem_tasks"
-require 'lib/openehr'
+require './lib/openehr'
 require 'rake'
-
-# require 'jeweler'
-# Jeweler::Tasks.new do |gem|
-#   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-#   gem.name = "openehr"
-#   gem.homepage = "http://github.com/skoba/ruby-impl-openehr"
-#   gem.license = "Apache 2.0 license"
-#   gem.summary = %Q{Ruby implementation of the openEHR specification}
-#   gem.description = %Q{This project is an implementation of the openEHR specification on Ruby.}
-#   gem.email = "skoba@moss.gr.jp"
-#   gem.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
-#   # dependencies defined in Gemfile
-# end
-# Jeweler::RubygemsDotOrgTasks.new
 
 require 'rspec/core'
 require 'rspec/core/rake_task'

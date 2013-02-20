@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.require_paths = ["lib"]
 
+  gem.add_dependency('rake')
   gem.add_dependency('xml-simple')
   gem.add_dependency('activesupport')
   gem.add_dependency('locale')
@@ -32,7 +33,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency('sqlite3')
   gem.add_dependency('activerecord')
 
-  gem.add_development_dependency('rake')
   gem.add_development_dependency('rspec')
   gem.add_development_dependency('cucumber')
   gem.add_development_dependency('guard')
