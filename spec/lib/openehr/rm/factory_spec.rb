@@ -30,12 +30,32 @@ module OpenEHR
         it { should be_an_instance_of OpenEHR::RM::DataTypes::Text::DvText }
       end
 
+      describe TermMappingFactory do
+        let(:target) { double() }
+        subject { Factory.create('TERM_MAPPING', target: target, match: '=') }
+        it { should be_an_instance_of OpenEHR::RM::DataTypes::Text::TermMapping }
+      end
+
+      describe CodePhraseFactory do
+        let(:terminology_id) { double() }
+        subject { Factory.create('CODE_PHRASE',
+                                 terminology_id: terminology_id,
+                                 code_string: 'C890') }
+        it { should be_an_instance_of OpenEHR::RM::DataTypes::Text::CodePhrase }
+      end
+
       describe DvCodedTextFactory do
         subject { Factory.create('DV_CODED_TEXT', value: 'C089', defining_code: double()) }
         it { should be_an_instance_of OpenEHR::RM::DataTypes::Text::DvCodedText }
       end
 
-      context DvQuantityFactory do
+      describe DvParagraphFactory do
+        let(:items) { ['short sentence', 'long sentence']}
+        subject { Factory.create('DV_PARAGRAPH', items: items) }
+        it { should be_an_instance_of OpenEHR::RM::DataTypes::Text::DvParagraph }
+      end
+
+      describe DvQuantityFactory do
         subject { Factory.create("DvQuantity", magnitude: 10, units: 'mg') }
         it { should be_an_instance_of OpenEHR::RM::DataTypes::Quantity::DvQuantity }
       end

@@ -34,9 +34,27 @@ module OpenEHR
       end
     end
 
+    class TermMappingFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Text::TermMapping.new(*param)
+      end
+    end
+
+    class CodePhraseFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Text::CodePhrase.new(*param)
+      end
+    end
+
     class DvCodedTextFactory
       def self.create(*param)
         OpenEHR::RM::DataTypes::Text::DvCodedText.new(*param)
+      end
+    end
+
+    class DvParagraphFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Text::DvParagraph.new(*param)
       end
     end
 
