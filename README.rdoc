@@ -5,12 +5,12 @@ Ruby openEHR implementation project.
 
 = Version
 
-Release-1.1.6
+Release-1.2.0
 
 = Requirements
 
 * Ruby 1.9.2 or later recommended
-* Tested with Ruby 1.9.3 on Linux and FreeBSD.
+* Developed with CRuby 2.0.0, 1.9.3 on Linux and FreeBSD.
 * It would work with some adjustment on Ruby 1.8 or earlier,
   but not confirmed.
 * It should work on other platforms with Ruby
@@ -38,7 +38,7 @@ This package excludes:
 * ADL serializer(in progress)
 * ADL validator(in progress)
 * Data store/retrieve would be separate to the other project.
-* Terminology service(moved to open_terminology package)
+* Terminology service(moved to openehr-terminology package)
 * Rails plugin(moved to openehr-rails package
 
 Almost all classes passed the test constructed by RSpec2. These spec
