@@ -9,8 +9,6 @@ module OpenEHR
       autoload :Ontology, 'archetype/ontology'
 
       module ADLDefinition
-        include OpenEHR::RM::Support::Terminology
-#        include OpenEHR::RM::Support::Terminology::OpenEHR_Code_Set_Identifier
         CURRENT_ADL_VERSION = "1.4"
       end
 

@@ -8,7 +8,6 @@ module OpenEHR
       autoload :Definition, 'support/definition'
       autoload :Identification, 'support/identification'
       autoload :Measurement, 'support/measurement'
-      autoload :Terminology, 'support/terminology'
     end
   end
 end

@@ -1,10 +1,9 @@
 Given /^\"DV_TEXT\" in archetype definition with attribute$/ do
   @type= "DV_TEXT"
-  @params = [value: 'text']
 end
 
 When /^RM Factory generates instance$/ do
-  @dv_text = OpenEHR::RM::Factory.create(@type, @params)
+  @dv_text = OpenEHR::RM::Factory.create(@type, value: 'text')
 end
 
 Then /^DvText instance should be available$/ do
