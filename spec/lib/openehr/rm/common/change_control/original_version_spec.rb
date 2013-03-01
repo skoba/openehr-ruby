@@ -57,9 +57,9 @@ describe OriginalVersion do
     @original_version.is_merged?.should be_false
   end
 
-  it 'should raise ArgumentError when attestations is nil' do
+  it 'should raise ArgumentError when attestations is empty' do
     lambda {
-      @original_version.attestations = nil
+      @original_version.attestations = Set.new
     }.should raise_error ArgumentError
   end
 
