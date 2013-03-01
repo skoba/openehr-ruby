@@ -3,10 +3,6 @@
 Ruby openEHR implementation project.
 * http://github.com/skoba/ruby-impl-openehr
 
-= Version
-
-Release-1.2.0
-
 = Requirements
 
 * Ruby 1.9.2 or later recommended

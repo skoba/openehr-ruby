@@ -1,3 +1,14 @@
+=== 1.2.1
+Fixed bug and merged pull request from caron10
+
+=== 1.2.0
+Separeted terminology packages
+Catch up to Ruby 2.0.0
+
+=== 1.1.5 & 1.1.6
+Fixed some miss spells
+Implemented OpenEHR::RM::Factory class
+
 === 1.1.4
 Parser bug fixed around  DvDuration pattern/interval.
 
