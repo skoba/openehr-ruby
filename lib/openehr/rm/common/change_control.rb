@@ -140,8 +140,8 @@ module OpenEHR
           end
 
           def attestations=(attestations)
-            if attestations.nil? || attestations.empty?
-              raise ArgumentError, 'attestations is mandatory'
+            if !attestations.nil? && attestations.empty?
+              raise ArgumentError, 'invalid attestations'
             end
             @attestations = attestations
           end
