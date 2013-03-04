@@ -1,3 +1,6 @@
+=== 1.2.2
+Removed autoload and replaced them to require
+
 === 1.2.1
 Fixed bug and merged pull request from caron10
 
