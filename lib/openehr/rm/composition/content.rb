@@ -10,12 +10,14 @@ module OpenEHR
   module RM
     module Composition
       module Content
-        autoload :Navigation, 'content/navigation'
-        autoload :Entry, 'content/entry'
 
         class ContentItem < Locatable
 
         end
+
+        require 'content/navigation'
+        require 'content/entry'
+
       end # end of Content
     end # end of Composition
   end # end of RM

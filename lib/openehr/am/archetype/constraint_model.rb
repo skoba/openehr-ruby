@@ -4,7 +4,7 @@ module OpenEHR
     module Archetype
       module ConstraintModel
 
-        autoload :Primitive, 'constraint_model/primitive'
+        require 'constraint_model/primitive'
 
         class ArchetypeConstraint
           attr_reader :path

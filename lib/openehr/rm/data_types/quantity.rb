@@ -9,7 +9,6 @@ module OpenEHR
   module RM
     module DataTypes
       module Quantity
-        autoload :DateTime, 'quantity/date_time'
 
         class DvOrdered < OpenEHR::RM::DataTypes::Basic::DataValue
           include Comparable

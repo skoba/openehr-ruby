@@ -96,7 +96,7 @@ module OpenEHR
         end
       end
 
-      autoload :Content, 'composition/content'
+      require 'composition/content'
 
     end # end of Composition
   end # end of RM

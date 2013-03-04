@@ -4,11 +4,11 @@ $:.unshift(File.dirname(__FILE__)) unless
 module OpenEHR
   module RM
     module Common
-      autoload :Archetyped, 'common/archetyped'
-      autoload :ChangeControl, 'common/change_control'
-      autoload :Directory, 'common/directory'
-      autoload :Generic, 'common/generic.rb'
-      autoload :Resource, 'common/resource'
+      require 'common/archetyped'
+      require 'common/generic'
+      require 'common/change_control'
+      require 'common/directory'
+      require 'common/resource'
     end
   end
 end
