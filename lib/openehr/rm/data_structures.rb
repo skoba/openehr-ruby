@@ -8,8 +8,6 @@ $:.unshift(File.dirname(__FILE__)) unless
 module OpenEHR
   module RM
     module DataStructures
-      autoload :ItemStructure, 'data_structures/item_structure'
-      autoload :History, 'data_structures/history'
 
       class DataStructure < OpenEHR::RM::Common::Archetyped::Locatable
         def initialize(args = { })
@@ -20,6 +18,9 @@ module OpenEHR
           raise NotImplementedError, "as_hirarchy must be implemented"
         end
       end
+
+      require 'data_structures/item_structure'
+      require 'data_structures/history'
     end # of Data_Structures
   end # of RM
 end # of OpenEHR

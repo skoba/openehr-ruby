@@ -4,9 +4,9 @@ include OpenEHR::RM::Common::Resource
 module OpenEHR
   module AM
     module Archetype
-      autoload :Assertion, 'archetype/assertion'
-      autoload :ConstraintModel, 'archetype/constraint_model'
-      autoload :Ontology, 'archetype/ontology'
+      require 'archetype/assertion'
+      require 'archetype/constraint_model'
+      require 'archetype/ontology'
 
       module ADLDefinition
         CURRENT_ADL_VERSION = "1.4"
