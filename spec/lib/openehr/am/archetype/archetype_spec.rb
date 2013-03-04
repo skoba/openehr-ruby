@@ -12,7 +12,7 @@ describe Archetype do
     original_language = stub(CodePhrase, :code_string => 'ja')
     archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-SECTION.physical_examination-prenatal.v2')
     definition = stub(CComplexObject, :rm_type_name => 'SECTION')
-    items = {:text => 'Physical examination'}
+    items = {'text' => 'Physical examination'}
     term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
     ontology = ArchetypeOntology.new(:specialisation_depth => 1, :term_definitions => {'ja' => {'at0000' =>term1}})
     uid = HierObjectID.new(:value => 'ABCD::1')
