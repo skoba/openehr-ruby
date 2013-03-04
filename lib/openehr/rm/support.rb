@@ -4,10 +4,10 @@ $:.unshift(File.dirname(__FILE__)) unless
 module OpenEHR
   module RM
     module Support
-      autoload :AssumedTypes, 'support/assumed_types'
-      autoload :Definition, 'support/definition'
-      autoload :Identification, 'support/identification'
-      autoload :Measurement, 'support/measurement'
+#      require 'support/assumed_types'
+      require 'support/definition'
+      require 'support/identification'
+      require 'support/measurement'
     end
   end
 end

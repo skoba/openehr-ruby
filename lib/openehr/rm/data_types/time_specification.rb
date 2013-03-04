@@ -4,7 +4,7 @@ module OpenEHR
   module RM
     module DataTypes
       module TimeSpecification
-        class DvTimeSpecification < OpenEhr::RM::DataTypes::Basic::DataValue
+        class DvTimeSpecification < OpenEHR::RM::DataTypes::Basic::DataValue
           attr_reader :value
 
           def initialize(value)

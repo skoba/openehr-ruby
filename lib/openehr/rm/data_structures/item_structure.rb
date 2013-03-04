@@ -11,10 +11,11 @@ module OpenEHR
     module DataStructures
       module ItemStructure
 
-        autoload :Representation, 'item_structure/representation'
+        require 'item_structure/representation'
 
         class ItemStructure < DataStructure
         end
+
 
         class ItemSingle < ItemStructure
           attr_reader :item
