@@ -344,7 +344,7 @@ module OpenEHR
         }
       / c_primitive_object '' {
           def value(node)
-            c_primitive_object.value
+            c_primitive_object.value(node)
           end
         }
       / c_complex_object '' {
@@ -463,8 +463,12 @@ module OpenEHR
 
       rule c_primitive_object
         c_primitive '' {
-          def value
-            c_primitive.value
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(
+              {:item => c_primitive.value,
+               :rm_type_name => c_primitive.value.type,
+               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(:upper => 1, :lower => 1),
+               :path => node.path})
           end
         }
       end

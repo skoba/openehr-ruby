@@ -187,8 +187,23 @@ module OpenEHR
           def any_allowed?
             return item.nil?
           end
-        end
 
+          %w(assumed_value assumed_value= has_assumed_value? default_value 
+            any_allowed?, valid_value?).each do |m| 
+            define_method(m) do |*args| 
+              self.item.send(m, *args) if !self.item.nil?
+            end
+          end
+
+          def method_missing(meth, *args)
+            if !self.item.nil? && self.item.respond_to?(meth)
+              self.item.send(meth, *args)
+            else
+              super
+            end
+          end
+        end
+   
         class CComplexObject < CDefinedObject
           attr_accessor :attributes
 
