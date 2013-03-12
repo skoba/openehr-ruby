@@ -1,7 +1,7 @@
 = Synopsis
 
 Ruby openEHR implementation project.
-* http://github.com/skoba/ruby-impl-openehr
+* http://github.com/skoba/openehr-ruby
 
 = Requirements
 
