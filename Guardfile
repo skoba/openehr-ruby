@@ -1,4 +1,6 @@
 guard 'spork' do
+  watch('Gemfile')
+  watch('Gemfile.lock')
   watch('spec/spec_helper.rb')
   watch('feature/support/env.rb')
 end

@@ -25,7 +25,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency('activesupport')
   gem.add_dependency('locale')
   gem.add_dependency('builder')
-# gem 'jeweler'
   gem.add_dependency('i18n')
   gem.add_dependency('treetop')
   gem.add_dependency('polyglot')
@@ -42,7 +41,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('spork', '> 1.0rc')
   gem.add_development_dependency('guard-spork')
   gem.add_development_dependency('simplecov')
-  gem.add_development_dependency('listen', '0.6')
+  gem.add_development_dependency('listen')
+  gem.add_development_dependency('rb-kqueue')
   gem.add_development_dependency('libnotify')
 end
 
