@@ -147,4 +147,12 @@ describe ISO8601Duration do
       @iso8601duration.fractional_second = 1.0
     }.should raise_error ArgumentError
   end
+  
+  it 'to_seconds should return 38898367.8' do
+    @iso8601duration.to_seconds.should == 38898367.8
+  end
+  
+  it 'should be comparable' do
+    ISO8601Duration.new('P1Y2M3W4DT5H6M7.8S').should > ISO8601Duration.new('P1Y2M3W4DT5H6M7.7S')
+  end
 end
