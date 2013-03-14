@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.name = "openehr"
   gem.version = OpenEHR::VERSION
   gem.platform = Gem::Platform::RUBY
-  gem.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa"]
+  gem.authors = ["Shinji KOBAYASHI", "Akimichi Tatsukawa", "Michael Deryugin", "Dmitry Lavrov", "Evgeny Strokov"]
   gem.email = "skoba@moss.gr.jp"
 
   gem.summary = "Ruby implementation of the openEHR specification"
