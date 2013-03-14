@@ -1,6 +1,7 @@
 = Synopsis
 
-Ruby openEHR implementation project.
+A Ruby implementation of the openEHR specifications
+
 * http://github.com/skoba/openehr-ruby
 
 = Requirements
