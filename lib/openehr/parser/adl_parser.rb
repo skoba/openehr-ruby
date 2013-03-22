@@ -10,11 +10,12 @@ include OpenEHR::RM::DataTypes::Text
 module OpenEHR
   module Parser
     class ADLParser < Base
+      Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
+
       def initialize(filename)
         super(filename)
         file = File.open(filename, 'r:bom|utf-8')
         data = file.read
-        Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
         ap = ADLGrammarParser.new
         @result = ap.parse(data)
         file.close
