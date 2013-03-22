@@ -133,6 +133,7 @@ module OpenEHR
     module TimeDefinitions #< Any
       DAYS_IN_LEAP_YEAR = 366
       DAYS_IN_WEEK = 7
+      DAYS_IN_MONTH = 30
       DAYS_IN_YEAR = 365
       HOURS_IN_DAY = 24
       MAX_DAYS_IN_MONTH = 31
@@ -490,7 +491,7 @@ module OpenEHR
     end
 
     class ISO8601DateTime
-      include ISO8601DateTimeModule
+      include ISO8601DateTimeModule, Comparable
       def initialize(string)
         unless /(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?/ =~ string
           raise ArgumentError, 'format invalid'
@@ -673,10 +674,21 @@ module OpenEHR
         end
         return str
       end
+
+      def to_seconds
+        days = nilthenzero(@years)*TimeDefinitions::DAYS_IN_YEAR +
+          nilthenzero(@months)*TimeDefinitions::DAYS_IN_MONTH +
+          nilthenzero(@weeks)*TimeDefinitions::DAYS_IN_WEEK + 
+          nilthenzero(@days)
+        seconds_with_fractional = (((days*TimeDefinitions::HOURS_IN_DAY + nilthenzero(@hours))*TimeDefinitions::MINUTES_IN_HOUR)+nilthenzero(@minutes))*TimeDefinitions::SECONDS_IN_MINUTE + 
+          nilthenzero(@seconds) +
+          @fractional_second.to_f
+        return seconds_with_fractional
+      end
     end
 
     class ISO8601Duration
-      include ISO8601DurationModule
+      include ISO8601DurationModule, Comparable
       def initialize(str)
         /^P((\d+)[Yy])?((\d+)[Mm])?((\d+)[Ww])?((\d)[dD])?(T((\d+)[Hh])?((\d+)[Mm])?((\d+)(\.\d+)?[Ss])?)?$/ =~ str
         self.years = $2.to_i
@@ -689,6 +701,10 @@ module OpenEHR
         unless $16.nil?
           self.fractional_second = $16.to_f
         end
+      end
+
+      def <=>(other)
+        self.to_seconds <=> other.to_seconds
       end
     end # end of ISO8601Duration
   end # end of Assumed_Types

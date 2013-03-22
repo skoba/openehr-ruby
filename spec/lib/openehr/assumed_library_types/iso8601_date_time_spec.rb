@@ -32,6 +32,10 @@ describe ISO8601DateTime do
     }.should_not raise_error ArgumentError
   end
 
+  it 'should be comparable' do
+    ISO8601DateTime.new('2009-06-29T12:34:56.78+0900').should > ISO8601DateTime.new('2009-06-29T12:34:56.77+0900')
+  end
+
   describe 'partial date' do
     it 'should recognize 2009-06' do
       @iso8601date_time.day = nil      

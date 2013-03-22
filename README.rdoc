@@ -1,16 +1,15 @@
 = Synopsis
 
-Ruby openEHR implementation project.
-* http://github.com/skoba/ruby-impl-openehr
+A Ruby implementation of the openEHR specifications
+
+* http://github.com/skoba/openehr-ruby
 
 = Requirements
 
-* Ruby 1.9.2 or later recommended
-* Developed with CRuby 2.0.0, 1.9.3 on Linux and FreeBSD.
+* Supports Ruby 1.9.3, 2.0.0 or equivalent
+* Developed with CRuby 2.0.0, 1.9.3 on FreeBSD and Linux.
 * It would work with some adjustment on Ruby 1.8 or earlier,
   but not confirmed.
-* It should work on other platforms with Ruby
-  support as well.
 
 == DESCRIPTION:
 
@@ -53,6 +52,13 @@ openEHR.jp, <http://openehr.jp>
 
 * ADL parser test cases are derived from Java and Eiffel
 reference implementation project of the openEHR.
+
+= Contributors
+Thanks for pull request on GitHub.
+
+* Michael Deryugin
+* Dmitry Lavrov
+* Evgeny Strokov
 
 = Copyright
 The software, including all files in this directory and

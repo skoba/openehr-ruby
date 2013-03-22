@@ -152,13 +152,13 @@ module OpenEHR
               end
               @timing = timing
             end
-          end
 
-          def action_archetype_id=(action_archetype_id)
-            if action_archetype_id.nil? || action_archetype_id.empty?
-              raise ArgumentError, 'action_archetype_id is mandatory'
+            def action_archetype_id=(action_archetype_id)
+              if action_archetype_id.nil? || action_archetype_id.empty?
+                raise ArgumentError, 'action_archetype_id is mandatory'
+              end
+              @action_archetype_id = action_archetype_id
             end
-            @action_archetype_id = action_archetype_id
           end
 
           class Action < CareEntry
