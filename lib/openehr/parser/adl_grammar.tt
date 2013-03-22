@@ -260,7 +260,7 @@ module OpenEHR
           def value(node = ArchetypeNode.new)
             args = head.value
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
-              :lower => 1, :upper => 1)
+              :lower => 1, :upper => 1, :lower_included => true, :upper_included => true)
             node.id = args[:node_id]
             if node.root? or node.id.nil?
               args[:path] = node.path
@@ -275,7 +275,7 @@ module OpenEHR
           def value(node = ArchetypeNode.new)
             args = c_complex_object_head.value
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
-              :lower => 1, :upper => 1)
+              :lower => 1, :upper => 1, :lower_included => true, :upper_included => true)
             node.id = args[:node_id]
             args[:path] = node.path
             OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(args)
@@ -337,7 +337,7 @@ module OpenEHR
             args[:path] = node.path
             args[:rm_type_name] = 'DV_ORDINAL'
             args[:occurrences] ||= OpenEHR::AssumedLibraryTypes::Interval.new(
-              :upper => 1, :lower => 1)
+              :upper => 1, :lower => 1, :lower_included => true, :upper_included => true)
             OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new(
              args)
           end
@@ -395,7 +395,7 @@ module OpenEHR
             OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(
               :rm_type_name => type_identifier.value,
               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
-                :lower => 1, :upper => 1),
+                :lower => 1, :upper => 1, :lower_included => true, :upper_included => true),
               :path => node.path,
               :target_path => object_path.value)
            end
@@ -439,7 +439,7 @@ module OpenEHR
           def value(node)
             args = c_archetype_slot_id.value(node)
             args[:occurrences] = OpenEHR::AssumedLibraryTypes::Interval.new(
-              :upper => 1, :lower => 1)
+              :upper => 1, :lower => 1, :lower_included => true, :upper_included => true)
             args
           end
         }
@@ -467,7 +467,11 @@ module OpenEHR
             OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(
               {:item => c_primitive.value,
                :rm_type_name => c_primitive.value.type,
-               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(:upper => 1, :lower => 1),
+               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                 :upper => 1, 
+                                 :lower => 1, 
+                                 :lower_included => true, 
+                                 :upper_included => true),
                :path => node.path})
           end
         }
@@ -521,8 +525,8 @@ module OpenEHR
           def value(node)
             OpenEHR::AM::Archetype::ConstraintModel::CAttribute.new(
               :path => node.path, :rm_attribute_name => 'ANY',
-              :exsitence => OpenEHR::AssumedLibraryTypes::Interval.new(
-                :lower => 1, :upper => 1))
+              :existence => OpenEHR::AssumedLibraryTypes::Interval.new(
+                :lower => 1, :upper => 1, :lower_included => true, :upper_included => true))
           end
         }
       end
@@ -665,12 +669,20 @@ module OpenEHR
       rule existence_spec
         lo:V_INTEGER SYM_ELLIPSIS up:V_INTEGER {
           def value
-            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value, :upper => up.value)
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => lo.value, 
+              :upper => up.value, 
+              :lower_included => true, 
+              :upper_included => true)
           end
         }
       / V_INTEGER '' {
           def value
-            OpenEHR::AssumedLibraryTypes::Interval.new(:lower => V_INTEGER.value, :upper => V_INTEGER.value)
+            OpenEHR::AssumedLibraryTypes::Interval.new(
+              :lower => V_INTEGER.value, 
+              :upper => V_INTEGER.value, 
+              :lower_included => true, 
+              :upper_included => true)
           end
         }
       end
@@ -758,11 +770,14 @@ module OpenEHR
           def value
             if ed.value == '*'
               OpenEHR::AssumedLibraryTypes::Interval.new(
-                 :lower => st.value)
+                 :lower => st.value,
+                 :lower_included => true)
             else
               OpenEHR::AssumedLibraryTypes::Interval.new(
                 :lower => st.value,
-                :upper => ed.value)
+                :upper => ed.value,
+                :lower_included => true, 
+                :upper_included => true)
             end
           end
         }
@@ -770,7 +785,9 @@ module OpenEHR
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(
               :lower => cardinality_limit_value.value,
-              :upper => cardinality_limit_value.value)
+              :upper => cardinality_limit_value.value,
+              :lower_included => true,
+              :upper_included => true)
           end
         }
       end
@@ -1111,7 +1128,11 @@ module OpenEHR
             OpenEHR::AM::Archetype::ConstraintModel::ConstraintRef.new(
               :path => node.path,
               :rm_type_name => 'ConstraintRef',
-              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(:upper => 1, :lower => 1),
+              :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
+                                :upper => 1, 
+                                :lower => 1, 
+                                :lower_included => true, 
+                                :upper_included => true),
               :reference => vltcr.value)
           end
         }
@@ -1164,7 +1185,10 @@ module OpenEHR
             ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
               :rm_type_name => 'CodePhrase',
               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
-                                :upper => 1, :lower => 1),
+                                :upper => 1, 
+                                :lower => 1, 
+                                :lower_included => true, 
+                                :upper_included => true),
               :terminology_id => ti.value, :code_list => code_string_spec.value,
               :assumed_value => code_string.value,
               :path => node.path)
@@ -1175,7 +1199,10 @@ module OpenEHR
             ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
               :rm_type_name => 'CodePhrase',
               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
-                                :upper => 1, :lower => 1),
+                                :upper => 1, 
+                                :lower => 1, 
+                                :lower_included => true, 
+                                :upper_included => true),
               :terminology_id => ti.value, :code_list => code_string_spec.value,
               :path => node.path)
           end
@@ -1185,7 +1212,10 @@ module OpenEHR
             ::OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
               :rm_type_name => 'CodePhrase',
               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
-                                :upper => 1, :lower => 1),
+                                :upper => 1, 
+                                :lower => 1, 
+                                :lower_included => true, 
+                                :upper_included => true),
               :terminology_id => ti.value, :code_list => [], :path => node.path)
           end
         }
@@ -1361,7 +1391,10 @@ module OpenEHR
             OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(
               :path => node.path, :rm_type_name => 'DvQuantity',
               :occurrences => OpenEHR::AssumedLibraryTypes::Interval.new(
-                :upper => 1, :lower => 1),
+                                :upper => 1, 
+                                :lower => 1, 
+                                :lower_included => true, 
+                                :upper_included => true),
               :units => units.value,
               :magnitude => magnitude, :precision => precision)
           end
@@ -2207,7 +2240,7 @@ module OpenEHR
         SYM_INTERVAL_DELIM SYM_GT lo:integer_value SYM_ELLIPSIS SYM_LT up:integer_value SYM_INTERVAL_DELIM {
           def value
             OpenEHR::AssumedLibraryTypes::Interval.new(:lower => lo.value,
-                  :upper => up.value,
+            :upper => up.value,
                   :lower_included => false,
                   :upper_included => false)
           end

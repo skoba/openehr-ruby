@@ -8,7 +8,8 @@ describe ADLParser do
       archetype = adl14_archetype('adl-test-entry.structure_test1.test.adl')
       @definition = archetype.definition
       @occurrences = OpenEHR::AssumedLibraryTypes::Interval.new(
-                       :upper => 1, :lower => 1)
+                       :upper => 1, :lower => 1, 
+                       :lower_included => true, :upper_included => true)
     end
 
     context 'root definition object' do
@@ -148,13 +149,15 @@ describe ADLParser do
 
       it 'existence are 0..1' do
         existence = OpenEHR::AssumedLibraryTypes::Interval.new(
-                        :lower => 0, :upper => 1)
+                        :lower => 0, :upper => 1,
+                        :lower_included => true, :upper_included => true)
         @attr.existence.should == existence
       end
 
       it 'cardinality interval is 0..8' do
         interval = OpenEHR::AssumedLibraryTypes::Interval.new(
-                        :lower => 0, :upper => 8)
+                        :lower => 0, :upper => 8,
+                        :lower_included => true, :upper_included => true)
         @attr.cardinality.interval.should == interval
       end
 
@@ -191,7 +194,7 @@ describe ADLParser do
 
         it 'occurences is upper unbounded' do
           occurrences = OpenEHR::AssumedLibraryTypes::Interval.new(
-                          :lower => 0)
+                          :lower => 0, :lower_included => true)
           @second.occurrences.should == occurrences
         end
 
