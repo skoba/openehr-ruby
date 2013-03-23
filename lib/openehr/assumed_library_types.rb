@@ -458,7 +458,11 @@ module OpenEHR
 
     module ISO8601DateTimeModule
       include ISO8601DateModule, ISO8601TimeModule
-
+      
+      def hour_unknown?
+        @hour.nil?
+      end
+      
       def as_string
         if (!@year.nil? and !@month.nil? and !@day.nil?)
           s = Date.new(@year, @month, @day).to_s

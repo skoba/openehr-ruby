@@ -14,6 +14,10 @@ module OpenEHR
               self.code_list = args[:code_list]
               self.assumed_value = args[:assumed_value]
             end
+            
+            def any_allowed?
+              @terminology_id.nil? && @code_list.nil?
+            end
           end
         end # of Text
       end # of Data_Types
