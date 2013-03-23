@@ -1,3 +1,4 @@
+{<img src="https://travis-ci.org/skoba/openehr-ruby.png?branch=master" alt="Build Status" />}[https://travis-ci.org/skoba/openehr-ruby]
 = Synopsis
 
 A Ruby implementation of the openEHR specifications
@@ -6,7 +7,7 @@ A Ruby implementation of the openEHR specifications
 
 = Requirements
 
-* Supports Ruby 1.9.3, 2.0.0 or equivalent
+* Supports Ruby 1.9.3, 2.0.0 or equivalents.
 * Developed with CRuby 2.0.0, 1.9.3 on FreeBSD and Linux.
 * It would work with some adjustment on Ruby 1.8 or earlier,
   but not confirmed.
@@ -54,7 +55,7 @@ openEHR.jp, <http://openehr.jp>
 reference implementation project of the openEHR.
 
 = Contributors
-Thanks for pull request on GitHub.
+Thanks for pull requests on GitHub.
 
 * Michael Deryugin
 * Dmitry Lavrov
