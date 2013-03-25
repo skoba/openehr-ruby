@@ -33,6 +33,7 @@ module OpenEHR
         if (lower == nil) && (lower_included != nil)
           raise ArgumentError, "lower is not set"
         end
+        lower_included = true if !lower.nil? && lower_included.nil?
         @lower_included = lower_included
       end
       
@@ -48,6 +49,7 @@ module OpenEHR
         if (@upper.nil?) && (upper_included != nil)
           raise ArgumentError, "upper is not set"
         end
+        upper_included = true if !upper.nil? && upper_included.nil?
         @upper_included = upper_included
       end
 

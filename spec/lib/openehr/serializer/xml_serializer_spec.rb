@@ -16,8 +16,8 @@ describe XMLSerializer do
     end
     @sample_header = xml.unindent(2, 11, 2)
     @sample_description = xml.unindent(12, 27, 2)
-    @sample_definition = xml.unindent(28, 37, 2)
-    @sample_ontology = xml.unindent(38, 56, 2)
+    @sample_definition = xml.unindent(28, 39, 2)
+    @sample_ontology = xml.unindent(40, 58, 2)
     @sample_xml = xml.join
     xml_file.close
     @archetype = sample_archetype
