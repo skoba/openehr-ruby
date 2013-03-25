@@ -43,12 +43,12 @@ describe Interval do
     @interval.has?(-1).should_not be_true
   end
 
-  it 'should not have 10' do
-    @interval.has?(10).should_not be_true
+  it 'should have 10' do
+    @interval.has?(10).should be_true
   end
 
-  it 'should not have 1' do
-    @interval.has?(1).should_not be_true
+  it 'should have 1' do
+    @interval.has?(1).should be_true
   end
 
   it 'should be equal lower and upper is same' do
