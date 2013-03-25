@@ -49,7 +49,6 @@ module OpenEHR
         if (@upper.nil?) && (upper_included != nil)
           raise ArgumentError, "upper is not set"
         end
-        
         upper_included = true if !upper.nil? && upper_included.nil?
         @upper_included = upper_included
       end
