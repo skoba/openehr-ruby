@@ -1,8 +1,10 @@
-$:.unshift(File.dirname(__FILE__))
 require 'openehr/version'
-require 'easyload'
+require 'openehr/assumed_library_types'
+require 'openehr/rm'
+require 'openehr/am'
+require 'openehr/parser'
+require 'openehr/serializer'
 
-module OpenEHR
-  include EasyLoad
-end
+
+
 
