@@ -3,6 +3,6 @@ require 'openehr/version'
 require 'easyload'
 
 module OpenEHR
-  import EasyLoad
+  imclude EasyLoad
 end
 
