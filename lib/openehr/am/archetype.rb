@@ -1,12 +1,12 @@
 $:.unshift(File.dirname(__FILE__))
 include OpenEHR::RM::Common::Resource
+require 'archetype/assertion'
+require 'archetype/constraint_model'
+require 'archetype/ontology'
 
 module OpenEHR
   module AM
     module Archetype
-      require 'archetype/assertion'
-      require 'archetype/constraint_model'
-      require 'archetype/ontology'
 
       module ADLDefinition
         CURRENT_ADL_VERSION = "1.4"
@@ -126,6 +126,10 @@ module OpenEHR
           @value = value
         end
       end
+
+      include Assertion
+      include ConstraintModel
+      include Ontology
     end # of Archetype
   end # of AM
 end # of OpenEHR

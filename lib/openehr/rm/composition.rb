@@ -2,10 +2,13 @@
 # composition module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109005072243_448526_217Report.html
 # refs #79
-include OpenEHR::RM::Common::Archetyped
+require 'composition/content'
+
 module OpenEHR
   module RM
     module Composition
+      include OpenEHR::RM::Common::Archetyped
+
       class Composition < Locatable
         attr_reader :language, :category, :territory, :composer
         attr_accessor :content, :context
@@ -96,8 +99,7 @@ module OpenEHR
         end
       end
 
-      require 'composition/content'
-
+      include Content
     end # end of Composition
   end # end of RM
 end # end of OpenEHR

@@ -1,5 +1,8 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+require 'parser/adl_parser'
+# require 'parser/xml_perser'
+
 module OpenEHR
   module Parser
     class Base
@@ -14,10 +17,6 @@ module OpenEHR
       end
     end
 
-    require 'parser/adl_parser'
-#    require 'parser/adl_parser'
-#    require 'parser/xml_perser'
-#    require 'parser/exception'
-#    require 'parser/scanner'
+    inlucde ADLParser
   end
 end

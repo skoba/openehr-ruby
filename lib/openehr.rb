@@ -5,6 +5,10 @@ require 'openehr/am'
 require 'openehr/parser'
 require 'openehr/serializer'
 
-
-
-
+module OpenEHR
+  include AssumedLibraryTypes
+  include RM
+  include AM
+  include Parser
+  include Serializer
+end

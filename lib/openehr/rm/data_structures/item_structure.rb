@@ -5,13 +5,13 @@
 $:.unshift(File.dirname(__FILE__))
 
 require 'set'
+require 'item_structure/representation'
 #include OpenEHR::RM::DataStructures
 module OpenEHR
   module RM
     module DataStructures
       module ItemStructure
 
-        require 'item_structure/representation'
 
         class ItemStructure < DataStructure
         end
@@ -213,6 +213,8 @@ module OpenEHR
                                :items => @items)
           end
         end
+
+        include Representation
       end # of ItemStructure
     end # of DataStructures
   end # of RM
