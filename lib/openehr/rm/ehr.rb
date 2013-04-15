@@ -2,10 +2,6 @@
 # ehr module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109004889781_854011_47Report.html
 # refs #44
-include OpenEHR::RM::Common::ChangeControl
-include OpenEHR::RM::Common::Archetyped
-include OpenEHR::RM::Security
-
 module OpenEHR
   module RM
     module EHR
@@ -93,11 +89,11 @@ module OpenEHR
         end
       end
 
-      class VersionedEHRAccess < VersionedObject
+      class VersionedEHRAccess < OpenEHR::RM::Common::ChangeControl::VersionedObject
 
       end
 
-      class EHRAccess < Locatable
+      class EHRAccess < OpenEHR::RM::Common::Archetyped::Locatable
         attr_accessor :settings
         attr_reader :scheme
 
@@ -115,11 +111,11 @@ module OpenEHR
         end
       end
 
-      class VersionedEHRStatus < VersionedObject
+      class VersionedEHRStatus < OpenEHR::RM::Common::ChangeControl::VersionedObject
 
       end
 
-      class EHRStatus < Locatable
+      class EHRStatus < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :subject
         attr_accessor :is_modifiable, :is_queryable, :other_details
 
@@ -152,7 +148,7 @@ module OpenEHR
         end
       end
 
-      class VersionedComposition < VersionedObject
+      class VersionedComposition < OpenEHR::RM::Common::ChangeControl::VersionedObject
         def is_persistent?
           return @all_versions.first.data.is_persistent?
         end
