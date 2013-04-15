@@ -1,4 +1,3 @@
-$:.unshift(File.dirname(__FILE__))
 # This module is an implementation of this UML:
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109331021343_528780_2066Report.html
 # Ticket refs #39

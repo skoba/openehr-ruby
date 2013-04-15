@@ -1,19 +1,16 @@
-#require File.dirname(__FILE__) + '/../../../../../../spec_helper'
 require 'spec_helper'
-#include 
-include OpenEHR::RM::DataTypes::Text
 
 describe OpenEHR::RM::Composition::Content::Navigation::Section do
   before(:each) do
     items = stub(Array, :empty? => false, :size => 10)
     @section = OpenEHR::RM::Composition::Content::Navigation::Section.new(
                            :archetype_node_id => 'at0001',
-                           :name => DvText.new(:value => 'section'),
+                           :name => OpenEHR::RM::DataTypes::Text::DvText.new(:value => 'section'),
                            :items => items)
   end
 
   it 'should be an instance of Section' do
-    @section.should be_an_instance_of Section
+    @section.should be_an_instance_of OpenEHR::RM::Composition::Content::Navigation::Section
   end
 
   it 'items should be assigned properly' do

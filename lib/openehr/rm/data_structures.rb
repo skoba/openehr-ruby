@@ -17,10 +17,7 @@ module OpenEHR
       end
 
       require 'openehr/rm/data_structures/item_structure'
-      include OpenEHR::RM::DataStructures::ItemStructure
-
       require 'openehr/rm/data_structures/history'
-      include History
     end # of Data_Structures
   end # of RM
 end # of OpenEHR

@@ -1,5 +1,4 @@
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require "openehr/version"
 
 Gem::Specification.new do |gem|
@@ -16,9 +15,10 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = [
     "README.rdoc"
   ]
-  gem.files         = `git ls-files`.split("\n")
+  gem.files         = `git ls-files -- lib/*`.split("\n")
+  gem.files        += %w[README.rdoc]
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  gem.require_paths = ["lib"]
+  gem.require_path  = "lib"
 
   gem.add_dependency('rake')
   gem.add_dependency('xml-simple')

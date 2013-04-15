@@ -1,5 +1,4 @@
-$:.unshift(File.dirname(__FILE__))
-require 'constraint_model/primitive'
+require 'openehr/am/archetype/constraint_model/primitive'
 
 module OpenEHR
   module AM
@@ -335,8 +334,6 @@ module OpenEHR
             self.cardinality = args[:cardinality]
           end
         end
-
-        include Primitive
       end # of ConstraintModel
     end # of Archetype
   end # of AM

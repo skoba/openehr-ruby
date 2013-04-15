@@ -4,7 +4,6 @@
 # refs #54
 require 'set'
 require 'openehr/rm/data_structures'
-require 'openehr/rm/data_structures/item_structure/representation'
 
 module OpenEHR
   module RM
@@ -211,7 +210,7 @@ module OpenEHR
           end
         end
 
-        include Representation
+        require 'openehr/rm/data_structures/item_structure/representation'
       end # of ItemStructure
     end # of DataStructures
   end # of RM
