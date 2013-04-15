@@ -2,20 +2,17 @@
 # ItemStructure module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109346709572_859750_3810Report.html
 # refs #54
-$:.unshift(File.dirname(__FILE__))
-
 require 'set'
-require 'item_structure/representation'
-#include OpenEHR::RM::DataStructures
+require 'openehr/rm/data_structures'
+require 'openehr/rm/data_structures/item_structure/representation'
+
 module OpenEHR
   module RM
     module DataStructures
       module ItemStructure
+        class ItemStructure < ::OpenEHR::RM::DataStructures::DataStructure
 
-
-        class ItemStructure < DataStructure
         end
-
 
         class ItemSingle < ItemStructure
           attr_reader :item

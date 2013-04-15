@@ -1,11 +1,13 @@
-require File.dirname(__FILE__) + '/../../../../../../spec_helper'
-include OpenEHR::RM::Composition::Content::Navigation
+#require File.dirname(__FILE__) + '/../../../../../../spec_helper'
+require 'spec_helper'
+#include 
 include OpenEHR::RM::DataTypes::Text
 
-describe Section do
+describe OpenEHR::RM::Composition::Content::Navigation::Section do
   before(:each) do
     items = stub(Array, :empty? => false, :size => 10)
-    @section = Section.new(:archetype_node_id => 'at0001',
+    @section = OpenEHR::RM::Composition::Content::Navigation::Section.new(
+                           :archetype_node_id => 'at0001',
                            :name => DvText.new(:value => 'section'),
                            :items => items)
   end

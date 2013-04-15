@@ -2,14 +2,15 @@
 # navigation module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109264528523_312165_346Report.html
 # refs #56
-include OpenEHR::RM::Composition::Content
+
+require 'openehr/rm/composition/content'
 
 module OpenEHR
   module RM
     module Composition
       module Content
         module Navigation
-          class Section < ContentItem
+          class Section < ::OpenEHR::RM::Composition::Content::ContentItem
             attr_reader :items 
 
             def initialize(args = { })

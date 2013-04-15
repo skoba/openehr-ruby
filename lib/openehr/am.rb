@@ -1,10 +1,9 @@
-$:.unshift(File.dirname(__FILE__))
-require 'am/archetype'
-require 'am/openehr_profile'
+require 'openehr/am/archetype'
+require 'openehr/am/openehr_profile'
 
 module OpenEHR
   module AM
-    include Archtype
+    include Archetype
     include OpenEHRProfile
   end
 end

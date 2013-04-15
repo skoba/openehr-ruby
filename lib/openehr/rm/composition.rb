@@ -2,14 +2,15 @@
 # composition module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109005072243_448526_217Report.html
 # refs #79
+$:.unshift(File.dirname(__FILE__))
 require 'composition/content'
 
 module OpenEHR
   module RM
     module Composition
-      include OpenEHR::RM::Common::Archetyped
+      include OpenEHR::RM::Composition::Content
 
-      class Composition < Locatable
+      class Composition < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :language, :category, :territory, :composer
         attr_accessor :content, :context
 
@@ -56,7 +57,7 @@ module OpenEHR
         end
       end
 
-      class EventContext < Pathable
+      class EventContext < OpenEHR::RM::Common::Archetyped::Pathable
         attr_reader :start_time, :setting, :participations, :location
         attr_accessor :end_time, :other_context
 
@@ -98,8 +99,6 @@ module OpenEHR
           @location = location
         end
       end
-
-      include Content
     end # end of Composition
   end # end of RM
 end # end of OpenEHR

@@ -1,11 +1,6 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
-include OpenEHR::Parser
-include OpenEHR::AM::Archetype
-include OpenEHR::AM::Archetype::ConstraintModel
-include OpenEHR::AM::Archetype::Assertion
-include OpenEHR::AM::Archetype::Ontology
 
-describe ADLParser do
+describe OpenEHR::Parser::ADLParser do
 
   before (:all) do
     @adl_dir = File.dirname(__FILE__) + '/adl14/'
@@ -13,11 +8,11 @@ describe ADLParser do
 
   context 'openEHR-EHR-SECTION-summary.v1.adl' do
     before(:all) do
-      @ap = ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
+      @ap = OpenEHR::Parser::ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
     end
 
     it 'is an instance fo ADLParser' do
-      @ap.should be_an_instance_of ADLParser
+      @ap.should be_an_instance_of OpenEHR::Parser::ADLParser
     end
 
     context 'openEHR-EHR-SECTION.summary.v1 parse' do
@@ -27,7 +22,7 @@ describe ADLParser do
         end
 
         it 'archetype is an instance of Archetype' do
-          @archetype.should be_an_instance_of Archetype
+          @archetype.should be_an_instance_of OpenEHR::AM::Archetype::Archetype
         end
 
         it 'archetype_id should be openEHR-EHR-SECTION-summary' do
@@ -142,7 +137,7 @@ describe ADLParser do
             end
 
             it 'attribute is instance of CMultipleAttribute' do
-              @attribute.should be_an_instance_of CMultipleAttribute
+              @attribute.should be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute
             end
 
             it 'rm_attribute_name is items' do
@@ -170,7 +165,7 @@ describe ADLParser do
               end
 
               it 'is an instance of ArchetypeSlot' do
-                @archetype_slot.should be_an_instance_of ArchetypeSlot
+                @archetype_slot.should be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot
               end
 
               it 's rm type name is EVALUATION' do
@@ -196,7 +191,7 @@ describe ADLParser do
                   end
 
                   it 'assertion0 should be an instance of Assertion' do
-                    @assertion0.should be_an_instance_of Assertion
+                    @assertion0.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'expression type of assertion0 is Boolean' do
@@ -214,7 +209,7 @@ describe ADLParser do
                   end
 
                   it 'assertion1 is an instanse of Assertion' do
-                    @assertion1.should be_an_instance_of Assertion
+                    @assertion1.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion1 type is Boolean' do
@@ -233,7 +228,7 @@ describe ADLParser do
                   end
 
                   it 'assertion2 is an instanse of Assertion' do
-                    @assertion2.should be_an_instance_of Assertion
+                    @assertion2.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion2 type is Boolean' do
@@ -252,7 +247,7 @@ describe ADLParser do
                   end
 
                   it 'assertion3 is an instanse of Assertion' do
-                    @assertion3.should be_an_instance_of Assertion
+                    @assertion3.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion3 type is Boolean' do
@@ -271,7 +266,7 @@ describe ADLParser do
                   end
 
                   it 'assertion4 is an instanse of Assertion' do
-                    @assertion4.should be_an_instance_of Assertion
+                    @assertion4.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion4 type is Boolean' do
@@ -290,7 +285,7 @@ describe ADLParser do
                   end
 
                   it 'assertion5 is an instanse of Assertion' do
-                    @assertion5.should be_an_instance_of Assertion
+                    @assertion5.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion5 type is Boolean' do
@@ -319,7 +314,7 @@ describe ADLParser do
           end
 
           it 'is an ArchtypeOntology instance' do
-            @archetype_ontology.should be_an_instance_of ArchetypeOntology
+            @archetype_ontology.should be_an_instance_of OpenEHR::AM::Archetype::Ontology::ArchetypeOntology
           end
 
           it 'term_definitions parsed and assigned properly' do

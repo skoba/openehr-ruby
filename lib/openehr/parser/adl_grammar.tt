@@ -3,7 +3,7 @@ require 'openehr/rm/data_types/quantity'
 require 'openehr/am/archetype/constraint_model'
 require 'openehr/am/openehr_profile/data_types/text'
 require 'openehr/am/openehr_profile/data_types/quantity'
-require 'adl_helper'
+require 'openehr/parser/adl_helper'
 
 module OpenEHR
   module Parser

@@ -1,23 +1,20 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
-include OpenEHR::RM::Composition::Content::Entry
-include OpenEHR::RM::DataTypes::Text
-include OpenEHR::RM::Common::Generic
 
-describe Entry do
+describe OpenEHR::RM::Composition::Content::Entry::Entry do
 
-  let(:name) {DvText.new(:value => 'entry package')}
+  let(:name) {OpenEHR::RM::DataTypes::Text::DvText.new(:value => 'entry package')}
   let(:language) { double('language',:code_string => 'ja')}
   let(:encoding) { double('encoding', :code_string => 'UTF-8')}
   let(:subject) { double('PartyProxy')}
 
   before(:each) do
-    external_ref = stub(PartyRef, :type => 'entry')
-    subject = PartyProxy.new(:external_ref => external_ref)
-    provider_external_ref = stub(PartyRef, :type => 'provider')
-    provider = PartyProxy.new(:external_ref => provider_external_ref)
+    external_ref = stub(OpenEHR::RM::Support::Identification::PartyRef, :type => 'entry')
+    subject = OpenEHR::RM::Common::Generic::PartyProxy.new(:external_ref => external_ref)
+    provider_external_ref = stub(OpenEHR::RM::Support::Identification::PartyRef, :type => 'provider')
+    provider = OpenEHR::RM::Common::Generic::PartyProxy.new(:external_ref => provider_external_ref)
     other_participations = stub(Array, :size => 3, :empty? => false)
-    workflow_id = stub(ObjectRef, :type => 'workflow')
-    @entry = Entry.new(:archetype_node_id => 'at0001',
+    workflow_id = stub(OpenEHR::RM::Support::Identification::ObjectRef, :type => 'workflow')
+    @entry = OpenEHR::RM::Composition::Content::Entry::Entry.new(:archetype_node_id => 'at0001',
                        :name => DvText.new(:value => 'entry test'),
                        :language => language,
                        :encoding => encoding,
@@ -28,7 +25,7 @@ describe Entry do
   end
 
   it 'should be an instance of Entry' do
-    @entry.should be_an_instance_of Entry
+    @entry.should be_an_instance_of OpenEHR::RM::Composition::Content::Entry::Entry
   end
 
   it 'language should be assigned properly' do
@@ -42,8 +39,8 @@ describe Entry do
   end
 
   it 'should raise ArgumentError with invalid language code' do
-    terminology_id = TerminologyID.new(:value => 'ISO639-1')
-    invalid_language = CodePhrase.new(:code_string => 'jj',
+    terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(:value => 'ISO639-1')
+    invalid_language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(:code_string => 'jj',
                                       :terminology_id => terminology_id)
     expect {@entry.language = invalid_language}.to raise_error ArgumentError
   end
@@ -59,8 +56,8 @@ describe Entry do
   end
 
   it 'should raise ArgumentError with invalid encoding' do
-    terminology_id = TerminologyID.new(:value => 'ISO639-1')
-    invalid_encoding = CodePhrase.new(:terminology_id => terminology_id,
+    terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(:value => 'ISO639-1')
+    invalid_encoding = OpenEHR::RM::DataTypes::Text::CodePhrase.new(:terminology_id => terminology_id,
                                       :code_string => 'inv-19')
     expect {@entry.encoding = invalid_encoding}.to raise_error ArgumentError
   end
@@ -92,7 +89,7 @@ describe Entry do
   end
 
   it 'subject_is_self? should be true when subject is instance of PartySelf' do
-    @entry.subject = PartySelf.new
+    @entry.subject = OpenEHR::RM::Common::Generic::PartySelf.new
     @entry.subject_is_self?.should be_true
   end
 end

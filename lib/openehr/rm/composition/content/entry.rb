@@ -2,7 +2,6 @@
 # entry module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109264528523_312165_346Report.html
 # refs #56
-include OpenEHR::RM::Composition::Content
 require 'locale/info'
 
 module OpenEHR
@@ -10,9 +9,10 @@ module OpenEHR
     module Composition
       module Content
         module Entry
-          class Entry < ContentItem
+          class Entry < ::OpenEHR::RM::Composition::Content::ContentItem
             attr_reader :language, :encoding, :subject
             attr_accessor :provider, :other_participations, :workflow_id
+
             def initialize(args = { })
               super(args)
               self.language = args[:language]
@@ -129,7 +129,7 @@ module OpenEHR
             end
           end
 
-          class Activity < Locatable
+          class Activity < OpenEHR::RM::Common::Archetyped::Locatable
             attr_reader :description, :timing, :action_archetype_id
 
             def initialize(args = { })
@@ -195,7 +195,7 @@ module OpenEHR
             end
           end
 
-          class InstructionDetails < Pathable
+          class InstructionDetails < OpenEHR::RM::Common::Archetyped::Pathable
             attr_reader :instruction_id, :activity_id
             attr_accessor :wf_details
 
@@ -221,7 +221,7 @@ module OpenEHR
             end
           end
 
-          class IsmTransition < Pathable
+          class IsmTransition < OpenEHR::RM::Common::Archetyped::Pathable
             attr_reader :current_state, :transition
             attr_accessor :careflow_step
 
