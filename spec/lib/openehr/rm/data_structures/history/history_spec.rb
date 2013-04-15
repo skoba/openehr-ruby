@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/../../../../../spec_helper'
-include OpenEHR::RM::DataStructures::History
+
 include OpenEHR::RM::DataStructures::ItemStructure
 include OpenEHR::RM::DataTypes::Text
 include OpenEHR::RM::DataTypes::Quantity::DateTime
@@ -11,7 +11,7 @@ describe History do
     duration = DvDuration.new(:value => 'P0Y0M0W6D')
     events = [stub(Event, :archetype_node_id => 'at0002')]
     summary = stub(ItemStructure, :archetype_node_id => 'at0003')
-    @history = History.new(:archetype_node_id => 'at0001',
+    @history = OpenEHR::RM::DataStructures::History::History.new(:archetype_node_id => 'at0001',
                            :name => DvText.new(:value => 'history test'),
                            :origin => origin,
                            :period => period,
@@ -21,7 +21,7 @@ describe History do
   end
 
   it 'should be an instance of History' do
-    @history.should be_an_instance_of History
+    @history.should be_an_instance_of OpenEHR::RM::DataStructures::History::History
   end
 
   it 'origin should be properly assigned' do

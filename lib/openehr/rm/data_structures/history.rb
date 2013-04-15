@@ -1,19 +1,15 @@
-$:.unshift(File.dirname(__FILE__)) unless
-  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 # rm::data_structures::history
 # history module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109157527311_729550_7234Report.html
 # refs #55
 require 'time'
 require 'active_support/core_ext'
-include OpenEHR::RM::DataStructures
-include OpenEHR::RM::Common::Archetyped
 
 module OpenEHR
   module RM
     module DataStructures
       module History
-        class History < DataStructure
+        class History < OpenEHR::RM::DataStructures::DataStructure
           attr_reader :origin, :events
           attr_accessor :duration, :period, :summary
 
@@ -43,7 +39,7 @@ module OpenEHR
           end
         end
 
-        class Event < Locatable
+        class Event < OpenEHR::RM::Common::Archetyped::Locatable
           attr_reader :data, :time
           attr_accessor :state
 
@@ -108,7 +104,7 @@ module OpenEHR
               seconds += @width.fractional_second
             end
             start_time = seconds.ago start_time
-            return DvDateTime.new(:value => start_time.iso8601)
+            return OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(:value => start_time.iso8601)
           end
         end
       end # end of History
