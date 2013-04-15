@@ -1,7 +1,6 @@
 # This module is based on the UML,
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_5_1_76d0249_1140536622627_218703_7149Report.html
 # Ticket refs #63
-include OpenEHR::RM::DataTypes::Text
 module OpenEHR
   module RM
     module Common
@@ -20,7 +19,8 @@ module OpenEHR
             raise ArgumentError, "empty subfolder" if !folders.nil? and folders.empty?
             @folders = folders
           end
-        end        
+        end
+
         class VersionedFolder < OpenEHR::RM::Common::ChangeControl::VersionedObject
         end
       end # of Directory

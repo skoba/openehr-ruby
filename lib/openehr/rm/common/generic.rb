@@ -1,8 +1,6 @@
 # This module is a implementation of the bellow UML
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_5_1_76d0249_1140169202660_257304_813Report.html
 # Related to the ticket #62
-include OpenEHR::RM::Support::Identification
-include OpenEHR::RM::DataTypes::Basic
 module OpenEHR
   module RM
     module Common

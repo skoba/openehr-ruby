@@ -1,8 +1,6 @@
 # This module is based on the UML,
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109326589721_134411_997Report.html
 # Ticket refs #64
-include OpenEHR::RM::Common::Generic
-
 module OpenEHR
   module RM
     module Common
@@ -275,11 +273,11 @@ module OpenEHR
                 audits << ver.attestations
               end
               audits << ver.commit_audit
-              revision_history_items << RevisionHistoryItem.new(
+              revision_history_items << OpenEHR::RM::Common::Generic::RevisionHistoryItem.new(
                                           :audits => audits,
                                           :version_id => ver.uid)
             end
-            return RevisionHistory.new(:items => revision_history_items)
+            return OpenEHR::RM::Common::Generic::RevisionHistory.new(:items => revision_history_items)
           end
 
           def commit_original_version(args={ })
