@@ -1,11 +1,11 @@
+require_relative '../../archetype/constraint_model'
+
 module OpenEHR
   module AM
     module OpenEHRProfile
       module DataTypes
         module Quantity
-          include OpenEHR::AM::Archetype::ConstraintModel
-
-          class CDvQuantity < CDomainType
+          class CDvQuantity < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
             attr_accessor :property, :list
 
             def initialize(args = { })
@@ -23,7 +23,7 @@ module OpenEHR
             end
           end
           
-          class CDvOrdinal < CDomainType
+          class CDvOrdinal < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
             attr_accessor :list
             def initialize(args = { })
               super

@@ -2,7 +2,7 @@
 # composition module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109005072243_448526_217Report.html
 # refs #79
-require 'openehr/rm/composition/content'
+require_relative 'common/archetyped'
 
 module OpenEHR
   module RM

@@ -1,11 +1,11 @@
+require_relative '../../archetype/constraint_model'
+
 module OpenEHR
   module AM
     module OpenEHRProfile
       module DataTypes
         module Basic
-          include OpenEHR::AM::Archetype::ConstraintModel
-
-          class CDvState < CDomainType
+          class CDvState < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
             attr_reader :value
 
             def initialize(args = { })

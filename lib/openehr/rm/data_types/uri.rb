@@ -3,6 +3,8 @@
 # Ticket refs #46
 require 'uri/generic'
 
+require_relative 'basic'
+
 module URI
   class EHR < ::URI::Generic
     COMPONENT = [
