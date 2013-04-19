@@ -1,5 +1,3 @@
-require 'openehr/am/archetype/constraint_model/primitive'
-
 module OpenEHR
   module AM
     module Archetype

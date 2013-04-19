@@ -1,4 +1,5 @@
 # This module is related to the ticket #47
+require_relative 'basic'
 
 module OpenEHR
   module RM
@@ -31,7 +32,6 @@ module OpenEHR
 
 # I have not implemented two classes bellow,
 # because I could not obtain HL7 specification related them.
-
 
         class DvGeneralTimeSpecification < DvTimeSpecification
           attr_reader :value

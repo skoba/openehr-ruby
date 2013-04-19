@@ -3,13 +3,15 @@
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109346709572_859750_3810Report.html
 # refs #54
 require 'set'
-require 'openehr/rm/data_structures'
+
+require_relative '../data_structures'
+require_relative 'item_structure/representation'
 
 module OpenEHR
   module RM
     module DataStructures
       module ItemStructure
-        class ItemStructure < ::OpenEHR::RM::DataStructures::DataStructure
+        class ItemStructure < OpenEHR::RM::DataStructures::DataStructure
 
         end
 
@@ -209,8 +211,6 @@ module OpenEHR
                                :items => @items)
           end
         end
-
-        require 'openehr/rm/data_structures/item_structure/representation'
       end # of ItemStructure
     end # of DataStructures
   end # of RM

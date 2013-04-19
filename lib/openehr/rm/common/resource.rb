@@ -1,4 +1,5 @@
 require 'set'
+
 module OpenEHR
   module RM
     module Common

@@ -1,5 +1,4 @@
-$:.unshift File.join(File.dirname(__FILE__))
-require 'parser.rb'
+require_relative '../parser'
 
 module OpenEHR
   module ADL

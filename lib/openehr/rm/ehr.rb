@@ -2,6 +2,8 @@
 # ehr module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109004889781_854011_47Report.html
 # refs #44
+require_relative 'common/change_control'
+
 module OpenEHR
   module RM
     module EHR

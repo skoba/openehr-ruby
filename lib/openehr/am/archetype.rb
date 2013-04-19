@@ -1,6 +1,4 @@
-require 'openehr/am/archetype/assertion'
-require 'openehr/am/archetype/constraint_model'
-require 'openehr/am/archetype/ontology'
+require_relative '../rm/common/resource'
 
 module OpenEHR
   module AM
