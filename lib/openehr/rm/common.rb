@@ -1,5 +1,0 @@
-require 'openehr/rm/common/archetyped'
-require 'openehr/rm/common/generic'
-require 'openehr/rm/common/change_control'
-require 'openehr/rm/common/directory'
-require 'openehr/rm/common/resource'

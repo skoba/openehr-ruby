@@ -5,6 +5,10 @@
 require 'time'
 require 'active_support/core_ext'
 
+require_relative '../common/archetyped'
+require_relative '../data_structures'
+require_relative '../data_types/quantity/date_time'
+
 module OpenEHR
   module RM
     module DataStructures

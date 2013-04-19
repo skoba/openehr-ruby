@@ -1,6 +1,7 @@
 require 'treetop'
 require 'polyglot'
-require 'openehr/parser'
+
+require_relative '../parser'
 
 module OpenEHR
   module Parser

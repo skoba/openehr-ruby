@@ -2,6 +2,7 @@
 # content module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_5_1_76d0249_1140524925046_706492_3290Report.html
 # refs #58
+require_relative '../common/archetyped'
 
 module OpenEHR
   module RM
@@ -10,9 +11,6 @@ module OpenEHR
         class ContentItem < OpenEHR::RM::Common::Archetyped::Locatable
 
         end
-
-        require 'openehr/rm/composition/content/navigation'
-        require 'openehr/rm/composition/content/entry'
       end # end of Content
     end # end of Composition
   end # end of RM

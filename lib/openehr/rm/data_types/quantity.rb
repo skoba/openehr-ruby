@@ -1,8 +1,8 @@
 # This modules are implemented from the UML shown bellow
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109599337877_94556_1510Report.html
 # Ticket refs #50
-
-require 'openehr/assumed_library_types'
+require_relative '../../assumed_library_types'
+require_relative 'basic'
 
 module OpenEHR
   module RM

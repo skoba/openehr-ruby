@@ -2,6 +2,8 @@
 # integration module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_5_1_76d0249_1140530578205_529440_4046Report.html
 # refs #42
+require_relative 'composition/content'
+
 module OpenEHR
   module RM
     module Integration

@@ -1,8 +1,9 @@
 # OpenEHR::RM::Data_Types::Encapsulated 
 # http://www.openehr.org/svn/specification/TAGS/Release-1.0.2/publishing/architecture/computable/UML/uml_start_view.html
 # refs #51
-require 'rubygems'
 require 'locale/info'
+
+require_relative 'basic'
 
 module OpenEHR
   module RM

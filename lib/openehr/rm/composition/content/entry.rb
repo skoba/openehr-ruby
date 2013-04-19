@@ -4,6 +4,9 @@
 # refs #56
 require 'locale/info'
 
+require_relative '../../common/archetyped'
+require_relative '../content'
+
 module OpenEHR
   module RM
     module Composition

@@ -1,12 +1,12 @@
 # This module is based on the UML,
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_5_76d0249_1118674798473_6021_0Report.html
 # Ticket refs #45
-include OpenEHR::RM::Common::Archetyped
+require_relative 'common/archetyped'
 
 module OpenEHR
   module RM
     module Demographic
-      class Party < Locatable
+      class Party < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :uid, :identities, :contacts, :relationships,
                     :reverse_relationships
         attr_accessor :details
@@ -69,7 +69,7 @@ module OpenEHR
         end
       end
 
-      class PartyIdentity < Locatable
+      class PartyIdentity < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :details
 
         def initialize(args = { })
@@ -89,7 +89,7 @@ module OpenEHR
         end
       end
 
-      class Contact < Locatable
+      class Contact < OpenEHR::RM::Common::Archetyped::Locatable
         attr_accessor :time_validity
         attr_reader :addresses
 
@@ -111,7 +111,7 @@ module OpenEHR
         end
       end
 
-      class Address < Locatable
+      class Address < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :details
 
         def initialize(args = { })
@@ -207,7 +207,7 @@ module OpenEHR
         end
       end
 
-      class Capability < Locatable
+      class Capability < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :credentials
         attr_accessor :time_validity
 
@@ -225,7 +225,7 @@ module OpenEHR
         end
       end
 
-      class PartyRelationship < Locatable
+      class PartyRelationship < OpenEHR::RM::Common::Archetyped::Locatable
         attr_accessor :details, :time_validity
         attr_reader :source, :target
         alias :type :name
@@ -261,7 +261,7 @@ module OpenEHR
         end
       end
 
-      class VersionedParty < Locatable
+      class VersionedParty < OpenEHR::RM::Common::Archetyped::Locatable
 
       end
     end # of Demographic

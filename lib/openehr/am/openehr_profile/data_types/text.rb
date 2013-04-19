@@ -1,10 +1,11 @@
+require_relative '../../archetype/constraint_model'
+
 module OpenEHR
   module AM
     module OpenEHRProfile
       module DataTypes
         module Text
-          include OpenEHR::AM::Archetype::ConstraintModel
-          class CCodePhrase < CDomainType
+          class CCodePhrase < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
             attr_accessor :terminology_id, :code_list
 
             def initialize(args = { })

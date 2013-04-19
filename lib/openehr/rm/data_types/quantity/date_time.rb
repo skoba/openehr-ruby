@@ -3,14 +3,16 @@
 # Ticket refs #49
 require 'date'
 
+require_relative '../../../assumed_library_types'
+require_relative '../quantity'
+
 module OpenEHR
   module RM
     module DataTypes
       module Quantity
         module DateTime
-          include OpenEHR::RM::DataTypes::Quantity
 
-          class DvTemporal < DvAbsoluteQuantity
+          class DvTemporal < OpenEHR::RM::DataTypes::Quantity::DvAbsoluteQuantity
             def initialize(args = {})
               self.value = args[:value]
               self.magnitude_status = args[:magnitude_status]
@@ -32,13 +34,12 @@ module OpenEHR
 
           class DvDate < DvTemporal
             include OpenEHR::AssumedLibraryTypes::ISO8601DateModule
-            include OpenEHR::AssumedLibraryTypes
 
             DAYS_IN_MONTH = [0,31,28,31,30,31,30,31,31,30,31,30,31]
 
             def value=(value)
               super(value)
-              iso8601_date = ISO8601Date.new(value)
+              iso8601_date = OpenEHR::AssumedLibraryTypes::ISO8601Date.new(value)
               @year = iso8601_date.year
               @month = iso8601_date.month
               @day = iso8601_date.day
@@ -87,12 +88,11 @@ module OpenEHR
           end
           
           class DvTime < DvTemporal
-            include OpenEHR::AssumedLibraryTypes
-            include ISO8601TimeModule
+            include OpenEHR::AssumedLibraryTypes::ISO8601TimeModule
 
             def value=(value)
               super(value)
-              iso8601_time = ISO8601Time.new(value)
+              iso8601_time = OpenEHR::AssumedLibraryTypes::ISO8601Time.new(value)
               @hour = iso8601_time.hour
               @minute = iso8601_time.minute
               @second = iso8601_time.second
@@ -134,7 +134,7 @@ module OpenEHR
 
             def value=(value)              
               super(value)
-              iso8601date_time = AssumedLibraryTypes::ISO8601DateTime.new(value)
+              iso8601date_time = OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(value)
               self.year = iso8601date_time.year
               self.month = iso8601date_time.month
               self.day = iso8601date_time.day
@@ -215,7 +215,7 @@ module OpenEHR
             def value=(value)
               raise ArgumentError, 'value must be not nil' if value.nil?
               @value = value
-              iso8601_duration = AssumedLibraryTypes::ISO8601Duration.new(value)
+              iso8601_duration = OpenEHR::AssumedLibraryTypes::ISO8601Duration.new(value)
               self.years = iso8601_duration.years
               self.months = iso8601_duration.months
               self.weeks = iso8601_duration.weeks

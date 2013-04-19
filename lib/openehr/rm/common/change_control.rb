@@ -1,6 +1,8 @@
 # This module is based on the UML,
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109326589721_134411_997Report.html
 # Ticket refs #64
+require_relative 'generic'
+
 module OpenEHR
   module RM
     module Common
