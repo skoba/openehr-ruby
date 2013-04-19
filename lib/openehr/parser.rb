@@ -11,8 +11,5 @@ module OpenEHR
         raise NotImplementedError
       end
     end
-
-    require 'openehr/parser/adl_parser'
-    # require 'parser/xml_perser'
   end
 end

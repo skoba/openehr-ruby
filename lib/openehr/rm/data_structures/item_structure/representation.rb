@@ -2,6 +2,8 @@
 # representation module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109066789167_738055_2581Report.html
 # refs #53
+require_relative '../../common/archetyped'
+
 module OpenEHR
   module RM
     module DataStructures

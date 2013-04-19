@@ -1,6 +1,8 @@
 # This module is implemented from this UML:
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109067591791_562382_3151Report.html
 # Ticket refs #52
+require_relative '../support/definition'
+
 module OpenEHR
   module RM
     module DataTypes

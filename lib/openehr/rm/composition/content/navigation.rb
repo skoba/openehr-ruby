@@ -2,8 +2,7 @@
 # navigation module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109264528523_312165_346Report.html
 # refs #56
-
-require 'openehr/rm/composition/content'
+require_relative '../content'
 
 module OpenEHR
   module RM
