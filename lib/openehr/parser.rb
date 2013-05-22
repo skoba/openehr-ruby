@@ -1,3 +1,4 @@
+require_relative 'parser/adl_parser'
 module OpenEHR
   module Parser
     class Base
@@ -11,6 +12,5 @@ module OpenEHR
         raise NotImplementedError
       end
     end
-    require_relative 'parser/adl_parser'
   end
 end
