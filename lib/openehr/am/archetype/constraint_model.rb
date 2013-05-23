@@ -146,13 +146,10 @@ module OpenEHR
           end
 
           def children=(children)
-            @children = []
-            children.inject(add_child){|child| child} if children
-          end
-
-          def add_child(child)
-            child.parent = self
-            @children << child
+            @children = children.inject([]) do |array, child|
+              child.parent=self
+              array << child
+            end if children
           end
         end
 
