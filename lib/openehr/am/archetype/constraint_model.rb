@@ -122,8 +122,7 @@ module OpenEHR
         end
 
         class CAttribute < ArchetypeConstraint
-          attr_reader :rm_attribute_name, :existence
-          attr_accessor :children
+          attr_reader :rm_attribute_name, :existence, :children
 
           def initialize(args = { })
             super(args)
@@ -144,6 +143,16 @@ module OpenEHR
               raise ArgumentError, 'invalid existence'
             end
             @existence = existence
+          end
+
+          def children=(children)
+            @children = []
+            children.each{|child| add_child(child)} if children
+          end
+
+          def add_child(child)
+            child.parent = self
+            @children << child
           end
         end
 
