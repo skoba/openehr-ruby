@@ -147,7 +147,7 @@ module OpenEHR
 
           def children=(children)
             @children = []
-            children.each{|child| add_child(child)} if children
+            children.inject(add_child){|child| child} if children
           end
 
           def add_child(child)
