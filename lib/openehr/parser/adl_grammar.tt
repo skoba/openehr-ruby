@@ -550,7 +550,7 @@ module OpenEHR
             child_node = ArchetypeNode.new(node)
             child_node.path = val.path
             val.children = c_attr_body.value(child_node)
-            val
+	    val
           end
         }
       end
