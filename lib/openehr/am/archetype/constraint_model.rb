@@ -111,14 +111,6 @@ module OpenEHR
             end
             @occurrences = occurrences
           end
-
-          def self.create(args = { }, &block)
-            c_object = new(args)
-            if block_given?
-              yield c_object
-            end
-            return c_object
-          end
         end
 
         class CAttribute < ArchetypeConstraint
@@ -217,14 +209,6 @@ module OpenEHR
           def any_allowed?
             return (@attributes.nil? or @attributes.empty?)
           end
-
-          def self.create(args = { }, &block)
-            c_complex_object = new(args)
-            if block_given?
-              yield c_complex_object
-            end
-            return c_complex_object
-          end
         end
 
         class CDomainType < CDefinedObject
@@ -279,16 +263,6 @@ module OpenEHR
           def any_allowed?
             return includes.nil? && excludes.nil?
           end
-
-          def self.create(args = { }, &block)
-            archetype_slot = new(args)
-            archetype_slot.includes = args[:includes]
-            archetype_slot.excludes = args[:excludes]
-            if block_given?
-              yield archetype_slot
-            end
-            return archetype_slot
-          end
         end
 
         class ConstraintRef < CReferenceObject
@@ -304,15 +278,6 @@ module OpenEHR
               raise ArgumentError, 'reference is mandatory'
             end
             @reference = reference
-          end
-
-          def self.create(args = { }, &block)
-            constraint_ref = new(args)
-            constraint_ref.reference = args[:reference]
-            if block_given?
-              yield constraint_ref
-            end
-            return constraint_ref
           end
         end
 
@@ -342,4 +307,3 @@ module OpenEHR
     end # of Archetype
   end # of AM
 end # of OpenEHR
-  
