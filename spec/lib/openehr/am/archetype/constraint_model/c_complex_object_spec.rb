@@ -5,11 +5,14 @@ include OpenEHR::AssumedLibraryTypes
 describe CComplexObject do
   before(:each) do
     occurrences = Interval.new(:lower => 0, :upper => 1)
-    parent = stub(CAttribute, :rm_attribute_name => 'DV_DATE')
-    attributes = stub(Set, :empty? => false, :size => 3)
-    @c_complex_object = CComplexObject.new(:path => '/event/[at0001]/',
-                                           :rm_type_name => 'DV_TIME',
-                                           :node_id => 'ac0001',
+    parent = stub(CAttribute, :rm_attribute_name => 'event',
+                  :path => "/event")
+    attribute = CAttribute.new(:rm_attribute_name => 'data',:path => "/event[at0001]/data")
+    attributes = [attribute, attribute, attribute]
+    @c_complex_object = CComplexObject.new(:rm_type_name => 'DV_TIME',
+                                           :path => "/event[at0001]",
+                                           :parent => parent,
+                                           :node_id => 'at0001',
                                            :occurrences => occurrences,
                                            :attributes => attributes)
   end
@@ -20,6 +23,10 @@ describe CComplexObject do
 
   it 'attributes should be assigned properly' do
     @c_complex_object.attributes.size.should be_equal 3
+  end
+
+  it 'attributes parent should be assigned properly' do
+    @c_complex_object.attributes[0].parent.should == @c_complex_object
   end
 
   it 'any_allowed should be false when attributes are not empty' do
