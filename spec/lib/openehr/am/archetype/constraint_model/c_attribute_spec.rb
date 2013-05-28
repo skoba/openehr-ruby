@@ -8,11 +8,9 @@ describe CAttribute do
     parent = stub(CObject, :path => '/event[at0001]')
     occurrences = existence
     children = [CObject.new(:rm_type_name => 'DV_AMOUNT',
-                            :path => '/event[at0001]/data',
                             :occurrences => occurrences)]
     @c_attribute = CAttribute.new(:parent => parent,
                                   :rm_attribute_name => 'data',
-                                  :path => '/event[at0001]/data',
                                   :existence => existence,
                                   :children => children)
   end
@@ -61,6 +59,20 @@ describe CAttribute do
 
   it 'children parent should be set properly' do
     @c_attribute.children[0].parent.should == @c_attribute
+  end
+
+  it 'path should be calculated properly' do
+    @c_attribute.path.should == '/event[at0001]/data'
+  end
+
+  context 'path' do
+    before(:each) do
+      @c_attribute.path = '/event[at0001]/new'
+    end
+
+    it 'should be assigned properly' do
+      @c_attribute.path.should == '/event[at0001]/new'
+    end
   end
 end
 

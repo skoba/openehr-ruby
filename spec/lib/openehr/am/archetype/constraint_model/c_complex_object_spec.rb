@@ -7,10 +7,9 @@ describe CComplexObject do
     occurrences = Interval.new(:lower => 0, :upper => 1)
     parent = stub(CAttribute, :rm_attribute_name => 'event',
                   :path => "/event")
-    attribute = CAttribute.new(:rm_attribute_name => 'data',:path => "/event[at0001]/data")
+    attribute = CAttribute.new(:rm_attribute_name => 'data')
     attributes = [attribute, attribute, attribute]
     @c_complex_object = CComplexObject.new(:rm_type_name => 'DV_TIME',
-                                           :path => "/event[at0001]",
                                            :parent => parent,
                                            :node_id => 'at0001',
                                            :occurrences => occurrences,
@@ -42,5 +41,19 @@ describe CComplexObject do
   it 'any_allowed should be true when attributes are empty' do
     @c_complex_object.attributes = Set.new
     @c_complex_object.should be_any_allowed
+  end
+
+  it 'path should be calculated properly' do
+    @c_complex_object.path.should == '/event[at0001]'
+  end
+
+  context 'path' do
+    before(:each) do
+      @c_complex_object.path = '/event[at0002]'
+    end
+
+    it 'should be assigned properly' do
+      @c_complex_object.path.should == '/event[at0002]'
+    end
   end
 end

@@ -7,7 +7,7 @@ module OpenEHR
           attr_accessor :parent
 
           def initialize(args = { })
-            self.path = args[:path]
+            self.path = args[:path] if args[:path]
             self.parent = args[:parent]
           end
 
@@ -18,26 +18,24 @@ module OpenEHR
             @path = path
           end
 
-          def has_path?(path)
-            return @path.include?(path)
+          def has_path?(search_path)
+            path.include?(search_path)
           end
 
           def congruent?
-            if @path.index(@parent.path) == 0
-              return true
-            else
-              return false
-            end
+            path.index(@parent.path) == 0
           end
 
           alias is_congruent? congruent?
 
           def node_conforms_to?(other)
-            if @path.index(other.path) == 0
-              return true
-            else
-              return false
-            end
+            path.index(other.path) == 0
+          end
+
+          protected
+
+          def parent_path
+            parent ? parent.path : ''
           end
         end
 
@@ -111,6 +109,12 @@ module OpenEHR
             end
             @occurrences = occurrences
           end
+
+          def path
+            super || (left = (parent_path == '' ? '/' : parent_path);
+                      right = (node_id && left != '/' ? '[' + node_id + ']' : '');
+                      left + right)
+          end
         end
 
         class CAttribute < ArchetypeConstraint
@@ -140,6 +144,11 @@ module OpenEHR
           def children=(children)
             @children = children
             children.each {|child| child.parent = self } if children
+          end
+
+          def path
+            super || (left = (parent_path == '/' ? '/' : parent_path + '/');
+                      left + rm_attribute_name)
           end
         end
 
