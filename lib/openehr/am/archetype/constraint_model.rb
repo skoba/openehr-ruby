@@ -142,8 +142,10 @@ module OpenEHR
           end
 
           def children=(children)
-            @children = children
-            children.each {|child| child.parent = self } if children
+            @children = children.inject([]) do |array, child|
+              child.parent = self
+              array << child
+            end if children
           end
 
           def path
@@ -214,8 +216,11 @@ module OpenEHR
           end
 
           def attributes=(attributes)
-            @attributes = attributes
-            @attributes.each{|child| child.parent = self } if attributes
+            @attributes = attributes.inject([]) do |array, child|
+              child.parent = self
+              array << child
+            end if attributes
+            @attributes = [] if attributes.nil?
           end
 
           def any_allowed?
