@@ -29,8 +29,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency('treetop')
   gem.add_dependency('polyglot')
   gem.add_dependency('rdoc')
-  gem.add_dependency('sqlite3')
-  gem.add_dependency('activerecord')
+#  gem.add_dependency('sqlite3')
+#  gem.add_dependency('activerecord')
 
   gem.add_development_dependency('rspec')
   gem.add_development_dependency('cucumber')

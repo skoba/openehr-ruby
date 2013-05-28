@@ -25,7 +25,6 @@ module OpenEHR
 
       def parse
         archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(:value => @result.archetype_id)
-        definition = @result.definition
         ontology = @result.ontology
         original_language = nil
         if @result.original_language
