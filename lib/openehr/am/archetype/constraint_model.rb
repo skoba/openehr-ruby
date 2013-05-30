@@ -111,9 +111,22 @@ module OpenEHR
           end
 
           def path
-            super || (left = (parent_path == '' ? '/' : parent_path);
-                      right = (node_id && left != '/' ? '[' + node_id + ']' : '');
-                      left + right)
+            @path || calculate_path
+          end
+
+          private
+
+          def calculate_path
+            path_left_part = parent_path
+            path_left_part = '/' if path_left_part == ''
+
+            if node_id && path_left_part != '/'
+              path_right_part = '[' + node_id + ']'
+            else
+              path_right_part = ''
+            end
+
+            @path = path_left_part + path_right_part
           end
         end
 
@@ -149,8 +162,16 @@ module OpenEHR
           end
 
           def path
-            super || (left = (parent_path == '/' ? '/' : parent_path + '/');
-                      left + rm_attribute_name)
+            @path || calculate_path
+          end
+
+          private
+
+          def calculate_path
+            path_left_part = parent_path
+            path_left_part += '/' if path_left_part != '/'
+
+            @path = path_left_part + rm_attribute_name
           end
         end
 
