@@ -28,6 +28,10 @@ describe CComplexObject do
     @c_complex_object.attributes[0].parent.should == @c_complex_object
   end
 
+  it 'has attribyte when has_attrubite? is true' do
+    @c_complex_object.should have_attributes
+  end
+
   it 'any_allowed should be false when attributes are not empty' do
     @c_complex_object.should_not be_any_allowed
   end

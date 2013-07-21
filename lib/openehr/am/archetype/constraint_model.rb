@@ -248,6 +248,10 @@ module OpenEHR
             @attributes = [] if attributes.nil?
           end
 
+          def has_attributes?
+            !attributes.nil? and !attributes.empty?
+          end
+
           def any_allowed?
             return (@attributes.nil? or @attributes.empty?)
           end
