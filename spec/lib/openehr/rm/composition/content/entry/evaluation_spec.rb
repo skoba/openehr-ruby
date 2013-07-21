@@ -12,7 +12,7 @@ describe Evaluation do
 #  it_should_behave_like 'entry'
 
   before(:each) do
-    data = stub(ItemStructure, :archetype_node_id => 'at0002')
+    data = double(ItemStructure, :archetype_node_id => 'at0002')
     @evaluation = Evaluation.new(:archetype_node_id => 'at0001',
                                  :name => name,
                                  :language => language,

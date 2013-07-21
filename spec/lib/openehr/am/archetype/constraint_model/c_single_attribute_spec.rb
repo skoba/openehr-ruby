@@ -5,7 +5,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CSingleAttribute do
   before(:each) do
     existence = Interval.new(:upper =>0, :lower => 0) 
-    alternatives = stub(Array, :size => 5)
+    alternatives = double(Array, :size => 5)
     @c_single_attribute = CSingleAttribute.new(:path => '/event/at001',
                                               :rm_attribute_name => 'DV_DATE',
                                               :existence => existence,

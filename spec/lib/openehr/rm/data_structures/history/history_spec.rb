@@ -9,8 +9,8 @@ describe History do
     origin = DvDateTime.new(:value => '2009-11-01T00:00:00')
     period = DvDuration.new(:value => 'P1Y2M3W4D')
     duration = DvDuration.new(:value => 'P0Y0M0W6D')
-    events = [stub(Event, :archetype_node_id => 'at0002')]
-    summary = stub(ItemStructure, :archetype_node_id => 'at0003')
+    events = [double(Event, :archetype_node_id => 'at0002')]
+    summary = double(ItemStructure, :archetype_node_id => 'at0003')
     @history = OpenEHR::RM::DataStructures::History::History.new(:archetype_node_id => 'at0001',
                            :name => DvText.new(:value => 'history test'),
                            :origin => origin,

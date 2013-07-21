@@ -8,12 +8,12 @@ describe OpenEHR::RM::Composition::Content::Entry::Entry do
   let(:subject) { double('PartyProxy')}
 
   before(:each) do
-    external_ref = stub(OpenEHR::RM::Support::Identification::PartyRef, :type => 'entry')
+    external_ref = double(OpenEHR::RM::Support::Identification::PartyRef, :type => 'entry')
     subject = OpenEHR::RM::Common::Generic::PartyProxy.new(:external_ref => external_ref)
-    provider_external_ref = stub(OpenEHR::RM::Support::Identification::PartyRef, :type => 'provider')
+    provider_external_ref = double(OpenEHR::RM::Support::Identification::PartyRef, :type => 'provider')
     provider = OpenEHR::RM::Common::Generic::PartyProxy.new(:external_ref => provider_external_ref)
-    other_participations = stub(Array, :size => 3, :empty? => false)
-    workflow_id = stub(OpenEHR::RM::Support::Identification::ObjectRef, :type => 'workflow')
+    other_participations = double(Array, :size => 3, :empty? => false)
+    workflow_id = double(OpenEHR::RM::Support::Identification::ObjectRef, :type => 'workflow')
     @entry = OpenEHR::RM::Composition::Content::Entry::Entry.new(:archetype_node_id => 'at0001',
                        :name => DvText.new(:value => 'entry test'),
                        :language => language,

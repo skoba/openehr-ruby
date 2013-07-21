@@ -5,7 +5,6 @@ include OpenEHR::AssumedLibraryTypes
 describe CDomainType do
   before(:each) do
     occurrences = Interval.new(:lower => 0, :upper => 1)
-    parent = stub(CAttribute, :rm_attribute_name => 'DV_DATE')
     @c_domain_type = CDomainType.new(:path => '/event/[at0001]/',
                                      :rm_type_name => 'DV_TIME',
                                      :node_id => 'ac0001',
@@ -17,9 +16,9 @@ describe CDomainType do
   end
 
   it 'standard_equivalent should raise NotImplementedError' do
-    lambda {
+    expect {
       @c_domain_type.standard_equivalent
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 end
                                            

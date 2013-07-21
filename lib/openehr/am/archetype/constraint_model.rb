@@ -161,6 +161,10 @@ module OpenEHR
             end if children
           end
 
+          def has_children?
+            !@children.nil? and !@children.empty?
+          end
+
           def path
             @path || calculate_path
           end

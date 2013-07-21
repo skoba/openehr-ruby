@@ -65,14 +65,14 @@ describe DvQuantity do
   end
 
   it 'should not raise ArgumentError with -1 precision' do
-    lambda {
+    expect {
       @dv_quantity.precision = -1
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error 
   end
 
   it 'should raise ArgumentError with -2 precision' do
-    lambda {
+    expect {
       @dv_quantity.precision = -2
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

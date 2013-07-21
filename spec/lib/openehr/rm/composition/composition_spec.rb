@@ -7,13 +7,13 @@ include OpenEHR::RM::Common::Generic
 describe Composition do
   before(:each) do
     name = DvText.new(:value => 'composition test')
-    language = stub(CodePhrase, :code_string => 'ja')
-    category = stub(DvCodedText, :value => 'event')
-    territory = stub(CodePhrase, :code_string => 'jpn')
-    external_ref = stub(PartyRef, :type =>  'ROLE')
-    composer = stub(PartyProxy, :external_ref => external_ref)
-    content = stub(Array, :size => 3)
-    context = stub(EventContext, :location => 'lab1')
+    language = double(CodePhrase, :code_string => 'ja')
+    category = double(DvCodedText, :value => 'event')
+    territory = double(CodePhrase, :code_string => 'jpn')
+    external_ref = double(PartyRef, :type =>  'ROLE')
+    composer = double(PartyProxy, :external_ref => external_ref)
+    content = double(Array, :size => 3)
+    context = double(EventContext, :location => 'lab1')
     @composition = Composition.new(:archetype_node_id => 'at0001',
                                    :name => name,
                                    :language => language,
@@ -77,7 +77,7 @@ describe Composition do
   end
 
   it 'is_persistent? should be true when category is persistent' do
-    category = stub(DvCodedText, :value => 'persistent')
+    category = double(DvCodedText, :value => 'persistent')
     @composition.category = category
     @composition.is_persistent?.should be_true
   end

@@ -40,66 +40,66 @@ describe DvAmount do
   end
 
   it 'should be type mismatch' do
-    lambda {
+    expect {
       @dv_amount + 1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(0, true)
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
   it 'should not raise ArgumentError' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(50, true)
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should not raise ArgumentError' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(100, true)
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with invaild accuracy' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(-0.01, true)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invaild accuracy' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(100.1, true)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(0, false)
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
   it 'should not raise ArgumentError' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(0.5, false)
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should not raise ArgumentError' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(1.0, false)
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with invaild accuracy' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(-0.01, false)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invaild accuracy' do
-    lambda {
+    expect {
       @dv_amount.set_accuracy(1.01, false)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

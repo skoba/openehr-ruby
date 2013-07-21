@@ -3,7 +3,7 @@ include OpenEHR::RM::Common::Generic
 include OpenEHR::RM::DataTypes::Text
 describe PartyRelated do
   before(:each) do
-    relationship = stub(DvCodedText, :value => 'self')
+    relationship = double(DvCodedText, :value => 'self')
     @party_related = PartyRelated.new(:name => 'TEST',
                                       :relationship => relationship)
   end
@@ -17,8 +17,8 @@ describe PartyRelated do
   end
 
   it 'should raise ArgumentError when nil is assigned to relationship' do
-    lambda {
+    expect {
       @party_related.relationship = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

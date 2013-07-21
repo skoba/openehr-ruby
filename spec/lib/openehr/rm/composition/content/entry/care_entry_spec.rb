@@ -11,8 +11,8 @@ describe CareEntry do
   let(:subject) { double('PartyProxy')}
 
   before(:each) do
-    protocol = stub(ItemStructure, :archetype_node_id => 'at0003')
-    guideline_id = stub(ObjectRef, :type => 'care guideline')
+    protocol = double(ItemStructure, :archetype_node_id => 'at0003')
+    guideline_id = double(ObjectRef, :type => 'care guideline')
     @care_entry = CareEntry.new(:archetype_node_id => 'at0001',
                                 :name => DvText.new(:value => 'care entry'),
                                 :language => language,

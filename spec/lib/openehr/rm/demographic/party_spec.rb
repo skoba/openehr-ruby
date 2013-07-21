@@ -8,29 +8,29 @@ describe Party do
   before(:each) do
     name = DvText.new(:value => 'PARTY')
     uid = HierObjectID.new(:value => '01')
-    identities = stub(Set, :empty? => false, :size => 2)
-    contacts = stub(Set, :size => 3, :empty? => false)
-    cur_id = stub(ObjectID, :value => '01')
-    cur_source = stub(PartyRef, :id => cur_id)
-    id1 = stub(ObjectID, :value => '03')
-    targ1 = stub(PartyRef, :id => id1)
-    rel1 = stub(PartyRelationship, :source => cur_source,
+    identities = double(Set, :empty? => false, :size => 2)
+    contacts = double(Set, :size => 3, :empty? => false)
+    cur_id = double(ObjectID, :value => '01')
+    cur_source = double(PartyRef, :id => cur_id)
+    id1 = double(ObjectID, :value => '03')
+    targ1 = double(PartyRef, :id => id1)
+    rel1 = double(PartyRelationship, :source => cur_source,
                 :target => targ1)
-    id2 = stub(ObjectID, :value => '04')
-    targ2 = stub(PartyRef, :id => id2)
-    rel2 = stub(PartyRelationship, :source => cur_source,
+    id2 = double(ObjectID, :value => '04')
+    targ2 = double(PartyRef, :id => id2)
+    rel2 = double(PartyRelationship, :source => cur_source,
                 :target => targ2)
-    id3 = stub(ObjectID, :value => '05')
-    targ3 = stub(PartyRef, :id => id3) 
-    rel3 = stub(PartyRelationship, :source => cur_source,
+    id3 = double(ObjectID, :value => '05')
+    targ3 = double(PartyRef, :id => id3) 
+    rel3 = double(PartyRelationship, :source => cur_source,
                 :target => targ3)
-    id4 = stub(ObjectID, :value => '06')
-    targ4 = stub(PartyRef, :id => id4)
-    rel4 = stub(PartyRelationship, :source => cur_source,
+    id4 = double(ObjectID, :value => '06')
+    targ4 = double(PartyRef, :id => id4)
+    rel4 = double(PartyRelationship, :source => cur_source,
                 :target => targ4)
     relationships = [rel1, rel2, rel3, rel4].to_set
-    reverse_relationships = stub(Set, :empty? => false, :size => 5)
-    details = stub(ItemStructure, :archetype_node_id => 'at0005')
+    reverse_relationships = double(Set, :empty? => false, :size => 5)
+    details = double(ItemStructure, :archetype_node_id => 'at0005')
     @party = Party.new(:archetype_node_id => 'at0001',
                        :name => name,
                        :uid => uid,
@@ -50,9 +50,9 @@ describe Party do
   end
 
   it 'should raise ArgumentError with nil uid' do
-    lambda {
+    expect {
       @party.uid = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'identities should be assigned properly' do
@@ -60,9 +60,9 @@ describe Party do
   end
 
   it 'should raise ArgumentError when nil identities are assigned' do
-    lambda {
+    expect {
       @party.identities = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when identities are empty' do
@@ -78,9 +78,9 @@ describe Party do
   end
 
   it 'should raise ArgumentError with empty contacts' do
-    lambda {
+    expect {
       @party.contacts = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'relationships should be assigned properly' do
@@ -92,24 +92,24 @@ describe Party do
   end
 
   it 'should not raise ArgumentError with nil relationships' do
-    lambda {
+    expect {
       @party.relationships = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with empty relationships' do
-    lambda {
+    expect {
       @party.relationships = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'invaild relationship raise ArgumentError' do
-    invalid_id = stub(ObjectID, :value => '10')
-    invalid_source = stub(PartyRef, :id => invalid_id)
-    invalid_rel = stub(PartyRelationship, :source => invalid_source)
-    lambda {
+    invalid_id = double(ObjectID, :value => '10')
+    invalid_source = double(PartyRef, :id => invalid_id)
+    invalid_rel = double(PartyRelationship, :source => invalid_source)
+    expect {
       @party.relationships = [invalid_rel].to_set
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'reverse relationship should be assigned properly' do
@@ -117,9 +117,9 @@ describe Party do
   end
 
   it 'reverse_relationships should not be empty' do
-    lambda {
+    expect {
       @party.reverse_relationships = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should validate reverse_relationships'

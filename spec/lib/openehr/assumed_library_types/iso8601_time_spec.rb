@@ -64,133 +64,133 @@ describe ISO8601Time do
     end        
 
     it 'should not raise ArgumentError with 0 hour' do
-      lambda {
+      expect {
         @iso8601time.hour = 0
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should not raise ArgumentError with 23 hour' do
-      lambda {
+      expect {
         @iso8601time.hour = 23
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should not raise ArgumentError with 24 hour' do
-      lambda {
+      expect {
         @iso8601time.hour = 24
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
   describe 'minute behavior' do
     it 'should raise ArgumentError with -1 miniute' do
-      lambda {
+      expect {
         @iso8601time.minute = -1
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should not raise ArgumentError with 0 minute' do
-      lambda {
+      expect {
         @iso8601time.minute = 0
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should not raise ArgumentError with 59 minute' do
-      lambda {
+      expect {
         @iso8601time.minute = 59
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should raise ArgumentError with 60 minute' do
-      lambda {
+      expect {
         @iso8601time.minute = 60
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
   describe 'second behavior' do
     it 'should raise ArgumentError with -1 miniute' do
-      lambda {
+      expect {
         @iso8601time.second = -1
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should not raise ArgumentError with 0 second' do
-      lambda {
+      expect {
         @iso8601time.second = 0
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should not raise ArgumentError with 59 second' do
-      lambda {
+      expect {
         @iso8601time.second = 59
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should raise ArgumentError with 60 second' do
-      lambda {
+      expect {
         @iso8601time.second = 60
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
   describe 'fractional second behavior' do
     it 'should raise ArgumentError less than -0.0' do
-      lambda {
+      expect {
         @iso8601time.fractional_second = -0.1
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should raise ArgumentError more than 1.0' do
-      lambda {
+      expect {
         @iso8601time.fractional_second = 1.0
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
   describe 'timezone behavior' do
     it 'should raise ArgumentError with invalid timezone' do
-      lambda {
+      expect {
         @iso8601time.timezone = '+AbD:111'
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should allow ArgumentError with nil timezone' do
-      lambda {
+      expect {
         @iso8601time.timezone = nil
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
   end
 
   describe 'constructor behavior' do
     it 'should_not raise ArgumentError with 21:18:09.01' do
-      lambda {
+      expect {
         ISO8601Time.new('21:18:09.01')
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should_not raise ArgumentError with 21:18:09' do
-      lambda {
+      expect {
         ISO8601Time.new('21:18:09')
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should_not raise ArgumentError with 21:18' do
-      lambda {
+      expect {
         ISO8601Time.new('21:18')
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should_not raise ArgumentError with 21' do
-      lambda {
+      expect {
         ISO8601Time.new('21')
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
 
     it 'should raise ArgumentError with malformation' do
-      lambda {
+      expect {
         ISO8601Time.new('ABDCD')
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 

@@ -5,7 +5,7 @@ include OpenEHR::RM::DataTypes::Text
 
 describe GenericEntry do
   before(:each) do
-    data = stub(ItemTree, :archetype_node_id => 'at0003')
+    data = double(ItemTree, :archetype_node_id => 'at0003')
     name = DvText.new(:value => 'generic entry')
     @generic_entry = GenericEntry.new(:archetype_node_id => 'at0001',
                                       :name => name,
@@ -21,9 +21,9 @@ describe GenericEntry do
   end
 
   it 'should raise ArgumentError when data are nil' do
-    lambda {
+    expect {
       @generic_entry.data = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end
                                       

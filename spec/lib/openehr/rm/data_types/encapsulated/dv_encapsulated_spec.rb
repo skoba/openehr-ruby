@@ -5,8 +5,8 @@ include OpenEHR::RM::DataTypes::Text
 describe DvEncapsulated do
   before(:each) do
     dummy = 'test'
-    charset = stub(CodePhrase, :code_string => 'UTF-8')
-    language = stub(CodePhrase, :code_string => 'ja')
+    charset = double(CodePhrase, :code_string => 'UTF-8')
+    language = double(CodePhrase, :code_string => 'ja')
     @dv_encapsulated = DvEncapsulated.new(:value => dummy,
                                           :charset => charset,
                                           :language => language)
@@ -29,14 +29,14 @@ describe DvEncapsulated do
   end
 
   it 'should raise ArgumentError when language is invalid' do
-    wrong_lang = stub(CodePhrase, :code_string => 'jj')
-    lambda {@dv_encapsulated.language = wrong_lang}.
-      should raise_error(ArgumentError)
+    wrong_lang = double(CodePhrase, :code_string => 'jj')
+    expect{@dv_encapsulated.language = wrong_lang}.
+      to raise_error(ArgumentError)
   end
 
   it 'should raise ArgumentError when charset is invalid' do
-    wrong_charset = stub(CodePhrase, :code_string => 'UBK')
-    lambda {@dv_encapsulated.charset = wrong_charset}.
-      should raise_error(ArgumentError)
+    wrong_charset = double(CodePhrase, :code_string => 'UBK')
+    expect {@dv_encapsulated.charset = wrong_charset}.
+      to raise_error(ArgumentError)
   end
 end

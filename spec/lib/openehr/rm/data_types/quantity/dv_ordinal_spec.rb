@@ -5,12 +5,12 @@ include OpenEHR::RM::Support::Identification
 
 describe DvOrdinal do
   before(:each) do
-    terminology_id = stub(TerminologyID, :value => 'urine:prot')
-    code_phrase = stub(CodePhrase, :terminology_id => terminology_id)
-    symbol = stub(DvCodedText, :code_string => '+',
+    terminology_id = double(TerminologyID, :value => 'urine:prot')
+    code_phrase = double(CodePhrase, :terminology_id => terminology_id)
+    symbol = double(DvCodedText, :code_string => '+',
                   :defining_code => code_phrase)
-    dv_text = stub(DvText, :value => 'limits')
-    limits = stub(ReferenceRange, :meaning => dv_text)
+    dv_text = double(DvText, :value => 'limits')
+    limits = double(ReferenceRange, :meaning => dv_text)
     @dv_ordinal = DvOrdinal.new(:value => 1,
                                 :symbol => symbol,
                                 :limits => limits)
@@ -34,9 +34,9 @@ describe DvOrdinal do
   end
 
   it 'should be strictry comperable to other DvOrdinal' do
-    terminology_id = stub(TerminologyID, :value => 'urine:prot')
-    code_phrase = stub(CodePhrase, :terminology_id => terminology_id)
-    symbol = stub(DvCodedText, :defining_code => code_phrase)
+    terminology_id = double(TerminologyID, :value => 'urine:prot')
+    code_phrase = double(CodePhrase, :terminology_id => terminology_id)
+    symbol = double(DvCodedText, :defining_code => code_phrase)
     dv_ordinal = DvOrdinal.new(:value => 2,
                                :symbol => symbol)
     @dv_ordinal.is_strictly_comparable_to?(dv_ordinal).should be_true
@@ -47,15 +47,15 @@ describe DvOrdinal do
   end
 
   it 'should raise error when limits.value is not limitted' do
-    unlimit = stub(DvText, :value => 'unimitted')
-    unlimitted_range = stub(ReferenceRange, :meaning => unlimit)
-    lambda {
+    unlimit = double(DvText, :value => 'unimitted')
+    unlimitted_range = double(ReferenceRange, :meaning => unlimit)
+    expect {
       @dv_ordinal.limits = unlimitted_range
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should be comparable' do
-    dv_ordinal = stub(DvOrdinal, :value => 2)
+    dv_ordinal = double(DvOrdinal, :value => 2)
     @dv_ordinal.should < dv_ordinal
   end
 
@@ -64,9 +64,9 @@ describe DvOrdinal do
   end
 
   it 'is strictly comparable should be false with other terminology' do
-    terminology_id = stub(TerminologyID, :value => 'blood pressure')
-    code_phrase = stub(CodePhrase, :terminology_id => terminology_id)
-    symbol = stub(DvCodedText, :defining_code => code_phrase)
+    terminology_id = double(TerminologyID, :value => 'blood pressure')
+    code_phrase = double(CodePhrase, :terminology_id => terminology_id)
+    symbol = double(DvCodedText, :defining_code => code_phrase)
     dv_ordinal = DvOrdinal.new(:value => 3,
                                :symbol => symbol)
     @dv_ordinal.is_strictly_comparable_to?(dv_ordinal).should be_false

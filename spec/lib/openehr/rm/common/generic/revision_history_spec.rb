@@ -5,13 +5,13 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe RevisionHistory do
   before(:each) do
-    version_id = stub(ObjectVersionID, :value => 'ABCD::EFGH::1')
-    committed_time = stub(DvDateTime, :value => '2009-11-02T22:19:34')
-    audit = stub(AuditDetails, :time_committed => committed_time)
-    audits = stub(Array, :first => audit)
-    last_item = stub(RevisionHistoryItem, :version_id => version_id,
+    version_id = double(ObjectVersionID, :value => 'ABCD::EFGH::1')
+    committed_time = double(DvDateTime, :value => '2009-11-02T22:19:34')
+    audit = double(AuditDetails, :time_committed => committed_time)
+    audits = double(Array, :first => audit)
+    last_item = double(RevisionHistoryItem, :version_id => version_id,
                      :audits => audits)
-    items = stub(Array, :size => 128, :empty? => false, :last => last_item)
+    items = double(Array, :size => 128, :empty? => false, :last => last_item)
     @revision_history = RevisionHistory.new(:items => items)
   end
 
@@ -32,14 +32,14 @@ describe RevisionHistory do
   end
 
   it 'should raise ArgumentError when item is nil' do
-    lambda {
+    expect {
       @revision_history.items = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when item is empty' do
-    lambda {
+    expect {
       @revision_history.items = Array.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

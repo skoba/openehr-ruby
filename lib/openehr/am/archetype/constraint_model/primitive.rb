@@ -192,6 +192,23 @@ module OpenEHR
               self.day_validity = args[:day_validity]
               self.month_validity = args[:month_validity]
             end
+
+            def range=(range)
+              consistency(@pattern, range)
+              @range = range
+            end
+
+            def pattern=(pattern)
+              consistency(pattern, @range)
+              @pattern = pattern
+            end
+
+            protected
+            def consistency(pattern, range)
+              if pattern.nil? == range.nil?
+                raise ArgumentError, 'consistency invaild'
+              end
+            end
           end
 
           module CTimeModule

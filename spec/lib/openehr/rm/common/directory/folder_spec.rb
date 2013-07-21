@@ -4,8 +4,8 @@ include OpenEHR::RM::DataTypes::Text
 
 describe Folder do
   before(:each) do
-    items = stub(Array, :size => 3)
-    folders = stub(Array, :size => 5, :empty? => false)
+    items = double(Array, :size => 3)
+    folders = double(Array, :size => 5, :empty? => false)
     @folder = Folder.new(:archetype_node_id => 'at0001',
                          :name => DvText.new(:value => 'test'),
                          :items => items,

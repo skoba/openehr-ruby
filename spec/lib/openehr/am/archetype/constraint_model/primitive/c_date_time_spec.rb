@@ -35,9 +35,9 @@ describe CDateTime do
   end
 
   it 'should raise ArgumentError if hour_validity is DISALLOWED and minute_validity is not DISALLOWED' do
-    lambda {
+    expect {
       @c_date_time.hour_validity = ValidityKind::DISALLOWED
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'range is properly assigned, lower value is 1995-04-19T01:01:22' do
@@ -48,69 +48,69 @@ describe CDateTime do
   it 'should not raise ArgumentError if hour_validity is DISALLOWED and minute_validity is DISALLOWED' do
     @c_date_time.second_validity = ValidityKind::DISALLOWED
     @c_date_time.minute_validity = ValidityKind::DISALLOWED
-    lambda {
+    expect {
       @c_date_time.hour_validity = ValidityKind::DISALLOWED
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError if hour_validity is OPTIONAL and minute_validity is MANDATORY' do
-    lambda {
+    expect {
       @c_date_time.hour_validity = ValidityKind::OPTIONAL
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError if hour_validity is OPTIONAL and minute_validity is OPTIONAL' do
     @c_date_time.minute_validity = ValidityKind::OPTIONAL
-    lambda {
+    expect {
       @c_date_time.hour_validity = ValidityKind::OPTIONAL
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should not raise Argument Error if hour_validity is OPTIONAL and minute_validity is DISALLOWED' do
     @c_date_time.second_validity = ValidityKind::DISALLOWED
     @c_date_time.minute_validity = ValidityKind::DISALLOWED
-    lambda {
+    expect {
       @c_date_time.hour_validity = ValidityKind::OPTIONAL
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError if day_validity is DISALLOWED and hour_validity is not DISALLOWED' do
-    lambda {
+    expect {
       @c_date_time.day_validity = ValidityKind::DISALLOWED
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError if day_validity is DISALLOWED and hour_validity is DISALLOWED' do
     @c_date_time.second_validity = ValidityKind::DISALLOWED
     @c_date_time.minute_validity = ValidityKind::DISALLOWED
     @c_date_time.hour_validity = ValidityKind::DISALLOWED
-    lambda {
+    expect {
       @c_date_time.day_validity = ValidityKind::DISALLOWED
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError if day_validity is OPTIONAL and hour_validity is MANDATORY' do
-    lambda {
+    expect {
       @c_date_time.day_validity = ValidityKind::OPTIONAL
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError if day_validity OPTIONAL and hour_validity is OPTIONAL' do
     @c_date_time.second_validity = ValidityKind::DISALLOWED
     @c_date_time.minute_validity = ValidityKind::DISALLOWED
     @c_date_time.hour_validity = ValidityKind::OPTIONAL
-    lambda {
+    expect {
       @c_date_time.day_validity = ValidityKind::OPTIONAL
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should not raise ArgumentError if day_validity OPTIONAL and hour_validity is DISALLOWED' do
     @c_date_time.second_validity = ValidityKind::DISALLOWED
     @c_date_time.minute_validity = ValidityKind::DISALLOWED
     @c_date_time.hour_validity = ValidityKind::DISALLOWED
-    lambda {
+    expect {
       @c_date_time.day_validity = ValidityKind::OPTIONAL
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   describe 'pattern constraint' do

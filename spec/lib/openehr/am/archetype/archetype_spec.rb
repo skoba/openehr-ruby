@@ -9,15 +9,15 @@ include OpenEHR::RM::Support::Identification
 
 describe Archetype do
   before(:each) do
-    original_language = stub(CodePhrase, :code_string => 'ja')
+    original_language = double(CodePhrase, :code_string => 'ja')
     archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-SECTION.physical_examination-prenatal.v2')
-    definition = stub(CComplexObject, :rm_type_name => 'SECTION')
+    definition = double(CComplexObject, :rm_type_name => 'SECTION')
     items = {'text' => 'Physical examination'}
     term1 = ArchetypeTerm.new(:code => 'at0000', :items => items)
     ontology = ArchetypeOntology.new(:specialisation_depth => 1, :term_definitions => {'ja' => {'at0000' =>term1}})
     uid = HierObjectID.new(:value => 'ABCD::1')
     parent_archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-SECTION.physical_examination.v1')
-    invariants = stub(Set, :size => 2)
+    invariants = double(Set, :size => 2)
     @archetype = Archetype.new(:original_language => original_language,
                                :adl_version => '1.4',
                                :archetype_id => archetype_id,
@@ -42,9 +42,9 @@ describe Archetype do
   end
 
   it 'should raise ArgumentError when archetype_id is nil' do
-    lambda {
+    expect {
       @archetype.archetype_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'uid should be assigned properly' do
@@ -56,9 +56,9 @@ describe Archetype do
   end
 
   it 'should raise ArgumentError when concept is nil' do
-    lambda {
+    expect {
       @archetype.concept = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'parent_archetype_id should be assigned properly' do
@@ -70,9 +70,9 @@ describe Archetype do
   end
 
   it 'should raise ArgumentError when definition is nil' do
-    lambda {
+    expect {
       @archetype.definition = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
   
   it 'ontology should be assigned properly' do
@@ -80,9 +80,9 @@ describe Archetype do
   end
 
   it 'should raise ArgumentError when ontology is nil' do
-    lambda {
+    expect {
       @archetype.ontology = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'invariants should be assigned properly' do

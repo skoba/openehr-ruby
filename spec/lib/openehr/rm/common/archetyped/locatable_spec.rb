@@ -6,13 +6,13 @@ include OpenEHR::RM::Support::Identification
 describe Locatable do
   before(:each) do
     name = DvText.new(:value => 'problem/SOAP')
-    link = stub(Set, :size => 10, :empty? => false)
+    link = double(Set, :size => 10, :empty? => false)
     uid = UIDBasedID.new(:value => 'ehr::localhost/3030')
     archetype_id = ArchetypeID.new(:value =>
                            'openEHR-EHR-SECTION.physical_examination.v2')
-    archetype_details = stub(Archetyped, :rm_version =>  '1.2.4',
+    archetype_details = double(Archetyped, :rm_version =>  '1.2.4',
                              :archetype_id => archetype_id)
-    feeder_audit = stub(FeederAudit, :system_id => 'MAGI')
+    feeder_audit = double(FeederAudit, :system_id => 'MAGI')
     @locatable = Locatable.new(:archetype_node_id => 'at001',
                                :name => name,
                                :links => link,
@@ -63,27 +63,27 @@ describe Locatable do
   end
 
   it 'should raise ArgumentError with nil archetype_node_id' do
-    lambda {
+    expect {
       @locatable.archetype_node_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil name' do
-    lambda {
+    expect {
       @locatable.name = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty links' do
-    lambda {
+    expect {
       @locatable.links = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError Archetyped invalid' do
     @locatable.archetype_details = nil
-    lambda {
+    expect {
       @locatable.concept
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

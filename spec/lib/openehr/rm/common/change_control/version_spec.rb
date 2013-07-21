@@ -9,12 +9,12 @@ describe Version do
   before(:each) do
     uid = ObjectVersionID.new(:value => 'ABCD::EFG::2')
     preceding_version_uid = ObjectVersionID.new(:value => 'HIJ::KLM::1')
-    commit_audit = stub(AuditDetails, :committer => 'UNKNOWN', :empty? => false)
+    commit_audit = double(AuditDetails, :committer => 'UNKNOWN', :empty? => false)
     contribution = ObjectRef.new(:namespace => 'local',
                                  :type => 'CONTRIBUTION',
                                  :id => object_id)
-    defining_code = stub(CodePhrase, :code_string => '532')
-    lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
+    defining_code = double(CodePhrase, :code_string => '532')
+    lifecycle_state = double(DvCodedText, :defining_code => defining_code)
     signature = '4760271533c2866579dde347ad28dd79e4aad933'
     @version = Version.new(:uid => uid,
                            :preceding_version_uid => preceding_version_uid,
@@ -76,16 +76,16 @@ describe Version do
   end
 
   it 'canonical form is not well determined' do
-    lambda {
+    expect {
       @version.canonical_form
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 
   it 'should raise ArgumentError when preceding version id exists and uid version tree is first' do
     @version.uid.value = 'ABC::DEF::1'
     preceding_version_uid = ObjectVersionID.new(:value => 'GHI::JKL::2')
-    lambda {
+    expect {
       @version.preceding_version_uid = preceding_version_uid
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

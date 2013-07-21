@@ -5,7 +5,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CObject do
   before(:each) do
     occurrences = Interval.new(:lower => 0, :upper => 1)
-    parent = stub(CAttribute, :rm_attribute_name => 'DV_DATE')
+    parent = double(CAttribute, :rm_attribute_name => 'DV_DATE')
     @c_object = CObject.new(:path => '/event/[at0001]/',
                             :rm_type_name => 'DV_TIME',
                             :node_id => 'ac0001',
@@ -22,15 +22,15 @@ describe CObject do
   end
 
   it 'should raise ArgumentError when rm_type_name was assigned nil' do
-    lambda {
+    expect {
       @c_object.rm_type_name = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when rm_type_name was assigned empty' do
-    lambda {
+    expect {
       @c_object.rm_type_name = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'node_id should be assigned properly' do
@@ -44,9 +44,9 @@ describe CObject do
   # end
 
   it 'should raise ArgumentError when node_id was assigned empty' do
-    lambda {
+    expect {
       @c_object.node_id = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'occurences should be assigned properly' do

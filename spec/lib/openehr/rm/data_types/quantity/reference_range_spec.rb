@@ -3,8 +3,8 @@ include OpenEHR::RM::DataTypes::Quantity
 
 describe ReferenceRange do
   before(:each) do
-    dv_interval ||= stub(DvInterval)
-    @mock_dv_interval ||= mock('dv_interval')
+    dv_interval ||= double(DvInterval)
+    @mock_dv_interval ||= double('dv_interval')
     @reference_range = ReferenceRange.new(:meaning => 'test',
                                           :range => dv_interval)
   end
@@ -30,14 +30,14 @@ describe ReferenceRange do
   end
 
   it 'should raise ArgumentError with nil meaning' do
-    lambda {
+    expect {
       @reference_range.meaning = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil range' do
-    lambda {
+    expect {
       @reference_range.range = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

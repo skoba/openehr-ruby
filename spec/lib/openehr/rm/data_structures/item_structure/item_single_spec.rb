@@ -6,7 +6,7 @@ include OpenEHR::RM::DataTypes::Text
 
 describe ItemSingle do
   before(:each) do
-    element = stub(Element, :archetype_node_id => 'at0002')
+    element = double(Element, :archetype_node_id => 'at0002')
     item_single_name = DvText.new(:value => 'item single')
     @item_single = ItemSingle.new(:name => item_single_name,
                                   :archetype_node_id => 'at0001',

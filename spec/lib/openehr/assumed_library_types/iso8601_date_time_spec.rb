@@ -15,21 +15,21 @@ describe ISO8601DateTime do
   end
 
   it 'should raise ArgumentError with invalid date format' do
-    lambda {
+    expect {
       ISO8601DateTime.new('2009:06:29Z12-34-56')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentErrow with empty argument' do
-    lambda {
+    expect {
       ISO8601DateTime.new('')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end    
 
   it 'allows without fractional second' do
-    lambda {
+    expect {
       ISO8601DateTime.new('2009-06-29T12:34:56')
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should be comparable' do

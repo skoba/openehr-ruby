@@ -7,7 +7,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CDvQuantity do
   before(:each) do
     occurrences = Interval.new(:upper => 1, :lower => 1)
-    property = stub(CodePhrase, :code_string => 'AML')
+    property = double(CodePhrase, :code_string => 'AML')
     list = [CQuantityItem.new(:magnitude => 10, :units => 'mg')]
     @c_dv_quantity = CDvQuantity.new(:list => list,
                                      :path => 'value/quantity',

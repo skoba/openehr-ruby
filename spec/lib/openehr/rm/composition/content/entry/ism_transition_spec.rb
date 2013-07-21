@@ -4,9 +4,9 @@ include OpenEHR::RM::DataTypes::Text
 
 describe IsmTransition do
   before(:each) do
-    current_state = stub(DvCodedText, :value => 'planned')
-    transition = stub(DvCodedText, :value => 'scheduled')
-    careflow_step = stub(DvCodedText, :value => 'completed')
+    current_state = double(DvCodedText, :value => 'planned')
+    transition = double(DvCodedText, :value => 'scheduled')
+    careflow_step = double(DvCodedText, :value => 'completed')
     @ism_transition = IsmTransition.new(:current_state => current_state,
                                         :transition => transition,
                                         :careflow_step => careflow_step)

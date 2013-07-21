@@ -47,105 +47,105 @@ describe ISO8601Duration do
   end
 
   it 'should not raise ArgumentError with 0 yaers' do
-    lambda {
+    expect {
       @iso8601duration.years = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 yaers' do
-    lambda {
+    expect {
       @iso8601duration.years = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with 0 months' do
-    lambda {
+    expect {
       @iso8601duration.months = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 months' do
-    lambda {
+    expect {
       @iso8601duration.months = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
     
   it 'should not raise ArgumentError with 0 weeks' do
-    lambda {
+    expect {
       @iso8601duration.weeks = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 weeks' do
-    lambda {
+    expect {
       @iso8601duration.weeks = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with 0 days' do
-    lambda {
+    expect {
       @iso8601duration.days = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 days' do
-    lambda {
+    expect {
       @iso8601duration.days = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with 0 hours' do
-    lambda {
+    expect {
       @iso8601duration.hours = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 hours' do
-    lambda {
+    expect {
       @iso8601duration.hours = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with 0 minutes' do
-    lambda {
+    expect {
       @iso8601duration.minutes = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 minutes' do
-    lambda {
+    expect {
       @iso8601duration.minutes = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with 0 seconds' do
-    lambda {
+    expect {
       @iso8601duration.seconds = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 seconds' do
-    lambda {
+    expect {
       @iso8601duration.seconds = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with 0 fractional_second' do
-    lambda {
+    expect {
       @iso8601duration.fractional_second = 0
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with -1 fractional_second' do
-    lambda {
+    expect {
       @iso8601duration.fractional_second = -1
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with 1.0 fractional_second' do
-    lambda {
+    expect {
       @iso8601duration.fractional_second = 1.0
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
   
   it 'to_seconds should return 38898367.8' do

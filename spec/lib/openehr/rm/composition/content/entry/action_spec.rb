@@ -14,10 +14,10 @@ describe Action do
 
   before(:each) do
     time = DvDateTime.new(:value => '2009-11-18T20:17:18')
-    description = stub(ItemStructure, :archetype_node_id => 'at0002')
-    current_state = stub(DvCodedText, :value => 'planned')
-    ism_transition = stub(IsmTransition, :current_state => current_state)
-    instruction_details = stub(InstructionDetails, :activity_id => 'at0003')
+    description = double(ItemStructure, :archetype_node_id => 'at0002')
+    current_state = double(DvCodedText, :value => 'planned')
+    ism_transition = double(IsmTransition, :current_state => current_state)
+    instruction_details = double(InstructionDetails, :activity_id => 'at0003')
     @action= Action.new(:archetype_node_id => 'at0001',
                         :name => name,
                         :language => language,

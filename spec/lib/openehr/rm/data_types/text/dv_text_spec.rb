@@ -10,9 +10,9 @@ describe DvText do
                               :code_string => 'ja')
     encoding = CodePhrase.new(:terminology_id => terminology_id,
                               :code_string => 'utf-8')
-    term = stub(CodePhrase, :code_string => 'C92')
-    term_mapping = stub(TermMapping, :target => term)
-    hyperlink = stub(DvUri, :value => 'http://openehr.jp/ruby')
+    term = double(CodePhrase, :code_string => 'C92')
+    term_mapping = double(TermMapping, :target => term)
+    hyperlink = double(DvUri, :value => 'http://openehr.jp/ruby')
     @dv_text = DvText.new(:value => 'test',
                           :formatting => 'font = 12pt',
                           :language => language,
@@ -30,15 +30,15 @@ describe DvText do
   end
 
   it 'should raise ArgumentError, when value include \n' do
-    lambda {
+    expect {
       @dv_text.value = "not valid value\n"
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 'should raise ArgumentError, when value is nil' do
-    lambda {
+    expect {
       @dv_text.value = nil
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 'formatting should be font' do
@@ -46,7 +46,7 @@ describe DvText do
   end
 
   it 'should raise ArgumentError, when formatting is empty' do
-    lambda{@dv_text.formatting = ""}.should raise_error(ArgumentError)
+    expect {@dv_text.formatting = ""}.to raise_error(ArgumentError)
   end
 
   it 'has 1 mapping' do

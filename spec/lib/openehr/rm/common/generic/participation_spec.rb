@@ -3,11 +3,11 @@ include OpenEHR::RM::Common::Generic
 
 describe Participation do
   before(:each) do
-    performer = stub(PartyProxy, :name => 'GEHIRN')
-    function = stub(DvText, :value => 'committer')
-    mode = stub(DvCodedText, :value => 'present')
-    lower = stub(DvDateTime, :value => '2009-10-03T20:33:05')
-    time = stub(DvInterval, :lower => lower)
+    performer = double(PartyProxy, :name => 'GEHIRN')
+    function = double(DvText, :value => 'committer')
+    mode = double(DvCodedText, :value => 'present')
+    lower = double(DvDateTime, :value => '2009-10-03T20:33:05')
+    time = double(DvInterval, :lower => lower)
     @participation = Participation.new(:performer => performer,
                                        :function => function,
                                        :mode => mode,

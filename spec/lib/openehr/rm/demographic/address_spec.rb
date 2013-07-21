@@ -6,7 +6,7 @@ include OpenEHR::RM::DataStructures::ItemStructure
 describe Address do
   before(:each) do
     name = DvText.new(:value => 'address')
-    details = stub(ItemStructure, :archetype_node_id => 'at0001')
+    details = double(ItemStructure, :archetype_node_id => 'at0001')
     @address = Address.new(:archetype_node_id => 'at0000',
                            :name => name,
                            :details => details)
@@ -25,9 +25,9 @@ describe Address do
   end
 
   it 'should raise ArgumentError with nil details' do
-    lambda {
+    expect {
       @address.details = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end
 

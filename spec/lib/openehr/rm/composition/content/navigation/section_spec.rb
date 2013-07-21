@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe OpenEHR::RM::Composition::Content::Navigation::Section do
   before(:each) do
-    items = stub(Array, :empty? => false, :size => 10)
+    items = double(Array, :empty? => false, :size => 10)
     @section = OpenEHR::RM::Composition::Content::Navigation::Section.new(
                            :archetype_node_id => 'at0001',
                            :name => OpenEHR::RM::DataTypes::Text::DvText.new(:value => 'section'),
@@ -18,14 +18,14 @@ describe OpenEHR::RM::Composition::Content::Navigation::Section do
   end
 
   it 'empty items should raise ArgumentError' do
-    lambda {
+    expect {
       @section.items = [ ]
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'nil items should not raise ArgumentError' do
-    lambda {
+    expect {
       @section.items = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 end

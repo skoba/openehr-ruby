@@ -6,13 +6,13 @@ include OpenEHR::RM::Support::Identification
 
 describe DvMultimedia do
   before(:each) do
-    media_type = stub(CodePhrase, :code_string => 'text/xml')
-    charset = stub(CodePhrase, :code_string => 'UTF-8')
-    uri = stub(DvUri, :value => 'http://openehr.jp/')
+    media_type = double(CodePhrase, :code_string => 'text/xml')
+    charset = double(CodePhrase, :code_string => 'UTF-8')
+    uri = double(DvUri, :value => 'http://openehr.jp/')
     data = Array['123412', '123112']
-    compression_algorithm = stub(CodePhrase, :code_string => 'gzip')
+    compression_algorithm = double(CodePhrase, :code_string => 'gzip')
     integrity_check = Array['123456789ABCDEF','DEADBEEF']
-    integrity_check_algorithm = stub(CodePhrase, :code_string => 'SHA-1')
+    integrity_check_algorithm = double(CodePhrase, :code_string => 'SHA-1')
     alternate_text = 'test'
     @dv_multimedia = DvMultimedia.new(:value => '<xml>test</xml>',
                                       :media_type => media_type,

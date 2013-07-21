@@ -3,7 +3,7 @@ include OpenEHR::RM::Support::Identification
 
 describe PartyRef do
   before(:each) do
-    object_id = stub(ObjectID, :value => 'test')
+    object_id = double(ObjectID, :value => 'test')
     @party_ref = PartyRef.new(:id => object_id,
                               :type => 'PERSON',
                               :namespace => 'test')
@@ -15,15 +15,15 @@ describe PartyRef do
 
   %w[PERSON ORGANISATION GROUP AGENT ROLE PARTY ACTOR].each do |type|
     it "should not raise ArgumentError with #{type} type" do
-      lambda {
+      expect {
         @party_ref.type = type
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
   end
 
   it 'should raise ArgumentError with UNKNOWN type' do
-    lambda {
+   expect {
       @party_ref.type = 'UNKNOWN'
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

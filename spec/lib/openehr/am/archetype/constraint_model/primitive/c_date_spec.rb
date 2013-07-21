@@ -27,7 +27,7 @@ describe CDate do
   end
 
   it 'raise ArgumentError unless range xor pattern' do
-    @c_date.range.should raise_error
+    expect { @c_date.range = nil }.to raise_exception
   end
 
   describe 'pattern attribute' do

@@ -5,9 +5,9 @@ include OpenEHR::RM::DataTypes::Text
 describe Contribution do
   before(:each) do
     uid = HierObjectID.new(:value => 'ABC::DEF::2')
-    versions = stub(Set, :size => 2, :empty? => false)
+    versions = double(Set, :size => 2, :empty? => false)
     description = DvText.new(:value => 'test')
-    audit = stub(AuditDetails, :empty? => false, :description => description)
+    audit = double(AuditDetails, :empty? => false, :description => description)
     @contribution = Contribution.new(:uid => uid,
                                      :versions => versions,
                                      :audit => audit)
@@ -30,27 +30,27 @@ describe Contribution do
   end
 
   it 'should raise ArgumentError when version is empty' do
-    lambda {
+    expect {
       @contribution.versions = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when uid is nil' do
-    lambda {
+    expect {
       @contribution.uid = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError audit is nil' do
-    lambda {
+    expect {
       @contribution.audit = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'shoudl raise ArgumentError audit.description is empty' do
-    nil_audit = stub(AuditDetails, :description => nil)
-    lambda {
+    nil_audit = double(AuditDetails, :description => nil)
+    expect {
       @contribution.audit = nil_audit
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end 
 end

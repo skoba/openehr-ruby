@@ -4,7 +4,7 @@ include OpenEHR::RM::DataTypes::Text
 
 describe ResourceDescriptionItem do
   before(:each) do
-    language = stub(CodePhrase, :defining_code => 'ja')
+    language = double(CodePhrase, :defining_code => 'ja')
     original_resource_uri = {'jp' => 'http://openehr.jp/'}
     @resource_description_item =
       ResourceDescriptionItem.new(:language => language,
@@ -30,15 +30,15 @@ describe ResourceDescriptionItem do
   end
 
   it 'should raise ArgumentError with nil purpose' do
-    lambda {
+    expect {
       @resource_description_item.purpose = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty purpose' do
-    lambda {
+    expect {
       @resource_description_item.purpose = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'keywords should [openehr]' do
@@ -50,15 +50,15 @@ describe ResourceDescriptionItem do
   end
 
   it 'should raise ArgumentError with use is empty' do
-    lambda {
+    expect {
       @resource_description_item.use = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil use' do
-    lambda {
+    expect {
       @resource_description_item.use = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'misuse should be none' do
@@ -66,15 +66,15 @@ describe ResourceDescriptionItem do
   end
 
   it 'should raise ArgumentError with empty misuse' do
-    lambda {
+    expect {
       @resource_description_item.misuse = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil misuse' do
-    lambda {
+    expect {
       @resource_description_item.misuse = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'copyright should be Shinji KOBAYASHI' do
@@ -82,15 +82,15 @@ describe ResourceDescriptionItem do
   end
 
   it 'should raise error with empty copyright' do
-    lambda {
+    expect {
       @resource_description_item.copyright = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil copyright' do
-    lambda {
+    expect {
       @resource_description_item.copyright = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'original_resource_uri should {jp, http://openehr.jp/}' do

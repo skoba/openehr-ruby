@@ -5,10 +5,10 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe FeederAuditDetails do
   before(:each) do
-    provider = stub(PartyIdentified, :name => 'NERV')
-    location = stub(PartyIdentified, :name => '3rd Tokyo')
-    time = stub(DvDateTime, :value => '2009-09-28T19:40')
-    subject = stub(PartyProxy, :type => 'PARTY')
+    provider = double(PartyIdentified, :name => 'NERV')
+    location = double(PartyIdentified, :name => '3rd Tokyo')
+    time = double(DvDateTime, :value => '2009-09-28T19:40')
+    subject = double(PartyProxy, :type => 'PARTY')
     @feeder_audit_details =
       FeederAuditDetails.new(:system_id => 'MELCHIOR',
                              :provider => provider,
@@ -47,14 +47,14 @@ describe FeederAuditDetails do
   end
 
   it 'should reise ArgumentError with nil system_id' do
-    lambda {
+    expect {
       @feeder_audit_details.system_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty syste_id' do
-    lambda {
+    expect {
       @feeder_audit_details.system_id = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

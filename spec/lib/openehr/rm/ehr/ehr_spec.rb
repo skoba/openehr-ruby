@@ -8,15 +8,15 @@ describe EHR do
     system_id = HierObjectID.new(:value => 'ABC::DEF')
     ehr_id = HierObjectID.new(:value => 'GHI::JKL')
     time_created = DvDateTime.new(:value => '2009-11-14T19:01:11')
-    ehr_access = stub(ObjectRef, :type => 'VERSIONED_EHR_ACCESS')
-    ehr_status = stub(ObjectRef, :type => 'VERSIONED_EHR_STATUS')
-    contribution1 = stub(ObjectRef, :type => 'CONTRIBUTION')
-    contribution2 = stub(ObjectRef, :type => 'CONTRIBUTION')
+    ehr_access = double(ObjectRef, :type => 'VERSIONED_EHR_ACCESS')
+    ehr_status = double(ObjectRef, :type => 'VERSIONED_EHR_STATUS')
+    contribution1 = double(ObjectRef, :type => 'CONTRIBUTION')
+    contribution2 = double(ObjectRef, :type => 'CONTRIBUTION')
     contributions = [contribution1, contribution2]
-    directory = stub(ObjectRef, :type => 'VERSIONED_FOLDER')
-    composition1 = stub(ObjectRef, :type => 'VERSIONED_COMPOSITION')
-    composition2 = stub(ObjectRef, :type => 'VERSIONED_COMPOSITION')
-    composition3 = stub(ObjectRef, :type => 'VERSIONED_COMPOSITION')
+    directory = double(ObjectRef, :type => 'VERSIONED_FOLDER')
+    composition1 = double(ObjectRef, :type => 'VERSIONED_COMPOSITION')
+    composition2 = double(ObjectRef, :type => 'VERSIONED_COMPOSITION')
+    composition3 = double(ObjectRef, :type => 'VERSIONED_COMPOSITION')
     compositions = [composition1, composition2, composition3]
     @ehr = EHR.new(:system_id => system_id,
                    :ehr_id => ehr_id,
@@ -67,7 +67,7 @@ describe EHR do
   end
 
   it 'type contributions should be CONTRIBUTION' do
-    contributions = [stub(ObjectRef, :type => 'PARTY')]
+    contributions = [double(ObjectRef, :type => 'PARTY')]
     lambda {
       @ehr.contributions = contributions
     }.should raise_error ArgumentError
@@ -91,7 +91,7 @@ describe EHR do
 
   it 'should raise ArguemntError with invalid ehr_access type' do
     lambda {
-      @ehr.ehr_access = stub(ObjectRef, :type => 'VERSIONED_EHR_STATUS')
+      @ehr.ehr_access = double(ObjectRef, :type => 'VERSIONED_EHR_STATUS')
     }.should raise_error ArgumentError
   end
     
@@ -107,7 +107,7 @@ describe EHR do
 
   it 'should raise ArgumentError with invalid ehr_statsu type' do
     lambda {
-      @ehr.ehr_status = stub(ObjectRef, :type => 'VERSIONED_EHR_ACCESS')
+      @ehr.ehr_status = double(ObjectRef, :type => 'VERSIONED_EHR_ACCESS')
     }.should raise_error ArgumentError
   end
 
@@ -123,7 +123,7 @@ describe EHR do
 
   it 'should raise ArgumentError with invalid type composition' do
     lambda {
-      @ehr.compositions = [stub(ObjectRef, :type => 'INVALID_COMPOSITION')]
+      @ehr.compositions = [double(ObjectRef, :type => 'INVALID_COMPOSITION')]
     }.should raise_error ArgumentError
   end
 
@@ -133,7 +133,7 @@ describe EHR do
 
   it 'should raise ArgumentError with invalid type' do
     lambda {
-      @ehr.directory = stub(ObjectRef, :type => 'INVALID_FOLDER')
+      @ehr.directory = double(ObjectRef, :type => 'INVALID_FOLDER')
     }.should raise_error ArgumentError
   end
 end

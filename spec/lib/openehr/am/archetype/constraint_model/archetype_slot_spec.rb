@@ -5,8 +5,8 @@ include OpenEHR::AssumedLibraryTypes
 describe ArchetypeSlot do
   before(:each) do
     occurrences = Interval.new(:lower => 0, :upper => 1)
-    includes = stub(Set, :empty? => false, :size => 2)
-    excludes = stub(Set, :empty? => false, :size => 10)
+    includes = double(Set, :empty? => false, :size => 2)
+    excludes = double(Set, :empty? => false, :size => 10)
     @archetype_slot = ArchetypeSlot.new(:path => '/event/[at0001]/',
                                         :rm_type_name => 'DV_TIME',
                                         :node_id => 'ac0001',
@@ -24,9 +24,9 @@ describe ArchetypeSlot do
   end
 
   it 'should raise ArgumentError when includes are empty' do
-    lambda {
+    expect {
       @archetype_slot.includes = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'excludes should be assigned properly' do
@@ -34,9 +34,9 @@ describe ArchetypeSlot do
   end
 
   it 'should raise ArgumentError when excludes are empty' do
-    lambda {
+    expect {
       @archetype_slot.excludes = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'any_allowed should be false when includes and excludes are not nil' do

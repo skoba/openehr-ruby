@@ -6,9 +6,9 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe AuditDetails do
   before(:each) do
-    committer = stub(PartyProxy, :namespace => 'UNKNOWN')
-    change_type = stub(DvCodedText, :value =>'creation')
-    time = stub(DvDateTime, :value => '2009-10-03T16:24:19.0Z')
+    committer = double(PartyProxy, :namespace => 'UNKNOWN')
+    change_type = double(DvCodedText, :value =>'creation')
+    time = double(DvDateTime, :value => '2009-10-03T16:24:19.0Z')
     desc = DvText.new(:value => 'test environment')
     @audit_details = AuditDetails.new(:system_id => 'MAGI',
                                       :committer => committer,
@@ -38,14 +38,14 @@ describe AuditDetails do
   end
 
   it 'should raise ArgumentError when system_id was assigned nil' do
-    lambda {
+    expect {
       @audit_details.system_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when time_commited is nil' do
-    lambda {
+    expect {
       @audit_details.time_committed = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

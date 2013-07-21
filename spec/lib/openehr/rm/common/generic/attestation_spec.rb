@@ -7,12 +7,12 @@ include OpenEHR::RM::DataTypes::Encapsulated
 
 describe Attestation do
   before(:each) do
-    committer = stub(PartyProxy, :namespace => 'UNKNOWN')
-    change_type = stub(DvCodedText, :value =>'creation')
-    time = stub(DvDateTime, :value => '2009-10-03T16:24:19.0Z')
+    committer = double(PartyProxy, :namespace => 'UNKNOWN')
+    change_type = double(DvCodedText, :value =>'creation')
+    time = double(DvDateTime, :value => '2009-10-03T16:24:19.0Z')
     reason = DvText.new(:value => 'signed')
-    items = stub(Set, :empty? => false, :size => 3)
-    attested_view = stub(DvMultimedia, :size => 300)
+    items = double(Set, :empty? => false, :size => 3)
+    attested_view = double(DvMultimedia, :size => 300)
     @attestation = Attestation.new(:committer => committer,
                                    :change_type => change_type,
                                    :time_committed => time,
@@ -49,14 +49,14 @@ describe Attestation do
   end
 
   it 'should raise ArgumentError when items are empty' do
-    lambda {
+    expect {
       @attestation.items = Set.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentErro when items are nil' do
-    lambda {
+    expect {
       @attestation.items = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 end

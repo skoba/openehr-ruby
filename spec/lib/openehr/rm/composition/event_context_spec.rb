@@ -7,11 +7,11 @@ include OpenEHR::RM::DataStructures::ItemStructure
 describe EventContext do
   before(:each) do
     start = DvDateTime.new(:value => '2009-11-13T20:46:57')
-    setting_group = stub(CodePhrase, :code_string => '225')
-    setting = stub(DvCodedText, :defining_code => setting_group)
+    setting_group = double(CodePhrase, :code_string => '225')
+    setting = double(DvCodedText, :defining_code => setting_group)
     ending = DvDateTime.new(:value => '2010-10-14T09:00:00')
-    participations = stub(Array, :size => 5, :empty? => false)
-    other_context = stub(ItemStructure, :archetype_node_id => 'at0002')
+    participations = double(Array, :size => 5, :empty? => false)
+    other_context = double(ItemStructure, :archetype_node_id => 'at0002')
     @event_context = EventContext.new(:start_time => start,
                                       :end_time => ending,
                                       :setting => setting,
@@ -29,9 +29,9 @@ describe EventContext do
   end
 
   it 'should raise ArgumentError with nil start_time' do
-    lambda {
+    expect {
       @event_context.start_time = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
   
   it 'setting should be assigned properly' do
@@ -39,9 +39,9 @@ describe EventContext do
   end
 
   it 'should raise ArgumentError with nil setting' do
-    lambda {
+    expect {
       @event_context.setting = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should vaildate setting code with Terminology service'
@@ -55,15 +55,15 @@ describe EventContext do
   end
 
   it 'should raise ArgumentError with empty participations' do
-    lambda {
+    expect {
       @event_context.participations = [ ]
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil participations' do
-    lambda {
+    expect {
       @event_context.participations = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'location should be assigned properly' do
@@ -71,15 +71,15 @@ describe EventContext do
   end
 
   it 'should raise ArgumentError with empty location' do
-    lambda {
+    expect {
       @event_context.location = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil location' do
-    lambda {
+    expect {
       @event_context.location = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'other_context should be assigned properly' do

@@ -48,57 +48,57 @@ describe ArchetypeID do
   end
 
   it 'should raise ArgumentError with wrong id format' do
-    lambda {
+    expect {
       ArchetypeID.new(:value =>'wrong-format')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil concept name' do
-    lambda {
+    expect {
       @archetype_id.concept_name = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with wrong domain concept format' do
-    lambda {
+    expect {
       @archetype_id.domain_concept = '0123'
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty rm_entity' do
-    lambda {
+    expect {
       @archetype_id.rm_entity = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil rm_entity' do
-    lambda {
+    expect {
       @archetype_id.rm_entity = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty rm_originator' do
-    lambda {
+    expect {
       @archetype_id.rm_originator = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil rm_originator' do
-    lambda {
+    expect {
       @archetype_id.rm_originator = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty specialisation' do
-    lambda {
+    expect {
       @archetype_id.specialisation = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil specialisation' do
-    lambda {
+    expect {
       @archetype_id.specialisation = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   describe 'another constructor' do
@@ -133,15 +133,15 @@ describe ArchetypeID do
     end
 
     it 'should raise ArgumentError empty domain concept' do
-      lambda {
+      expect {
         @archetype_id.domain_concept = ''
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should raise ArgumentError nil domain concept' do
-      lambda {
+      expect {
         @archetype_id.domain_concept = nil
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 's specialisation may be empty' do

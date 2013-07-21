@@ -6,9 +6,9 @@ include OpenEHR::RM::DataTypes::Text
 describe Contact do
   before(:each) do
     name = DvText.new(:value => 'contact')
-    addresses = stub(Array, :size => 2, :empty? => false)
+    addresses = double(Array, :size => 2, :empty? => false)
     upper = DvDate.new(:value => '2009-11-20')
-    time_validity = stub(DvInterval, :upper => upper)
+    time_validity = double(DvInterval, :upper => upper)
     @contact = Contact.new(:archetype_node_id => 'at0000',
                            :name => name,
                            :addresses => addresses,

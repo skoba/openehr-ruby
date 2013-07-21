@@ -8,21 +8,21 @@ include OpenEHR::RM::DataTypes::Text
 describe VersionedObject do
   before(:each) do
     uid1 = ObjectVersionID.new(:value => 'ABC::DEF::1')
-    defining_code1 = stub(CodePhrase, :code_string => '532')
-    lifecycle_state1 = stub(DvCodedText, :defining_code => defining_code1)
+    defining_code1 = double(CodePhrase, :code_string => '532')
+    lifecycle_state1 = double(DvCodedText, :defining_code => defining_code1)
     time_committed1 = DvDateTime.new(:value => '2008-11-12T18:24:32')
-    audit_details1 = stub(AuditDetails, :time_committed => time_committed1)
-    version1 = stub(Version, :commit_audit => audit_details1,
+    audit_details1 = double(AuditDetails, :time_committed => time_committed1)
+    version1 = double(Version, :commit_audit => audit_details1,
                              :lifecycle_state => lifecycle_state1,
                              :uid => uid1)
     uid2 = ObjectVersionID.new(:value => 'GHI::JKL::2')
-    defining_code2 = stub(CodePhrase, :code_string => '553')
-    lifecycle_state2 = stub(DvCodedText, :defining_code => defining_code2)
+    defining_code2 = double(CodePhrase, :code_string => '553')
+    lifecycle_state2 = double(DvCodedText, :defining_code => defining_code2)
     time_committed2 = DvDateTime.new(:value => '2008-12-12T19:32:14')
-    audit_details2 = stub(AuditDetails, :time_committed => time_committed2)
-    attestation = stub(Attestation)
+    audit_details2 = double(AuditDetails, :time_committed => time_committed2)
+    attestation = double(Attestation)
     attestations = Array.new([attestation])
-    contribution = stub(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
+    contribution = double(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
     version2 = OriginalVersion.new(:commit_audit => audit_details2,
                                    :lifecycle_state => lifecycle_state2,
                                    :preceding_version_uid => uid1,
@@ -30,15 +30,15 @@ describe VersionedObject do
                                    :contribution => contribution,
                                    :attestations => attestations)
     uid3 = ObjectVersionID.new(:value => 'MNO::PQR::3')
-    defining_code3 = stub(CodePhrase, :code_string => '523')
-    lifecycle_state3 = stub(DvCodedText, :defining_code => defining_code3)
+    defining_code3 = double(CodePhrase, :code_string => '523')
+    lifecycle_state3 = double(DvCodedText, :defining_code => defining_code3)
     time_committed3 = DvDateTime.new(:value => '2009-07-15T09:24:26')
-    audit_details3 = stub(AuditDetails, :time_committed => time_committed3)
-    version3 = stub(Version, :commit_audit => audit_details3,
+    audit_details3 = double(AuditDetails, :time_committed => time_committed3)
+    version3 = double(Version, :commit_audit => audit_details3,
                              :lifecycle_state => lifecycle_state3,
                              :uid => uid3)
     uid = HierObjectID.new(:value => 'STU::VWX::5')
-    owner_id = stub(ObjectRef, :namespace => 'test')
+    owner_id = double(ObjectRef, :namespace => 'test')
     time_created = DvDateTime.new(:value => '2009-11-09T09:53:22')
     all_versions = [version1, version2, version3]
     @versioned_object = VersionedObject.new(:uid => uid,
@@ -134,13 +134,13 @@ describe VersionedObject do
   end
 
   it 'should be able to commit original version' do
-    contribution = stub(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
+    contribution = double(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
     uid = ObjectVersionID.new(:value => 'EFG::HIJ::7')
     preceding_version_uid = ObjectVersionID.new(:value => 'ABC::DEF::1')
-    audit = stub(AuditDetails)
-    defining_code = stub(CodePhrase, :code_string => '523')
-    lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
-    attestations = stub(Array, :empty? => false)
+    audit = double(AuditDetails)
+    defining_code = double(CodePhrase, :code_string => '523')
+    lifecycle_state = double(DvCodedText, :defining_code => defining_code)
+    attestations = double(Array, :empty? => false)
     @versioned_object.
       commit_original_version(:contribution => contribution,
                               :uid => uid,
@@ -154,13 +154,13 @@ describe VersionedObject do
   end
 
   it 'should raise ArgumentError with invalid preceeding version' do
-    contribution = stub(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
+    contribution = double(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
     uid = ObjectVersionID.new(:value => 'EFG::HIJ::7')
     preceding_version_uid = ObjectVersionID.new(:value => 'BCD::EFG::8')
-    audit = stub(AuditDetails)
-    defining_code = stub(CodePhrase, :code_string => '523')
-    lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
-    attestations = stub(Array, :empty? => false)
+    audit = double(AuditDetails)
+    defining_code = double(CodePhrase, :code_string => '523')
+    lifecycle_state = double(DvCodedText, :defining_code => defining_code)
+    attestations = double(Array, :empty? => false)
     lambda {
       @versioned_object.
       commit_original_version(:contribution => contribution,
@@ -175,14 +175,14 @@ describe VersionedObject do
   end
 
   it 'should be able to commit original merged version' do
-    contribution = stub(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
+    contribution = double(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
     uid = ObjectVersionID.new(:value => 'KLM::NOP::9')
     preceding_version_uid = ObjectVersionID.new(:value => 'ABC::DEF::1')
     time_committed = DvDateTime.new(:value => '2009-11-09T23:42:18')
-    audit = stub(AuditDetails, :time_committed => time_committed)
-    defining_code = stub(CodePhrase, :code_string => '523')
-    lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
-    attestations = stub(Array, :empty? => false)
+    audit = double(AuditDetails, :time_committed => time_committed)
+    defining_code = double(CodePhrase, :code_string => '523')
+    lifecycle_state = double(DvCodedText, :defining_code => defining_code)
+    attestations = double(Array, :empty? => false)
     @versioned_object.
       commit_original_merged_version(:contribution => contribution,
                               :uid => uid,
@@ -196,14 +196,14 @@ describe VersionedObject do
   end
 
   it 'should be able to commit imported_version' do
-    contribution = stub(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
+    contribution = double(ObjectRef, :empty? => false, :type => 'CONTRIBUTION')
     time_committed = DvDateTime.new(:value => '2009-11-09T23:42:18')
-    audit = stub(AuditDetails, :time_committed => time_committed)
+    audit = double(AuditDetails, :time_committed => time_committed)
     uid = ObjectVersionID.new(:value => 'QRS::TUV::10')
     preceding_version_uid = ObjectVersionID.new(:value => 'ABC::DEF::1')
-    defining_code = stub(CodePhrase, :code_string => '523')
-    lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
-    attestations = stub(Array, :empty? => false)
+    defining_code = double(CodePhrase, :code_string => '523')
+    lifecycle_state = double(DvCodedText, :defining_code => defining_code)
+    attestations = double(Array, :empty? => false)
     original_version = OriginalVersion.new(:uid => uid,
                             :contribution => contribution,
                             :commit_audit => audit,
@@ -219,7 +219,7 @@ describe VersionedObject do
   end
 
   it 'should be able to commit attestation' do
-    attestation = stub(Attestation)
+    attestation = double(Attestation)
     uid = ObjectVersionID.new(:value => 'GHI::JKL::2')
     @versioned_object.commit_attestation(:attestation => attestation,
                                          :uid => uid,
@@ -229,56 +229,56 @@ describe VersionedObject do
   end
 
   it 'should raise ArgumentError when time_created is nil' do
-    lambda {
+    expect {
       @versioned_object.time_created = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when all_versions are nil' do
-    lambda {
+    expect {
       @versioned_object.all_versions = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when is_original_version argument is nil' do
-    lambda {
+    expect {
       @versioned_object.is_original_version?(nil)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not has time data' do
     unexisted_time = DvDateTime.new(:value => '2009-11-10T00:43:59')
-    lambda {
+    expect {
       @versioned_object.version_at_time(unexisted_time)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil argument to commit_attestations' do
-    lambda {
+    expect {
       @versioned_object.commit_attestation(:attestation => nil)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with not orinigal version id' do
     uid = ObjectVersionID.new(:value => 'ABC::DEF::1')
-    attestation = stub(Attestation)
-    lambda {
+    attestation = double(Attestation)
+    expect {
       @versioned_object.commit_attestation(:attestation => attestation,
                                            :uid => uid,
                                            :signature => 'DEADBEAFE81')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil argument to version with id' do
-    lambda {
+    expect {
       @versioned_object.version_with_id(nil)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with unexsited version with id ' do
     uid = ObjectVersionID.new(:value => 'CBA::FED::1')
-    lambda {
+    expect {
       @versioned_object.version_with_id(uid)
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

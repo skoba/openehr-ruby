@@ -5,7 +5,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CAttribute do
   before(:each) do
     existence = Interval.new(:lower => 0, :upper => 1)
-    parent = stub(CObject, :path => '/event[at0001]')
+    parent = double(CObject, :path => '/event[at0001]')
     occurrences = existence
     children = [CObject.new(:rm_type_name => 'DV_AMOUNT',
                             :occurrences => occurrences)]
@@ -30,9 +30,9 @@ describe CAttribute do
   end
 
   it 'should raise ArgumentError rm_attribute_name is nil' do
-    lambda {
+    expect {
       @c_attribute.rm_attribute_name = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'existence should be assigned properly' do
@@ -41,26 +41,32 @@ describe CAttribute do
 
   it 'existence.lower should be more than 0' do
     invalid_existence = Interval.new(:lower => -1, :upper => 1)
-    lambda {
+    expect {
       @c_attribute.existence = invalid_existence
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'existence.upper should be equal or less than 1' do
     invalid_existence = Interval.new(:lower => 0, :upper => 2)
-    lambda {
+    expect {
       @c_attribute.existence = invalid_existence
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
-  it 'children should be assigned properly' do
-    @c_attribute.children[0].rm_type_name.should == 'DV_AMOUNT'
-  end
 
-  it 'children parent should be set properly' do
-    @c_attribute.children[0].parent.should == @c_attribute
-  end
+  context 'children' do
+    it 'children should be assigned properly' do
+      @c_attribute.children[0].rm_type_name.should == 'DV_AMOUNT'
+    end
 
+    it 'children parent should be set properly' do
+      @c_attribute.children[0].parent.should == @c_attribute
+    end
+
+    it 'has children' do
+      @c_attribute.should have_children
+    end
+  end
   it 'path should be calculated properly' do
     @c_attribute.path.should == '/event[at0001]/data'
   end

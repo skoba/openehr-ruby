@@ -159,7 +159,7 @@ module OpenEHR
               details[lang] = item
             end
             oc = params['other_contributors']
-	    if oc.instance_of? Hash
+            if oc.instance_of? Hash
               oc = oc.values
             end
             OpenEHR::RM::Common::Resource::ResourceDescription.new(

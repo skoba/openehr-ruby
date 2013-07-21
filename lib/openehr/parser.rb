@@ -11,6 +11,11 @@ module OpenEHR
         raise NotImplementedError
       end
     end
+
+    class ParseError < StandardError
+
+    end
+
     require_relative 'parser/adl_parser'
   end
 end

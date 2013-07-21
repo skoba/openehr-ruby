@@ -3,10 +3,10 @@ include OpenEHR::AM::Archetype::Assertion
 
 describe Assertion do
   before(:each) do
-    expression = stub(ExprItem, :type => 'Boolean')
+    expression = double(ExprItem, :type => 'Boolean')
     $string_expression = "/[at0001]/speed[at0002]/kilometres/magnitude = " +
       "/[at0003]/speed[at0004]/miles/magnitude * 1.6"
-    variables = stub(Array, :size => 2)
+    variables = double(Array, :size => 2)
     @assertion = OpenEHR::AM::Archetype::Assertion::Assertion.new(:tag => 'validity',
                                :expression => expression,
                                :string_expression => $string_expression,
@@ -22,16 +22,16 @@ describe Assertion do
   end
 
   it 'should raise ArgumentError when expression is nil' do
-    lambda {
+    expect {
       @assertion.expression = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when expression type is not Boolean' do
-    invalid_expression = stub(ExprItem, :type => 'Real')
-    lambda {
+    invalid_expression = double(ExprItem, :type => 'Real')
+    expect {
       @assertion.expression = invalid_expression
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'tag should be assigned properly' do
@@ -39,15 +39,15 @@ describe Assertion do
   end
 
   it 'tag should not be empty' do
-    lambda {
+    expect {
       @assertion.tag = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError when tag = nil' do
-    lambda {
+    expect {
       @assertion.tag = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'string_expression should be assigned properly' do

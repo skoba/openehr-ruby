@@ -4,7 +4,7 @@ include OpenEHR::AM::Archetype::Assertion
 describe ExprUnaryOperator do
   before(:each) do
     operator = OperatorKind.new(:value => 2001)
-    operand = stub(ExprItem, :type => 'Real')
+    operand = double(ExprItem, :type => 'Real')
     @expr_unary_operator =
       ExprUnaryOperator.new(:type => 'Integer',
                             :item => 'ANY',
@@ -19,8 +19,8 @@ describe ExprUnaryOperator do
   end
 
   it 'should raise ArgumentError when operand is nil' do
-    lambda {
+    expect {
       @expr_unary_operator.operand = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

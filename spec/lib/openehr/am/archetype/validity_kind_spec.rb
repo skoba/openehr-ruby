@@ -23,20 +23,20 @@ describe ValidityKind do
   end
 
   it 'should not raise ArgumentError with valid value' do
-    lambda {
+    expect {
       [1001, 1002, 1003].each {|value| @validity_kind.value = value}
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError with invalid value such as 1000' do
-    lambda {
+    expect {
       @validity_kind.value = 1000
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invalid value such as 1004' do
-    lambda {
+    expect {
       @validity_kind.value = 1004
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

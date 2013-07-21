@@ -4,7 +4,7 @@ include OpenEHR::RM::Support::Identification
 
 describe PartyProxy do
   before(:each) do
-    external_ref = stub(PartyRef, :namespace => 'NERV')
+    external_ref = double(PartyRef, :namespace => 'NERV')
     @party_proxy = PartyProxy.new(:external_ref => external_ref)
   end
 

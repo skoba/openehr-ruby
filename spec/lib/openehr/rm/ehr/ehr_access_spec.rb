@@ -6,7 +6,7 @@ include OpenEHR::RM::DataTypes::Text
 describe EHRAccess do
   before(:each) do
     name = DvText.new(:value => 'EHRAccess')
-    settings = stub(AccessControlSettings)
+    settings = double(AccessControlSettings)
     @ehr_access = EHRAccess.new(:archetype_node_id => 'at0001',
                                 :name => name,
                                 :settings => settings,
@@ -26,8 +26,8 @@ describe EHRAccess do
   end
 
   it 'should raise ArgumentError with nil schema' do
-    lambda {
+    expect {
       @ehr_access.scheme = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

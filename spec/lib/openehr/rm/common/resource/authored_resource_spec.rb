@@ -5,14 +5,14 @@ include OpenEHR::RM::DataTypes::Text
 
 describe AuthoredResource do
   before(:each) do
-    original_language = stub(CodePhrase, :code_string => 'ja')
-    translation_language = stub(CodePhrase, :code_string => 'en')
-    translation_details = stub(TranslationDetails,
+    original_language = double(CodePhrase, :code_string => 'ja')
+    translation_language = double(CodePhrase, :code_string => 'en')
+    translation_details = double(TranslationDetails,
                                :language => translation_language)
     translations = Hash['en', translation_details]
-    description = stub(ResourceDescription, :lifecycle_state => 'initial')
-    revision_history = stub(RevisionHistory, :most_recent_version => '0.0.3')
-    languages_available = Set.new %w(ja en)
+    description = double(ResourceDescription, :lifecycle_state => 'initial')
+    revision_history = double(RevisionHistory, :most_recent_version => '0.0.3')
+#    languages_available = Set.new %w(ja en)
     @authored_resource = AuthoredResource.new(
                   :original_language => original_language,
                   :translations => translations,
@@ -55,14 +55,14 @@ describe AuthoredResource do
   end
 
   it 'should raise ArgumentError with empty translations' do
-    lambda {
+    expect {
       @authored_resource.translations = Array.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when original language is nil' do
-    lambda {
+    expect {
       @authored_resource.original_language = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

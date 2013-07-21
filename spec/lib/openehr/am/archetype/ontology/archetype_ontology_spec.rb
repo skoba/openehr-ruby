@@ -8,12 +8,11 @@ describe ArchetypeOntology do
     term1 = {'at0000' => ArchetypeTerm.new(:code => 'at0000', :items => items)}
     items = {'text' => 'Blood pressure'}
     term2 = {'at0001' => ArchetypeTerm.new(:code => 'at0001', :items => items)}
-    term3 = {'at0002' => ArchetypeTerm.new(:code => 'at0002', :items => items)}
     term_definitions = {'ja' => (term1.update term2), 'en' => term1}
     items = {'text' => 'test', 'description' => 'test item'}
     term4 = {'ac0003' => ArchetypeTerm.new(:code => 'ac0003', :items => items)}
     constraint_definitions = {'ja' => term4}
-    code_phrase = stub(CodePhrase, :code_string => '163020007')
+    code_phrase = double(CodePhrase, :code_string => '163020007')
     bind = {'at0000' => code_phrase}
     term_bindings = {'SNOMED-CT(2003)' => bind}
     @archetype_ontology =

@@ -5,8 +5,8 @@ include OpenEHR::RM::Support::Identification
 
 describe InstructionDetails do
   before(:each) do
-    instruction_id = stub(LocatableRef, :path => '[instruction]/[test]')
-    wf_details = stub(ItemStructure, :archetype_node_id => 'at0004')
+    instruction_id = double(LocatableRef, :path => '[instruction]/[test]')
+    wf_details = double(ItemStructure, :archetype_node_id => 'at0004')
     @instruction_details =
       InstructionDetails.new(:instruction_id => instruction_id,
                              :activity_id => 'at0003',

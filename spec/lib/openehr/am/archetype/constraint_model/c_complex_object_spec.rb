@@ -5,7 +5,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CComplexObject do
   before(:each) do
     occurrences = Interval.new(:lower => 0, :upper => 1)
-    parent = stub(CAttribute, :rm_attribute_name => 'event',
+    parent = double(CAttribute, :rm_attribute_name => 'event',
                   :path => "/event")
     attribute = CAttribute.new(:rm_attribute_name => 'data')
     attributes = [attribute, attribute, attribute]

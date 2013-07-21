@@ -159,7 +159,7 @@ module OpenEHR
       end
 
       describe DvMultimediaFactory do
-        subject { media_type = stub('media_type')
+        subject { media_type = double('media_type')
           media_type.stub(:code_string).and_return('SVG')
           Factory.create('DV_MULTIMEDIA', value: '<SVG> test </SVG>',
                                  media_type: media_type) }

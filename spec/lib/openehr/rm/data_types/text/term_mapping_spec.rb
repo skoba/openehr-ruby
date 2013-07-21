@@ -3,11 +3,11 @@ include OpenEHR::RM::DataTypes::Text
 
 describe TermMapping do
   before(:each) do
-    target_stub = stub(DvCodedText, :value => 'TEST')
-    purpose_stub = stub(DvCodedText, :value => 'automated')
-    @term_mapping = TermMapping.new(:target => target_stub,
+    target_double = double(DvCodedText, :value => 'TEST')
+    purpose_double = double(DvCodedText, :value => 'automated')
+    @term_mapping = TermMapping.new(:target => target_double,
                                     :match => '=',
-                                    :purpose => purpose_stub)
+                                    :purpose => purpose_double)
   end
 
   it 'should means equivalent' do
@@ -54,6 +54,6 @@ describe TermMapping do
   end
 
   it 'should raise ArgumentError when match is not valid' do
-    lambda {@term_mapping.match = '/'}.should raise_error(ArgumentError)
+    expect {@term_mapping.match = '/'}.to raise_error(ArgumentError)
   end
 end

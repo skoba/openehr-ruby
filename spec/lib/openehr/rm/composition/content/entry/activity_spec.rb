@@ -10,8 +10,8 @@ describe Activity do
   let(:name) {DvText.new(:value => 'entry package')}
 
   before(:each) do
-    description = stub(ItemStructure, :archetype_node_id => 'at0002')
-    timing = stub(DvParsable, :value => '2009-11-18T19:35:11')
+    description = double(ItemStructure, :archetype_node_id => 'at0002')
+    timing = double(DvParsable, :value => '2009-11-18T19:35:11')
     @activity = Activity.new(:archetype_node_id => 'at0001',
                              :name => name,
                              :description => description,

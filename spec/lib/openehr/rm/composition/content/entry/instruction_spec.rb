@@ -14,9 +14,9 @@ describe Instruction do
 
   before(:each) do
     narrative = DvText.new(:value => 'instruction test')
-    activities = stub(Array, :size => 5, :empty? => false)
+    activities = double(Array, :size => 5, :empty? => false)
     expiry_time = DvDateTime.new(:value => '2009-11-18T20:58:34')
-    wf_definition = stub(DvParsable, :value => 'behavior driven')
+    wf_definition = double(DvParsable, :value => 'behavior driven')
     @instruction= Instruction.new(:archetype_node_id => 'at0001',
                                   :name => name,
                                   :language => language,

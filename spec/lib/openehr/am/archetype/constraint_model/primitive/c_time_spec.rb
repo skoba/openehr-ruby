@@ -43,42 +43,42 @@ describe CTime do
 
   it 'second_validity should not be MANDATORY if minute_validity is optional' do
     @c_time.second_validity = ValidityKind::MANDATORY
-    lambda {
+    expect {
       @c_time.minute_validity = ValidityKind::OPTIONAL
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'second_validity should be DISALLOWED if minute_validity is DISALLOWED' do
-    lambda {
+    expect {
       @c_time.minute_validity = ValidityKind::DISALLOWED
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError if minute_validity and second_validity are DISALLOWED' do
     @c_time.second_validity = ValidityKind::DISALLOWED
-    lambda {
+    expect {
       @c_time.minute_validity = ValidityKind::DISALLOWED
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'millisecond_validity should not be MANDATORY if second_validity is optional' do
     @c_time.millisecond_validity = ValidityKind::MANDATORY
-    lambda {
+    expect {
       @c_time.second_validity = ValidityKind::OPTIONAL
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'millisecond_validity should be DISALLOWED if second_validity is DISALLOWED' do
-    lambda {
+    expect {
       @c_time.second_validity = ValidityKind::DISALLOWED
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'should raise ArgumentError if second_validity is DISALLOWED and millisecond_validity is OPTIONAL' do
     @c_time.millisecond_validity = ValidityKind::OPTIONAL
-    lambda {
+    expect {
       @c_time.second_validity = ValidityKind::DISALLOWED
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   describe 'pattern constraint' do

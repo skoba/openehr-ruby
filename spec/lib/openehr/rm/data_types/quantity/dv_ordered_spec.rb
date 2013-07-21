@@ -16,13 +16,13 @@ describe DvOrdered do
   end
 
   it 'should be normal' do
-    normal_code = stub(CodePhrase, :code_string => 'N')
+    normal_code = double(CodePhrase, :code_string => 'N')
     @dv_ordered.normal_status = normal_code
     @dv_ordered.is_normal?.should be_true
   end
 
   it 'should not be normal' do
-    abnormal_code = stub(CodePhrase, :code_string => 'H')
+    abnormal_code = double(CodePhrase, :code_string => 'H')
     @dv_ordered.normal_status = abnormal_code
     @dv_ordered.is_normal?.should_not be_true
   end
@@ -37,13 +37,13 @@ describe DvOrdered do
   end
 
   it 'should raise ArgumentError' do
-    lambda{
+    expect {
       @dv_ordered.other_reference_ranges = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should be normal in range' do
-    normal_range = stub(DvInterval, :has => true)
+    normal_range = double(DvInterval, :has => true)
     @dv_ordered.normal_range = normal_range
     @dv_ordered.is_normal?.should be_true
   end
@@ -53,8 +53,8 @@ describe DvOrdered do
   end
 
   it 'should be raise NotImplemented error' do
-    lambda {
+   expect {
       @dv_ordered<=>1
-    }.should raise_error(NotImplementedError)
+    }.to raise_error(NotImplementedError)
   end
 end

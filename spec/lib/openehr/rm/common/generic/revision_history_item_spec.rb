@@ -4,8 +4,8 @@ include OpenEHR::RM::Support::Identification
 
 describe RevisionHistoryItem do
   before(:each)do
-    version_id = stub(ObjectVersionID, :objectid => 'RIO')
-    audits = stub(Array, :size => 30, :empty? => false)
+    version_id = double(ObjectVersionID, :objectid => 'RIO')
+    audits = double(Array, :size => 30, :empty? => false)
     @revision_history_item =
       RevisionHistoryItem.new(:version_id => version_id,
                               :audits => audits)
@@ -24,20 +24,20 @@ describe RevisionHistoryItem do
   end
 
   it 'should raise ArgumentError when nil is assigned to version id' do
-    lambda {
+    expect {
       @revision_history_item.version_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when nil is assinged to audits' do
-    lambda {
+    expect {
       @revision_history_item.audits = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when empty is assinged to audits' do
-    lambda {
+    expect {
       @revision_history_item.audits = Array.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

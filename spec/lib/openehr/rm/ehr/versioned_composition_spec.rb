@@ -7,14 +7,14 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 
 describe VersionedComposition do
   before(:each) do
-    composition1 = stub(Composition, :archetype_node_id => 'at0002',
+    composition1 = double(Composition, :archetype_node_id => 'at0002',
                         :is_persistent? => true)
-    version1 = stub(Version, :data => composition1)
-    composition2 = stub(Composition, :archetype_node_id => 'at0002',
+    version1 = double(Version, :data => composition1)
+    composition2 = double(Composition, :archetype_node_id => 'at0002',
                         :is_persistent? => false)
-    version2 = stub(Version, :data => composition2)
+    version2 = double(Version, :data => composition2)
     uid = HierObjectID.new(:value => 'opeehr.jp::350')
-    owner_id = stub(ObjectRef, :type => 'EHR')
+    owner_id = double(ObjectRef, :type => 'EHR')
     time_created = DvDateTime.new(:value => '2009-11-16T15:14:33')
     @versioned_composition = 
       VersionedComposition.new(:uid => uid,

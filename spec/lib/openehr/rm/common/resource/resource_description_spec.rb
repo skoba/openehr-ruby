@@ -6,10 +6,10 @@ describe ResourceDescription do
     original_author = {'Shinji KOBAYASHI' => 'Ehime University'}
     other_contributors = ['Akimichi TATSUKAWA']
     resource_description_item =
-      stub(ResourceDescriptionItem, :purpose => 'test')
+      double(ResourceDescriptionItem, :purpose => 'test')
     details = {'case' => resource_description_item}
     other_details = {'charset' => 'UTF-8'}
-    parent_resource = stub(AuthoredResource, :current_revision => '0.0.3')
+    parent_resource = double(AuthoredResource, :current_revision => '0.0.3')
     @resource_description =
       ResourceDescription.new(:original_author => original_author,
                               :other_contributors => other_contributors,
@@ -55,20 +55,20 @@ describe ResourceDescription do
   end
 
   it 'should raise ArgumentError with nil original author' do
-    lambda {
+    expect {
       @resource_description.original_author = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil lifecycle_state' do
-    lambda {
+    expect {
       @resource_description.lifecycle_state = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil details' do
-    lambda {
+    expect {
       @resource_description.details = {}
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

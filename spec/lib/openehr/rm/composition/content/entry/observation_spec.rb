@@ -14,8 +14,8 @@ describe Observation do
   let(:subject) { double('PartyProxy')}
 
   before(:each) do
-    data = stub(History, :archetype_node_id => 'at0002')
-    state = stub(History, :archetype_node_id => 'at0003')
+    data = double(History, :archetype_node_id => 'at0002')
+    state = double(History, :archetype_node_id => 'at0003')
     @observation = Observation.new(:archetype_node_id => 'at0001',
                                    :name => name,
                                    :language => language,
@@ -34,9 +34,9 @@ describe Observation do
   end
 
   it 'should raise ArgumentError when nil assigned to data' do
-    lambda {
+    expect {
       @observation.data = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'state should be assigned properly' do

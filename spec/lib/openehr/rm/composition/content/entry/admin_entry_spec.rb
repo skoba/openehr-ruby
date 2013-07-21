@@ -13,7 +13,7 @@ describe AdminEntry do
 #  it_should_behave_like 'entry'
 
   before(:each) do
-    data = stub(ItemStructure, :archetype_node_id => 'at0002')
+    data = double(ItemStructure, :archetype_node_id => 'at0002')
     @admin_entry = AdminEntry.new(:archetype_node_id => 'at0001',
                                   :name => DvText.new(:value => 'admin entry'),
                                   :language => language,

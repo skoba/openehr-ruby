@@ -5,7 +5,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CMultipleAttribute do
   before(:each) do
     existence = Interval.new(:upper =>0, :lower => 0) 
-    cardinality = stub(Cardinality, :ordered? => true)
+    cardinality = double(Cardinality, :ordered? => true)
     @c_multiple_attribute =
       CMultipleAttribute.new(:path => '/event/at001',
                              :rm_attribute_name => 'DV_DATE',

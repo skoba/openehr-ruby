@@ -8,11 +8,11 @@ describe Role do
   before(:each) do
     name = DvText.new(:value => 'role')
     uid = HierObjectID.new(:value => '01')
-    identities = stub(Set, :empty? => false)
-    capabilities = stub(Array, :size => 2, :empty? => false)
+    identities = double(Set, :empty? => false)
+    capabilities = double(Array, :size => 2, :empty? => false)
     lower = DvDate.new(:value => '2009-11-21')
-    time_validity = stub(DvInterval, :lower => lower)
-    performer = stub(PartyRef, :type => 'ROLE')
+    time_validity = double(DvInterval, :lower => lower)
+    performer = double(PartyRef, :type => 'ROLE')
     @role = Role.new(:archetype_node_id => 'at0000',
                      :name => name,
                      :uid => uid,
@@ -31,9 +31,9 @@ describe Role do
   end
 
   it 'should raise ArgumentError with nil performer' do
-    lambda {
+    expect {
       @role.performer = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'capabilities should be assigned properly' do
@@ -41,15 +41,15 @@ describe Role do
   end
 
   it 'should raise ArgumentError with empty capabilities' do
-    lambda {
+    expect {
       @role.capabilities = [ ]
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should not raise ArgumentError with nil capabilities' do
-    lambda {
+    expect {
       @role.capabilities = nil
-    }.should_not raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'time_validity should be properly assigned' do

@@ -9,7 +9,7 @@ A Ruby implementation of the openEHR specifications
 
 * Supports Ruby 1.9.3, 2.0.0 or equivalents.
 * Developed with CRuby 2.0.0, 1.9.3 on FreeBSD and Linux.
-* Ruby 1.8 or earlier are not supported.
+* Ruby 1.8 or earlier are no longer supported.
 
 == DESCRIPTION:
 
@@ -43,7 +43,7 @@ and so on. We postponed to implement such classes.
 Terminology and Demographic server will be implemented in other
 projects.
 
-= Authors
+= Original authors
 * Main codes
 Shinji Kobayashi, Akimichi Tatsukawa
 openEHR.jp, <http://openehr.jp>
@@ -60,8 +60,8 @@ Thanks for pull requests on GitHub.
 
 = Copyright
 The software, including all files in this directory and
-subdirectories is copyrighted to the original authors and
-contributors, 2011-2013.
+subdirectories except ADL files is copyrighted to the
+original authors and contributors, 2011-2013.
 
 All Rights Reserved.
 
@@ -69,7 +69,7 @@ All Rights Reserved.
 
 This product is released under Apache 2.0 license
 
-   Copyright [2012,2013] Shinji Kobayashi, Akimichi Tatsukawa, openEHR.jp
+   Copyright [2012,2013] openEHR Ruby implementation project.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -4,7 +4,7 @@ include OpenEHR::RM::DataTypes::Text
 
 describe Cluster do
   before(:each) do
-    item = stub(Item)
+    item = double(Item)
     @cluster = Cluster.new(:archetype_node_id => 'at0001',
                            :name => DvText.new(:value => 'cluster'),
                            :items => [item, item])

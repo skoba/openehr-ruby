@@ -71,15 +71,15 @@ describe DvProportion do
     end
 
     it 'should raise ArguentError with invalid type -1' do
-      lambda {
+      expect {
         @dv_proportion0.type = -1
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should raise ArgumentError with invalid type 5' do
-      lambda {
+      expect {
         @dv_proportion0.type = 5
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 's precision should be 0' do
@@ -88,14 +88,14 @@ describe DvProportion do
     end
 
     it 'should raise ArgumentError when is_integral? and precision !=0' do
-      lambda {@dv_proportion0.precision = 1}.should raise_error ArgumentError
+      expect {@dv_proportion0.precision = 1}.to raise_error ArgumentError
     end
 
     it 'shoud not raise ArgumentError when is_not ntegral' do
       @dv_proportion0.numerator = 2.5
-      lambda {
+      expect {
         @dv_proportion0.precision = 1
-      }.should_not raise_error ArgumentError
+      }.not_to raise_error
     end
   end
 
@@ -105,9 +105,9 @@ describe DvProportion do
     end
 
     it 'should raise ArgumentError without denominator 1' do
-      lambda {
+      expect {
         @dv_proportion1.denominator = 10
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
@@ -117,9 +117,9 @@ describe DvProportion do
     end
 
     it 'should raise ArgumentError without denominator 100' do
-      lambda {
+      expect {
         @dv_proportion2.denominator = 101
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
@@ -129,15 +129,15 @@ describe DvProportion do
     end
 
     it 'should raise ArgumentError with fractional denominator' do
-      lambda {
+      expect {
         @dv_proportion3.denominator = 0.5
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should raise ArgumentError with fractional numerator' do
-      lambda {
+      expect {
         @dv_proportion3.numerator = 0.5
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
@@ -147,16 +147,16 @@ describe DvProportion do
     end
 
     it 'should raise ArgumentError with fractional denominator' do
-      lambda {
+      expect {
         @dv_proportion4.denominator = 0.5
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
 
     end
 
     it 'should raise ArgumentError with fractional numerator' do
-      lambda {
+      expect {
         @dv_proportion4.numerator = 0.5
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 end

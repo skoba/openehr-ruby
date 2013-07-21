@@ -10,12 +10,12 @@ describe ImportedVersion do
   before(:each) do
     uid = ObjectVersionID.new(:value => 'ABCD::EFG::2')
     preceding_version_uid = ObjectVersionID.new(:value => 'HIJ::KLM::1')
-    commit_audit = stub(AuditDetails, :committer => 'UNKNOWN', :empty? => false)
+    commit_audit = double(AuditDetails, :committer => 'UNKNOWN', :empty? => false)
     contribution = ObjectRef.new(:namespace => 'local',
                                  :type => 'CONTRIBUTION',
                                  :id => object_id)
-    defining_code = stub(CodePhrase, :code_string => '532')
-    lifecycle_state = stub(DvCodedText, :defining_code => defining_code)
+    defining_code = double(CodePhrase, :code_string => '532')
+    lifecycle_state = double(DvCodedText, :defining_code => defining_code)
     signature = '4760271533c2866579dde347ad28dd79e4aad933'
     @version = Version.new(:uid => uid,
                            :preceding_version_uid => preceding_version_uid,
@@ -24,8 +24,8 @@ describe ImportedVersion do
                            :lifecycle_state => lifecycle_state,
                            :commit_audit => commit_audit,
                            :signature => signature)
-    attestations = stub(Array, :empty? => false, :size => 12)
-    other_input_version_uids = stub(Set, :empty? => false, :size => 5)
+    attestations = double(Array, :empty? => false, :size => 12)
+    other_input_version_uids = double(Set, :empty? => false, :size => 5)
     @original_version = OriginalVersion.new(:uid => uid,
                                             :lifecycle_state => lifecycle_state,
                                             :attestations => attestations,
@@ -55,8 +55,8 @@ describe ImportedVersion do
   end
 
   it 'should raise ArgumentError when item is nil' do
-    lambda {
+    expect {
       @imported_version.item = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

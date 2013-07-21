@@ -6,7 +6,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CPrimitiveObject do
   before(:each) do
     interval = Interval.new(:lower => 0, :upper => 1)
-    item = stub(CPrimitive, :node_id => 'at0001')
+    item = double(CPrimitive, :node_id => 'at0001')
     @c_primitive_object = CPrimitiveObject.new(:path => 'event/test',
                                                :rm_type_name => 'DV_TEXT',
                                                :node_id => 'ac0001',

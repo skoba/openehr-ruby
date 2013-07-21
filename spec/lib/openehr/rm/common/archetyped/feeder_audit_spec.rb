@@ -5,11 +5,11 @@ include OpenEHR::RM::DataTypes::Basic
 
 describe FeederAudit do
   before(:each) do
-    originating_system_audit = stub(FeederAuditDetails, :system_id => 'CASPAR')
-    originating_system_item_ids = stub(Array, :size => 10)
-    feeder_system_audit = stub(FeederAuditDetails, :system_id => 'BARTHASAR')
-    feeder_system_item_ids = stub(Array, :size => 5)
-    original_content = stub(DvEncapsulated, :charset => 'UTF-8')
+    originating_system_audit = double(FeederAuditDetails, :system_id => 'CASPAR')
+    originating_system_item_ids = double(Array, :size => 10)
+    feeder_system_audit = double(FeederAuditDetails, :system_id => 'BARTHASAR')
+    feeder_system_item_ids = double(Array, :size => 5)
+    original_content = double(DvEncapsulated, :charset => 'UTF-8')
     @feeder_audit = FeederAudit.new(
        :originating_system_audit => originating_system_audit,
        :originating_system_item_ids => originating_system_item_ids,
@@ -43,9 +43,9 @@ describe FeederAudit do
   end
 
   it 'should raise ArgumentError with nil originating_system_audit' do
-    lambda {
+    expect {
       @feeder_audit.originating_system_audit = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end
 

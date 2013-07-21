@@ -7,9 +7,9 @@ include OpenEHR::RM::DataStructures::ItemStructure
 
 describe EHRStatus do
   before(:each) do
-    external_ref = stub(PartyRef, :namespace => 'ehr status')
+    external_ref = double(PartyRef, :namespace => 'ehr status')
     subject = PartySelf.new(:external_ref => external_ref)
-    other_details = stub(ItemStructure, :archetype_node_id => 'at0005')
+    other_details = double(ItemStructure, :archetype_node_id => 'at0005')
     @ehr_status = EHRStatus.new(:archetype_node_id => 'at0001',
                                 :name => DvText.new(:value => 'ehrstatus'),
                                 :subject => subject,

@@ -44,39 +44,39 @@ describe ISO8601Date do
 
   describe 'year behavior' do
     it 'should raise ArgumentError with nil year string' do
-      lambda{ISO8601Date.new('-09-02')}.should raise_error ArgumentError
+      expect {ISO8601Date.new('-09-02')}.to raise_error ArgumentError
     end
 
     it 'should raise ArgumentError with nil year' do
-      lambda{@iso8601date.year = nil}.should raise_error ArgumentError
+      expect {@iso8601date.year = nil}.to raise_error ArgumentError
     end
 
     it 'should not raise ArgumentError more than 0 year' do
-      lambda{@iso8601date.year = 0}.should_not raise_error ArgumentError
+      expect {@iso8601date.year = 0}.not_to raise_error
     end
   end
 
   describe 'month behavior' do
     it '1 month should not raise ArgumentError' do
-      lambda{@iso8601date.month = 1}.should_not raise_error ArgumentError
+      expect {@iso8601date.month = 1}.not_to raise_error
     end
 
     it '12 month should not raise ArgumentError' do
-      lambda{@iso8601date.month = 12}.should_not raise_error ArgumentError
+      expect {@iso8601date.month = 12}.not_to raise_error
     end
 
     it '13 month should raise ArgumentError' do
-      lambda{@iso8601date.month = 13}.should raise_error ArgumentError
+      expect {@iso8601date.month = 13}.to raise_error ArgumentError
     end
 
     it '0 month should raise ArgumentError' do
-      lambda{@iso8601date.month = 0}.should raise_error ArgumentError
+      expect {@iso8601date.month = 0}.to raise_error ArgumentError
     end
   end
 
   describe 'day behavior' do
     it '0 day should raise ArgumentError' do
-      lambda{@iso8601date.day = 0}.should raise_error ArgumentError
+      expect {@iso8601date.day = 0}.to raise_error ArgumentError
     end
   end
 
@@ -87,15 +87,15 @@ describe ISO8601Date do
       end
       
       it 'should have 31 days' do
-        lambda{
+        expect {
           @iso8601date.day = 31
-        }.should_not raise_error ArgumentError
+        }.not_to raise_error
       end
 
       it 'should not have 32 days' do
-        lambda{
+        expect {
           @iso8601date.day = 32
-        }.should raise_error ArgumentError
+        }.to raise_error ArgumentError
       end
     end
   end
@@ -115,11 +115,11 @@ describe ISO8601Date do
       end
 
       it '2009-02-28 should not raise ArgumentError' do
-        lambda{@iso8601date.day = 28}.should_not raise_error ArgumentError
+        expect {@iso8601date.day = 28}.not_to raise_error
       end
 
       it '2009-02-29 should raise ArgumentError' do
-        lambda{@iso8601date.day = 29}.should raise_error ArgumentError
+        expect {@iso8601date.day = 29}.to raise_error ArgumentError
       end
     end
 
@@ -133,11 +133,11 @@ describe ISO8601Date do
       end
 
       it '2008-02-29 should not raise ArgumentError' do
-        lambda{@iso8601date.day = 29}.should_not raise_error ArgumentError
+        expect {@iso8601date.day = 29}.not_to raise_error
       end
 
       it '2008-02-30 should raise ArgumentError' do
-        lambda{@iso8601date.day = 30}.should raise_error ArgumentError
+        expect {@iso8601date.day = 30}.to raise_error ArgumentError
       end
     end
 
@@ -151,11 +151,11 @@ describe ISO8601Date do
       end
 
       it '2000-02-29 should not raise ArgumentError' do
-        lambda{@iso8601date.day = 29}.should_not raise_error ArgumentError
+        expect {@iso8601date.day = 29}.not_to raise_error
       end
 
       it '2000-02-30 should raise ArgumentError' do
-        lambda{@iso8601date.day = 30}.should raise_error ArgumentError
+        expect {@iso8601date.day = 30}.to raise_error ArgumentError
       end
     end
   end
@@ -167,15 +167,15 @@ describe ISO8601Date do
       end
 
       it '30 day should not raise ArgumentError' do
-        lambda{
+        expect {
           @iso8601date.day = 30
-        }.should_not raise_error ArgumentError
+        }.not_to raise_error
       end
 
       it '31 day should raise ArgumentError' do
-        lambda{
+        expect {
           @iso8601date.day = 31
-        }.should raise_error ArgumentError
+        }.to raise_error ArgumentError
       end
     end
   end
@@ -199,9 +199,9 @@ describe ISO8601Date do
       end
       
       it 'constructor pass partial date' do
-        lambda {
+        expect {
           ISO8601Date.new('2009-09')
-        }.should_not raise_error ArgumentError
+        }.not_to raise_error
       end
 
       after do
@@ -216,9 +216,9 @@ describe ISO8601Date do
       end
       
       it 'should raise ArgumentError with nil month and not nil day' do
-        lambda {
+        expect {
           @iso8601date.day = 11
-        }.should raise_error ArgumentError
+        }.to raise_error ArgumentError
       end
 
       it 's as_string should be 2009' do
@@ -226,9 +226,9 @@ describe ISO8601Date do
       end
 
       it 'constructor pass only year data' do
-        lambda {
+        expect {
           ISO8601Date.new('2009')
-        }.should_not raise_error ArgumentError
+        }.not_to raise_error
       end
     end
   end

@@ -7,9 +7,9 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 describe Event do
   before(:each) do
     time = DvDateTime.new(:value => '2009-11-12T10:19:33')
-    state = stub(ItemStructure, :archetype_node_id => 'at0002')
+    state = double(ItemStructure, :archetype_node_id => 'at0002')
     origin = DvDateTime.new(:value => '2009-11-11T10:20:40')
-    parent = stub(History, :origin => origin)
+    parent = double(History, :origin => origin)
     @event = Event.new(:archetype_node_id => 'at0001',
                        :name => DvText.new(:value => 'Event test'),
                        :time => time,

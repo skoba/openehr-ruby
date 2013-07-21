@@ -3,8 +3,8 @@ include OpenEHR::RM::Common::Generic
 
 describe PartyIdentified do
   before(:each) do
-    external_ref = stub(PartyRef, :namespace => 'unknown')
-    identifiers = stub(Array, :size => 5, :empty? => false)
+    external_ref = double(PartyRef, :namespace => 'unknown')
+    identifiers = double(Array, :size => 5, :empty? => false)
     @party_identified = PartyIdentified.new(:name => 'NERV',
                                             :external_ref => external_ref,
                                             :identifier => identifiers)
@@ -27,38 +27,38 @@ describe PartyIdentified do
   end
 
   it 'should raise ArgumentError with all nil' do
-    lambda {
+    expect {
       PartyIdentified.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil name when ex_r and id nil' do
     @party_identified.identifier = nil
     @party_identified.external_ref = nil
-    lambda {
+    expect {
       @party_identified.name = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil external_ref when name and id nil' do
     @party_identified.name = nil
     @party_identified.identifier = nil
-    lambda {
+    expect {
       @party_identified.external_ref = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil identifier when name and ex_r nil' do
     @party_identified.name = nil
     @party_identified.external_ref = nil
-    lambda {
+    expect {
       @party_identified.identifier = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty identifier' do
-    lambda {
+    expect {
       @party_identified.identifier = Array.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

@@ -9,7 +9,7 @@ include OpenEHR::AssumedLibraryTypes
 describe CDvOrdinal do
   before(:each) do
     occurrences = Interval.new(:upper => 1, :lower => 1)
-    symbol = stub(DvCodedText, :code_string => 'AML')
+    symbol = double(DvCodedText, :code_string => 'AML')
     list = [DvOrdinal.new(:value => 1,:symbol => symbol)]
     @c_dv_ordinal = CDvOrdinal.new(:list => list,
                                    :path => 'value/ordinal',

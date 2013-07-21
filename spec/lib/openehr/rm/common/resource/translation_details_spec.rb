@@ -4,7 +4,7 @@ include OpenEHR::RM::DataTypes::Text
 
 describe TranslationDetails do
   before(:each) do
-    language = stub(CodePhrase, :code_string => 'ja')
+    language = double(CodePhrase, :code_string => 'ja')
     author = Hash['name', 'Shinji KOBAYASHI']
     @translation_details =
       TranslationDetails.new(:language => language,

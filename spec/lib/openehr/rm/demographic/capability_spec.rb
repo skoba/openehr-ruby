@@ -8,9 +8,9 @@ include OpenEHR::RM::DataStructures::ItemStructure
 describe Capability do
   before(:each) do
     name = DvText.new(:value => 'party relation')
-    credentials = stub(ItemStructure, :archetype_node_id => 'at0001')
+    credentials = double(ItemStructure, :archetype_node_id => 'at0001')
     lower = DvDate.new(:value => '2009-11-21')
-    time_validity = stub(DvInterval, :lower => lower)
+    time_validity = double(DvInterval, :lower => lower)
     @capability = Capability.new(:archetype_node_id => 'at0000',
                                  :name => name,
                                  :credentials => credentials,
@@ -26,9 +26,9 @@ describe Capability do
   end
 
   it 'should raise ArgumentError when nil assigned to credentials' do
-    lambda {
+    expect {
       @capability.credentials = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'time_validity should be assigned properly' do

@@ -7,10 +7,7 @@ include OpenEHR::RM::DataTypes::Quantity::DateTime
 describe IntervalEvent do
   before(:each) do
     time = DvDateTime.new(:value => '2009-11-12T10:19:33Z')
-    state = stub(ItemStructure, :archetype_node_id => 'at0002')
-    origin = DvDateTime.new(:value => '2009-11-11T10:20:40Z')
-    parent = stub(History, :origin => origin)
-    math_function = stub(DvCodedText, :value => 'mean')
+    math_function = double(DvCodedText, :value => 'mean')
     width = DvDuration.new(:value => 'P0Y2M1W3DT5H7M3S')
     @interval_event = IntervalEvent.new(:archetype_node_id => 'at0001',
                                 :name => DvText.new(:value => 'Event test'),

@@ -6,7 +6,7 @@ include OpenEHR::RM::DataStructures::ItemStructure
 describe PartyIdentity do
   before(:each) do
     name = DvText.new(:value => 'test')
-    details = stub(ItemStructure, :archetype_node_id => 'at0002')
+    details = double(ItemStructure, :archetype_node_id => 'at0002')
     @party_identity = PartyIdentity.new(:archetype_node_id => 'at0001',
                                         :name => name,
                                         :details => details)
