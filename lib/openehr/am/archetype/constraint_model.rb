@@ -114,6 +114,10 @@ module OpenEHR
             @path || calculate_path
           end
 
+          def to_rm
+            @rm ||= OpenEHR::RM::Factory.create(rm_type_name, params)
+          end
+
           private
 
           def calculate_path
@@ -127,6 +131,10 @@ module OpenEHR
             end
 
             @path = path_left_part + path_right_part
+          end
+
+          def params
+            {:path => path, :archetype_node_id => node_id}
           end
         end
 

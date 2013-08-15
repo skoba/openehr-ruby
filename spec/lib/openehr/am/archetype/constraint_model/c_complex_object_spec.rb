@@ -20,18 +20,31 @@ describe CComplexObject do
     @c_complex_object.should be_an_instance_of CComplexObject
   end
 
-  it 'attributes should be assigned properly' do
-    @c_complex_object.attributes.size.should be_equal 3
-  end
+  context 'attributes' do
 
-  it 'attributes parent should be assigned properly' do
-    @c_complex_object.attributes[0].parent.should == @c_complex_object
-  end
+    it 'attributes should be assigned properly' do
+      @c_complex_object.attributes.size.should be_equal 3
+    end
 
-  it 'has attribyte when has_attrubite? is true' do
-    @c_complex_object.should have_attributes
-  end
+    it 'attributes parent should be assigned properly' do
+      @c_complex_object.attributes[0].parent.should == @c_complex_object
+    end
 
+    it 'has attribytes when has_attrubite? is true' do
+      @c_complex_object.should have_attributes
+    end
+
+    it 'does not have attributes when attributes is nil' do
+      @c_complex_object.attributes = nil
+      @c_complex_object.should_not have_attributes
+    end
+
+    it 'does not have attributes when attributes are empty' do
+      @c_complex_object.attributes = []
+      @c_complex_object.should_not have_attributes
+    end
+  end
+  
   it 'any_allowed should be false when attributes are not empty' do
     @c_complex_object.should_not be_any_allowed
   end

@@ -176,5 +176,11 @@ module OpenEHR
         DataTypes::URI::DvEhrUri.new(*param)
       end
     end
+
+    class OBSERVATIONFactory
+      def self.create(*param)
+        Composition::Content::Entry::Observation.new(*param)
+      end
+    end
   end
 end

@@ -38,10 +38,10 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('guard-rspec')
   gem.add_development_dependency('guard-cucumber')
 #  gem.add_development_dependency('ruby-debug19')
-  gem.add_development_dependency('spork', '> 1.0rc')
+  gem.add_development_dependency('spork') #, '> 1.0rc')
   gem.add_development_dependency('guard-spork')
   gem.add_development_dependency('simplecov')
-  gem.add_development_dependency('listen') #,'0.6.0')
+  gem.add_development_dependency('listen','0.6.0')
   gem.add_development_dependency('rb-kqueue')
   gem.add_development_dependency('libnotify')
 end
