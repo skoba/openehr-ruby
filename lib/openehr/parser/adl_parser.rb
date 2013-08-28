@@ -11,38 +11,68 @@ module OpenEHR
 
       def initialize(filename)
         super(filename)
-        file = File.open(filename, 'r:bom|utf-8')
-        data = file.read
-        ap = ADLGrammarParser.new
-        @result = ap.parse(data)
-        file.close
-        unless @result
-          puts ap.failure_reason
-          puts ap.failure_line
-          puts ap.failure_column
-        end
+      end
+      
+      def parse
+        result = parsed_data
+        archetype = OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
+                                  :adl_version => adl_version,
+                                  :concept => concept,
+                                  :original_language => original_language,
+                                  :translations => translations,
+                                  :description => result.description,
+                                  :definition => result.definition,
+                                  :ontology => ontology)
+        return archetype
       end
 
-      def parse
-        archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(:value => @result.archetype_id)
-        ontology = @result.ontology
+      private
+
+      def adl_grammar_parser
+        @adl_grammar_parser ||= ADLGrammarParser.new
+      end
+
+      def parsed_data
+        filestream = File.open(filename, 'r:bom|utf-8')
+        @parsed_data ||= adl_grammar_parser.parse(filestream.read)
+        filestream.close
+        unless @parsed_data
+          puts adl_grammar_parser.failure_reason
+          puts adl_grammar_parser.failure_line
+          puts adl_grammar_parser.failure_column
+        end
+        @parsed_data
+      end
+
+      def archetype_id
+        OpenEHR::RM::Support::Identification::ArchetypeID.new(:value => parsed_data.archetype_id)
+      end
+
+      def ontology
+        parsed_data.ontology
+      end
+
+      def original_language
         original_language = nil
-        if @result.original_language
-          original_language = @result.original_language
+        if parsed_data.original_language
+          original_language = parsed_data.original_language
         else
           terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(:value => 'ISO639-1')
-          original_language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(:terminology_id => terminology_id,
-                                      :code_string =>ontology.primary_language)
+          original_language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(:terminology_id => terminology_id, :code_string => ontology.primary_language)
         end
-        archetype = OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
-                                  :adl_version => @result.adl_version,
-                                  :concept => @result.concept,
-                                  :original_language => original_language,
-                                  :translations => @result.translations,
-                                  :description => @result.description,
-                                  :definition => @result.definition,
-                                  :ontology => @result.ontology)
-        return archetype
+        original_language
+      end
+
+      def adl_version
+        parsed_data.adl_version
+      end
+
+      def concept
+        parsed_data.concept
+      end
+
+      def translations
+        parsed_data.translations
       end
     end
   end # of Parser

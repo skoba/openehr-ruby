@@ -5,7 +5,11 @@ guard 'rspec' do
   watch(%r{^lib/open_ehr/parser/.+\.tt}) { "spec/lib/open_ehr/parser" }
 end
 
+<<<<<<< HEAD
 guard 'cucumber' do
+=======
+guard 'cucumber', :cli => '--drb --format progress --no-profile' do
+>>>>>>> 2d53835918b918f081e4939d78f60386e6be6785
   watch(%r{^features/.+\.feature$})
   watch(%r{^features/support/.+$})          { 'features' }
   watch(%r{^features/step_definitions/(.+)_steps\.rb$}) { |m| Dir[File.join("**/#{m[1]}.feature")][0] || 'features' }

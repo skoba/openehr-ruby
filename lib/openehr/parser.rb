@@ -17,5 +17,6 @@ module OpenEHR
     end
 
     require_relative 'parser/adl_parser'
+    require_relative 'parser/opt_parser'
   end
 end

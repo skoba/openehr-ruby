@@ -26,15 +26,16 @@ Gem::Specification.new do |gem|
   gem.add_dependency('locale')
   gem.add_dependency('builder')
   gem.add_dependency('i18n')
-  gem.add_dependency('treetop','1.4.12')
+  gem.add_dependency('treetop')
   gem.add_dependency('polyglot')
   gem.add_dependency('rdoc')
+  gem.add_dependency('nokogiri')
 #  gem.add_dependency('sqlite3')
 #  gem.add_dependency('activerecord')
 
   gem.add_development_dependency('rspec')
-  gem.add_development_dependency('cucumber')
-  gem.add_development_dependency('guard')
+  gem.add_development_dependency('cucumber', '~> 1.2.0')
+   gem.add_development_dependency('guard')
   gem.add_development_dependency('guard-rspec')
   gem.add_development_dependency('guard-cucumber')
 #  gem.add_development_dependency('ruby-debug19')
@@ -44,5 +45,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('listen','0.6.0')
   gem.add_development_dependency('rb-kqueue')
   gem.add_development_dependency('libnotify')
+  gem.add_development_dependency('rb-inotify')
 end
 
