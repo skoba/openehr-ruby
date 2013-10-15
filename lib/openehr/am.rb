@@ -9,3 +9,6 @@ require_relative 'am/archetype/ontology'
 require_relative 'am/openehr_profile/data_types/basic'
 require_relative 'am/openehr_profile/data_types/text'
 require_relative 'am/openehr_profile/data_types/quantity'
+
+#Template Object Model
+require_relative 'am/template'

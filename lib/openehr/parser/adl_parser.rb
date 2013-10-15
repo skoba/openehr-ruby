@@ -5,25 +5,16 @@ require_relative '../parser'
 
 module OpenEHR
   module Parser
-
     class ADLParser < ::OpenEHR::Parser::Base
-      Treetop.load(File.dirname(__FILE__)+'/adl_grammar.tt')
+      require_relative './adl_grammar'
+#      Treetop.load('adl_grammar')
 
       def initialize(filename)
         super(filename)
       end
       
       def parse
-        result = parsed_data
-        archetype = OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
-                                  :adl_version => adl_version,
-                                  :concept => concept,
-                                  :original_language => original_language,
-                                  :translations => translations,
-                                  :description => result.description,
-                                  :definition => result.definition,
-                                  :ontology => ontology)
-        return archetype
+        archetype
       end
 
       private
@@ -71,8 +62,26 @@ module OpenEHR
         parsed_data.concept
       end
 
+      def description
+        parsed_data.description
+      end
+
       def translations
         parsed_data.translations
+      end
+
+      def definition
+        parsed_data.definition
+      end
+      def archetype
+        OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
+                                  :adl_version => adl_version,
+                                  :concept => concept,
+                                  :original_language => original_language,
+                                  :translations => translations,
+                                  :description => description,
+                                  :definition => definition,
+                                  :ontology => ontology)
       end
     end
   end # of Parser
