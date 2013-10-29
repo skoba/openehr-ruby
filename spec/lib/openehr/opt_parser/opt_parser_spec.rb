@@ -9,6 +9,10 @@ module OpenEHR
       it 'language code string is en' do
         expect(opt.language.code_string).to eq 'en'
       end
+
+      it 'original_author is not specified' do
+        expect(opt.description.original_author).to eq 'Not Specified'
+      end
     end
   end
 end
