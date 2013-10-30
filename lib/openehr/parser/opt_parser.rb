@@ -5,6 +5,7 @@ module OpenEHR
     class OPTParser < ::OpenEHR::Parser::Base
       TEMPLATE_LANGUAGE_CODE_PATH = '/template/language/code_string'
       TEMPLATE_LANGUAGE_TERM_ID_PATH = '/template/language/terminology_id/value'
+      TEMPLATE_ID_PATH = '/template/template_id/value'
       DESC_ORIGINAL_AUTHOR_PATH = '/template/description/original_author'
       DESC_LIFECYCLE_STATE_PATH = '/template/description/lifecycle_state'
       DESC_DETAILS_LANGUAGE_TERM_ID_PATH = '/template/description/details/language/terminology_id/value'
@@ -23,10 +24,14 @@ module OpenEHR
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(language: language, description: description)
+        OpenEHR::AM::Template::OperationalTemplate.new(language: language, description: description, template_id: template_id)
       end
 
       private
+
+      def template_id
+        OpenEHR::RM::Support::Identification::TemplateID.new(value: text_on_path(@opt, TEMPLATE_ID_PATH))
+      end
 
       def description
         original_author = text_on_path(@opt, DESC_ORIGINAL_AUTHOR_PATH)
