@@ -6,6 +6,10 @@ module OpenEHR
       let(:optparser) { OpenEHR::Parser::OPTParser.new(File.join(File.dirname(__FILE__), './eReferral.opt'))}
       let(:opt) {optparser.parse}
 
+      it 'concept expected to eRefarral' do
+        expect(opt.concept).to eq 'eReferral'
+      end
+
       it 'language code string is en' do
         expect(opt.language.code_string).to eq 'en'
       end

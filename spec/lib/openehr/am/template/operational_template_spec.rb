@@ -9,7 +9,7 @@ module OpenEHR
         let(:details) {double('details', :size => 3, :nil? => false, :empty? => false)}
         let(:description) {OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: 'Shinji KOBAYASHI', lifecycle_state: 'Testing', details: details)}
         let(:template_id) {OpenEHR::RM::Support::Identification::TemplateID.new(value: '1234567890')}
-        let(:opt) {OpenEHR::AM::Template::OperationalTemplate.new(language: language, description: description, template_id: template_id)}
+        let(:opt) {OpenEHR::AM::Template::OperationalTemplate.new(concept: 'Sample', language: language, description: description, template_id: template_id)}
 
         it 'should be an instance of OperationalTemplate' do
           expect(opt).to be_an_instance_of OpenEHR::AM::Template::OperationalTemplate
@@ -17,6 +17,10 @@ module OpenEHR
 
         it 'template_id should be 1234567890' do
           expect(opt.template_id.value).to eq '1234567890'
+        end
+
+        it 'concept expected to Sample' do
+          expect(opt.concept).to eq 'Sample'
         end
 
         it 'language code string is en' do

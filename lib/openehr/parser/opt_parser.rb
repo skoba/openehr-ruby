@@ -22,9 +22,10 @@ module OpenEHR
 
       def parse
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
+        concept = text_on_path(@opt, '/template/concept')
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(language: language, description: description, template_id: template_id)
+        OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id)
       end
 
       private
