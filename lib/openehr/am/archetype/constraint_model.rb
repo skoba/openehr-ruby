@@ -271,6 +271,20 @@ module OpenEHR
           end
         end
 
+        class CArchetypeRoot <CComplexObject
+          attr_reader :slot_node_id
+
+          def initialize(args = {})
+            super
+            self.slot_node_id = args[:slot_node_id]
+          end
+
+          def slot_node_id=(slot_node_id)
+            raise ArgumentError if !slot_node_id.nil? && slot_node_id.empty?
+            @slot_node_id = slot_node_id
+          end
+        end
+
         class CReferenceObject < CObject
 
         end

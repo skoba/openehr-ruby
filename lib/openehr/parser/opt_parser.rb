@@ -6,6 +6,7 @@ module OpenEHR
       TEMPLATE_LANGUAGE_CODE_PATH = '/template/language/code_string'
       TEMPLATE_LANGUAGE_TERM_ID_PATH = '/template/language/terminology_id/value'
       TEMPLATE_ID_PATH = '/template/template_id/value'
+      CONCEPT_PATH = '/template/concept'
       DESC_ORIGINAL_AUTHOR_PATH = '/template/description/original_author'
       DESC_LIFECYCLE_STATE_PATH = '/template/description/lifecycle_state'
       DESC_DETAILS_LANGUAGE_TERM_ID_PATH = '/template/description/details/language/terminology_id/value'
@@ -22,7 +23,6 @@ module OpenEHR
 
       def parse
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
-        concept = text_on_path(@opt, '/template/concept')
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
         OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id)
@@ -32,6 +32,10 @@ module OpenEHR
 
       def template_id
         OpenEHR::RM::Support::Identification::TemplateID.new(value: text_on_path(@opt, TEMPLATE_ID_PATH))
+      end
+
+      def concept
+        text_on_path(@opt, CONCEPT_PATH)
       end
 
       def description
