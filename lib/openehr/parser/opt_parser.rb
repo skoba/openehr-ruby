@@ -16,6 +16,7 @@ module OpenEHR
       DESC_DETAILS_USE_PATH = '/template/description/details/use'
       DESC_DETAILS_MISUSE_PATH = '/template/description/details/misuse'
       DESC_DETAILS_COPYRIGHT_PATH = '/template/description/details/copyright'
+      DEFINITION_PATH = '/template/definition'
 
       def initialize(filename)
         super(filename)
@@ -25,7 +26,17 @@ module OpenEHR
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id)
+        root_rm_type = text_on_path(@opt, DEFINITION_PATH + '/rm_type_name')
+        root_node_id = text_on_path(@opt, DEFINITION_PATH + '/node_id')
+        root_occurrences_lower = text_on_path(@opt, DEFINITION_PATH + '/occurrences/lower')
+        root_occurrences_upper = text_on_path(@opt, DEFINITION_PATH + '/occurrences/upper')
+        root_occurrences_lower_included = text_on_path(@opt, DEFINITION_PATH + '/occurrences/lower_included')
+        root_occurrences_upper_included = text_on_path(@opt, DEFINITION_PATH + '/occurrences/upper_included')
+        root_occurrences_lower_unbounded = text_on_path(@opt, DEFINITION_PATH + '/occurrences/lower_unbounded')
+        root_occurrences_upper_unbounded = text_on_path(@opt, DEFINITION_PATH + '/occurrences/upper_unbounded')
+        root_occurrences = OpenEHR::AssumedLibraryTypes::Interval.new(lower: root_occurrences_lower, upper: root_occurrences_upper, lower_included: root_occurrences_lower_included, upper_included: root_occurrences_upper_included, lower_unbounded: root_occurrences_lower_unbounded, upper_unbounded: root_occurrences_upper_unbounded)
+        definition = OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node_id, occurrences: root_occurrences)
+        OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition)
       end
 
       private

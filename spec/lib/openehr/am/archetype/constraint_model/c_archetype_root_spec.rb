@@ -1,10 +1,7 @@
 require 'spec_helper'
 
 describe OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot do
-  let(:occurrences) {OpenEHR::AssumedLibraryTypes::Interval.new(lower: 1,
-                                                               upper: 1,
-                                                               lower_included: true,
-                                                               upper_included: true)}
+  let(:occurrences) { OpenEHR::AssumedLibraryTypes::Interval.new(lower: 1, upper: 1, lower_included: true, upper_included: true)}
   let(:c_archetype_slot) { OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: 'COMPOSITION', occurrences: occurrences, node_id: 'at0001', slot_node_id: 'at0038')}
 
   it 'should be an instance of CArchetypeRoot' do
@@ -24,6 +21,6 @@ describe OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot do
   end
 
   it 'slot node id allows nil' do
-    expect{c_archetype_slot.slot_node_id = nil}.not_to raise_error(ArgumentError)
+    expect{c_archetype_slot.slot_node_id = nil}.not_to raise_error
   end
 end

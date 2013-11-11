@@ -4,12 +4,13 @@ module OpenEHR
   module AM
     module Template
       describe OperationalTemplate do
-        let(:term_id) {OpenEHR::RM::Support::Identification::TerminologyID.new(value: 'ISO_639-1')}
-        let(:language) {OpenEHR::RM::DataTypes::Text::CodePhrase.new(terminology_id: term_id, code_string: 'en')}
-        let(:details) {double('details', :size => 3, :nil? => false, :empty? => false)}
-        let(:description) {OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: 'Shinji KOBAYASHI', lifecycle_state: 'Testing', details: details)}
-        let(:template_id) {OpenEHR::RM::Support::Identification::TemplateID.new(value: '1234567890')}
-        let(:opt) {OpenEHR::AM::Template::OperationalTemplate.new(concept: 'Sample', language: language, description: description, template_id: template_id)}
+        let(:term_id) { OpenEHR::RM::Support::Identification::TerminologyID.new(value: 'ISO_639-1') }
+        let(:language) { OpenEHR::RM::DataTypes::Text::CodePhrase.new(terminology_id: term_id, code_string: 'en') }
+        let(:details) { double('details', :size => 3, :nil? => false, :empty? => false) }
+        let(:description) { OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: 'Shinji KOBAYASHI', lifecycle_state: 'Testing', details: details) }
+        let(:template_id) { OpenEHR::RM::Support::Identification::TemplateID.new(value: '1234567890') }
+        let(:definition) { double(OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot, node_id: 'at0001') }
+        let(:opt) { OpenEHR::AM::Template::OperationalTemplate.new(concept: 'Sample', language: language, description: description, template_id: template_id, definition: definition) }
 
         it 'should be an instance of OperationalTemplate' do
           expect(opt).to be_an_instance_of OpenEHR::AM::Template::OperationalTemplate
@@ -39,6 +40,9 @@ module OpenEHR
           expect(opt.description.details.size).to eq 3
         end
 
+        it 'definition root node is at0001' do
+          expect(opt.definition.node_id).to eq 'at0001'
+        end
       end
     end
   end

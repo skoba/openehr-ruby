@@ -29,7 +29,9 @@ module OpenEHR
       end
 
       context 'definition section' do
-        it ''
+        it 'node id should be at0001' do
+          expect(opt.definition.node_id).to eq 'at0000'
+        end
       end
     end
   end
