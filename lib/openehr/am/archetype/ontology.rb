@@ -87,6 +87,10 @@ module OpenEHR
 
         end
 
+        class FlatArchetypeOntology < ArchetypeOntology
+
+        end
+
         class ArchetypeTerm
           attr_accessor :items
           attr_reader :code

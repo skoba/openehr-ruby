@@ -104,6 +104,10 @@ module OpenEHR
       # original file:
       # ref_imple_eiffel/components/adl_parser/src/interface/adl_definition.e
 
+      class FlatArchetype < Archetype
+
+      end
+
       class ValidityKind
         attr_reader :value
 
