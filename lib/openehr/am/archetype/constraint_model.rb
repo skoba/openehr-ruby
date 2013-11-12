@@ -272,16 +272,22 @@ module OpenEHR
         end
 
         class CArchetypeRoot <CComplexObject
-          attr_reader :slot_node_id
+          attr_reader :slot_node_id, :archetype_id
 
           def initialize(args = {})
             super
             self.slot_node_id = args[:slot_node_id]
+            self.archetype_id = args[:archetype_id]
           end
 
           def slot_node_id=(slot_node_id)
             raise ArgumentError if !slot_node_id.nil? && slot_node_id.empty?
             @slot_node_id = slot_node_id
+          end
+
+          def archetype_id=(archetype_id)
+            raise ArgumentError if archetype_id.nil?
+            @archetype_id = archetype_id
           end
         end
 

@@ -29,8 +29,16 @@ module OpenEHR
       end
 
       context 'definition section' do
-        it 'root node id should be at0001' do
+        it 'root node id should be at0000' do
           expect(opt.definition.node_id).to eq 'at0000'
+        end
+
+        it 'root rm type name should be COMPOSITION' do
+          expect(opt.definition.rm_type_name).to eq 'COMPOSITION'
+        end
+
+        it 'root archetype id should be openEHR-EHR-COMPOSITION.referral.v1' do
+          expect(opt.definition.archetype_id.value).to eq 'openEHR-EHR-COMPOSITION.referral.v1'
         end
 
         context 'root cardinality is mandatory' do
