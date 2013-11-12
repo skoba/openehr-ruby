@@ -29,8 +29,14 @@ module OpenEHR
       end
 
       context 'definition section' do
-        it 'node id should be at0001' do
+        it 'root node id should be at0001' do
           expect(opt.definition.node_id).to eq 'at0000'
+        end
+
+        context 'root cardinality is mandatory' do
+          it 'lower limit is 1' do
+            expect(opt.definition.occurrences.lower).to eq 1
+          end
         end
       end
     end

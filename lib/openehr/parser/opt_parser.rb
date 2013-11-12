@@ -17,7 +17,8 @@ module OpenEHR
       DESC_DETAILS_MISUSE_PATH = '/template/description/details/misuse'
       DESC_DETAILS_COPYRIGHT_PATH = '/template/description/details/copyright'
       DEFINITION_PATH = '/template/definition'
-
+      OCCURRENCE_PATH = '/occurrences'
+      
       def initialize(filename)
         super(filename)
       end
@@ -28,13 +29,7 @@ module OpenEHR
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
         root_rm_type = text_on_path(@opt, DEFINITION_PATH + '/rm_type_name')
         root_node_id = text_on_path(@opt, DEFINITION_PATH + '/node_id')
-        root_occurrences_lower = text_on_path(@opt, DEFINITION_PATH + '/occurrences/lower')
-        root_occurrences_upper = text_on_path(@opt, DEFINITION_PATH + '/occurrences/upper')
-        root_occurrences_lower_included = text_on_path(@opt, DEFINITION_PATH + '/occurrences/lower_included')
-        root_occurrences_upper_included = text_on_path(@opt, DEFINITION_PATH + '/occurrences/upper_included')
-        root_occurrences_lower_unbounded = text_on_path(@opt, DEFINITION_PATH + '/occurrences/lower_unbounded')
-        root_occurrences_upper_unbounded = text_on_path(@opt, DEFINITION_PATH + '/occurrences/upper_unbounded')
-        root_occurrences = OpenEHR::AssumedLibraryTypes::Interval.new(lower: root_occurrences_lower, upper: root_occurrences_upper, lower_included: root_occurrences_lower_included, upper_included: root_occurrences_upper_included, lower_unbounded: root_occurrences_lower_unbounded, upper_unbounded: root_occurrences_upper_unbounded)
+        root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
         definition = OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node_id, occurrences: root_occurrences)
         OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition)
       end
@@ -66,6 +61,16 @@ module OpenEHR
         OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(language: language, purpose: purpose, keywords: keywords, use: use, misuse: misuse, copyright: copyright)
       end
 
+      def occurrences(occurrence_xml)
+        lower = occurrence_xml.xpath('lower').text.to_i
+        upper = occurrence_xml.xpath('upper').text.to_i
+        lower_unbounded = to_bool(occurrence_xml.xpath('lower_unbounded'))
+        upper_unbounded = to_bool(occurrence_xml.xpath('upper_unbounded'))
+        lower_included = to_bool(occurrence_xml.xpath('lower_included'))
+        upper_included = to_bool(occurrence_xml.xpath('upper_included'))
+        OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_unbounded: lower_unbounded, upper_unbounded: upper_unbounded, lower_included: lower_included, upper_included: upper_included)
+      end
+      
       def empty_then_nil(val)
         if val.empty?
           return nil
@@ -76,6 +81,15 @@ module OpenEHR
 
       def text_on_path(xml, path)
         xml.xpath(path).text
+      end
+
+      def to_bool(str)
+        if str =~ /true/i
+          return true
+        elsif str =~ /false/i
+          return false
+        end
+        return nil
       end
     end
   end
