@@ -27,10 +27,6 @@ module OpenEHR
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        root_rm_type = text_on_path(@opt, DEFINITION_PATH + '/rm_type_name')
-        root_node_id = text_on_path(@opt, DEFINITION_PATH + '/node_id')
-        root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
-        definition = OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node_id, occurrences: root_occurrences)
         OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition)
       end
 
@@ -59,6 +55,13 @@ module OpenEHR
         misuse = empty_then_nil text_on_path(@opt, DESC_DETAILS_MISUSE_PATH)
         copyright = empty_then_nil text_on_path(@opt, DESC_DETAILS_COPYRIGHT_PATH)
         OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(language: language, purpose: purpose, keywords: keywords, use: use, misuse: misuse, copyright: copyright)
+      end
+
+      def definition
+        root_rm_type = text_on_path(@opt, DEFINITION_PATH + '/rm_type_name')
+        root_node_id = text_on_path(@opt, DEFINITION_PATH + '/node_id')
+        root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
+        OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node_id, occurrences: root_occurrences)
       end
 
       def occurrences(occurrence_xml)

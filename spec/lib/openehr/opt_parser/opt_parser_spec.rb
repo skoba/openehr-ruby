@@ -37,6 +37,26 @@ module OpenEHR
           it 'lower limit is 1' do
             expect(opt.definition.occurrences.lower).to eq 1
           end
+
+          it 'upper limit is 1' do
+            expect(opt.definition.occurrences.upper).to eq 1
+          end
+
+          it 'lower included is true' do
+            expect(opt.definition.occurrences.lower_included?).to be_true
+          end
+
+          it 'upper included is true' do
+            expect(opt.definition.occurrences.upper_included?).to be_true
+          end
+
+          it 'lower_unbounded is false' do
+            expect(opt.definition.occurrences.lower_unbounded?).to be_false
+          end
+
+          it 'upper_unbounded is false' do
+            expect(opt.definition.occurrences.upper_unbounded?).to be_false
+          end
         end
       end
     end
