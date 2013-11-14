@@ -66,6 +66,12 @@ module OpenEHR
             expect(opt.definition.occurrences.upper_unbounded?).to be_false
           end
         end
+
+        context 'root_attributes' do
+          it 'root attributes size is 3' do
+            expect(opt.definition.attributes.size).to eq 3
+          end
+        end
       end
     end
   end

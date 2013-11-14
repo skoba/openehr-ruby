@@ -73,6 +73,7 @@ module OpenEHR
       def definition
         parsed_data.definition
       end
+
       def archetype
         OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
                                   :adl_version => adl_version,
