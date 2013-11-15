@@ -63,37 +63,39 @@ module OpenEHR
         root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
         root_archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(@opt, DEFINITION_PATH+'/archetype_id/value'))
         root_path = "/[#{root_archetype_id}]"
-        root_attributes = attributes(@opt.xpath(DEFINITION_PATH+'/attributes'), root_path)
-        OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node_id, path: root_path, occurrences: root_occurrences, archetype_id: root_archetype_id, attributes: root_attributes)
+        node = Node.new(root_node_id, root_path)
+        root_attributes = attributes(@opt.xpath(DEFINITION_PATH+'/attributes'), node)
+        OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: node.id, path: node.path, occurrences: root_occurrences, archetype_id: root_archetype_id, attributes: root_attributes)
       end
 
-      def children(children_xml, path)
+      def children(children_xml, node)
         children_xml.map do |child|
-          send child.attributes['type'].text.downcase, child, path
+          send child.attributes['type'].text.downcase, child, node
         end
       end
 
-      def c_complex_object(xml, path)
+      def c_complex_object(xml, node)
         rm_type_name = xml.xpath('./rm_type_name').text
         node_id = xml.xpath('./node_id').text
-        path += node_id
-        OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node_id, path: path)
+        node.id = node_id unless node_id.empty?
+        node.path += node_id
+        OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, attributes: attributes(xml.xpath('./xpath'), node))
       end
 
-      def attributes(attributes_xml, path)
+      def attributes(attributes_xml, node)
         attributes_xml.map do |attr|
-          send attr.attributes['type'].text.downcase, attr, path
+          send attr.attributes['type'].text.downcase, attr, node
         end
       end
 
-      def c_single_attribute(attr_xml, path)
+      def c_single_attribute(attr_xml, node)
         rm_attribute_name = attr_xml.at('rm_attribute_name').text
         existence = occurrences(attr_xml.at('existence'))
-        path += "/#{rm_attribute_name}"
-        OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: path, children: children(attr_xml.xpath('./children'), path))
+        node.path += "/#{rm_attribute_name}"
+        OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: node.path, children: children(attr_xml.xpath('./children'), node))
       end
 
-      def c_multiple_attribute(attr_xml, path)
+      def c_multiple_attribute(attr_xml, node)
 
       end
 
@@ -128,5 +130,13 @@ module OpenEHR
         return nil
       end
     end
+  end
+end
+
+class Node
+  attr_accessor :id, :path
+
+  def initialize(id, path)
+    @id, @path = id, path
   end
 end
