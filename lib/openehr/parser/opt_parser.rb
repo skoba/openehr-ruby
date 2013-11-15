@@ -79,7 +79,7 @@ module OpenEHR
         node_id = xml.xpath('./node_id').text
         node.id = node_id unless node_id.empty?
         node.path += node_id
-        OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, attributes: attributes(xml.xpath('./xpath'), node))
+        OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences(xml.xpath('./occurrences')), attributes: attributes(xml.xpath('./xpath'), node))
       end
 
       def attributes(attributes_xml, node)
