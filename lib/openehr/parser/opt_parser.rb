@@ -115,13 +115,13 @@ module OpenEHR
       end
 
       def occurrences(occurrence_xml)
-        lower = occurrence_xml.xpath('lower').text.to_i
-        upper = occurrence_xml.xpath('upper').text.to_i
-        lower_unbounded = to_bool(occurrence_xml.xpath('lower_unbounded'))
-        upper_unbounded = to_bool(occurrence_xml.xpath('upper_unbounded'))
-        lower_included = to_bool(occurrence_xml.xpath('lower_included'))
-        upper_included = to_bool(occurrence_xml.xpath('upper_included'))
-        OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_unbounded: lower_unbounded, upper_unbounded: upper_unbounded, lower_included: lower_included, upper_included: upper_included)
+        lower_node = occurrence_xml.at('lower')
+        upper_node = occurrence_xml.at('upper')
+        lower = lower_node.text.to_i if lower_node
+        upper = upper_node.text.to_i if upper_node
+        lower_included = to_bool(occurrence_xml.at('lower_included'))
+        upper_included = to_bool(occurrence_xml.at('upper_included'))
+        OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
       end
       
       def empty_then_nil(val)
