@@ -33,6 +33,10 @@ module OpenEHR
           expect(opt.definition.node_id).to eq 'at0000'
         end
 
+        it 'root path is /' do
+          expect(opt.definition.path).to eq '/'
+        end
+
         it 'root rm type name should be COMPOSITION' do
           expect(opt.definition.rm_type_name).to eq 'COMPOSITION'
         end
@@ -67,9 +71,78 @@ module OpenEHR
           end
         end
 
-        context 'root_attributes' do
-          it 'root attributes size is 3' do
-            expect(opt.definition.attributes.size).to eq 3
+
+        it 'root attributes size is 3' do
+          expect(opt.definition.attributes.size).to eq 3
+        end
+
+        context 'category attribute' do
+          let(:category) {opt.definition.attributes[0]}
+
+          it 'rm attribute name is category' do
+            expect(category.rm_attribute_name).to eq 'category'
+          end
+
+          it 'has 1 child' do
+            expect(category.children.size).to eq 1
+          end
+
+          context 'children' do
+            let(:child) {category.children[0]}
+
+            it 'rm_type_name is DV_CODED_TEXT' do
+              expect(child.rm_type_name).to eq 'DV_CODED_TEXT'
+            end
+
+            it 'node_id is at0000' do
+              expect(child.node_id).to eq 'at0000'
+            end
+
+            context 'occurrence' do
+              let(:occurrences) {child.occurrences}
+
+              it 'lower is 1' do
+                expect(occurrences.lower).to eq 1
+              end
+
+              it 'upper is 1' do
+                expect(occurrences.upper).to eq 1
+              end
+
+              it 'is lower_included' do
+                expect(occurrences).to be_lower_included
+              end
+
+              it 'is upper included' do
+                expect(occurrences).to be_upper_included
+              end
+
+              it 'is not lower unbounded' do
+                expect(occurrences).not_to be_lower_unbounded
+              end
+
+              it 'is not upper unbounded' do
+                expect(occurrences).not_to be_upper_unbounded
+              end
+            end
+          end
+
+          context 'existence' do
+            it '1 at minimum' do
+              expect(category.existence.lower).to eq 1
+            end
+
+            it '1 at maximum' do
+              expect(category.existence.upper).to eq 1
+            end
+
+            it 'lower included' do
+              expect(category.existence).to be_lower_included
+            end
+
+            it 'upper inluded' do
+              expect(category.existence).to be_upper_included
+            end
           end
         end
       end

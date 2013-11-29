@@ -63,7 +63,7 @@ module OpenEHR
         root_node.id = text_on_path(@opt, DEFINITION_PATH + '/node_id')
         root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
         root_archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(@opt, DEFINITION_PATH+'/archetype_id/value'))
-        root_node.path = "/[#{root_archetype_id}]"
+        root_node.path = "[#{root_archetype_id.value}]"
         root_attributes = attributes(@opt.xpath(DEFINITION_PATH+'/attributes'), root_node)
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node.id, path: root_node.path, occurrences: root_occurrences, archetype_id: root_archetype_id, attributes: root_attributes)
       end
@@ -81,7 +81,7 @@ module OpenEHR
         node.id = id unless id.nil? or id.empty?
         occurrences = occurrences(xml.xpath('./occurrences'))
         archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(xml, './archetype_id/value'))
-        node.path += "/[#{archetype_id}]"
+        node.path += "/[#{archetype_id.value}]"
         attributes = attributes(xml.xpath('./attributes'), node)
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, attributes: attributes)
       end
