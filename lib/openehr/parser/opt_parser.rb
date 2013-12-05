@@ -87,11 +87,13 @@ module OpenEHR
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, attributes: attributes(xml.xpath('./attributes'), node))
       end
 
-      def c_complex_object(xml, node = Node.new)
+      def c_complex_object(xml, node)
         rm_type_name = xml.xpath('./rm_type_name').text
         node_id = xml.xpath('./node_id').text
-        node.id = node_id unless node_id.nil? or node_id.empty?
-        node.path += node_id
+        unless node_id.nil? or node_id.empty?
+          node.id = node_id
+          node.path += "[#{node_id}]"
+        end
         OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences(xml.xpath('./occurrences')), attributes: attributes(xml.xpath('./xpath'), node))
       end
 
@@ -105,30 +107,32 @@ module OpenEHR
         rm_attribute_name = attr_xml.at('rm_attribute_name').text
         existence = occurrences(attr_xml.at('existence'))
         if node.root?
-          node.path += "/#{rm_attribute_name}"
+          path = "/#{rm_attribute_name}"
         elsif node.id
-          node.path += "#{node.id}/#{rm_attribute_name}"
+          path = "#{node.path}[#{node.id}]/#{rm_attribute_name}"
         else
-          node.path += "#{node.path}/#{rm_attribute_name}"
+          path = "#{node.path}/#{rm_attribute_name}"
         end
         child_node = Node.new(node)
         child_node.path = node.path
-        OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: node.path, children: children(attr_xml.xpath('./children'), child_node))
+        child_node.id = node.id
+        OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: path, children: children(attr_xml.xpath('./children'), child_node))
       end
 
       def c_multiple_attribute(attr_xml, node)
         rm_attribute_name = attr_xml.at('rm_attribute_name').text
         existence = occurrences(attr_xml.at('existence'))
         if node.root?
-          node.path += "/#{rm_attribute_name}"
+          path = "/#{rm_attribute_name}"
         elsif node.id
-          node.path += "#{node.id}/#{rm_attribute_name}"
+          path = "#{node.path}[#{node.id}]/#{rm_attribute_name}"
         else
-          node.path += "#{node.path}/#{rm_attribute_name}"
+          path = "#{node.path}/#{rm_attribute_name}"
         end
         child_node = Node.new(node)
         child_node.path = node.path
-        OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: node.path, children: children(attr_xml.xpath('./children'), child_node))
+        child_node.id = node.id
+        OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: path, children: children(attr_xml.xpath('./children'), child_node))
       end
 
       def occurrences(occurrence_xml)
