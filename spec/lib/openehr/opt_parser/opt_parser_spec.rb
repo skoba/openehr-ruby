@@ -33,8 +33,8 @@ module OpenEHR
           expect(opt.definition.node_id).to eq 'at0000'
         end
 
-        it 'root path is /' do
-          expect(opt.definition.path).to eq '/'
+        it 'root path is /[openEHR-EHR-COMPOSITION.referral.v1]' do
+          expect(opt.definition.path).to eq '/[openEHR-EHR-COMPOSITION.referral.v1]'
         end
 
         it 'root rm type name should be COMPOSITION' do
