@@ -94,7 +94,7 @@ module OpenEHR
           node.id = node_id
           node.path += "[#{node_id}]"
         end
-        OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences(xml.xpath('./occurrences')), attributes: attributes(xml.xpath('./xpath'), node))
+        OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences(xml.xpath('./occurrences')), attributes: attributes(xml.xpath('./attributes'), node))
       end
 
       def attributes(attributes_xml, node)
@@ -144,7 +144,11 @@ module OpenEHR
         upper_included = to_bool(occurrence_xml.at('upper_included'))
         OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
       end
-      
+
+      def c_code_phrase(attr_xml, node)
+
+      end
+
       def empty_then_nil(val)
         if val.empty?
           return nil

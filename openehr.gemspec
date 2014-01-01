@@ -45,6 +45,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('listen','0.6.0')
   gem.add_development_dependency('rb-kqueue')
   gem.add_development_dependency('libnotify')
-  gem.add_development_dependency('rb-inotify')
+  gem.add_development_dependency('rb-inotify', '~>0.8.8')
 end
 

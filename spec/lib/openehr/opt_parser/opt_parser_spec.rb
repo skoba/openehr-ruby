@@ -125,6 +125,14 @@ module OpenEHR
                 expect(occurrences).not_to be_upper_unbounded
               end
             end
+
+            context 'defining_code' do
+              let(:defining_code) {child.attributes[0]}
+
+              it 'rm_attribute_name is defining_code' do
+                expect(defining_code.rm_attribute_name).to eq 'defining_code'
+              end
+            end
           end
 
           context 'existence' do
