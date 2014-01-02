@@ -69,6 +69,7 @@ module OpenEHR
 
       def children(children_xml, node)
         children_xml.map do |child|
+p child.attributes['type']
           send child.attributes['type'].text.downcase, child, node
         end
       end
@@ -135,6 +136,18 @@ module OpenEHR
         OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: path, children: children(attr_xml.xpath('./children'), child_node))
       end
 
+      def c_code_phrase(attr_xml, node)
+        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('terminology_id/value').text.strip)
+        path = node.path
+        code_list = attr_xml.xpath('code_list').text.strip
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(terminology_id: terminology_id, code_list: [code_list], path: path, occurrences: occurrences, rm_type_name: 'CodePhrase')
+      end
+
+      def archetype_slot(attr_xml,node)
+
+      end
+
       def occurrences(occurrence_xml)
         lower_node = occurrence_xml.at('lower')
         upper_node = occurrence_xml.at('upper')
@@ -143,14 +156,6 @@ module OpenEHR
         lower_included = to_bool(occurrence_xml.at('lower_included'))
         upper_included = to_bool(occurrence_xml.at('upper_included'))
         OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
-      end
-
-      def c_code_phrase(attr_xml, node)
-        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('terminology_id/value').text.strip)
-        path = node.path
-        code_list = attr_xml.xpath('code_list').text.strip
-        occurrences = occurrences(attr_xml.at('occurrences'))
-        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(terminology_id: terminology_id, code_list: code_list, path: path, occurrences: occurrences, rm_type_name: 'CodePhrase')
       end
 
       def empty_then_nil(val)
