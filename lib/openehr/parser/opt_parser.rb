@@ -146,7 +146,11 @@ module OpenEHR
       end
 
       def c_code_phrase(attr_xml, node)
-
+        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('terminology_id/value').text.strip)
+        path = node.path
+        code_list = attr_xml.xpath('code_list').text.strip
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(terminology_id: terminology_id, code_list: code_list, path: path, occurrences: occurrences, rm_type_name: 'CodePhrase')
       end
 
       def empty_then_nil(val)
