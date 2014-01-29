@@ -69,7 +69,6 @@ module OpenEHR
 
       def children(children_xml, node)
         children_xml.map do |child|
-p child.attributes['type']
           send child.attributes['type'].text.downcase, child, node
         end
       end
@@ -145,7 +144,13 @@ p child.attributes['type']
       end
 
       def archetype_slot(attr_xml,node)
-
+        path = node.path
+        node.id = attr_xml.at('node_id').text
+        rm_type_name = attr_xml.at('rm_type_name').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        includes = assertions(attr_xml.at('includes'), node)
+        excludes = assertions(attr_xml.at('excludes'), node)
+        OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(path: path, node_id: node_id, rm_type_name: rm_type_name, occurrences: occurrences, includes: includes, excludes: excludes)
       end
 
       def occurrences(occurrence_xml)
@@ -156,6 +161,9 @@ p child.attributes['type']
         lower_included = to_bool(occurrence_xml.at('lower_included'))
         upper_included = to_bool(occurrence_xml.at('upper_included'))
         OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
+      end
+
+      def assertions(attr_xml, node)
       end
 
       def empty_then_nil(val)
