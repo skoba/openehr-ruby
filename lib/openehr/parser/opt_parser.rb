@@ -148,9 +148,11 @@ module OpenEHR
         node.id = attr_xml.at('node_id').text
         rm_type_name = attr_xml.at('rm_type_name').text
         occurrences = occurrences(attr_xml.at('occurrences'))
-        includes = assertions(attr_xml.at('includes'), node)
-        excludes = assertions(attr_xml.at('excludes'), node)
-        OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(path: path, node_id: node_id, rm_type_name: rm_type_name, occurrences: occurrences, includes: includes, excludes: excludes)
+        includes_leaf = attr_xml.at('includes')
+        includes = assertions(includes_leaf.children, node) if includes_leaf
+        excludes_leaf = attr_xml.at('excludes')
+        excludes = assertions(excludes_leaf.children, node) if excludes_leaf
+        OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(path: path, node_id: node.id, rm_type_name: rm_type_name, occurrences: occurrences, includes: includes, excludes: excludes)
       end
 
       def occurrences(occurrence_xml)
@@ -163,9 +165,54 @@ module OpenEHR
         OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
       end
 
-      def assertions(attr_xml, node)
+      def constraint_ref(attr_xml, node)
+        rm_type_name = attr_xml.at('rm_type_name').text
+        reference = attr_xml.at('reference').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        OpenEHR::AM::Archetype::ConstraintModel::ConstraintRef.new(rm_type_name: rm_type_name, occurrences: occurrences, reference: reference)
       end
 
+      def assertions(attr_xml, node)
+        string_expression = attr_xml.at('string_expression').text
+        expression_leaf = attr_xml.at 'expression'
+        expression = send expression_leaf.attributes['type'].text.downcase, expression_leaf
+        [OpenEHR::AM::Archetype::Assertion::Assertion.new(expression: expression, string_expression: string_expression)]
+      end
+
+      def expr_binary_operator(attr_xml)
+        type = attr_xml.at('type').text
+        operator = OpenEHR::AM::Archetype::Assertion::OperatorKind.new(value: attr_xml.at('operator').text.to_i)
+
+        precedence_overridden = attr_xml.at('precedence_overridden').text == 'true' ? true : false
+        right_operand_leaf = attr_xml.at 'right_operand'
+        right_operand = send right_operand_leaf.attributes['type'].text.downcase, right_operand_leaf
+        left_operand_leaf = attr_xml.at 'left_operand'
+        left_operand = send left_operand_leaf.attributes['type'].text.downcase, left_operand_leaf
+        OpenEHR::AM::Archetype::Assertion::ExprBinaryOperator.new(type: type, operator: operator, precedence_overridden: precedence_overridden, right_operand: right_operand, left_operand: left_operand)
+      end
+
+      def expr_leaf(attr_xml)
+        type = attr_xml.at('type').text
+        item_leaf = attr_xml.at('item')
+        item = send type.downcase, item_leaf
+        reference_type = attr_xml.at('reference_type').text
+        OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(type: type, item: item, reference_type: reference_type)
+      end
+
+      def c_primitive_object(attr_xml, node)
+        rm_type_name = attr_xml.at('rm_type_name').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(rm_type_name: rm_type_name, occurrences: occurrences, node_id: node.id)
+      end
+      
+      def c_string(attr_xml)
+        pattern = attr_xml.at('pattern').text
+        OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(pattern: pattern)
+      end
+
+      def string(attr_xml)
+        attr_xml.text
+      end
       def empty_then_nil(val)
         if val.empty?
           return nil
