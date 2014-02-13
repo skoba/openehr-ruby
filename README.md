@@ -11,7 +11,7 @@ A Ruby implementation of the openEHR specifications
 * Developed with CRuby 2.0.0, 1.9.3 on FreeBSD and Linux.
 * Ruby 1.8 or earlier are no longer supported.
 
-=Description
+==DESCRIPTION:
 
 This is a stable release of Ruby openEHR implementation project.
 This release is based on openEHR specification release 1.0.2.
@@ -21,7 +21,7 @@ archetype validator or serializer. Formerly, we named this package
 as open_ehr, but changed to openehr from release 1.1.0. 1.0.x versions
 are obsoleted.
 
-The intention is to have a sample EHR to deploy quickly with Ruby on Rails for development and understanding of the openEHR standards.
+The intention is to have a sample EHR to deploy quickly with Ruby on Rails for development and understanding of the openEHR standards
 
 This package includes:
 * ADL 1.4 parser
@@ -45,9 +45,10 @@ projects.
 
 =Main codebase authors
 * Shinji Kobayashi and Akimichi Tatsukawa of http://openehr.jp
-* ADL parser test cases are derived from Java and Eiffel reference implementation project of the openEHR.
+* ADL parser test cases are derived from Java and Eiffel
+reference implementation project of the openEHR.
 
-=Contributors
+=Contributors:
 Thanks for pull requests on GitHub.
 
 * Michael Deryugin

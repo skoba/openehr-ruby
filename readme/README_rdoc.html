@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>README - RDoc Documentation</title>
+
+<link href="./fonts.css" rel="stylesheet">
+<link href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/search_index.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/searcher.js"></script>
+<script src="./js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+<div class="nav-section">
+  <h3>Table of Contents</h3>
+
+  <ul class="link-list" role="directory">
+    <li><a href="#label-Synopsis">Synopsis</a>
+    <li><a href="#label-Requirements">Requirements</a>
+    <li><a href="#label-Description">Description</a>
+    <li><a href="#label-Main+codebase+authors">Main codebase authors</a>
+    <li><a href="#label-Contributors">Contributors</a>
+    <li><a href="#label-Copyright">Copyright</a>
+    <li><a href="#label-License">License</a>
+  </ul>
+</div>
+
+
+  <div id="project-metadata">
+    <div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./README_rdoc.html">README</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-label="Page README.rdoc">
+
+<p><a href="https://travis-ci.org/skoba/openehr-ruby"><img
+src="https://travis-ci.org/skoba/openehr-ruby.png?branch=master" alt="Build
+Status" /></a></p>
+
+<h1 id="label-Synopsis">Synopsis<span><a href="#label-Synopsis">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>A Ruby implementation of the openEHR specifications</p>
+<ul><li>
+<p><a
+href="http://github.com/skoba/openehr-ruby">github.com/skoba/openehr-ruby</a></p>
+</li></ul>
+
+<h1 id="label-Requirements">Requirements<span><a href="#label-Requirements">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<ul><li>
+<p>Supports Ruby 1.9.3, 2.0.0 or equivalents.</p>
+</li><li>
+<p>Developed with CRuby 2.0.0, 1.9.3 on FreeBSD and Linux.</p>
+</li><li>
+<p>Ruby 1.8 or earlier are no longer supported.</p>
+</li></ul>
+
+<h1 id="label-Description">Description<span><a href="#label-Description">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>This is a stable release of Ruby openEHR implementation project. This
+release is based on openEHR specification release 1.0.2. We implemented
+almost of the specifications of the openEHR. The work is still in progress
+to implement related tools, such as archetype validator or serializer.
+Formerly, we named this package as open_ehr, but changed to openehr from
+release 1.1.0. 1.0.x versions are obsoleted.</p>
+
+<p>The intention is to have a sample EHR to deploy quickly with Ruby on Rails
+for development and understanding of the openEHR standards.</p>
+
+<p>This package includes:</p>
+<ul><li>
+<p>ADL 1.4 parser</p>
+</li><li>
+<p>AM/RM packages based on the openEHR specification 1.0.2</p>
+</li></ul>
+
+<p>This package excludes:</p>
+<ul><li>
+<p>ADL serializer(in progress)</p>
+</li><li>
+<p>ADL validator(in progress)</p>
+</li><li>
+<p>Data store/retrieve would be separate to the other project.</p>
+</li><li>
+<p>Terminology service(moved to openehr-terminology package)</p>
+</li><li>
+<p>Rails plugin(moved to openehr-rails package</p>
+</li></ul>
+
+<p>Almost all classes passed the test constructed by RSpec2. These spec files
+are under /spec.</p>
+
+<p>Some specifications are not well determined yet, such as rm/security and so
+on. We have therefore postponed implementations of these classes.</p>
+
+<p>Terminology and Demographic servers will be implemented in other projects.</p>
+
+<h1 id="label-Main+codebase+authors">Main codebase authors<span><a href="#label-Main+codebase+authors">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<ul><li>
+<p>Shinji Kobayashi and Akimichi Tatsukawa of <a
+href="http://openehr.jp">openehr.jp</a></p>
+</li><li>
+<p>ADL parser test cases are derived from Java and Eiffel reference
+implementation project of the openEHR.</p>
+</li></ul>
+
+<h1 id="label-Contributors">Contributors<span><a href="#label-Contributors">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>Thanks for pull requests on GitHub.</p>
+<ul><li>
+<p>Michael Deryugin</p>
+</li><li>
+<p>Dmitry Lavrov</p>
+</li><li>
+<p>Evgeny Strokov</p>
+</li></ul>
+
+<h1 id="label-Copyright">Copyright<span><a href="#label-Copyright">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>The software, including all files in this directory and subdirectories
+except ADL files is copyrighted to the original authors and contributors,
+2011-2013.</p>
+
+<p>All Rights Reserved.</p>
+
+<h1 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>This product is released under Apache 2.0 license</p>
+
+<pre>Copyright [2012,2013] openEHR Ruby implementation project.
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</pre>
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
