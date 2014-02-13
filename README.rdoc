@@ -57,6 +57,7 @@ Thanks for pull requests on GitHub.
 * Michael Deryugin
 * Dmitry Lavrov
 * Evgeny Strokov
+* Marcus Baw(pacharanero)
 
 = Copyright
 The software, including all files in this directory and
