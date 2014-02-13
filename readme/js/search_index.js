@@ -1,1 +1,0 @@
-var search_data = {"index":{"searchIndex":["readme"],"longSearchIndex":[""],"info":[["README","","README_rdoc.html","","<p><img src=\"https://travis-ci.org/skoba/openehr-ruby.png?branch=master\"\nalt=\"Build Status\" />\n<p>Synopsis\n<p>A …\n"]]}}
