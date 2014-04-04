@@ -25,6 +25,7 @@ module OpenEHR
 
       def parse
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
+        @opt.remove_namespaces!
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
         OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition)
@@ -173,7 +174,8 @@ module OpenEHR
       end
 
       def assertions(attr_xml, node)
-        string_expression = attr_xml.at('string_expression').text
+        string_expression = attr_xml.at('string_expression')
+        string_expression = string_expression.nil? ? nil : string_expression.text
         expression_leaf = attr_xml.at 'expression'
         expression = send expression_leaf.attributes['type'].text.downcase, expression_leaf
         [OpenEHR::AM::Archetype::Assertion::Assertion.new(expression: expression, string_expression: string_expression)]
@@ -208,6 +210,21 @@ module OpenEHR
       def c_string(attr_xml)
         pattern = attr_xml.at('pattern').text
         OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(pattern: pattern)
+      end
+
+      def c_dv_quantity(attr_xml, node)
+        rm_type_name = attr_xml.at('rm_type_name').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        property_terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('property/terminology_id/value').text)
+        property_code_string = attr_xml.at('property/code_string').text
+        property = OpenEHR::RM::DataTypes::Text::CodePhrase.new(terminology_id: property_terminology_id, code_string: property_code_string)
+        list = attr_xml.xpath('.//list').map do |element|
+          units = element.at('units').text if element.at('units')
+          magnitude = occurrences(element.at('magnitude')) if element.at('magnitude')
+          precision = occurrences(element.at('precision')) if element.at('precision')
+          OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(magnitude: magnitude, precision: precision, units: units)
+        end
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity.new(rm_type_name: rm_type_name, occurrences: occurrences, list: list, property: property)
       end
 
       def string(attr_xml)
