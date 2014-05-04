@@ -3,7 +3,9 @@
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109157527311_729550_7234Report.html
 # refs #55
 require 'time'
+require 'active_support'
 require 'active_support/core_ext'
+#require 'active_support/deprecation'
 
 require_relative '../common/archetyped'
 require_relative '../data_structures'
@@ -107,7 +109,7 @@ module OpenEHR
             unless @width.fractional_second.nil?
               seconds += @width.fractional_second
             end
-            start_time = seconds.ago start_time
+            start_time = seconds.seconds.ago start_time
             return OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(:value => start_time.iso8601)
           end
         end
