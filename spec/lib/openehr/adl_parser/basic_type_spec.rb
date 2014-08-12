@@ -97,7 +97,7 @@ describe ADLParser do
       end
 
       it 'first attribute is not false valid' do
-        attr(1).should_not be_false_valid
+        expect(attr(1)).not_to be_false_valid
       end
 
       it 'second attribute is not true valid' do
@@ -109,7 +109,7 @@ describe ADLParser do
       end
 
       it 'third attribute is true valid' do
-        attr(3).should be_true_valid
+        expect(attr(3)).to be_true_valid
       end
 
       it 'third attrubute is false_valid' do
@@ -125,7 +125,7 @@ describe ADLParser do
       end
 
       it 'fourth attribute is asumed false' do
-        attr(4).assumed_value.should be_false
+        attr(4).assumed_value.should be_falsey
       end
 
       it 'fifth attribute is not true valid' do
@@ -137,7 +137,7 @@ describe ADLParser do
       end
 
       it 'fifth attribute is assumed true' do
-        attr(5).assumed_value.should be_true
+        attr(5).assumed_value.should be_truthy
       end
 
       it 'sixth attribute is true valid' do
@@ -149,7 +149,7 @@ describe ADLParser do
       end
 
       it 'sixth attribute is assumed true' do
-        attr(6).assumed_value.should be_true
+        attr(6).assumed_value.should be_truthy
       end
     end
 

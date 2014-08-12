@@ -34,10 +34,10 @@ Gem::Specification.new do |gem|
 #  gem.add_dependency('activerecord')
 
   gem.add_development_dependency('rspec')
-  gem.add_development_dependency('cucumber', '~> 1.2.0')
-   gem.add_development_dependency('guard')
+#  gem.add_development_dependency('cucumber', '~> 1.2.0')
+  gem.add_development_dependency('guard')
   gem.add_development_dependency('guard-rspec')
-  gem.add_development_dependency('guard-cucumber')
+#  gem.add_development_dependency('guard-cucumber')
   gem.add_development_dependency('spork')#, '> 1.0rc')
   gem.add_development_dependency('guard-spork')
   gem.add_development_dependency('simplecov')
