@@ -10,7 +10,7 @@ describe PartyRef do
   end
 
   it 'should be an instance of PartyRef' do
-    @party_ref.should be_an_instance_of PartyRef
+    expect(@party_ref).to be_an_instance_of PartyRef
   end
 
   %w[PERSON ORGANISATION GROUP AGENT ROLE PARTY ACTOR].each do |type|

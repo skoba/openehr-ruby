@@ -14,11 +14,11 @@ describe CObject do
   end
 
   it 'should be an instance of CObject' do
-    @c_object.should be_an_instance_of CObject
+    expect(@c_object).to be_an_instance_of CObject
   end
 
   it 'rm_type_name should be assigned properly' do
-    @c_object.rm_type_name.should == 'DV_TIME'
+    expect(@c_object.rm_type_name).to eq('DV_TIME')
   end
 
   it 'should raise ArgumentError when rm_type_name was assigned nil' do
@@ -34,7 +34,7 @@ describe CObject do
   end
 
   it 'node_id should be assigned properly' do
-    @c_object.node_id.should == 'ac0001'
+    expect(@c_object.node_id).to eq('ac0001')
   end
 
   # it 'should raise ArgumentError when node_id was assigned nil' do
@@ -50,7 +50,7 @@ describe CObject do
   end
 
   it 'occurences should be assigned properly' do
-    @c_object.occurrences.lower.should be_equal 0
+    expect(@c_object.occurrences.lower).to be_equal 0
   end
 
   # it 'should raise ArgumentError when occurences was assigned nil' do

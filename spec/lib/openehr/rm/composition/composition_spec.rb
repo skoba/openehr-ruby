@@ -25,68 +25,68 @@ describe Composition do
   end
 
   it 'should be an instance of Composition' do
-    @composition.should be_an_instance_of Composition
+    expect(@composition).to be_an_instance_of Composition
   end
 
   it 'language should be assigned properly' do
-    @composition.language.code_string.should == 'ja'
+    expect(@composition.language.code_string).to eq('ja')
   end
 
   it 'should validate language with Termonology service'
 
   it 'should raise ArgumentError with nil language' do
-    lambda {
+    expect {
       @composition.language = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'category should be assigned properly' do
-    @composition.category.value.should == 'event'
+    expect(@composition.category.value).to eq('event')
   end
 
   it 'should validate category with Terminology service'
 
   it 'should raise ArgumentError with nil category' do
-    lambda {
+    expect {
       @composition.category = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'territory should be assined properly' do
-    @composition.territory.code_string.should == 'jpn'
+    expect(@composition.territory.code_string).to eq('jpn')
   end
 
   it 'should raise ArgumentError with nil territory' do
-    lambda {
+    expect {
       @composition.territory = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'composer should be assigned properly' do
-    @composition.composer.external_ref.type.should == 'ROLE'
+    expect(@composition.composer.external_ref.type).to eq('ROLE')
   end
 
   it 'should raise ArgumentError with nil comosser' do
-    lambda {
+    expect {
       @composition.composer = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'is_persistent? should be false when category is not persistent' do
-    @composition.is_persistent?.should be_false
+    expect(@composition.is_persistent?).to be_falsey
   end
 
   it 'is_persistent? should be true when category is persistent' do
     category = double(DvCodedText, :value => 'persistent')
     @composition.category = category
-    @composition.is_persistent?.should be_true
+    expect(@composition.is_persistent?).to be_truthy
   end
 
   it 'content should be assigned properly' do
-    @composition.content.size.should == 3
+    expect(@composition.content.size).to eq(3)
   end
 
   it 'context should be assigned properly' do
-    @composition.context.location.should == 'lab1'
+    expect(@composition.context.location).to eq('lab1')
   end
 end

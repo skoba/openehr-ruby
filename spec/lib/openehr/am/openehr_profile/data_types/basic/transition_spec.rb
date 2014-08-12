@@ -13,23 +13,23 @@ describe Transition do
   end
 
   it 'is an instance of TerminalState' do
-    @transition.should be_an_instance_of Transition
+    expect(@transition).to be_an_instance_of Transition
   end
 
   it 'event start' do
-    @transition.event.should == 'start'
+    expect(@transition.event).to eq('start')
   end
 
   it 'guard is PROPOSED' do
-    @transition.guard.should == 'PROPOSED'
+    expect(@transition.guard).to eq('PROPOSED')
   end
 
   it 'action is order' do
-    @transition.action.should == 'order'
+    expect(@transition.action).to eq('order')
   end
 
   it 'next state is named IN_EXECUTION' do
-    @transition.next_state.name.should == 'IN_EXECUTION'
+    expect(@transition.next_state.name).to eq('IN_EXECUTION')
   end
 
   it 'raise error if event is nil' do

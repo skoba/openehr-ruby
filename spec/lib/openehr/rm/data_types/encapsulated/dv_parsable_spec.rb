@@ -9,26 +9,26 @@ describe DvParsable do
   end
 
   it 'should be an instance of DvParsable' do
-    @dv_parsable.should be_an_instance_of DvParsable
+    expect(@dv_parsable).to be_an_instance_of DvParsable
   end
 
   it 'value should be test' do
-    @dv_parsable.value.should == 'test'
+    expect(@dv_parsable.value).to eq('test')
   end
 
   it 's size should be 4' do
-    @dv_parsable.size.should be_equal 4
+    expect(@dv_parsable.size).to be_equal 4
   end
 
   it 's formalism should be plain/text' do
-    @dv_parsable.formalism.should == 'plain/text'
+    expect(@dv_parsable.formalism).to eq('plain/text')
   end
 
   it 'should raise ArgumentError formalism nil' do
-    lambda {@dv_parsable.formalism = nil}.should raise_error(ArgumentError)
+    expect {@dv_parsable.formalism = nil}.to raise_error(ArgumentError)
   end
 
   it 'should raise ArgumentError formalism empty' do
-    lambda {@dv_parsable.formalism = ''}.should raise_error(ArgumentError)
+    expect {@dv_parsable.formalism = ''}.to raise_error(ArgumentError)
   end
 end

@@ -18,27 +18,27 @@ describe CTime do
   end
 
   it 'should be an instance of CTime' do
-    @c_time.should be_an_instance_of CTime
+    expect(@c_time).to be_an_instance_of CTime
   end
 
   it 'type is DvTime' do
-    @c_time.type.should == 'ISO8601_TIME'
+    expect(@c_time.type).to eq('ISO8601_TIME')
   end
 
   it 'minute_validity should be assigned' do
-    @c_time.minute_validity.should be_equal ValidityKind::MANDATORY
+    expect(@c_time.minute_validity).to be_equal ValidityKind::MANDATORY
   end
 
   it 'seconds_validity should be assigned properly' do
-    @c_time.second_validity.should be_equal ValidityKind::OPTIONAL
+    expect(@c_time.second_validity).to be_equal ValidityKind::OPTIONAL
   end
 
   it 'millisecond_validity should be assigned properly' do
-    @c_time.millisecond_validity.should be_equal ValidityKind::DISALLOWED
+    expect(@c_time.millisecond_validity).to be_equal ValidityKind::DISALLOWED
   end
 
   it 'should be true if range is not nil' do
-    @c_time.should be_validity_is_range
+    expect(@c_time).to be_validity_is_range
   end
 
   it 'second_validity should not be MANDATORY if minute_validity is optional' do
@@ -87,7 +87,7 @@ describe CTime do
     end
 
     it 'pattern is hh:mm:ss' do
-      @c_timep.pattern.should == 'hh:mm:ss'
+      expect(@c_timep.pattern).to eq('hh:mm:ss')
     end
   end
 
@@ -98,7 +98,7 @@ describe CTime do
     end
 
     it 'first item value is 09:51:17' do
-      @c_timel.list[0].value.should == '09:51:17'
+      expect(@c_timel.list[0].value).to eq('09:51:17')
     end
   end
 end

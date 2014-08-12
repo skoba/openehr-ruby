@@ -7,38 +7,38 @@ describe DvDate do
   end
 
   it 'is an instance of DvDuration' do
-    @dv_duration.should be_an_instance_of DvDuration
+    expect(@dv_duration).to be_an_instance_of DvDuration
   end
 
   it 'year is 1' do
-    @dv_duration.years.should be 1
+    expect(@dv_duration.years).to be 1
   end
 
   it 'months is 2' do
-    @dv_duration.months.should be 2
+    expect(@dv_duration.months).to be 2
   end
 
   it 'weeks is 3' do
-    @dv_duration.weeks.should be 3
+    expect(@dv_duration.weeks).to be 3
   end
 
   it 'days is 4' do
-    @dv_duration.days.should be 4
+    expect(@dv_duration.days).to be 4
   end
 
   it 'hours should be 5' do
-    @dv_duration.hours.should be 5
+    expect(@dv_duration.hours).to be 5
   end
 
   it 'minutes should be 6' do
-    @dv_duration.minutes.should be 6
+    expect(@dv_duration.minutes).to be 6
   end
 
   it 'seconds should be 7' do
-    @dv_duration.seconds.should be 7
+    expect(@dv_duration.seconds).to be 7
   end
 
   it 'fractional_second should be 0.7' do
-    @dv_duration.fractional_second.should == 0.7
+    expect(@dv_duration.fractional_second).to eq(0.7)
   end
 end

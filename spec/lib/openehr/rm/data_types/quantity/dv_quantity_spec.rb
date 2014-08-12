@@ -9,11 +9,11 @@ describe DvQuantity do
   end
 
   it 'should be an instance of DvQuantity' do
-    @dv_quantity.should be_instance_of DvQuantity
+    expect(@dv_quantity).to be_instance_of DvQuantity
   end
 
   it 's units should be mg' do
-    @dv_quantity.units.should == 'mg'
+    expect(@dv_quantity.units).to eq('mg')
   end
 
   describe 'Mathematical Operation' do
@@ -23,45 +23,45 @@ describe DvQuantity do
     end
     
     it 'should be comparable to 5mg' do
-      @dv_quantity.is_strictly_comparable_to?(@dv_quantity5).should be_true
+      expect(@dv_quantity.is_strictly_comparable_to?(@dv_quantity5)).to be_truthy
     end
 
     it 'should be 8mg added 5mg' do
       dv_quantity = @dv_quantity + @dv_quantity5
-      dv_quantity.magnitude.should == 8
+      expect(dv_quantity.magnitude).to eq(8)
     end
 
     it 'should be -2mg minus 5mg' do
       dv_quantity = @dv_quantity - @dv_quantity5
-      dv_quantity.magnitude.should == -2
+      expect(dv_quantity.magnitude).to eq(-2)
     end
 
     it 's unit should be mg' do
-      (@dv_quantity + @dv_quantity5).units.should == 'mg'
+      expect((@dv_quantity + @dv_quantity5).units).to eq('mg')
     end
   end
 
   it 'should not be comparable to 8km' do
     dv_quantity = DvQuantity.new(:magnitude => 8,
                                  :units => 'km')
-    @dv_quantity.is_strictly_comparable_to?(dv_quantity).should_not be_true
+    expect(@dv_quantity.is_strictly_comparable_to?(dv_quantity)).not_to be_truthy
   end
 
   it 'should return false with other type' do
-    @dv_quantity.is_strictly_comparable_to?(1).should_not be_true
+    expect(@dv_quantity.is_strictly_comparable_to?(1)).not_to be_truthy
   end
 
   it 's precision should be equal 0' do
-    @dv_quantity.precision.should == 0
+    expect(@dv_quantity.precision).to eq(0)
   end
 
   it 'should be integral' do
-    @dv_quantity.is_integral?.should be_true
+    expect(@dv_quantity.is_integral?).to be_truthy
   end
 
   it 'should not be integral do' do
     @dv_quantity.precision = 3
-    @dv_quantity.is_integral?.should_not be_true
+    expect(@dv_quantity.is_integral?).not_to be_truthy
   end
 
   it 'should not raise ArgumentError with -1 precision' do

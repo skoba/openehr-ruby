@@ -30,11 +30,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd' do
-          @at.pattern.should == 'yyyy-mm-dd'
+          expect(@at.pattern).to eq('yyyy-mm-dd')
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -44,7 +44,7 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-??-??' do
-          @at.pattern.should == 'yyyy-??-??'
+          expect(@at.pattern).to eq('yyyy-??-??')
         end
       end
 
@@ -54,7 +54,7 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-??' do
-          @at.pattern.should == 'yyyy-mm-??'
+          expect(@at.pattern).to eq('yyyy-mm-??')
         end
       end
 
@@ -64,7 +64,7 @@ describe ADLParser do
         end
 
         it ' pattern is yyyy-??-XX' do
-          @at.pattern.should == 'yyyy-??-XX'
+          expect(@at.pattern).to eq('yyyy-??-XX')
         end
       end
 
@@ -74,7 +74,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 1983-12-25' do
-          @at.list[0].value.should == '1983-12-25'
+          expect(@at.list[0].value).to eq('1983-12-25')
         end
       end
 
@@ -84,7 +84,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 1983-12-25' do
-          @at.list[0].value.should == '1983-12-25'
+          expect(@at.list[0].value).to eq('1983-12-25')
         end
       end
  
@@ -94,7 +94,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01' do
-          @at.list[0].value.should == '2000-01-01'
+          expect(@at.list[0].value).to eq('2000-01-01')
         end
       end
 
@@ -104,7 +104,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01' do
-          @at.list[0].value.should == '2000-01-01'
+          expect(@at.list[0].value).to eq('2000-01-01')
         end
       end
 
@@ -114,19 +114,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'upper range is 2004-10-20' do
-          @at.range.upper.value.should == '2004-10-20'
+          expect(@at.range.upper.value).to eq('2004-10-20')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
       end
 
@@ -136,15 +136,15 @@ describe ADLParser do
         end
 
         it 'upper range is 2004-09-20' do
-          @at.range.upper.value.should == '2004-09-20'
+          expect(@at.range.upper.value).to eq('2004-09-20')
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
       end
 
@@ -154,15 +154,15 @@ describe ADLParser do
         end
         
         it 'upper range is 2004-09-20' do
-          @at.range.upper.value.should == '2004-09-20'
+          expect(@at.range.upper.value).to eq('2004-09-20')
         end
         
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
         
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
       end
 
@@ -172,15 +172,15 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_lower_included
+          expect(@at.range).not_to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
       end
 
@@ -190,15 +190,15 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
       end
 
@@ -210,15 +210,15 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd' do
-          @at.pattern.should == 'yyyy-mm-dd'
+          expect(@at.pattern).to eq('yyyy-mm-dd')
         end
 
         it 'has assumed_value' do
-          @at.should have_assumed_value
+          expect(@at).to have_assumed_value
         end
 
         it 'assumed value is 2000-01-01' do
-          @at.assumed_value.value.should == '2000-01-01'
+          expect(@at.assumed_value.value).to eq('2000-01-01')
         end
       end
 
@@ -228,11 +228,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-??-??' do
-          @at.pattern.should == 'yyyy-??-??'
+          expect(@at.pattern).to eq('yyyy-??-??')
         end
 
         it 'assumed value is 2001-01-01' do
-          @at.assumed_value.value.should == '2001-01-01'
+          expect(@at.assumed_value.value).to eq('2001-01-01')
         end
       end
 
@@ -242,11 +242,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-??; 2002-01-01' do
-          @at.pattern.should == 'yyyy-mm-??'
+          expect(@at.pattern).to eq('yyyy-mm-??')
         end
 
         it 'assumed value is 2002-01-01' do
-          @at.assumed_value.value.should == '2002-01-01'
+          expect(@at.assumed_value.value).to eq('2002-01-01')
         end
       end
 
@@ -256,11 +256,11 @@ describe ADLParser do
         end
 
         it ' pattern is yyyy-??-XX' do
-          @at.pattern.should == 'yyyy-??-XX'
+          expect(@at.pattern).to eq('yyyy-??-XX')
         end
 
         it 'assumed value is 2003-01-01' do
-          @at.assumed_value.value.should == '2003-01-01'
+          expect(@at.assumed_value.value).to eq('2003-01-01')
         end
       end
 
@@ -270,11 +270,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 1983-12-25' do
-          @at.list[0].value.should == '1983-12-25'
+          expect(@at.list[0].value).to eq('1983-12-25')
         end
 
         it 'assumed value is 2004-01-01' do
-          @at.assumed_value.value.should == '2004-01-01'
+          expect(@at.assumed_value.value).to eq('2004-01-01')
         end
       end
 
@@ -284,11 +284,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01' do
-          @at.list[0].value.should == '2000-01-01'
+          expect(@at.list[0].value).to eq('2000-01-01')
         end
 
         it 'assumed value is 2005-01-01' do
-          @at.assumed_value.value.should == '2005-01-01'
+          expect(@at.assumed_value.value).to eq('2005-01-01')
         end
       end
 
@@ -298,23 +298,23 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'upper range is 2004-10-20' do
-          @at.range.upper.value.should == '2004-10-20'
+          expect(@at.range.upper.value).to eq('2004-10-20')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'assumed value is 2004-09-30' do
-          @at.assumed_value.value.should == '2004-09-30'
+          expect(@at.assumed_value.value).to eq('2004-09-30')
         end
       end
 
@@ -324,19 +324,19 @@ describe ADLParser do
         end
 
         it 'upper range is 2004-09-20' do
-          @at.range.upper.value.should == '2004-09-20'
+          expect(@at.range.upper.value).to eq('2004-09-20')
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'assumed value is 2004-09-01' do
-          @at.assumed_value.value.should == '2004-09-01'
+          expect(@at.assumed_value.value).to eq('2004-09-01')
         end
       end
 
@@ -346,19 +346,19 @@ describe ADLParser do
         end
         
         it 'upper range is 2004-09-20' do
-          @at.range.upper.value.should == '2004-09-20'
+          expect(@at.range.upper.value).to eq('2004-09-20')
         end
         
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
         
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'assumed value is 2003-09-20' do
-          @at.assumed_value.value.should == '2003-09-20'
+          expect(@at.assumed_value.value).to eq('2003-09-20')
         end
       end
 
@@ -368,19 +368,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_lower_included
+          expect(@at.range).not_to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'assumed value is 2005-01-02' do
-          @at.assumed_value.value.should == '2005-01-02'
+          expect(@at.assumed_value.value).to eq('2005-01-02')
         end
       end
 
@@ -390,19 +390,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'assumed value is 2005-10-30' do
-          @at.assumed_value.value.should == '2005-10-30'
+          expect(@at.assumed_value.value).to eq('2005-10-30')
         end
       end
 
@@ -412,19 +412,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2004-09-20' do
-          @at.range.lower.value.should == '2004-09-20'
+          expect(@at.range.lower.value).to eq('2004-09-20')
         end
 
         it 'upper range is 2004-09-20' do
-          @at.range.upper.value.should == '2004-09-20'
+          expect(@at.range.upper.value).to eq('2004-09-20')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
       end
     end
@@ -440,11 +440,11 @@ describe ADLParser do
         end
 
         it 'pattern is hh:mm:ss' do
-          @at.pattern.should == 'hh:mm:ss'
+          expect(@at.pattern).to eq('hh:mm:ss')
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -454,7 +454,7 @@ describe ADLParser do
         end
 
         it 'pattern is hh:mm:XX' do
-          @at.pattern.should == 'hh:mm:XX'
+          expect(@at.pattern).to eq('hh:mm:XX')
         end
       end
 
@@ -464,7 +464,7 @@ describe ADLParser do
         end
 
         it 'pattern is hh:??:XX' do
-          @at.pattern.should == 'hh:??:XX'
+          expect(@at.pattern).to eq('hh:??:XX')
         end
       end
 
@@ -474,7 +474,7 @@ describe ADLParser do
         end
 
         it 'pattern is hh:??:??' do
-          @at.pattern.should == 'hh:??:??'
+          expect(@at.pattern).to eq('hh:??:??')
         end
       end
 
@@ -484,11 +484,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 22:00:05' do
-          @at.list[0].value.should == '22:00:05'
+          expect(@at.list[0].value).to eq('22:00:05')
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -498,7 +498,7 @@ describe ADLParser do
         end
 
         it '1st item of the list is 00:00:59' do
-          @at.list[0].value.should == '00:00:59'
+          expect(@at.list[0].value).to eq('00:00:59')
         end
       end
 
@@ -508,7 +508,7 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35' do
-          @at.list[0].value.should == '12:35'
+          expect(@at.list[0].value).to eq('12:35')
         end
       end
 
@@ -518,7 +518,7 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,666' do
-          @at.list[0].value.should == '12:35:45,666'
+          expect(@at.list[0].value).to eq('12:35:45,666')
         end
       end
 
@@ -528,7 +528,7 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,666' do
-          @at.list[0].value.should == '12:35:45,666'
+          expect(@at.list[0].value).to eq('12:35:45,666')
         end
       end
 
@@ -538,11 +538,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45-0700' do
-          @at.list[0].value.should == '12:35:45-0700'
+          expect(@at.list[0].value).to eq('12:35:45-0700')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '-0700'
+          expect(@at.list[0].timezone).to eq('-0700')
         end
       end
 
@@ -552,11 +552,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45+0800' do
-          @at.list[0].value.should == '12:35:45+0800'
+          expect(@at.list[0].value).to eq('12:35:45+0800')
         end
 
         it 'time zone is +0800' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
       end
 
@@ -566,11 +566,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,999-0700' do
-          @at.list[0].value.should == '12:35:45,999-0700'
+          expect(@at.list[0].value).to eq('12:35:45,999-0700')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '-0700'
+          expect(@at.list[0].timezone).to eq('-0700')
         end
       end
 
@@ -580,11 +580,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,000+0800' do
-          @at.list[0].value.should == '12:35:45,000+0800'
+          expect(@at.list[0].value).to eq('12:35:45,000+0800')
         end
 
         it 'time zone is +0800' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
 
         it 'fractional second is 0' do
@@ -598,11 +598,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,000Z' do
-          @at.list[0].value.should == '12:35:45,000Z'
+          expect(@at.list[0].value).to eq('12:35:45,000Z')
         end
 
         it 'time zone is +0800' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
 
         it 'fractional second is 0' do
@@ -616,11 +616,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,995-0700' do
-          @at.list[0].value.should == '12:35:45,995-0700'
+          expect(@at.list[0].value).to eq('12:35:45,995-0700')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '-0700'
+          expect(@at.list[0].timezone).to eq('-0700')
         end
 
         it 'fractional second is 995' do
@@ -634,11 +634,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,001+0800' do
-          @at.list[0].value.should == '12:35:45,001+0800'
+          expect(@at.list[0].value).to eq('12:35:45,001+0800')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
 
         it 'fractional second is 0.001' do
@@ -652,11 +652,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,001+0800' do
-          @at.list[0].value.should == '12:35:45,001+0800'
+          expect(@at.list[0].value).to eq('12:35:45,001+0800')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
 
         it 'fractional second is 0.001' do
@@ -670,19 +670,19 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'upper range is 12:35' do
-          @at.range.upper.value.should == '16:35'
+          expect(@at.range.upper.value).to eq('16:35')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
       end
 
@@ -692,15 +692,15 @@ describe ADLParser do
         end
 
         it 'upper range is 12:35' do
-          @at.range.upper.value.should == '12:35'
+          expect(@at.range.upper.value).to eq('12:35')
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
       end
 
@@ -710,15 +710,15 @@ describe ADLParser do
         end
 
         it 'upper range is 12:35' do
-          @at.range.upper.value.should == '12:35'
+          expect(@at.range.upper.value).to eq('12:35')
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
       end
 
@@ -728,15 +728,15 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
       end
 
@@ -746,15 +746,15 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_lower_included
+          expect(@at.range).not_to be_lower_included
         end
       end
 
@@ -764,15 +764,15 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
       end
 
@@ -782,15 +782,15 @@ describe ADLParser do
         end
 
         it 'pattern is hh:mm:ss' do
-          @at.pattern.should == 'hh:mm:ss'
+          expect(@at.pattern).to eq('hh:mm:ss')
         end
 
         it 'has assumed_value' do
-          @at.should have_assumed_value
+          expect(@at).to have_assumed_value
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -800,11 +800,11 @@ describe ADLParser do
         end
 
         it 'pattern is hh:mm:XX' do
-          @at.pattern.should == 'hh:mm:XX'
+          expect(@at.pattern).to eq('hh:mm:XX')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -814,11 +814,11 @@ describe ADLParser do
         end
 
         it 'pattern is hh:??:XX' do
-          @at.pattern.should == 'hh:??:XX'
+          expect(@at.pattern).to eq('hh:??:XX')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -828,11 +828,11 @@ describe ADLParser do
         end
 
         it 'pattern is hh:??:??' do
-          @at.pattern.should == 'hh:??:??'
+          expect(@at.pattern).to eq('hh:??:??')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -842,15 +842,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is 22:00:05' do
-          @at.list[0].value.should == '22:00:05'
+          expect(@at.list[0].value).to eq('22:00:05')
         end
 
         it 'have assumed_value' do
-          @at.should have_assumed_value
+          expect(@at).to have_assumed_value
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -860,11 +860,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 00:00:59' do
-          @at.list[0].value.should == '00:00:59'
+          expect(@at.list[0].value).to eq('00:00:59')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -874,11 +874,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35 10:00:00' do
-          @at.list[0].value.should == '12:35'
+          expect(@at.list[0].value).to eq('12:35')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -888,11 +888,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,666' do
-          @at.list[0].value.should == '12:35:45,666'
+          expect(@at.list[0].value).to eq('12:35:45,666')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -902,15 +902,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45-0700' do
-          @at.list[0].value.should == '12:35:45-0700'
+          expect(@at.list[0].value).to eq('12:35:45-0700')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '-0700'
+          expect(@at.list[0].timezone).to eq('-0700')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -920,15 +920,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45+0800' do
-          @at.list[0].value.should == '12:35:45+0800'
+          expect(@at.list[0].value).to eq('12:35:45+0800')
         end
 
         it 'time zone is +0800' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -938,11 +938,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,000+0800' do
-          @at.list[0].value.should == '12:35:45,000+0800'
+          expect(@at.list[0].value).to eq('12:35:45,000+0800')
         end
 
         it 'time zone is +0800' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
 
         it 'fractional second is 0' do
@@ -950,7 +950,7 @@ describe ADLParser do
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -960,11 +960,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,000Z' do
-          @at.list[0].value.should == '12:35:45,000Z'
+          expect(@at.list[0].value).to eq('12:35:45,000Z')
         end
 
         it 'time zone is +0800' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
 
         it 'fractional second is 0' do
@@ -972,7 +972,7 @@ describe ADLParser do
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -982,11 +982,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,995-0700' do
-          @at.list[0].value.should == '12:35:45,995-0700'
+          expect(@at.list[0].value).to eq('12:35:45,995-0700')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '-0700'
+          expect(@at.list[0].timezone).to eq('-0700')
         end
 
         it 'fractional second is 995' do
@@ -994,7 +994,7 @@ describe ADLParser do
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1004,11 +1004,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is 12:35:45,001+0800' do
-          @at.list[0].value.should == '12:35:45,001+0800'
+          expect(@at.list[0].value).to eq('12:35:45,001+0800')
         end
 
         it 'time zone is -0700' do
-          @at.list[0].timezone.should == '+0800'
+          expect(@at.list[0].timezone).to eq('+0800')
         end
 
         it 'fractional second is 0.001' do
@@ -1016,7 +1016,7 @@ describe ADLParser do
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1026,23 +1026,23 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'upper range is 12:35' do
-          @at.range.upper.value.should == '16:35'
+          expect(@at.range.upper.value).to eq('16:35')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1052,19 +1052,19 @@ describe ADLParser do
         end
 
         it 'upper range is 12:35' do
-          @at.range.upper.value.should == '12:35'
+          expect(@at.range.upper.value).to eq('12:35')
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1074,19 +1074,19 @@ describe ADLParser do
         end
 
         it 'upper range is 12:35' do
-          @at.range.upper.value.should == '12:35'
+          expect(@at.range.upper.value).to eq('12:35')
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1096,19 +1096,19 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1118,19 +1118,19 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'assumed value is 10:00:00' do
-          @at.assumed_value.value.should == '10:00:00'
+          expect(@at.assumed_value.value).to eq('10:00:00')
         end
       end
 
@@ -1140,27 +1140,27 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'upper range is 12:35' do
-          @at.range.lower.value.should == '12:35'
+          expect(@at.range.lower.value).to eq('12:35')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is not upper unbounded' do
-          @at.range.should_not be_upper_unbounded
+          expect(@at.range).not_to be_upper_unbounded
         end
 
         it 'is not lower unbounded' do
-          @at.range.should_not be_lower_unbounded
+          expect(@at.range).not_to be_lower_unbounded
         end
       end
 
@@ -1170,7 +1170,7 @@ describe ADLParser do
         end
 
         it '1st item of the list is 00:00:59,0' do
-          @at.list[0].value.should == '00:00:59,0'
+          expect(@at.list[0].value).to eq('00:00:59,0')
         end
       end
     end
@@ -1186,11 +1186,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:mm:ss' do
-          @at.pattern.should == 'yyyy-mm-dd hh:mm:ss'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:mm:ss')
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -1200,7 +1200,7 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:mm:??' do
-          @at.pattern.should == 'yyyy-mm-dd hh:mm:??'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:mm:??')
         end
       end
 
@@ -1210,7 +1210,7 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:mm:XX' do
-          @at.pattern.should == 'yyyy-mm-dd hh:mm:XX'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:mm:XX')
         end
       end
 
@@ -1220,7 +1220,7 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:??:XX' do
-          @at.pattern.should == 'yyyy-mm-dd hh:??:XX'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:??:XX')
         end
       end
 
@@ -1230,7 +1230,7 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:??:XX' do
-          @at.pattern.should == 'yyyy-??-?? ??:??:??'
+          expect(@at.pattern).to eq('yyyy-??-?? ??:??:??')
         end
       end
 
@@ -1240,7 +1240,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 1983-12-25T22:00:05' do
-          @at.list[0].value.should == '1983-12-25T22:00:05'
+          expect(@at.list[0].value).to eq('1983-12-25T22:00:05')
         end
       end
 
@@ -1250,7 +1250,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59' do
-          @at.list[0].value.should == '2000-01-01T00:00:59'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59')
         end
       end
 
@@ -1260,7 +1260,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59' do
-          @at.list[0].value.should == '2000-01-01T00:00:59'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59')
         end
       end
 
@@ -1270,7 +1270,7 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59' do
-          @at.list[0].value.should == '2000-01-01T00:00:59'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59')
         end
       end
 
@@ -1280,11 +1280,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,105' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,105'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,105')
         end
 
         it 'fractional second is 0.105' do
-          @at.list[0].fractional_second.should == 0.105
+          expect(@at.list[0].fractional_second).to eq(0.105)
         end
       end
 
@@ -1294,11 +1294,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59Z' do
-          @at.list[0].value.should == '2000-01-01T00:00:59Z'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59Z')
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
       end
 
@@ -1309,11 +1309,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59+1200')
         end
 
         it 'timezone is +1200' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
       end
 
@@ -1323,15 +1323,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,500Z' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,500Z'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,500Z')
         end
 
         it 'fractional second is 0.500' do
-          @at.list[0].fractional_second.should == 0.500
+          expect(@at.list[0].fractional_second).to eq(0.500)
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
       end
 
@@ -1341,15 +1341,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,500+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,500+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,500+1200')
         end
 
         it 'fractional second is 0.500' do
-          @at.list[0].fractional_second.should == 0.500
+          expect(@at.list[0].fractional_second).to eq(0.500)
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
       end
 
@@ -1359,15 +1359,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,500+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,500+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,500+1200')
         end
 
         it 'fractional second is 0.500' do
-          @at.list[0].fractional_second.should == 0.500
+          expect(@at.list[0].fractional_second).to eq(0.500)
         end
 
         it 'timezone is +1200' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
       end
 
@@ -1377,15 +1377,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,000Z' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,000Z'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,000Z')
         end
 
         it 'fractional second is 0' do
-          @at.list[0].fractional_second.should == 0
+          expect(@at.list[0].fractional_second).to eq(0)
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
       end
 
@@ -1395,15 +1395,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,000+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,000+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,000+1200')
         end
 
         it 'fractional second is 0' do
-          @at.list[0].fractional_second.should == 0
+          expect(@at.list[0].fractional_second).to eq(0)
         end
 
         it 'timezone is +1200' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
       end
 
@@ -1413,19 +1413,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2000-01-01T00:00:00' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'upper range is 2000-01-02T00:00:00' do
-          @at.range.upper.value.should == '2000-01-02T00:00:00'
+          expect(@at.range.upper.value).to eq('2000-01-02T00:00:00')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
       end
 
@@ -1435,15 +1435,15 @@ describe ADLParser do
         end
 
         it 'upper range is 2000-01-01T00:00:00' do
-          @at.range.upper.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.upper.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
       end
 
@@ -1453,15 +1453,15 @@ describe ADLParser do
         end
 
         it 'upper range is 2000-01-01T00:00:00' do
-          @at.range.upper.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.upper.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
       end
 
@@ -1471,15 +1471,15 @@ describe ADLParser do
         end
 
         it 'lower range is 2000-01-01T00:00:00' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_lower_included
+          expect(@at.range).not_to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
       end
 
@@ -1489,15 +1489,15 @@ describe ADLParser do
         end
 
         it 'lower range is 2000-01-01T00:00:00' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
       end
 
@@ -1507,15 +1507,15 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:mm:ss' do
-          @at.pattern.should == 'yyyy-mm-dd hh:mm:ss'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:mm:ss')
         end
 
         it 'has assumed_value' do
-          @at.should have_assumed_value
+          expect(@at).to have_assumed_value
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1525,11 +1525,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:mm:??' do
-          @at.pattern.should == 'yyyy-mm-dd hh:mm:??'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:mm:??')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1539,11 +1539,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:mm:XX' do
-          @at.pattern.should == 'yyyy-mm-dd hh:mm:XX'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:mm:XX')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1553,11 +1553,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:??:XX' do
-          @at.pattern.should == 'yyyy-mm-dd hh:??:XX'
+          expect(@at.pattern).to eq('yyyy-mm-dd hh:??:XX')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1567,11 +1567,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-mm-dd hh:??:XX' do
-          @at.pattern.should == 'yyyy-??-?? ??:??:??'
+          expect(@at.pattern).to eq('yyyy-??-?? ??:??:??')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1581,11 +1581,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 1983-12-25T22:00:05' do
-          @at.list[0].value.should == '1983-12-25T22:00:05'
+          expect(@at.list[0].value).to eq('1983-12-25T22:00:05')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1595,11 +1595,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59' do
-          @at.list[0].value.should == '2000-01-01T00:00:59'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1609,11 +1609,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,000' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,000'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,000')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1623,15 +1623,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,105' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,105'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,105')
         end
 
         it 'fractional second is 0.105' do
-          @at.list[0].fractional_second.should == 0.105
+          expect(@at.list[0].fractional_second).to eq(0.105)
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1641,15 +1641,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59Z' do
-          @at.list[0].value.should == '2000-01-01T00:00:59Z'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59Z')
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1659,15 +1659,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59+1200')
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1677,19 +1677,19 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,500Z' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,500Z'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,500Z')
         end
 
         it 'fractional second is 0.500' do
-          @at.list[0].fractional_second.should == 0.500
+          expect(@at.list[0].fractional_second).to eq(0.500)
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1699,19 +1699,19 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,500+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,500+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,500+1200')
         end
 
         it 'fractional second is 0.500' do
-          @at.list[0].fractional_second.should == 0.500
+          expect(@at.list[0].fractional_second).to eq(0.500)
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1721,19 +1721,19 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,000Z' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,000Z'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,000Z')
         end
 
         it 'fractional second is 0' do
-          @at.list[0].fractional_second.should == 0
+          expect(@at.list[0].fractional_second).to eq(0)
         end
 
         it 'timezone is Z' do
-          @at.list[0].timezone.should == 'Z'
+          expect(@at.list[0].timezone).to eq('Z')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1743,19 +1743,19 @@ describe ADLParser do
         end
 
         it '1st item of list is 2000-01-01T00:00:59,000+1200' do
-          @at.list[0].value.should == '2000-01-01T00:00:59,000+1200'
+          expect(@at.list[0].value).to eq('2000-01-01T00:00:59,000+1200')
         end
 
         it 'fractional second is 0' do
-          @at.list[0].fractional_second.should == 0
+          expect(@at.list[0].fractional_second).to eq(0)
         end
 
         it 'timezone is +1200' do
-          @at.list[0].timezone.should == '+1200'
+          expect(@at.list[0].timezone).to eq('+1200')
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1765,23 +1765,23 @@ describe ADLParser do
         end
 
         it 'lower range is 2000-01-01T00:00:00' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'upper range is 2000-01-02T00:00:00' do
-          @at.range.upper.value.should == '2000-01-02T00:00:00'
+          expect(@at.range.upper.value).to eq('2000-01-02T00:00:00')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1791,19 +1791,19 @@ describe ADLParser do
         end
 
         it 'upper range is 2000-01-01T00:00:00' do
-          @at.range.upper.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.upper.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1813,19 +1813,19 @@ describe ADLParser do
         end
 
         it 'upper range is 2000-01-01T00:00:00' do
-          @at.range.upper.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.upper.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1835,19 +1835,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2000-01-01T00:00:00' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is not lower included' do
-          @at.range.should_not be_lower_included
+          expect(@at.range).not_to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1857,19 +1857,19 @@ describe ADLParser do
         end
 
         it 'lower range is 2000-01-01T00:00:00' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is upper unbounded' do
-          @at.range.should be_upper_unbounded
+          expect(@at.range).to be_upper_unbounded
         end
 
         it 'assumed value is 2006-03-31T01:12:00' do
-          @at.assumed_value.value.should == '2006-03-31T01:12:00'
+          expect(@at.assumed_value.value).to eq('2006-03-31T01:12:00')
         end
       end
 
@@ -1879,11 +1879,11 @@ describe ADLParser do
         end
 
         it 'pattern is yyyy-??-??T??:??:??' do
-          @at.pattern.should == 'yyyy-??-??T??:??:??'
+          expect(@at.pattern).to eq('yyyy-??-??T??:??:??')
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -1893,27 +1893,27 @@ describe ADLParser do
         end
 
         it 'lower range is 12:35' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'upper range is 12:35' do
-          @at.range.lower.value.should == '2000-01-01T00:00:00'
+          expect(@at.range.lower.value).to eq('2000-01-01T00:00:00')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'is not upper unbounded' do
-          @at.range.should_not be_upper_unbounded
+          expect(@at.range).not_to be_upper_unbounded
         end
 
         it 'is not lower unbounded' do
-          @at.range.should_not be_lower_unbounded
+          expect(@at.range).not_to be_lower_unbounded
         end
       end
 
@@ -1923,15 +1923,15 @@ describe ADLParser do
         end
 
         it '1st item of list is 1995-03-17T12:01' do
-          @at.list[0].value.should == '1995-03-17T12:01'
+          expect(@at.list[0].value).to eq('1995-03-17T12:01')
         end
 
         it 'hour is 12' do
-          @at.list[0].hour.should be 12
+          expect(@at.list[0].hour).to be 12
         end
 
         it 'minute is 1' do
-          @at.list[0].minute.should be 1
+          expect(@at.list[0].minute).to be 1
         end
       end
 
@@ -1941,11 +1941,11 @@ describe ADLParser do
         end
 
         it '1st item of list is 1995-03-17T12:01' do
-          @at.list[0].value.should == '1995-03-17T12:01'
+          expect(@at.list[0].value).to eq('1995-03-17T12:01')
         end
 
         it 'hour is 12' do
-          @at.list[0].hour.should be 12
+          expect(@at.list[0].hour).to be 12
         end
       end
     end

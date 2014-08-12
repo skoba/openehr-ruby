@@ -14,19 +14,19 @@ describe CDuration do
   end
 
   it 'should be an instance of CDuration' do
-    @c_duration.should be_an_instance_of CDuration
+    expect(@c_duration).to be_an_instance_of CDuration
   end
 
   it 'type is ISO8601_DURATION' do
-    @c_duration.type.should == 'ISO8601_DURATION'
+    expect(@c_duration.type).to eq('ISO8601_DURATION')
   end
 
   it 'upper range is 2 years' do
-    @c_duration.range.upper.value.should == 'P2Y'
+    expect(@c_duration.range.upper.value).to eq('P2Y')
   end
 
   it 'lower range is 3 months year' do
-    @c_duration.range.lower.value.should == 'P3M'
+    expect(@c_duration.range.lower.value).to eq('P3M')
   end
 
   context 'list constraint' do
@@ -35,7 +35,7 @@ describe CDuration do
     end
 
     it '1st item of the list value is PT0s' do
-      @c_duration.list[0].value.should == 'PT0s'
+      expect(@c_duration.list[0].value).to eq('PT0s')
     end
   end
 end

@@ -14,23 +14,23 @@ describe ArchetypeInternalRef do
   end
 
   it 'should be an instance of ArchetypeInternalRef' do
-    @archetype_internal_ref.should be_an_instance_of ArchetypeInternalRef
+    expect(@archetype_internal_ref).to be_an_instance_of ArchetypeInternalRef
   end
 
   it 'target_path should be assigned properly' do
-    @archetype_internal_ref.target_path.should == '/data/[at0002]'
+    expect(@archetype_internal_ref.target_path).to eq('/data/[at0002]')
   end
 
   it 'should raise ArgumentError when target_path is nil.' do
-    lambda {
+    expect {
       @archetype_internal_ref.target_path = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when target_path is empty.' do
-    lambda {
+    expect {
       @archetype_internal_ref.target_path = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end
   

@@ -4,13 +4,13 @@ require File.dirname(__FILE__) + '/parser_spec_helper'
 shared_examples 'empty use archetypes' do
   describe 'empty use is assigned nil to be valid archtype' do
     it 'is not nil' do
-      subject.should_not be_nil
+      expect(subject).not_to be_nil
     end
   end
 
   describe 'description for use is nil' do
     it 'use is nil' do
-      subject.description.details['en'].use.should be_nil
+      expect(subject.description.details['en'].use).to be_nil
     end
   end
 end

@@ -8,26 +8,26 @@ describe GenericID do
   end
 
   it 'should be an instance of GenericID' do
-    @generic_id.should be_an_instance_of GenericID
+    expect(@generic_id).to be_an_instance_of GenericID
   end
 
   it 's value should be 791-0245' do
-    @generic_id.value.should == '791-0245'
+    expect(@generic_id.value).to eq('791-0245')
   end
 
   it 's scheme should be ZIP' do
-    @generic_id.scheme.should == 'ZIP'
+    expect(@generic_id.scheme).to eq('ZIP')
   end
 
   it 'should raise ArgumentError with nil scheme' do
-    lambda {
+    expect {
       @generic_id.scheme = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty scheme' do
-    lambda {
+    expect {
       @generic_id.scheme = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

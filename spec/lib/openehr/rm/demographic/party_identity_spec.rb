@@ -13,20 +13,20 @@ describe PartyIdentity do
   end
 
   it 'should be an instance of PartyIdentity' do
-    @party_identity.should be_an_instance_of PartyIdentity
+    expect(@party_identity).to be_an_instance_of PartyIdentity
   end
 
   it 'details should be assigned properly' do
-    @party_identity.details.archetype_node_id.should == 'at0002'
+    expect(@party_identity.details.archetype_node_id).to eq('at0002')
   end
 
   it 'should raise ArgumentError with nil details' do
-    lambda {
+    expect {
       @party_identity.details = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'purpose should return as same as name' do
-    @party_identity.purpose.value.should == 'test'
+    expect(@party_identity.purpose.value).to eq('test')
   end
 end

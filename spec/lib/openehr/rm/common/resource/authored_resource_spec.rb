@@ -21,37 +21,37 @@ describe AuthoredResource do
   end
 
   it 'should be an instance of AuthoredResource' do
-    @authored_resource.should be_an_instance_of AuthoredResource
+    expect(@authored_resource).to be_an_instance_of AuthoredResource
   end
 
   it 'original language should be ja' do
-    @authored_resource.original_language.code_string.should == 'ja'
+    expect(@authored_resource.original_language.code_string).to eq('ja')
   end
 
   it 'translations hash en returns en detail' do
-    @authored_resource.translations['en'].language.code_string.should == 'en'
+    expect(@authored_resource.translations['en'].language.code_string).to eq('en')
   end
 
   it 'description lifecycle_state should e initial' do
-    @authored_resource.description.lifecycle_state.should == 'initial'
+    expect(@authored_resource.description.lifecycle_state).to eq('initial')
   end
 
   it 'language_available should be Set(%(ja en))' do
     languages_set = Set.new ['ja', 'en']
-    @authored_resource.languages_available.should == languages_set
+    expect(@authored_resource.languages_available).to eq(languages_set)
   end
 
   it 'current_revision should be 0.0.3' do
-    @authored_resource.current_revision.should == '0.0.3'
+    expect(@authored_resource.current_revision).to eq('0.0.3')
   end
 
   it 'should be controlled' do
-    @authored_resource.is_controlled?.should be_true
+    expect(@authored_resource.is_controlled?).to be_truthy
   end
 
   it 'should not be controlled' do
     @authored_resource.revision_history = nil
-    @authored_resource.is_controlled?.should be_false
+    expect(@authored_resource.is_controlled?).to be_falsey
   end
 
   it 'should raise ArgumentError with empty translations' do

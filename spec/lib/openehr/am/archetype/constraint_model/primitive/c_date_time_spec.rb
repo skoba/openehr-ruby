@@ -23,15 +23,15 @@ describe CDateTime do
   end
 
   it 'should be an instance of CDateTime' do
-    @c_date_time.should be_an_instance_of CDateTime
+    expect(@c_date_time).to be_an_instance_of CDateTime
   end
 
   it 'type is ISO8601_DATE_TIME' do
-    @c_date_time.type.should == 'ISO8601_DATE_TIME'
+    expect(@c_date_time.type).to eq('ISO8601_DATE_TIME')
   end
 
   it 'hour_validity should be assigned properly' do
-    @c_date_time.hour_validity.should be_equal ValidityKind::MANDATORY
+    expect(@c_date_time.hour_validity).to be_equal ValidityKind::MANDATORY
   end
 
   it 'should raise ArgumentError if hour_validity is DISALLOWED and minute_validity is not DISALLOWED' do
@@ -41,7 +41,7 @@ describe CDateTime do
   end
 
   it 'range is properly assigned, lower value is 1995-04-19T01:01:22' do
-    @c_date_time.range.lower.value.should == '1995-04-19T01:01:22'
+    expect(@c_date_time.range.lower.value).to eq('1995-04-19T01:01:22')
   end
 
 
@@ -119,7 +119,7 @@ describe CDateTime do
     end
 
     it 'pattern is yyyy-mm-dd hh:mm:ss' do
-      @c_date_timep.pattern.should == 'yyyy-mm-dd hh:mm:ss'
+      expect(@c_date_timep.pattern).to eq('yyyy-mm-dd hh:mm:ss')
     end
   end
 
@@ -130,7 +130,7 @@ describe CDateTime do
     end
 
     it 'first item of list is 2010-01-25T01:23:45.1' do
-      @c_date_timel.list[0].value.should == '2010-01-25T01:23:45.1'
+      expect(@c_date_timel.list[0].value).to eq('2010-01-25T01:23:45.1')
     end
   end
 end

@@ -18,23 +18,23 @@ describe CDvQuantity do
   end
 
   it 'is an instance of CDvQuantity' do
-    @c_dv_quantity.should be_an_instance_of CDvQuantity
+    expect(@c_dv_quantity).to be_an_instance_of CDvQuantity
   end
 
   it 'path is value/quantity' do
-    @c_dv_quantity.path.should == 'value/quantity'
+    expect(@c_dv_quantity.path).to eq('value/quantity')
   end
 
   it 'property code string is AML' do
-    @c_dv_quantity.property.code_string.should == 'AML'
+    expect(@c_dv_quantity.property.code_string).to eq('AML')
   end
 
   it 'first item of list is 10mg' do
-    @c_dv_quantity.list[0].magnitude.should be 10
+    expect(@c_dv_quantity.list[0].magnitude).to be 10
   end
 
   it 'is not any allowed' do
-    @c_dv_quantity.should_not be_any_allowed
+    expect(@c_dv_quantity).not_to be_any_allowed
   end
 
   context 'list and property are not assigned' do
@@ -44,7 +44,7 @@ describe CDvQuantity do
     end
 
     it 'is any allowed' do
-      @c_dv_quantity.should be_any_allowed
+      expect(@c_dv_quantity).to be_any_allowed
     end
   end
 end

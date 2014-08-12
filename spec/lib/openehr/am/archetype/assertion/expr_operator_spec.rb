@@ -12,14 +12,14 @@ describe ExprOperator do
   end
 
   it 'should be an instance of ExprOperator' do
-    @expr_operator.should be_an_instance_of ExprOperator
+    expect(@expr_operator).to be_an_instance_of ExprOperator
   end
 
   it 'operator should be assigned properly' do
-    @expr_operator.operator.value.should be_equal 2001
+    expect(@expr_operator.operator.value).to be_equal 2001
   end
 
   it 'precedence_overridden should be assigned properly' do
-    @expr_operator.precedence_overridden.should be_true
+    expect(@expr_operator.precedence_overridden).to be_truthy
   end
 end

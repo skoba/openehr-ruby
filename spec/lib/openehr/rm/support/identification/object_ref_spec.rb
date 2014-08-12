@@ -10,24 +10,24 @@ describe ObjectRef do
   end
 
   it 'id.value should deadbeefbabe' do
-    @object_ref.id.value.should == 'deadbeefbabe'
+    expect(@object_ref.id.value).to eq('deadbeefbabe')
   end
 
   it 'should be an isntance of ObjectRef' do
-    @object_ref.should be_an_instance_of ObjectRef
+    expect(@object_ref).to be_an_instance_of ObjectRef
   end
 
   it 'namespace should be local' do
-    @object_ref.namespace.should == 'local'
+    expect(@object_ref.namespace).to eq('local')
   end
 
   it 'type should be PARTY' do
-    @object_ref.type.should == 'PARTY'
+    expect(@object_ref.type).to eq('PARTY')
   end
 
   it 'should raise ArgumentError with invalid namespace' do
-    lambda {
+    expect {
       @object_ref.namespace = 'a****'
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

@@ -10,23 +10,23 @@ describe ReferenceRange do
   end
 
   it 'should be an instance of DvInterval' do
-    @reference_range.should be_an_instance_of ReferenceRange
+    expect(@reference_range).to be_an_instance_of ReferenceRange
   end
 
   it 's meaning should be test' do
-    @reference_range.meaning.should == 'test'
+    expect(@reference_range.meaning).to eq('test')
   end
 
   it 'should be in range' do
-    @mock_dv_interval.should_receive(:has?).with(1).and_return(true)
+    expect(@mock_dv_interval).to receive(:has?).with(1).and_return(true)
     @reference_range.range = @mock_dv_interval
-    @reference_range.is_in_range?(1).should be_true
+    expect(@reference_range.is_in_range?(1)).to be_truthy
   end
 
   it 'should be out of range' do
-    @mock_dv_interval.should_receive(:has?).with(-1).and_return(false)
+    expect(@mock_dv_interval).to receive(:has?).with(-1).and_return(false)
     @reference_range.range = @mock_dv_interval
-    @reference_range.is_in_range?(-1).should be_false
+    expect(@reference_range.is_in_range?(-1)).to be_falsey
   end
 
   it 'should raise ArgumentError with nil meaning' do

@@ -11,58 +11,58 @@ describe Cardinality do
   end
 
   it 'should be an instance of Cardinality' do
-    @cardinality.should be_an_instance_of Cardinality
+    expect(@cardinality).to be_an_instance_of Cardinality
   end
 
   it 'is_ordered should be assigned properly' do
-    @cardinality.should be_ordered
+    expect(@cardinality).to be_ordered
   end
 
   it 'is_ordered should be false' do
     @cardinality.is_ordered = false
-    @cardinality.should_not be_ordered
+    expect(@cardinality).not_to be_ordered
   end
 
   it 'is_unique should be assigned properly' do
-    @cardinality.should be_unique
+    expect(@cardinality).to be_unique
   end
 
   it 'is_unique should not be true' do
     @cardinality.is_unique = false
-    @cardinality.should_not be_unique
+    expect(@cardinality).not_to be_unique
   end
 
   it 'interval should be assigned properly' do
-    @cardinality.interval.upper.should be_equal 1
+    expect(@cardinality.interval.upper).to be_equal 1
   end
 
   it 'is_set represent not ordered and unique' do
-    @cardinality.should_not be_set
+    expect(@cardinality).not_to be_set
   end
 
   it 'is_set should be true' do
     @cardinality.is_unique = true
     @cardinality.is_ordered = false
-    @cardinality.should be_set
+    expect(@cardinality).to be_set
   end
 
   it 'is_list represent ordered and not unique' do
     @cardinality.is_ordered = true
     @cardinality.is_unique = false
-    @cardinality.should be_list
+    expect(@cardinality).to be_list
   end
 
   it 'is_list should not be true' do
-    @cardinality.should_not be_list
+    expect(@cardinality).not_to be_list
   end
 
   it 'is_bag represent not ordered and not unique' do
     @cardinality.is_ordered = false
     @cardinality.is_unique = false
-    @cardinality.should be_bag
+    expect(@cardinality).to be_bag
   end
 
   it 'is_bag? should not be true' do
-    @cardinality.should_not be_bag
+    expect(@cardinality).not_to be_bag
   end
 end

@@ -25,27 +25,27 @@ describe Attestation do
   end
 
   it 'should be an instance of Attestation' do
-    @attestation.should be_an_instance_of Attestation
+    expect(@attestation).to be_an_instance_of Attestation
   end
 
   it 'reason should be signed' do
-    @attestation.reason.value.should == 'signed'
+    expect(@attestation.reason.value).to eq('signed')
   end
 
   it 'proof should DEADBEEFBABE' do
-    @attestation.proof.should == 'DEADBEEFBABE'
+    expect(@attestation.proof).to eq('DEADBEEFBABE')
   end
 
   it 'attested view size should be 300' do
-    @attestation.attested_view.size.should == 300
+    expect(@attestation.attested_view.size).to eq(300)
   end
 
   it 'is_pending? should true' do
-    @attestation.is_pending?.should be_true
+    expect(@attestation.is_pending?).to be_truthy
   end
 
   it 'items size should be 30' do
-    @attestation.items.size.should == 3
+    expect(@attestation.items.size).to eq(3)
   end
 
   it 'should raise ArgumentError when items are empty' do

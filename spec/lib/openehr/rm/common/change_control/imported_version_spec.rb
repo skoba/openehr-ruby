@@ -39,19 +39,19 @@ describe ImportedVersion do
   end
 
   it 'should be an instance of ImportedVersion' do
-    @imported_version.should be_an_instance_of ImportedVersion
+    expect(@imported_version).to be_an_instance_of ImportedVersion
   end
 
   it 'uid should be item.uid' do
-    @imported_version.uid.value.should == 'ABCD::EFG::2'
+    expect(@imported_version.uid.value).to eq('ABCD::EFG::2')
   end
 
   it 'lifecycle_state should be item.lifecycle' do
-    @imported_version.lifecycle_state.defining_code.code_string.should == '532'
+    expect(@imported_version.lifecycle_state.defining_code.code_string).to eq('532')
   end
 
   it 'preceding_version_uid should be item.preceding_version_uid' do
-    @imported_version.preceding_version_uid.value.should == 'HIJ::KLM::1'
+    expect(@imported_version.preceding_version_uid.value).to eq('HIJ::KLM::1')
   end
 
   it 'should raise ArgumentError when item is nil' do

@@ -8,7 +8,7 @@ include ::OpenEHR::RM::DataTypes::Quantity
 
 shared_examples 'c_dv_quantity lacked items' do
   it 'parsed to archetypes' do
-    archetype.should be_an_instance_of Archetype
+    expect(archetype).to be_an_instance_of Archetype
   end
 end
 

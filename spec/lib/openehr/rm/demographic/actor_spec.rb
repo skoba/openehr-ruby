@@ -19,11 +19,11 @@ describe Actor do
   end
 
   it 'should be an instance of Actor' do
-    @actor.should be_an_instance_of Actor
+    expect(@actor).to be_an_instance_of Actor
   end
 
   it 'roles should be assigned properly' do
-    @actor.roles.size.should be_equal 2
+    expect(@actor.roles.size).to be_equal 2
   end
 
   it 'should raise ArgumentError with empty roles' do
@@ -39,7 +39,7 @@ describe Actor do
   end
 
   it 'languages should be assigned properly' do
-    @actor.languages.size.should be_equal 3
+    expect(@actor.languages.size).to be_equal 3
   end
 
   it 'should raise ArgumentError with empty languages' do
@@ -64,7 +64,7 @@ describe Actor do
       identity = double(PartyIdentity, :purpose => @dummy_purpose)
       identities = [identity, @dummy_identity].to_set
       @actor.identities = identities
-      @actor.has_legal_identity?.should be_false
+      expect(@actor.has_legal_identity?).to be_falsey
     end
 
     it 'should have legal identity' do
@@ -72,7 +72,7 @@ describe Actor do
       legal_identity = double(PartyIdentity, :purpose => legal_purpose)
       identities = [@dummy_identity, legal_identity].to_set
       @actor.identities = identities
-      @actor.has_legal_identity?.should be_true
+      expect(@actor.has_legal_identity?).to be_truthy
     end
   end
 end

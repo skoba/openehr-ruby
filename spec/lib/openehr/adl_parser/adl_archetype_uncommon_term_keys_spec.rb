@@ -11,15 +11,15 @@ describe ADLParser do
     end
 
     it 's anotherkey value is another key value' do
-      @aterm.items['anotherkey'].should == 'another key value'
+      expect(@aterm.items['anotherkey']).to eq('another key value')
     end
 
     it 's text value is test text' do
-      @aterm.items['text'].should == 'test text'
+      expect(@aterm.items['text']).to eq('test text')
     end
 
     it 's description is test description' do
-      @aterm.items['description'].should == 'test description'
+      expect(@aterm.items['description']).to eq('test description')
     end
   end
 end

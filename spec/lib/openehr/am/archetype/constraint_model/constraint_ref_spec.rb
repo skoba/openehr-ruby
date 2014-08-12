@@ -14,16 +14,16 @@ describe ConstraintRef do
   end
 
   it 'should be an instance of ConstraintRef' do
-    @constraint_ref.should be_an_instance_of ConstraintRef
+    expect(@constraint_ref).to be_an_instance_of ConstraintRef
   end
 
   it 'reference should be assigned properly' do
-    @constraint_ref.reference.should == 'ac0002'
+    expect(@constraint_ref.reference).to eq('ac0002')
   end
 
   it 'should raise ArgumentError when reference is nil' do
-    lambda {
+    expect {
       @constraint_ref.reference = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

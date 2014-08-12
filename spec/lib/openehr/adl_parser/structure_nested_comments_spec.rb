@@ -10,12 +10,13 @@ describe ADLParser do
     end
 
     it 'rm type name is CLUSTER' do
-      @definition.rm_type_name.should == 'CLUSTER'
+      expect(@definition.rm_type_name).to eq('CLUSTER')
     end
 
     it '1st attribute type name is items' do
-      @definition.attributes[0].rm_attribute_name.should ==
+      expect(@definition.attributes[0].rm_attribute_name).to eq(
         'items'
+      )
     end
   end
 end

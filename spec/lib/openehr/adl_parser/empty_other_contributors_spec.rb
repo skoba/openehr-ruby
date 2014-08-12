@@ -9,11 +9,11 @@ describe ADLParser do
     end
 
     it 'archetype should be an instance of OpenEHR::AM::Archetype::Archetype' do
-      @archetype.should be_an_instance_of OpenEHR::AM::Archetype::Archetype
+      expect(@archetype).to be_an_instance_of OpenEHR::AM::Archetype::Archetype
     end
 
     it 'other contributer should be nil' do
-      @archetype.description.other_contributors.should be_nil
+      expect(@archetype.description.other_contributors).to be_nil
     end
   end
 end

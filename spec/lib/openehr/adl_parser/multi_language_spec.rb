@@ -10,11 +10,11 @@ describe ADLParser do
     end
 
     it 'primary language is en' do
-      @ontology.primary_language.should == 'en'
+      expect(@ontology.primary_language).to eq('en')
     end
 
     it 'languages available are sv and en' do
-      @ontology.languages_available.should == ['en', 'sv']
+      expect(@ontology.languages_available).to eq(['en', 'sv'])
     end
 
     context 'term definition' do
@@ -23,7 +23,7 @@ describe ADLParser do
       end
 
       it 'languages defined are sv and en' do
-        @term_def.keys.should == ['en','sv']
+        expect(@term_def.keys).to eq(['en','sv'])
       end
 
       context 'en items' do
@@ -32,11 +32,11 @@ describe ADLParser do
         end
 
         it 'text is most minimal' do
-          @en['text'].should == 'most minimal'
+          expect(@en['text']).to eq('most minimal')
         end
 
         it 'description is most minimal' do
-          @en['description'].should == 'most minimal'
+          expect(@en['description']).to eq('most minimal')
         end
       end
 
@@ -46,11 +46,11 @@ describe ADLParser do
         end
 
         it 'text is most minimal' do
-          @en['text'].should == 'mesta minimal'
+          expect(@en['text']).to eq('mesta minimal')
         end
 
         it 'description is most minimal' do
-          @en['description'].should == 'mesta minimal'
+          expect(@en['description']).to eq('mesta minimal')
         end
       end
     end

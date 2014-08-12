@@ -10,10 +10,10 @@ describe CReal do
   end
 
   it 'should be an instance of CReal' do
-    @c_real.should be_an_instance_of CReal
+    expect(@c_real).to be_an_instance_of CReal
   end
 
   it 'type is DvReal' do
-    @c_real.type.should == 'Real'
+    expect(@c_real.type).to eq('Real')
   end
 end

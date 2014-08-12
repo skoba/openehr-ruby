@@ -29,111 +29,111 @@ describe EHR do
   end
 
   it 'should be an instance of EHR' do
-    @ehr.should be_an_instance_of EHR
+    expect(@ehr).to be_an_instance_of EHR
   end
 
   it 'system_id should be assigned properly' do
-    @ehr.system_id.value.should == 'ABC::DEF'
+    expect(@ehr.system_id.value).to eq('ABC::DEF')
   end
 
   it 'should raise ArgumentError with nil system_id' do
-    lambda {
+    expect {
       @ehr.system_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'ehr_id should be assigned properly' do
-    @ehr.ehr_id.value.should == 'GHI::JKL'
+    expect(@ehr.ehr_id.value).to eq('GHI::JKL')
   end
 
   it 'should raise ArgumentError with nil ehr_id' do
-    lambda {
+    expect {
       @ehr.ehr_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'time_created should be assigned properly' do
-    @ehr.time_created.value.should == '2009-11-14T19:01:11'
+    expect(@ehr.time_created.value).to eq('2009-11-14T19:01:11')
   end
 
   it 'should raise ArgumentError with nil time_created' do
-    lambda {
+    expect {
       @ehr.time_created = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'contributions should properly assigned' do
-    @ehr.contributions.size.should be_equal 2
+    expect(@ehr.contributions.size).to be_equal 2
   end
 
   it 'type contributions should be CONTRIBUTION' do
     contributions = [double(ObjectRef, :type => 'PARTY')]
-    lambda {
+    expect {
       @ehr.contributions = contributions
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil contributions' do
-    lambda {
+    expect {
       @ehr.contributions = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'ehr_access should be assigned properly' do
-    @ehr.ehr_access.type.should == 'VERSIONED_EHR_ACCESS'
+    expect(@ehr.ehr_access.type).to eq('VERSIONED_EHR_ACCESS')
   end
 
   it 'should raise ArgumentError with nil ehr_access' do
-    lambda {
+    expect {
       @ehr.ehr_access = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArguemntError with invalid ehr_access type' do
-    lambda {
+    expect {
       @ehr.ehr_access = double(ObjectRef, :type => 'VERSIONED_EHR_STATUS')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
     
   it 'ehr_status should be assigned properly' do
-    @ehr.ehr_status.type.should == 'VERSIONED_EHR_STATUS'
+    expect(@ehr.ehr_status.type).to eq('VERSIONED_EHR_STATUS')
   end
 
   it 'should raise ArgumentError with nil ehr_status' do
-    lambda {
+    expect {
       @ehr.ehr_status = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invalid ehr_statsu type' do
-    lambda {
+    expect {
       @ehr.ehr_status = double(ObjectRef, :type => 'VERSIONED_EHR_ACCESS')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should assigned compositions properly' do
-    @ehr.compositions.size.should be_equal 3
+    expect(@ehr.compositions.size).to be_equal 3
   end
 
   it 'should raise ArgumentError with nil compositions' do
-    lambda {
+    expect {
       @ehr.compositions = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invalid type composition' do
-    lambda {
+    expect {
       @ehr.compositions = [double(ObjectRef, :type => 'INVALID_COMPOSITION')]
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should assigned directory properly' do
-    @ehr.directory.type.should == 'VERSIONED_FOLDER'
+    expect(@ehr.directory.type).to eq('VERSIONED_FOLDER')
   end
 
   it 'should raise ArgumentError with invalid type' do
-    lambda {
+    expect {
       @ehr.directory = double(ObjectRef, :type => 'INVALID_FOLDER')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

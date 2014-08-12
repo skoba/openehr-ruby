@@ -21,47 +21,47 @@ describe History do
   end
 
   it 'should be an instance of History' do
-    @history.should be_an_instance_of OpenEHR::RM::DataStructures::History::History
+    expect(@history).to be_an_instance_of OpenEHR::RM::DataStructures::History::History
   end
 
   it 'origin should be properly assigned' do
-    @history.origin.value.should == '2009-11-01T00:00:00'
+    expect(@history.origin.value).to eq('2009-11-01T00:00:00')
   end
 
   it 'should raise ArgumentError with nil origin' do
-    lambda {
+    expect {
       @history.origin = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'period should be properly assigned' do
-    @history.period.value.should == 'P1Y2M3W4D'
+    expect(@history.period.value).to eq('P1Y2M3W4D')
   end
 
   it 'duration should be properly assigned' do
-    @history.duration.value.should == 'P0Y0M0W6D'
+    expect(@history.duration.value).to eq('P0Y0M0W6D')
   end
 
   it 'is_periodic? should be true when period is not nil' do
-    @history.is_periodic?.should be_true
+    expect(@history.is_periodic?).to be_truthy
   end
 
   it 'is_periodic? should be false when period is nil' do
     @history.period = nil
-    @history.is_periodic?.should be_false
+    expect(@history.is_periodic?).to be_falsey
   end
 
   it 'events should be properly assigned' do
-    @history.events[0].archetype_node_id.should == 'at0002'
+    expect(@history.events[0].archetype_node_id).to eq('at0002')
   end
 
   it 'empty events should raise ArgumentError' do
-    lambda {
+    expect {
       @history.events = []
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'summary should be properly assigned' do
-    @history.summary.archetype_node_id.should == 'at0003'
+    expect(@history.summary.archetype_node_id).to eq('at0003')
   end
 end

@@ -18,15 +18,15 @@ describe ResourceDescriptionItem do
   end
 
   it 'should be an instance of ResourceDescriptionItem' do
-    @resource_description_item.should be_an_instance_of ResourceDescriptionItem
+    expect(@resource_description_item).to be_an_instance_of ResourceDescriptionItem
   end
 
   it 'language should ja' do
-    @resource_description_item.language.defining_code.should == 'ja'
+    expect(@resource_description_item.language.defining_code).to eq('ja')
   end
 
   it 'purpose should be test' do
-    @resource_description_item.purpose.should == 'test'
+    expect(@resource_description_item.purpose).to eq('test')
   end
 
   it 'should raise ArgumentError with nil purpose' do
@@ -42,11 +42,11 @@ describe ResourceDescriptionItem do
   end
 
   it 'keywords should [openehr]' do
-    @resource_description_item.keywords.should == ['openehr']
+    expect(@resource_description_item.keywords).to eq(['openehr'])
   end
 
   it 'use should be development' do
-    @resource_description_item.use.should == 'development'
+    expect(@resource_description_item.use).to eq('development')
   end
 
   it 'should raise ArgumentError with use is empty' do
@@ -62,7 +62,7 @@ describe ResourceDescriptionItem do
   end
 
   it 'misuse should be none' do
-    @resource_description_item.misuse.should == 'none'
+    expect(@resource_description_item.misuse).to eq('none')
   end
 
   it 'should raise ArgumentError with empty misuse' do
@@ -78,7 +78,7 @@ describe ResourceDescriptionItem do
   end
 
   it 'copyright should be Shinji KOBAYASHI' do
-    @resource_description_item.copyright.should == 'Shinji KOBAYASHI'
+    expect(@resource_description_item.copyright).to eq('Shinji KOBAYASHI')
   end
 
   it 'should raise error with empty copyright' do
@@ -94,12 +94,14 @@ describe ResourceDescriptionItem do
   end
 
   it 'original_resource_uri should {jp, http://openehr.jp/}' do
-    @resource_description_item.original_resource_uri.should ==
+    expect(@resource_description_item.original_resource_uri).to eq(
       {'jp' => 'http://openehr.jp/'}
+    )
   end
 
   it 'other_details should {charset, UTF-8}' do
-    @resource_description_item.other_details.should ==
+    expect(@resource_description_item.other_details).to eq(
       {'charset' => 'UTF-8'}
+    )
   end
 end

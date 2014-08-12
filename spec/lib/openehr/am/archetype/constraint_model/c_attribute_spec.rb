@@ -16,17 +16,17 @@ describe CAttribute do
   end
 
   it 'should be an instance of CAttribute' do
-    @c_attribute.should be_an_instance_of CAttribute
+    expect(@c_attribute).to be_an_instance_of CAttribute
   end
 
   it 'rm_attribute_name should be assigned properly' do
-    @c_attribute.rm_attribute_name.should == 'data'
+    expect(@c_attribute.rm_attribute_name).to eq('data')
   end
 
   it 'should raise ArguemntError rm_attribute_name is empty' do
-    lambda {
+    expect {
       @c_attribute.rm_attribute_name = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError rm_attribute_name is nil' do
@@ -36,7 +36,7 @@ describe CAttribute do
   end
 
   it 'existence should be assigned properly' do
-    @c_attribute.existence.lower.should be_equal 0
+    expect(@c_attribute.existence.lower).to be_equal 0
   end
 
   it 'existence.lower should be more than 0' do
@@ -56,19 +56,19 @@ describe CAttribute do
 
   context 'children' do
     it 'children should be assigned properly' do
-      @c_attribute.children[0].rm_type_name.should == 'DV_AMOUNT'
+      expect(@c_attribute.children[0].rm_type_name).to eq('DV_AMOUNT')
     end
 
     it 'children parent should be set properly' do
-      @c_attribute.children[0].parent.should == @c_attribute
+      expect(@c_attribute.children[0].parent).to eq(@c_attribute)
     end
 
     it 'has children' do
-      @c_attribute.should have_children
+      expect(@c_attribute).to have_children
     end
   end
   it 'path should be calculated properly' do
-    @c_attribute.path.should == '/event[at0001]/data'
+    expect(@c_attribute.path).to eq('/event[at0001]/data')
   end
 
   context 'path' do
@@ -77,7 +77,7 @@ describe CAttribute do
     end
 
     it 'should be assigned properly' do
-      @c_attribute.path.should == '/event[at0001]/new'
+      expect(@c_attribute.path).to eq('/event[at0001]/new')
     end
   end
 end

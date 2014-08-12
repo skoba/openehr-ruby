@@ -7,22 +7,22 @@ describe ExprItem do
   end
 
   it 'should be an instance of ExprItem' do
-    @expr_item.should be_an_instance_of ExprItem
+    expect(@expr_item).to be_an_instance_of ExprItem
   end
 
   it 'type should be assigned properly' do
-    @expr_item.type.should == 'Real'
+    expect(@expr_item.type).to eq('Real')
   end
 
   it 'should raise ArgumentError when type is nil' do
-    lambda {
+    expect {
       @expr_item.type = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError when type is empty' do
-    lambda {
+    expect {
       @expr_item.type = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

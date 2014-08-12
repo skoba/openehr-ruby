@@ -9,22 +9,22 @@ describe AssertionVariable do
   end
 
   it 'name should be assigned properly' do
-    @assertion_variable.name.should == 'test'
+    expect(@assertion_variable.name).to eq('test')
   end
 
   it 'should raise ArgumentError when name is nil' do
-    lambda {
+    expect {
       @assertion_variable.name = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'definition should be assigned properly' do
-    @assertion_variable.definition.should == 'examine spec'
+    expect(@assertion_variable.definition).to eq('examine spec')
   end
 
   it 'should raise ArgumentError if definiton is nil' do
-    lambda {
+    expect {
       @assertion_variable.definition = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

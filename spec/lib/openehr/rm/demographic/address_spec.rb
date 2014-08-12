@@ -13,15 +13,15 @@ describe Address do
   end
 
   it 'should be an instance of Address' do
-    @address.should be_an_instance_of Address
+    expect(@address).to be_an_instance_of Address
   end
 
   it 'type is inherit from name' do
-    @address.type.value.should == 'address'
+    expect(@address.type.value).to eq('address')
   end
 
   it 'details should be assigned properly' do
-    @address.details.archetype_node_id.should == 'at0001'
+    expect(@address.details.archetype_node_id).to eq('at0001')
   end
 
   it 'should raise ArgumentError with nil details' do

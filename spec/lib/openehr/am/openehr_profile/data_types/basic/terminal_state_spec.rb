@@ -9,10 +9,10 @@ describe TerminalState do
   end
 
   it 'is an instance of TerminalState' do
-    @terminal_state.should be_an_instance_of TerminalState
+    expect(@terminal_state).to be_an_instance_of TerminalState
   end
 
   it 'name is PROPOSED' do
-    @terminal_state.name.should == 'PROPOSED'
+    expect(@terminal_state.name).to eq('PROPOSED')
   end
 end

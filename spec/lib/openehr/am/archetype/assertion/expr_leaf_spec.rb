@@ -9,26 +9,26 @@ describe ExprLeaf do
   end
 
   it 'should be an instance of ExprLeaf' do
-    @expr_leaf.should be_an_instance_of ExprLeaf
+    expect(@expr_leaf).to be_an_instance_of ExprLeaf
   end
 
   it 'item should be assigned properly' do
-    @expr_leaf.item.should == 'ANY'
+    expect(@expr_leaf.item).to eq('ANY')
   end
 
   it 'should raise ArgumentError when item is nil' do
-    lambda {
+    expect {
       @expr_leaf.item = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'reference_type should be assigned properly' do
-    @expr_leaf.reference_type.should == 'DV_TEXT'
+    expect(@expr_leaf.reference_type).to eq('DV_TEXT')
   end
 
   it 'should raise ArgumentError when reference_type is nil' do
-    lambda {
+    expect {
       @expr_leaf.reference_type = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

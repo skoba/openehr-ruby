@@ -14,15 +14,15 @@ describe CQuantityItem do
   end
 
   it 'is an instance of CQuantityItem' do
-    @c_quantity_item.should be_an_instance_of CQuantityItem
+    expect(@c_quantity_item).to be_an_instance_of CQuantityItem
   end
 
   it 'magnitude upper is 100' do
-    @c_quantity_item.magnitude.upper.should be 100
+    expect(@c_quantity_item.magnitude.upper).to be 100
   end
 
   it 'precision lower is -2' do
-    @c_quantity_item.precision.lower.should be 2
+    expect(@c_quantity_item.precision.lower).to be 2
   end
 
   it 'units is not nil' do
@@ -34,7 +34,7 @@ describe CQuantityItem do
   end
 
   it 'is not precision unconstrained' do
-    @c_quantity_item.should_not be_precision_unconstrained
+    expect(@c_quantity_item).not_to be_precision_unconstrained
   end
   context 'precision unconstrained' do
     before(:each) do
@@ -42,7 +42,7 @@ describe CQuantityItem do
     end
 
     it 'precision unconstrained is true' do
-      @c_quantity_item.should be_precision_unconstrained
+      expect(@c_quantity_item).to be_precision_unconstrained
     end
   end
 end

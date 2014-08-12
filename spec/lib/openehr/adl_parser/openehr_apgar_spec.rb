@@ -10,7 +10,7 @@ describe ADLParser do
     end
 
     it 'archetype should be parsed' do
-      @archetype.should_not be_nil
+      expect(@archetype).not_to be_nil
     end
   end
 end

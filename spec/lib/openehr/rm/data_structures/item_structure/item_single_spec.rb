@@ -14,16 +14,16 @@ describe ItemSingle do
   end
 
   it 'should be an instance of ItemSingle' do
-    @item_single.should be_an_instance_of ItemSingle
+    expect(@item_single).to be_an_instance_of ItemSingle
   end
 
   it 'should raise ArgumentError with nil item' do
-    lambda {
+    expect {
       @item_single.item = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should return as_hierarchy' do
-    @item_single.as_hierarchy.archetype_node_id.should == 'at0002'
+    expect(@item_single.as_hierarchy.archetype_node_id).to eq('at0002')
   end
 end

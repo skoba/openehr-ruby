@@ -10,7 +10,7 @@ describe ADLParser do
     end
 
     it 'is an instance of Archetype' do
-      @archetype.should be_an_instance_of Archetype
+      expect(@archetype).to be_an_instance_of Archetype
     end
 
     context 'attribute2' do
@@ -19,23 +19,23 @@ describe ADLParser do
       end
 
       it 'is ArchetypeInternalRef' do
-        @attribute2.should be_an_instance_of ArchetypeInternalRef
+        expect(@attribute2).to be_an_instance_of ArchetypeInternalRef
       end
 
       it 's occurrences upper 2' do
-        @attribute2.occurrences.upper.should be 2
+        expect(@attribute2.occurrences.upper).to be 2
       end
 
       it 's occurrences lower 1' do
-        @attribute2.occurrences.lower.should be 1
+        expect(@attribute2.occurrences.lower).to be 1
       end
 
       it 's path is /attribute2' do
-        @attribute2.path.should == '/attribute2'
+        expect(@attribute2.path).to eq('/attribute2')
       end
 
       it 's target_path is /attribute1' do
-        @attribute2.target_path.should == '/attribute1'
+        expect(@attribute2.target_path).to eq('/attribute1')
       end
     end
   end

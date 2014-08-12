@@ -12,7 +12,7 @@ describe ADLParser do
     end
 
     it 'translations exists' do
-      @translations.should_not be_nil
+      expect(@translations).not_to be_nil
     end
 
     context 'German translation' do
@@ -21,11 +21,11 @@ describe ADLParser do
       end
 
       it 'exists' do
-        @de.should_not be_nil
+        expect(@de).not_to be_nil
       end
 
       it 'language code string is de' do
-        @de.language.code_string.should == 'de'
+        expect(@de.language.code_string).to eq('de')
       end
 
       context 'author' do
@@ -34,11 +34,11 @@ describe ADLParser do
         end
 
         it 'name is Harry Potter' do
-          @author['name'].should == 'Harry Potter'
+          expect(@author['name']).to eq('Harry Potter')
         end
 
         it 'email is harry@something.somewhere.co.uk' do
-          @author['email'].should == 'harry@something.somewhere.co.uk'
+          expect(@author['email']).to eq('harry@something.somewhere.co.uk')
         end
       end
     end

@@ -8,6 +8,6 @@ describe DvParagraph do
   end
 
   it 's items should be_size 2' do
-    @dv_paragraph.items.size.should be_equal 2
+    expect(@dv_paragraph.items.size).to be_equal 2
   end
 end

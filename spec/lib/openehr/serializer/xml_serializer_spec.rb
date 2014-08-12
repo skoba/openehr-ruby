@@ -28,22 +28,22 @@ describe XMLSerializer do
   end
 
   it 'should be an instance of XMLSerializer' do
-    @xml_serializer.should be_an_instance_of XMLSerializer
+    expect(@xml_serializer).to be_an_instance_of XMLSerializer
   end
 
   it 'should return XML formatted header' do
-    @xml_serializer.header.should == @sample_header
+    expect(@xml_serializer.header).to eq(@sample_header)
   end
 
   it 'should return XML formatted description' do
-    @xml_serializer.description.should == @sample_description
+    expect(@xml_serializer.description).to eq(@sample_description)
   end
 
   it 'should return XML formatted definition' do
-    @xml_serializer.definition.should == @sample_definition
+    expect(@xml_serializer.definition).to eq(@sample_definition)
   end
 
   it 'should return XML formatted ontology' do
-    @xml_serializer.ontology.should == @sample_ontology
+    expect(@xml_serializer.ontology).to eq(@sample_ontology)
   end
 end

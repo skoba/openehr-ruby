@@ -7,53 +7,55 @@ describe ObjectVersionID do
   end
 
   it 'should be an instance of ObjectVersionID' do
-    @object_version_id.should be_an_instance_of ObjectVersionID
+    expect(@object_version_id).to be_an_instance_of ObjectVersionID
   end
 
   it 'value should be F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2' do
-    @object_version_id.value.should == 'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2'
+    expect(@object_version_id.value).to eq('F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2')
   end
 
   it 'should not be branched' do
-    @object_version_id.is_branch?.should be_false
+    expect(@object_version_id.is_branch?).to be_falsey
   end
 
   it 'should have valid objectid' do
-    @object_version_id.objectid.value.should ==
+    expect(@object_version_id.objectid.value).to eq(
       'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC'
+    )
   end
 
   it 'should have valid creating_system_id' do
-    @object_version_id.creating_system_id.value.should ==
+    expect(@object_version_id.creating_system_id.value).to eq(
       '87284370-2D4B-4e3d-A3F3-F303D2F4F34B'
+    )
   end
 
   it 'should raise ArgumentError with invalid format' do
-    lambda {
+    expect {
       @object_version_id.value = 'invalid:form'
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil object id' do
-    lambda {
+    expect {
       @object_version_id.objectid = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil creating system id' do
-    lambda {
+    expect {
       @object_version_id.creating_system_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil version_tree_id' do
-    lambda {
+    expect {
       @object_version_id.version_tree_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should be branch if version_identifier represent branch' do
     @object_version_id.version_tree_id.value = '2.3.4'
-    @object_version_id.is_branch?.should be_true
+    expect(@object_version_id.is_branch?).to be_truthy
   end
 end

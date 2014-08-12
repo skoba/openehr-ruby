@@ -11,19 +11,19 @@ describe PartyIdentified do
   end
 
   it 'should be an instance of PartyIdentified' do
-    @party_identified.should be_an_instance_of PartyIdentified
+    expect(@party_identified).to be_an_instance_of PartyIdentified
   end
 
   it 'should assign name properly' do
-    @party_identified.name.should == 'NERV'
+    expect(@party_identified.name).to eq('NERV')
   end
 
   it 'should assign external_ref properly' do
-    @party_identified.external_ref.namespace.should == 'unknown'
+    expect(@party_identified.external_ref.namespace).to eq('unknown')
   end
 
   it 'should assign identifier properly' do
-    @party_identified.identifier.size.should be_equal 5
+    expect(@party_identified.identifier.size).to be_equal 5
   end
 
   it 'should raise ArgumentError with all nil' do

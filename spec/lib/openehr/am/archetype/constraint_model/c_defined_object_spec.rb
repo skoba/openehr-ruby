@@ -13,20 +13,20 @@ describe CDefinedObject do
   end
 
   it 'should be an instance of CDefinedObject' do
-    @c_defined_object.should be_an_instance_of CDefinedObject
+    expect(@c_defined_object).to be_an_instance_of CDefinedObject
   end
 
   it 'should be assigned properly' do
-    @c_defined_object.assumed_value.should == 'ANY'
+    expect(@c_defined_object.assumed_value).to eq('ANY')
   end
 
   it 'has_assumed_value should be true' do
-    @c_defined_object.should have_assumed_value
+    expect(@c_defined_object).to have_assumed_value
   end
 
   it 'has_assumed_value should not be true' do
     @c_defined_object.assumed_value = nil
-    @c_defined_object.should_not have_assumed_value
+    expect(@c_defined_object).not_to have_assumed_value
   end
 
   it 'default_value should raise NotImplementedError' do

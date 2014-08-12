@@ -7,36 +7,36 @@ describe Pathable do
   end
 
   it 'should be an instance of Pathable' do
-    @pathable.should be_an_instance_of Pathable
+    expect(@pathable).to be_an_instance_of Pathable
   end
 
   it 'item_at_path should raise NotImplementedError' do
-    lambda {
+    expect {
       @pathable.item_at_path('/')
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 
   it 'items_at_path should raise NotImplementedError' do
-    lambda {
+    expect {
       @pathable.items_at_path('/')
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 
   it 'path_exists? should raise NotImplementedError' do
-    lambda {
+    expect {
       @pathable.path_exists?('/')
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 
   it 'path_of_item should raise NotImplementedError' do
-    lambda {
+    expect {
       @pathable.path_of_item('/')
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 
   it 'path_unique? should raise NotImplementedError' do
-    lambda {
+    expect {
       @pathable.path_unique?('/')
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 end

@@ -1,20 +1,17 @@
-require File.dirname(__FILE__) + '/../../../../../spec_helper'
-include OpenEHR::AM::Archetype::ConstraintModel
-
-describe ArchetypeConstraint do
+describe OpenEHR::AM::Archetype::ConstraintModel::ArchetypeConstraint do
   before(:each) do
-    parent = double(ArchetypeConstraint, :path => '/data/[at0001]')
+    parent = double(OpenEHR::AM::Archetype::ConstraintModel::ArchetypeConstraint, :path => '/data/[at0001]')
     @archetype_constraint =
-      ArchetypeConstraint.new(:path => '/data/events[at0003]/data/items[at0025]/value/magnitude',
+      OpenEHR::AM::Archetype::ConstraintModel::ArchetypeConstraint.new(:path => '/data/events[at0003]/data/items[at0025]/value/magnitude',
                               :parent => parent)
   end
 
   it 'should be an instance of ArchetypeConstraint' do
-    @archetype_constraint.should be_an_instance_of ArchetypeConstraint
+    expect(@archetype_constraint).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::ArchetypeConstraint
   end
 
   it 'path should be assigned properly' do
-    @archetype_constraint.path.should == '/data/events[at0003]/data/items[at0025]/value/magnitude'
+    expect(@archetype_constraint.path).to eq('/data/events[at0003]/data/items[at0025]/value/magnitude')
   end
 
   it 'should raise ArgumentError when path is not assigned' do
@@ -24,33 +21,33 @@ describe ArchetypeConstraint do
   end
 
   it 'has_path? should return true if it has path' do
-    @archetype_constraint.should have_path 'events[at0003]'
+    expect(@archetype_constraint).to have_path 'events[at0003]'
   end
 
   it 'has_path? should return false if ti does not have path' do
-    @archetype_constraint.should_not have_path 'events[at0004]'
+    expect(@archetype_constraint).not_to have_path 'events[at0004]'
   end
 
   it 'parent should assigned properly' do
-    @archetype_constraint.parent.path.should == '/data/[at0001]'
+    expect(@archetype_constraint.parent.path).to eq('/data/[at0001]')
   end
 
   it 'is congruent means this node starts from parent node' do
-    @archetype_constraint.should_not be_congruent
+    expect(@archetype_constraint).not_to be_congruent
   end
 
   it 'is congruent when path starts with parent path' do
     @archetype_constraint.path = '/data/[at0001]/test'
-    @archetype_constraint.should be_congruent
+    expect(@archetype_constraint).to be_congruent
   end
 
   it 'node_conforms_to return true if path is follower' do
     other = double(ArchetypeConstraint, :path => '/data/events[at0003]')
-    @archetype_constraint.node_conforms_to?(other).should be_true
+    expect(@archetype_constraint.node_conforms_to?(other)).to be_truthy
   end
 
   it 'node_conforms_to return false if path is other lineage' do
     other = double(ArchetypeConstraint, :path => '/event/')
-    @archetype_constraint.node_conforms_to?(other).should be_false
+    expect(@archetype_constraint.node_conforms_to?(other)).to be_falsey
   end
 end

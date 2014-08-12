@@ -19,34 +19,34 @@ describe EHRStatus do
   end
 
   it 'should be an instance of EHRStatus' do
-    @ehr_status.should be_an_instance_of EHRStatus
+    expect(@ehr_status).to be_an_instance_of EHRStatus
   end
 
   it 'subject should be assigned properly' do
-    @ehr_status.subject.external_ref.namespace.should == 'ehr status'
+    expect(@ehr_status.subject.external_ref.namespace).to eq('ehr status')
   end
 
   it 'should raise ArgumentError with nil subject' do
-    lambda {
+    expect {
       @ehr_status.subject = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'is_queryable should be properly assigned' do
-    @ehr_status.is_queryable?.should be_false
+    expect(@ehr_status.is_queryable?).to be_falsey
   end
 
   it 'is_modifiable should be assigned properly' do
-    @ehr_status.is_modifiable?.should be_true
+    expect(@ehr_status.is_modifiable?).to be_truthy
   end
 
   it 'other_details should be assigned properly' do
-    @ehr_status.other_details.archetype_node_id.should == 'at0005'
+    expect(@ehr_status.other_details.archetype_node_id).to eq('at0005')
   end
 
   it 'should raise ArgumentError when parant is not nil' do
-    lambda {
+    expect {
       @ehr_status.parent = 'parent'
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

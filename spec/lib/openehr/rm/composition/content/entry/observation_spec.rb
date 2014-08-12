@@ -26,11 +26,11 @@ describe Observation do
   end
 
   it 'should be an instance of Observation' do
-    @observation.should be_an_instance_of Observation
+    expect(@observation).to be_an_instance_of Observation
   end
 
   it 'data should be assigned properly' do
-    @observation.data.archetype_node_id.should == 'at0002'
+    expect(@observation.data.archetype_node_id).to eq('at0002')
   end
 
   it 'should raise ArgumentError when nil assigned to data' do
@@ -40,6 +40,6 @@ describe Observation do
   end
 
   it 'state should be assigned properly' do
-    @observation.state.archetype_node_id.should == 'at0003'
+    expect(@observation.state.archetype_node_id).to eq('at0003')
   end
 end

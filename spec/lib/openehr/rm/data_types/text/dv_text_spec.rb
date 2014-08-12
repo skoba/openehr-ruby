@@ -22,11 +22,11 @@ describe DvText do
   end
 
   it 'should be an instance of DvText' do
-    @dv_text.should be_an_instance_of DvText
+    expect(@dv_text).to be_an_instance_of DvText
   end
 
   it 's value should be test' do
-    @dv_text.value.should == 'test'
+    expect(@dv_text.value).to eq('test')
   end
 
   it 'should raise ArgumentError, when value include \n' do
@@ -42,7 +42,7 @@ describe DvText do
   end
 
   it 'formatting should be font' do
-    @dv_text.formatting.should == 'font = 12pt'
+    expect(@dv_text.formatting).to eq('font = 12pt')
   end
 
   it 'should raise ArgumentError, when formatting is empty' do
@@ -50,11 +50,11 @@ describe DvText do
   end
 
   it 'has 1 mapping' do
-    @dv_text.mappings.size.should be 1
+    expect(@dv_text.mappings.size).to be 1
   end
 
   it '1st item of mappings is C92' do
-    @dv_text.mappings[0].target.code_string.should == 'C92'
+    expect(@dv_text.mappings[0].target.code_string).to eq('C92')
   end
 
   it 'raise error if mappings are empty' do
@@ -66,14 +66,14 @@ describe DvText do
   end
 
   it 'hyperlink is http://openehr.jp/ruby' do
-    @dv_text.hyperlink.value.should == 'http://openehr.jp/ruby'
+    expect(@dv_text.hyperlink.value).to eq('http://openehr.jp/ruby')
   end
 
   it 's language code_string should be ja' do
-    @dv_text.language.code_string.should == 'ja'
+    expect(@dv_text.language.code_string).to eq('ja')
   end
 
   it 's encoding should be utf-8' do
-    @dv_text.encoding.code_string.should == 'utf-8'
+    expect(@dv_text.encoding.code_string).to eq('utf-8')
   end
 end

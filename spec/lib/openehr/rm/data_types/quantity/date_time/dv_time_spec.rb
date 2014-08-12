@@ -7,35 +7,35 @@ describe DvTime do
   end
 
   it 'should be an instance of DvTime' do
-    @dv_time.should be_an_instance_of DvTime
+    expect(@dv_time).to be_an_instance_of DvTime
   end
 
   it 'hour should be 11' do
-    @dv_time.hour.should == 11
+    expect(@dv_time.hour).to eq(11)
   end
 
   it 'minute should be 17' do
-    @dv_time.minute.should == 17
+    expect(@dv_time.minute).to eq(17)
   end
 
   it 'second should be 30' do
-    @dv_time.second.should == 30
+    expect(@dv_time.second).to eq(30)
   end
 
   it 'fractional_second should be 0.2' do
-    @dv_time.fractional_second.should == 0.2
+    expect(@dv_time.fractional_second).to eq(0.2)
   end
 
   it 'timezone should be -0900' do
-    @dv_time.timezone.should == '-0900'
+    expect(@dv_time.timezone).to eq('-0900')
   end
 
   it 'magnitude should 40650.2' do
-    @dv_time.magnitude.should == 40650.2
+    expect(@dv_time.magnitude).to eq(40650.2)
   end
   
   it 'should be ' do
     diff_time = DvTime.new(:value => '15:36:48.05')
-    @dv_time.diff(diff_time).value.should =='P0Y0M0W0DT4H19M17.85S'
+    expect(@dv_time.diff(diff_time).value).to eq('P0Y0M0W0DT4H19M17.85S')
   end
 end

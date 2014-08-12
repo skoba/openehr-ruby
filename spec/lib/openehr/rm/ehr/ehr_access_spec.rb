@@ -14,15 +14,15 @@ describe EHRAccess do
   end
 
   it 'should be an instance of EHRAccess' do
-    @ehr_access.should be_an_instance_of EHRAccess
+    expect(@ehr_access).to be_an_instance_of EHRAccess
   end
 
   it 'settings should be assigned, but Security package is not determined' do
-    @ehr_access.settings.should_not be_nil
+    expect(@ehr_access.settings).not_to be_nil
   end
 
   it 'schema should be assigned properly' do
-    @ehr_access.scheme.should == 'SSL'
+    expect(@ehr_access.scheme).to eq('SSL')
   end
 
   it 'should raise ArgumentError with nil schema' do

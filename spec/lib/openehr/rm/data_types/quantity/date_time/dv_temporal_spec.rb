@@ -8,18 +8,18 @@ describe DvTemporal do
   end
 
   it 'should be an instance of DvTemporal' do
-    @dv_temporal.should be_an_instance_of DvTemporal
+    expect(@dv_temporal).to be_an_instance_of DvTemporal
   end
 
   it 'should raise ArgumentError with nil value' do
-    lambda {
+    expect {
       @dv_temporal.value = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty value' do
-    lambda {
+    expect {
       @dv_temporal.value = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

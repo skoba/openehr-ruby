@@ -9,11 +9,11 @@ describe PartyRelated do
   end
 
   it 'should be an instance of PartyRelated' do
-    @party_related.should be_an_instance_of PartyRelated
+    expect(@party_related).to be_an_instance_of PartyRelated
   end
 
   it 'should assign relationship properly' do
-    @party_related.relationship.value.should == 'self'
+    expect(@party_related.relationship.value).to eq('self')
   end
 
   it 'should raise ArgumentError when nil is assigned to relationship' do

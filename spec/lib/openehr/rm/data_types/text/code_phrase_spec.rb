@@ -10,14 +10,14 @@ describe CodePhrase do
   end
 
   it 'should be an instance of CodePhrase' do
-    @code_phrase.should be_an_instance_of CodePhrase
+    expect(@code_phrase).to be_an_instance_of CodePhrase
   end
 
   it 's code_string should be 535' do
-    @code_phrase.code_string.should == '535'
+    expect(@code_phrase.code_string).to eq('535')
   end
 
   it 's terminology_id.name should be openehr' do
-    @code_phrase.terminology_id.name.should == 'openehr'
+    expect(@code_phrase.terminology_id.name).to eq('openehr')
   end
 end

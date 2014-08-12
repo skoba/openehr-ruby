@@ -10,7 +10,7 @@ describe ADLParser do
     end
 
     it 'is an instance of Archetype' do
-      @archetype.should be_an_instance_of OpenEHR::AM::Archetype::Archetype
+      expect(@archetype).to be_an_instance_of OpenEHR::AM::Archetype::Archetype
     end
 
     context 'parsing Chineze' do
@@ -20,11 +20,11 @@ describe ADLParser do
       end
 
       it 'text is 概念' do
-        @chineze_term.items['text'].should == "概念"
+        expect(@chineze_term.items['text']).to eq("概念")
       end
 
       it 'description is 描述' do
-        @chineze_term.items['description'].should == "描述"
+        expect(@chineze_term.items['description']).to eq("描述")
       end
     end
 
@@ -35,11 +35,11 @@ describe ADLParser do
       end
 
       it 'text is språk' do
-        @swedish_term.items['text'].should == "språk"
+        expect(@swedish_term.items['text']).to eq("språk")
       end
 
       it 'description is Hj\u00e4lp' do
-        @swedish_term.items['description'].should == "Hjälp"
+        expect(@swedish_term.items['description']).to eq("Hjälp")
       end
     end
   end

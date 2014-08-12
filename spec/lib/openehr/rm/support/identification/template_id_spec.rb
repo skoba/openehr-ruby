@@ -7,6 +7,6 @@ describe TemplateID do
   end
 
   it 'should be an isntance of TemplateID' do
-    @template_id.should be_an_instance_of TemplateID
+    expect(@template_id).to be_an_instance_of TemplateID
   end
 end

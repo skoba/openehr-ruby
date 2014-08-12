@@ -14,37 +14,38 @@ describe Archetyped do
   end
 
   it 'should be an instance of Archetyped' do
-    @archetyped.should be_an_instance_of Archetyped
+    expect(@archetyped).to be_an_instance_of Archetyped
   end
 
   it 'archetype id concept rm_name should be EHR' do
-    @archetyped.archetype_id.rm_name.should == 'EHR'
+    expect(@archetyped.archetype_id.rm_name).to eq('EHR')
   end
 
   it 'rm_version should 1.2.4' do
-    @archetyped.rm_version.should == '1.2.4'
+    expect(@archetyped.rm_version).to eq('1.2.4')
   end
 
   it 'template_id.value should be uk.nhs.cfh:openehr-EHR-COMPOSITION.admission_ed.v5' do
-    @archetyped.template_id.value.should ==
+    expect(@archetyped.template_id.value).to eq(
       'uk.nhs.cfh:openehr-EHR-COMPOSITION.admission_ed.v5'
+    )
   end
 
   it 'should raise ArgumentError with nil rm_version' do
-    lambda {
+    expect {
       @archetyped.rm_version = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty rm_version' do
-    lambda {
+    expect {
       @archetyped.rm_version = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil ArchetypeID' do
-    lambda {
+    expect {
       @archetyped.archetype_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

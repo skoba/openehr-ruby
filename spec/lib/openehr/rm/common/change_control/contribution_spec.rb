@@ -14,19 +14,19 @@ describe Contribution do
   end
 
   it 'should be an instance of Contribution' do
-    @contribution.should be_an_instance_of Contribution
+    expect(@contribution).to be_an_instance_of Contribution
   end
 
   it 'uid.value should be ABC::DEF::2' do
-    @contribution.uid.value.should == 'ABC::DEF::2'
+    expect(@contribution.uid.value).to eq('ABC::DEF::2')
   end
 
   it 'audit.description should test' do
-    @contribution.audit.description.value.should == 'test'
+    expect(@contribution.audit.description.value).to eq('test')
   end
 
   it 'versions size should be 2' do
-    @contribution.versions.size.should == 2
+    expect(@contribution.versions.size).to eq(2)
   end
 
   it 'should raise ArgumentError when version is empty' do

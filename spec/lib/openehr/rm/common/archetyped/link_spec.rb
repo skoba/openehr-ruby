@@ -11,32 +11,32 @@ describe Link do
   end
 
   it 'should be an instance of Link' do
-    @link.should be_an_instance_of Link
+    expect(@link).to be_an_instance_of Link
   end
 
   it 'meaning should be generic' do
-    @link.meaning.value.should == 'generic'
+    expect(@link.meaning.value).to eq('generic')
   end
 
   it 'target should be ehr://test' do
-    @link.target.value.should == 'ehr://test'
+    expect(@link.target.value).to eq('ehr://test')
   end
 
   it 'should raise ArgumentError with nil meaning' do
-    lambda {
+    expect {
       @link.meaning = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil type' do
-    lambda {
+    expect {
       @link.type = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with nil target' do
-    lambda {
+    expect {
       @link.target = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

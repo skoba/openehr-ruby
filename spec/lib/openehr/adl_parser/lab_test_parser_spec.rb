@@ -8,7 +8,7 @@ describe ADLParser do
     end
 
     it 'is an instance of archetype' do
-      @archetype.should be_an_instance_of OpenEHR::AM::Archetype::Archetype
+      expect(@archetype).to be_an_instance_of OpenEHR::AM::Archetype::Archetype
     end
   end
 end

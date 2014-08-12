@@ -19,27 +19,27 @@ describe FeederAudit do
   end
 
   it 'should be an instance of FeederAudit' do
-    @feeder_audit.should be_an_instance_of FeederAudit
+    expect(@feeder_audit).to be_an_instance_of FeederAudit
   end
 
   it 'originating_system_audit.system_id should be CASPAR' do
-    @feeder_audit.originating_system_audit.system_id.should == 'CASPAR'
+    expect(@feeder_audit.originating_system_audit.system_id).to eq('CASPAR')
   end
 
   it 'originating_system_item_ids.size should be equal 10' do
-    @feeder_audit.originating_system_item_ids.size.should be_equal 10
+    expect(@feeder_audit.originating_system_item_ids.size).to be_equal 10
   end
 
   it 'feeder_system_audit.system_id should BARTHASAR' do
-    @feeder_audit.feeder_system_audit.system_id.should == 'BARTHASAR'
+    expect(@feeder_audit.feeder_system_audit.system_id).to eq('BARTHASAR')
   end
 
   it 'feeder_system_item_ids.size should be equal 5' do
-    @feeder_audit.feeder_system_item_ids.size.should be_equal 5
+    expect(@feeder_audit.feeder_system_item_ids.size).to be_equal 5
   end
 
   it 'original_content.charset should be UTF-8' do
-    @feeder_audit.original_content.charset.should == 'UTF-8'
+    expect(@feeder_audit.original_content.charset).to eq('UTF-8')
   end
 
   it 'should raise ArgumentError with nil originating_system_audit' do

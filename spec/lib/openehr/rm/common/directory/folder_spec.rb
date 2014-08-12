@@ -13,14 +13,14 @@ describe Folder do
   end
 
   it 'should an instance of Folder' do
-    @folder.should be_an_instance_of Folder
+    expect(@folder).to be_an_instance_of Folder
   end
 
   it 'items size should be 3' do
-    @folder.items.size.should == 3
+    expect(@folder.items.size).to eq(3)
   end
 
   it 'folders size should be 5' do
-    @folder.folders.size.should == 5
+    expect(@folder.folders.size).to eq(5)
   end
 end

@@ -21,15 +21,15 @@ describe ADLParser do
       end
 
       it 'at is an instance of CCodePhrase' do
-        @at.should be_an_instance_of CCodePhrase
+        expect(@at).to be_an_instance_of CCodePhrase
       end
 
       it 'terminology id is icd10' do
-        @at.terminology_id.value.should == 'icd10'
+        expect(@at.terminology_id.value).to eq('icd10')
       end
 
       it 'code_list is F43.00,F43.01,F32.02' do
-        @at.code_list.should == ['F43.00','F43.01','F32.02']
+        expect(@at.code_list).to eq(['F43.00','F43.01','F32.02'])
       end
     end
 
@@ -39,11 +39,11 @@ describe ADLParser do
       end
 
       it 'terminology id is local' do
-        @at.terminology_id.value.should == 'local'
+        expect(@at.terminology_id.value).to eq('local')
       end
 
       it 'code_list is at1311,at1312,at1313,at1314,at1315' do
-        @at.code_list.should == ['at1311','at1312','at1313','at1314','at1315']
+        expect(@at.code_list).to eq(['at1311','at1312','at1313','at1314','at1315'])
       end
     end
 
@@ -53,11 +53,11 @@ describe ADLParser do
       end
 
       it 'terminology id is icd10' do
-        @at.terminology_id.value.should == 'icd10'
+        expect(@at.terminology_id.value).to eq('icd10')
       end
 
       it 'code_list is empty' do
-        @at.code_list.should == []
+        expect(@at.code_list).to eq([])
       end
     end
 
@@ -67,15 +67,15 @@ describe ADLParser do
       end
 
       it 'terminology id is icd10' do
-        @at.terminology_id.value.should == 'icd10'
+        expect(@at.terminology_id.value).to eq('icd10')
       end
 
       it 'code_list is F43.00,F43.01,F32.02' do
-        @at.code_list.should == ['F43.00','F43.01','F32.02']
+        expect(@at.code_list).to eq(['F43.00','F43.01','F32.02'])
       end
 
       it 'assumed value is F43.00' do
-        @at.assumed_value.should == 'F43.00'
+        expect(@at.assumed_value).to eq('F43.00')
       end
     end
 
@@ -85,11 +85,11 @@ describe ADLParser do
       end
 
       it 'terminology is openehr' do
-        @at.terminology_id.value.should == 'openehr'
+        expect(@at.terminology_id.value).to eq('openehr')
       end
 
       it 'code_list is 431' do
-        @at.code_list.should == ['431']
+        expect(@at.code_list).to eq(['431'])
       end
     end
   end

@@ -14,23 +14,23 @@ describe ADLParser do
 
     context 'root definition object' do
       it 'rm_type_name is ENTRY' do
-        @definition.rm_type_name.should == 'ENTRY'
+        expect(@definition.rm_type_name).to eq('ENTRY')
       end
 
       it 'path is /' do
-        @definition.path.should == '/'
+        expect(@definition.path).to eq('/')
       end
 
       it 'node_id is at0000' do
-        @definition.node_id.should == 'at0000'
+        expect(@definition.node_id).to eq('at0000')
       end
 
       it 'occurrences is default 1,1' do
-        @definition.occurrences.should == @occurrences
+        expect(@definition.occurrences).to eq(@occurrences)
       end
 
       it 'attributes size is 2' do
-        @definition.attributes.size.should be 2
+        expect(@definition.attributes.size).to be 2
       end
     end
 
@@ -40,11 +40,11 @@ describe ADLParser do
       end
 
       it 'rm_attribute_name is subject_relationship' do
-        @attr.rm_attribute_name.should == 'subject_relationship'
+        expect(@attr.rm_attribute_name).to eq('subject_relationship')
       end
 
       it 'has 1 child' do
-        @attr.children.size.should be 1
+        expect(@attr.children.size).to be 1
       end
 
       context '2nd level object' do
@@ -53,19 +53,19 @@ describe ADLParser do
         end
 
         it 'rm type name is RELATED_PARTY' do
-          @obj.rm_type_name.should == 'RELATED_PARTY'
+          expect(@obj.rm_type_name).to eq('RELATED_PARTY')
         end
 
         it 'node id shold be nil' do
-          @obj.node_id.should be_nil
+          expect(@obj.node_id).to be_nil
         end
 
         it 'occurrences is default' do
-          @obj.occurrences.should == @occurrences
+          expect(@obj.occurrences).to eq(@occurrences)
         end
 
         it 'attributes size is 1' do
-          @obj.attributes.size.should be 1
+          expect(@obj.attributes.size).to be 1
         end
 
         context 'attribute of 2nd level object' do
@@ -74,11 +74,11 @@ describe ADLParser do
           end
 
           it 'rm attribute name is relationship' do
-            @attr.rm_attribute_name.should == 'relationship'
+            expect(@attr.rm_attribute_name).to eq('relationship')
           end
 
           it 'children size is 1' do
-            @attr.children.size.should be 1
+            expect(@attr.children.size).to be 1
           end
 
           context 'leaf object' do
@@ -87,19 +87,19 @@ describe ADLParser do
             end
 
             it 'rm type name is TEXT' do
-              @leaf.rm_type_name.should == 'TEXT'
+              expect(@leaf.rm_type_name).to eq('TEXT')
             end
 
             it 'occurences is default' do
-              @leaf.occurrences.should == @occurrences
+              expect(@leaf.occurrences).to eq(@occurrences)
             end
 
             it 'node id should be nil' do
-              @leaf.node_id.should be_nil
+              expect(@leaf.node_id).to be_nil
             end
 
             it 'attributes size is 1' do
-              @leaf.attributes.size.should be 1
+              expect(@leaf.attributes.size).to be 1
             end
 
             context 'attribute of leaf object' do
@@ -108,11 +108,11 @@ describe ADLParser do
               end
 
               it 'rm attribute name is value' do
-                @attr.rm_attribute_name.should == 'value'
+                expect(@attr.rm_attribute_name).to eq('value')
               end
 
               it 'children size is 1' do
-                @attr.children.size.should be 1
+                expect(@attr.children.size).to be 1
               end
 
               context 'primitive constraint of leaf object' do
@@ -121,15 +121,15 @@ describe ADLParser do
                 end
 
                 it 'string constraint pattern is nil' do
-                  @cstring.pattern.should be_nil
+                  expect(@cstring.pattern).to be_nil
                 end
 
                 it 'list constraint is self' do
-                  @cstring.list.should == ['self']
+                  expect(@cstring.list).to eq(['self'])
                 end
 
                 it 'list size is 1' do
-                  @cstring.list.size.should be 1
+                  expect(@cstring.list.size).to be 1
                 end
               end
             end
@@ -144,25 +144,25 @@ describe ADLParser do
       end
 
       it 'rm attribute name is members' do
-        @attr.rm_attribute_name.should == 'members'
+        expect(@attr.rm_attribute_name).to eq('members')
       end
 
       it 'existence are 0..1' do
         existence = OpenEHR::AssumedLibraryTypes::Interval.new(
                         :lower => 0, :upper => 1,
                         :lower_included => true, :upper_included => true)
-        @attr.existence.should == existence
+        expect(@attr.existence).to eq(existence)
       end
 
       it 'cardinality interval is 0..8' do
         interval = OpenEHR::AssumedLibraryTypes::Interval.new(
                         :lower => 0, :upper => 8,
                         :lower_included => true, :upper_included => true)
-        @attr.cardinality.interval.should == interval
+        expect(@attr.cardinality.interval).to eq(interval)
       end
 
       it 'children size are 2' do
-        @attr.children.size.should be 2
+        expect(@attr.children.size).to be 2
       end
 
       context '1st person' do
@@ -171,15 +171,15 @@ describe ADLParser do
         end
 
         it 'rm type name is PERSON' do
-          @first.rm_type_name.should == 'PERSON'
+          expect(@first.rm_type_name).to eq('PERSON')
         end
 
         it 'occurrences are default' do
-          @first.occurrences.should == @occurrences
+          expect(@first.occurrences).to eq(@occurrences)
         end
 
         it 'attributes size is 1' do
-          @first.attributes.size.should be 1
+          expect(@first.attributes.size).to be 1
         end
       end
 
@@ -189,13 +189,13 @@ describe ADLParser do
         end
 
         it 'rm type name is PERSON' do
-          @second.rm_type_name.should == 'PERSON'
+          expect(@second.rm_type_name).to eq('PERSON')
         end
 
         it 'occurences is upper unbounded' do
           occurrences = OpenEHR::AssumedLibraryTypes::Interval.new(
                           :lower => 0, :lower_included => true)
-          @second.occurrences.should == occurrences
+          expect(@second.occurrences).to eq(occurrences)
         end
 
         

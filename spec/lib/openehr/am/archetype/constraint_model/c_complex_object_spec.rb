@@ -17,51 +17,51 @@ describe CComplexObject do
   end
 
   it 'should be an instance of CComplexObject' do
-    @c_complex_object.should be_an_instance_of CComplexObject
+    expect(@c_complex_object).to be_an_instance_of CComplexObject
   end
 
   context 'attributes' do
 
     it 'attributes should be assigned properly' do
-      @c_complex_object.attributes.size.should be_equal 3
+      expect(@c_complex_object.attributes.size).to be_equal 3
     end
 
     it 'attributes parent should be assigned properly' do
-      @c_complex_object.attributes[0].parent.should == @c_complex_object
+      expect(@c_complex_object.attributes[0].parent).to eq(@c_complex_object)
     end
 
     it 'has attribytes when has_attrubite? is true' do
-      @c_complex_object.should have_attributes
+      expect(@c_complex_object).to have_attributes
     end
 
     it 'does not have attributes when attributes is nil' do
       @c_complex_object.attributes = nil
-      @c_complex_object.should_not have_attributes
+      expect(@c_complex_object).not_to have_attributes
     end
 
     it 'does not have attributes when attributes are empty' do
       @c_complex_object.attributes = []
-      @c_complex_object.should_not have_attributes
+      expect(@c_complex_object).not_to have_attributes
     end
   end
   
   it 'any_allowed should be false when attributes are not empty' do
-    @c_complex_object.should_not be_any_allowed
+    expect(@c_complex_object).not_to be_any_allowed
   end
 
 
   it 'any_allowed should be true when attributes are nil' do
     @c_complex_object.attributes = nil
-    @c_complex_object.should be_any_allowed
+    expect(@c_complex_object).to be_any_allowed
   end
 
   it 'any_allowed should be true when attributes are empty' do
     @c_complex_object.attributes = Set.new
-    @c_complex_object.should be_any_allowed
+    expect(@c_complex_object).to be_any_allowed
   end
 
   it 'path should be calculated properly' do
-    @c_complex_object.path.should == '/event[at0001]'
+    expect(@c_complex_object.path).to eq('/event[at0001]')
   end
 
   context 'path' do
@@ -70,7 +70,7 @@ describe CComplexObject do
     end
 
     it 'should be assigned properly' do
-      @c_complex_object.path.should == '/event[at0002]'
+      expect(@c_complex_object.path).to eq('/event[at0002]')
     end
   end
 end

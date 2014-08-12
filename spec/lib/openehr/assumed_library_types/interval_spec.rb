@@ -8,52 +8,52 @@ describe Interval do
   end
 
   it 'should be an instance of Interval' do
-    @interval.should be_an_instance_of Interval
+    expect(@interval).to be_an_instance_of Interval
   end
 
   it 's upper should be greater than lower' do
-    @interval.upper.should be > @interval.lower
+    expect(@interval.upper).to be > @interval.lower
   end
 
   it 's upper should be equal 10' do
-    @interval.upper.should == 10
+    expect(@interval.upper).to eq(10)
   end
 
   it 's lower should be equal 1' do
-    @interval.lower.should == 1
+    expect(@interval.lower).to eq(1)
   end
 
   it 'should raise ArgumentError with smaller upper' do
-    lambda {@interval.upper = -1}.should raise_error ArgumentError
+    expect {@interval.upper = -1}.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with greater lower' do
-    lambda {@interval.lower = 11}.should raise_error ArgumentError
+    expect {@interval.lower = 11}.to raise_error ArgumentError
   end
 
   it 'should have 5' do
-    @interval.has?(5).should be_true
+    expect(@interval.has?(5)).to be_truthy
   end
 
   it 'should not have 11' do
-    @interval.has?(11).should_not be_true
+    expect(@interval.has?(11)).not_to be_truthy
   end
 
   it 'should not have -1' do
-    @interval.has?(-1).should_not be_true
+    expect(@interval.has?(-1)).not_to be_truthy
   end
 
   it 'should have 10' do
-    @interval.has?(10).should be_true
+    expect(@interval.has?(10)).to be_truthy
   end
 
   it 'should have 1' do
-    @interval.has?(1).should be_true
+    expect(@interval.has?(1)).to be_truthy
   end
 
   it 'should be equal lower and upper is same' do
     interval = Interval.new(:upper => 10, :lower => 1)
-    @interval.should == interval
+    expect(@interval).to eq(interval)
   end
 
   describe Interval, 'when lower included' do
@@ -62,11 +62,11 @@ describe Interval do
     end
 
     it 'should be lower_included' do
-      @interval.should be_lower_included
+      expect(@interval).to be_lower_included
     end
 
     it 'should have 1 when lower included' do
-      @interval.has?(1).should be_true
+      expect(@interval.has?(1)).to be_truthy
     end
 
     after do
@@ -80,11 +80,11 @@ describe Interval do
     end
 
     it 'should be upper uncluded' do
-      @interval.should be_upper_included
+      expect(@interval).to be_upper_included
     end
 
     it 'should have 10 when upper included' do
-      @interval.has?(10).should be_true
+      expect(@interval.has?(10)).to be_truthy
     end
 
     after do
@@ -98,17 +98,17 @@ describe Interval do
     end
 
     it 'should be upper unbounded' do
-      @interval.should be_upper_unbounded
+      expect(@interval).to be_upper_unbounded
     end
 
     it 'should have 11' do
-      @interval.has?(11).should be_true
+      expect(@interval.has?(11)).to be_truthy
     end
 
     it 'should raise ArgumentError, when upper_included is assigned' do
-      lambda{
+      expect{
         @interval.upper_included = true
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     after do
@@ -122,24 +122,24 @@ describe Interval do
     end
 
     it 'should be lower unbounded' do
-      @interval.should be_lower_unbounded
+      expect(@interval).to be_lower_unbounded
     end
 
     it 'should  have -10' do
-      @interval.has?(-10).should be_true
+      expect(@interval.has?(-10)).to be_truthy
     end
 
     it 'should raise ArgumentError, when lower_included is assigned' do
-      lambda{
+      expect{
         @interval.lower_included = true
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
   it 'should raise ArgumentError both upper and lower is nil' do
-    lambda {
+    expect {
       Interval.new
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end
 

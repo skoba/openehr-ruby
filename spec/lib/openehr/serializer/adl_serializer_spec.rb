@@ -22,26 +22,26 @@ describe ADLSerializer do
   end
 
   it 'should be an instance of ADLSerializer' do
-    @adl_serializer.should be_an_instance_of ADLSerializer
+    expect(@adl_serializer).to be_an_instance_of ADLSerializer
   end
 
   it 'header should return archetype context' do
-    @adl_serializer.header.should == @sample_header
+    expect(@adl_serializer.header).to eq(@sample_header)
   end
 
   it 'description should return archetype description' do
-    @adl_serializer.description.should == @sample_description
+    expect(@adl_serializer.description).to eq(@sample_description)
   end
 
   it 'definition should return ADL formatted definition' do
-    @adl_serializer.definition.should == @sample_definition
+    expect(@adl_serializer.definition).to eq(@sample_definition)
   end
 
   it 'ontology should return ADL formatted ontology' do
-    @adl_serializer.ontology.should == @sample_ontology
+    expect(@adl_serializer.ontology).to eq(@sample_ontology)
   end
 
   it 'should return serialized ADL format' do
-    @adl_serializer.serialize.should == @sample_total
+    expect(@adl_serializer.serialize).to eq(@sample_total)
   end
 end

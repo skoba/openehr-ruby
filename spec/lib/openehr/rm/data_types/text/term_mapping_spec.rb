@@ -11,46 +11,46 @@ describe TermMapping do
   end
 
   it 'should means equivalent' do
-    @term_mapping.should be_equivalent
+    expect(@term_mapping).to be_equivalent
   end
 
   it 'should means narrower' do
     @term_mapping.match = '<'
-    @term_mapping.should be_narrower
+    expect(@term_mapping).to be_narrower
   end
 
   it 'should means broader' do
     @term_mapping.match = '>'
-    @term_mapping.should be_broader
+    expect(@term_mapping).to be_broader
   end
 
   it 'should means unknown' do
     @term_mapping.match = '?'
-    @term_mapping.should be_unknown
+    expect(@term_mapping).to be_unknown
   end
 
   it 'should be valid match code >' do
-    TermMapping.is_valid_mach_code?('>').should be_true
+    expect(TermMapping.is_valid_mach_code?('>')).to be_truthy
   end
 
   it 'should be valid match code =' do
-    TermMapping.is_valid_mach_code?('=').should be_true
+    expect(TermMapping.is_valid_mach_code?('=')).to be_truthy
   end
 
   it 'should be valid match code <' do
-    TermMapping.is_valid_mach_code?('<').should be_true
+    expect(TermMapping.is_valid_mach_code?('<')).to be_truthy
   end
 
   it 'should be valid match code ?' do
-    TermMapping.is_valid_mach_code?('?').should be_true
+    expect(TermMapping.is_valid_mach_code?('?')).to be_truthy
   end
 
   it 'should be not valid code /' do
-    TermMapping.is_valid_mach_code?('/').should_not be_true
+    expect(TermMapping.is_valid_mach_code?('/')).not_to be_truthy
   end
 
   it 's purpose should == automated' do
-    @term_mapping.purpose.value.should == 'automated'
+    expect(@term_mapping.purpose.value).to eq('automated')
   end
 
   it 'should raise ArgumentError when match is not valid' do

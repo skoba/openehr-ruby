@@ -10,12 +10,13 @@ describe ADLParser do
     end
 
     it 'rm type name is ENTRY' do
-      @definition.rm_type_name.should == 'ENTRY'
+      expect(@definition.rm_type_name).to eq('ENTRY')
     end
 
     it '1st attribute type name is items' do
-      @definition.attributes[0].rm_attribute_name.should ==
+      expect(@definition.attributes[0].rm_attribute_name).to eq(
         'subject_relationship'
+      )
     end
   end
 end

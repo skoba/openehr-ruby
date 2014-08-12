@@ -7,23 +7,23 @@ describe Timezone do
   end
 
   it 'hour is 9' do
-    @timezone.hour.should be 9
+    expect(@timezone.hour).to be 9
   end
 
   it 'minute is 30' do
-    @timezone.minute.should be 30
+    expect(@timezone.minute).to be 30
   end
 
   it 'minutes is alias of minute' do
-    @timezone.minutes.should be @timezone.minute
+    expect(@timezone.minutes).to be @timezone.minute
   end
 
   it 'hours is alias of hour' do
-    @timezone.hours.should be @timezone.hour
+    expect(@timezone.hours).to be @timezone.hour
   end
 
   it '+0930 as string' do
-    @timezone.to_s.should == '+0930'
+    expect(@timezone.to_s).to eq('+0930')
   end
 
   describe 'Z timezone' do
@@ -32,11 +32,11 @@ describe Timezone do
     end
 
     it 'hour is 0' do
-      @timezone.hour.should be 0
+      expect(@timezone.hour).to be 0
     end
 
     it 'minute is 0' do
-      @timezone.minute.should be 0
+      expect(@timezone.minute).to be 0
     end
   end
 end

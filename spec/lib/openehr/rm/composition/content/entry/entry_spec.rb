@@ -25,17 +25,17 @@ describe OpenEHR::RM::Composition::Content::Entry::Entry do
   end
 
   it 'should be an instance of Entry' do
-    @entry.should be_an_instance_of OpenEHR::RM::Composition::Content::Entry::Entry
+    expect(@entry).to be_an_instance_of OpenEHR::RM::Composition::Content::Entry::Entry
   end
 
   it 'language should be assigned properly' do
-    @entry.language.code_string.should == 'ja'
+    expect(@entry.language.code_string).to eq('ja')
   end
 
   it 'should raise ArgumentError when nil assign to language' do
-    lambda {
+    expect {
       @entry.language = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invalid language code' do
@@ -46,13 +46,13 @@ describe OpenEHR::RM::Composition::Content::Entry::Entry do
   end
 
   it 'encoding should be assigned properly' do
-    @entry.encoding.code_string.should == 'UTF-8'
+    expect(@entry.encoding.code_string).to eq('UTF-8')
   end
 
   it 'should raise ArgumentError when nil assign to encoding' do
-    lambda {
+    expect {
       @entry.encoding = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with invalid encoding' do
@@ -63,33 +63,33 @@ describe OpenEHR::RM::Composition::Content::Entry::Entry do
   end
 
   it 'subject should be assigned properly' do
-    @entry.subject.external_ref.type.should == 'entry'
+    expect(@entry.subject.external_ref.type).to eq('entry')
   end
 
   it 'should raise ArgumentError when nil assigned to subject' do
-    lambda {
+    expect {
       @entry.subject = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'provider should be assigned properly' do
-    @entry.provider.external_ref.type.should == 'provider'
+    expect(@entry.provider.external_ref.type).to eq('provider')
   end
 
   it 'other_participations should be assigned properly' do
-    @entry.other_participations.size.should be_equal 3
+    expect(@entry.other_participations.size).to be_equal 3
   end
 
   it 'workflow_id should assigned properly' do
-    @entry.workflow_id.type.should == 'workflow'
+    expect(@entry.workflow_id.type).to eq('workflow')
   end
 
   it 'subject_is_self? should be determined by subject class' do
-    @entry.subject_is_self?.should be_false
+    expect(@entry.subject_is_self?).to be_falsey
   end
 
   it 'subject_is_self? should be true when subject is instance of PartySelf' do
     @entry.subject = OpenEHR::RM::Common::Generic::PartySelf.new
-    @entry.subject_is_self?.should be_true
+    expect(@entry.subject_is_self?).to be_truthy
   end
 end

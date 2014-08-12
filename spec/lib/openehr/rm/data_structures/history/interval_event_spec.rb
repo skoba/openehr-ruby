@@ -19,22 +19,22 @@ describe IntervalEvent do
   end
 
   it 'should be an instance of IntervalEvent' do
-    @interval_event.should be_an_instance_of IntervalEvent
+    expect(@interval_event).to be_an_instance_of IntervalEvent
   end
 
   it 'width should be assigned properly' do
-    @interval_event.width.value.should == 'P0Y2M1W3DT5H7M3S'
+    expect(@interval_event.width.value).to eq('P0Y2M1W3DT5H7M3S')
   end
 
   it 'math_function should be assigned properly' do
-    @interval_event.math_function.value.should == 'mean'
+    expect(@interval_event.math_function.value).to eq('mean')
   end
 
   it 'sample_count should be assigned properly' do
-    @interval_event.sample_count.should be_equal 1234
+    expect(@interval_event.sample_count).to be_equal 1234
   end
 
   it 'should subtract time for interval start time' do
-    @interval_event.interval_start_time.value.should == '2009-09-09T05:12:30Z'
+    expect(@interval_event.interval_start_time.value).to eq('2009-09-09T05:12:30Z')
   end
 end

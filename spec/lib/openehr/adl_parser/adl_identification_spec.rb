@@ -12,7 +12,7 @@ describe ADLParser do
     end
 
     it 'ADL version is 1.4' do
-      @adl_version.should == '1.4'
+      expect(@adl_version).to eq('1.4')
     end
   end
 end

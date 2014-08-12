@@ -24,10 +24,10 @@ describe VersionedComposition do
   end
 
   it 'should be an instance of VersionedComposition' do
-    @versioned_composition.should be_an_instance_of VersionedComposition
+    expect(@versioned_composition).to be_an_instance_of VersionedComposition
   end
 
   it 'is_persistent? should be evaluated by first version' do
-    @versioned_composition.is_persistent?.should be_true
+    expect(@versioned_composition.is_persistent?).to be_truthy
   end
 end

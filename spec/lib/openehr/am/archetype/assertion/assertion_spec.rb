@@ -14,11 +14,11 @@ describe Assertion do
   end
 
   it 'should be an instance of Assertion' do
-    @assertion.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+    expect(@assertion).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
   end
 
   it 'expression should be assigned properly' do
-    @assertion.expression.type.should == 'Boolean'
+    expect(@assertion.expression.type).to eq('Boolean')
   end
 
   it 'should raise ArgumentError when expression is nil' do
@@ -35,7 +35,7 @@ describe Assertion do
   end
 
   it 'tag should be assigned properly' do
-    @assertion.tag.should == 'validity'
+    expect(@assertion.tag).to eq('validity')
   end
 
   it 'tag should not be empty' do
@@ -51,10 +51,10 @@ describe Assertion do
   end
 
   it 'string_expression should be assigned properly' do
-    @assertion.string_expression.should == $string_expression
+    expect(@assertion.string_expression).to eq($string_expression)
   end
 
   it 'variables should be assigned properly' do
-    @assertion.variables.size.should be_equal 2
+    expect(@assertion.variables.size).to be_equal 2
   end
 end

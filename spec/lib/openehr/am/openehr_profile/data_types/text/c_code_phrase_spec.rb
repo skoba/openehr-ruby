@@ -17,18 +17,18 @@ describe CCodePhrase do
   end
 
   it 'is an instance of CCodePhrase' do
-    @c_code_phrase.should be_an_instance_of CCodePhrase
+    expect(@c_code_phrase).to be_an_instance_of CCodePhrase
   end
 
   it 'terminology_id is ICD10' do
-    @c_code_phrase.terminology_id.value.should == 'ICD10'
+    expect(@c_code_phrase.terminology_id.value).to eq('ICD10')
   end
 
   it 'code_list is C92, C93' do
-    @c_code_phrase.code_list.should == ['C92', 'C93']
+    expect(@c_code_phrase.code_list).to eq(['C92', 'C93'])
   end
 
   it 'occurrences upper is 1' do
-    @c_code_phrase.occurrences.upper.should be 1
+    expect(@c_code_phrase.occurrences.upper).to be 1
   end
 end

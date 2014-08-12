@@ -12,7 +12,7 @@ describe ADLParser do
     end
 
     it 'is an instance of Archetype' do
-      @archetype.should be_an_instance_of Archetype
+      expect(@archetype).to be_an_instance_of Archetype
     end
   end
 end

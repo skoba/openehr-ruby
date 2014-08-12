@@ -7,44 +7,45 @@ describe ArchetypeID do
   end
 
   it 'should be an instance of ArchetypeID' do
-    @archetype_id.should be_an_instance_of ArchetypeID
+    expect(@archetype_id).to be_an_instance_of ArchetypeID
   end
 
   it 's value should be equal
        openEHR-EHR-SECTION.physical_examination-prenatal.v2' do
-    @archetype_id.value.should ==
+    expect(@archetype_id.value).to eq(
       'openEHR-EHR-SECTION.physical_examination-prenatal.v2'
+    )
   end
   it 's qualified_rm_entity should be openEHR-EHR-SECTION' do
-    @archetype_id.qualified_rm_entity.should == 'openEHR-EHR-SECTION'
+    expect(@archetype_id.qualified_rm_entity).to eq('openEHR-EHR-SECTION')
   end
 
   it 's rm_originator should be openEHR' do
-    @archetype_id.rm_originator.should == 'openEHR'
+    expect(@archetype_id.rm_originator).to eq('openEHR')
   end
 
   it 's rm_name should be EHR' do
-    @archetype_id.rm_name.should == 'EHR'
+    expect(@archetype_id.rm_name).to eq('EHR')
   end
 
   it 'rm_entity should be SECTION' do
-    @archetype_id.rm_entity.should == 'SECTION'
+    expect(@archetype_id.rm_entity).to eq('SECTION')
   end
 
   it 's domain_concept should be physical_examination-prenatal' do
-    @archetype_id.domain_concept.should == 'physical_examination-prenatal'
+    expect(@archetype_id.domain_concept).to eq('physical_examination-prenatal')
   end
 
   it 's concept name should be physical_examination' do
-    @archetype_id.concept_name.should == 'physical_examination'
+    expect(@archetype_id.concept_name).to eq('physical_examination')
   end
 
   it 's specialisation should be prenatal' do
-    @archetype_id.specialisation.should == 'prenatal'
+    expect(@archetype_id.specialisation).to eq('prenatal')
   end
 
   it 's version_id should == v2' do
-    @archetype_id.version_id.should == 'v2'
+    expect(@archetype_id.version_id).to eq('v2')
   end
 
   it 'should raise ArgumentError with wrong id format' do
@@ -111,11 +112,11 @@ describe ArchetypeID do
     end
 
     it 'should be an instance of ArchetypeID' do
-      @archetype_id.should be_an_instance_of ArchetypeID
+      expect(@archetype_id).to be_an_instance_of ArchetypeID
     end
 
     it 'domain_concept should be clinical_synopsis' do
-      @archetype_id.domain_concept.should == 'clinical_synopsis'
+      expect(@archetype_id.domain_concept).to eq('clinical_synopsis')
     end
   end
 
@@ -125,7 +126,7 @@ describe ArchetypeID do
     end
 
     it 'concept_name should be progress note' do
-      @archetype_id.concept_name.should == 'progress_note'
+      expect(@archetype_id.concept_name).to eq('progress_note')
     end
 
     it 'specialisation should be naturopathy' do
@@ -146,7 +147,7 @@ describe ArchetypeID do
 
     it 's specialisation may be empty' do
       @archetype_id.domain_concept = 'clinical_synopsis'
-      @archetype_id.concept_name.should == 'clinical_synopsis'
+      expect(@archetype_id.concept_name).to eq('clinical_synopsis')
     end
   end
 end

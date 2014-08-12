@@ -11,24 +11,24 @@ describe LocatableRef do
   end
 
   it 'should be an instance of LocatableRef' do
-    @locatable_ref.should be_an_instance_of LocatableRef
+    expect(@locatable_ref).to be_an_instance_of LocatableRef
   end
 
   it 'id should be deadbeef::babe::1' do
-    @locatable_ref.id.value.should == 'deadbeef::babe::1'
+    expect(@locatable_ref.id.value).to eq('deadbeef::babe::1')
   end
 
   it 'path should be test/support' do
-    @locatable_ref.path.should == 'test/support'
+    expect(@locatable_ref.path).to eq('test/support')
   end
 
   it 'as_uri should be ehr://deadbeef::babe::1/test/support' do
-    @locatable_ref.as_uri.should == 'ehr://deadbeef::babe::1/test/support'
+    expect(@locatable_ref.as_uri).to eq('ehr://deadbeef::babe::1/test/support')
   end
 
   it 'should raise ArgumentError with empty path' do
-    lambda {
+    expect {
       @locatable_ref.path = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

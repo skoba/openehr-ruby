@@ -7,19 +7,19 @@ describe ISO8601Time do
   end
 
   it 'should be an instance of ISO8601Time' do
-    @iso8601time.should be_an_instance_of ISO8601Time
+    expect(@iso8601time).to be_an_instance_of ISO8601Time
   end
 
   it 's hour should be 15' do
-    @iso8601time.hour.should == 15
+    expect(@iso8601time.hour).to eq(15)
   end
 
   it 's minute should be 55' do
-    @iso8601time.minute.should == 55
+    expect(@iso8601time.minute).to eq(55)
   end
 
   it 's second should be 37'do
-    @iso8601time.second.should == 37
+    expect(@iso8601time.second).to eq(37)
   end
 
   it 's fractional second should be 0.32' do
@@ -27,7 +27,7 @@ describe ISO8601Time do
   end
 
   it 'have fractional_second' do
-    @iso8601time.should have_fractional_second
+    expect(@iso8601time).to have_fractional_second
   end
 
   it 's time zone should +0900' do
@@ -35,32 +35,32 @@ describe ISO8601Time do
   end
 
   it 'should be 15:55:37.32+0900 as_string' do
-    @iso8601time.as_string.should == '15:55:37.32+0900'
+    expect(@iso8601time.as_string).to eq('15:55:37.32+0900')
   end
 
   it 'decimal sign should not be comma' do
-    @iso8601time.is_decimal_sign_comma?.should_not be_true
+    expect(@iso8601time.is_decimal_sign_comma?).not_to be_truthy
   end
 
   it 'should be extended' do
-    @iso8601time.is_extended?.should be_true
+    expect(@iso8601time.is_extended?).to be_truthy
   end
 
   it 'should not be partial' do
-    @iso8601time.is_partial?.should_not be true
+    expect(@iso8601time.is_partial?).not_to be true
   end
 
   describe 'hour behavior' do
     it 'should raise ArgumentError with nil hour' do
-      lambda {
+      expect {
         @iso8601time.hour = nil
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it 'should not raise ArgumentError with -1 hour' do
-      lambda {
+      expect {
         @iso8601time.hour = -1
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end        
 
     it 'should not raise ArgumentError with 0 hour' do
@@ -196,39 +196,39 @@ describe ISO8601Time do
 
   describe 'ISO8601 time validation' do
     it 'should be valid iso8601 Time' do
-      ISO8601Time.should be_valid_iso8601_time '21:24:30.05+09:00'
+      expect(ISO8601Time).to be_valid_iso8601_time '21:24:30.05+09:00'
     end
 
     it 'should not be valid with over 24 hour' do
-      ISO8601Time.should_not be_valid_iso8601_time '24:24:30.05+09:00'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '24:24:30.05+09:00'
     end
 
     it 'should be valid with over 24:00:00' do
-      ISO8601Time.should be_valid_iso8601_time '24:00:00.00'
+      expect(ISO8601Time).to be_valid_iso8601_time '24:00:00.00'
     end
 
     it 'should not vaild with under 0 hour' do
-      ISO8601Time.should_not be_valid_iso8601_time '-1:24:30.05+09:00'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '-1:24:30.05+09:00'
     end
 
     it 'should not valid with more than 60 minutes' do
-      ISO8601Time.should_not be_valid_iso8601_time '21:60:30'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '21:60:30'
     end
 
     it 'should not valid with more than 60 seconds' do
-      ISO8601Time.should_not be_valid_iso8601_time '21:34:60'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '21:34:60'
     end
 
     it 'should not valid with invalid hour in timezone' do
-      ISO8601Time.should_not be_valid_iso8601_time '21:24:30.05+24:00'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '21:24:30.05+24:00'
     end
 
     it 'should not valid with invalid minute in timezone' do
-      ISO8601Time.should_not be_valid_iso8601_time '21:24:30.05+22:60'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '21:24:30.05+22:60'
     end
 
     it 'should not valid with invalid minute in timezone' do
-      ISO8601Time.should_not be_valid_iso8601_time '21:24:30.05TAABZ'
+      expect(ISO8601Time).not_to be_valid_iso8601_time '21:24:30.05TAABZ'
     end
   end
 end

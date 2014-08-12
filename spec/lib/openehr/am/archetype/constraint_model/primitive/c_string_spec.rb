@@ -11,40 +11,40 @@ describe CString do
   end
 
   it 'should be an instance of CString' do
-    @c_string.should be_an_instance_of CString
+    expect(@c_string).to be_an_instance_of CString
   end
 
   it 'type is always String' do
-    @c_string.type.should == 'String'
+    expect(@c_string.type).to eq('String')
   end
 
   it 'default should be assigned properly' do
-    @c_string.default_value.value.should == 'default'
+    expect(@c_string.default_value.value).to eq('default')
   end
 
   it 'assumed_value should be assigned properly' do
-    @c_string.assumed_value.should == 'assumed'
+    expect(@c_string.assumed_value).to eq('assumed')
   end
 
   it 'pattern should be assigned properly by constructor' do
-    @c_string.pattern.should == 't[a-z]st'
+    expect(@c_string.pattern).to eq('t[a-z]st')
   end
 
   it 'pattern should be assigned properly by method' do
     @c_string.pattern = '.*'
-    @c_string.pattern.should == '.*'
+    expect(@c_string.pattern).to eq('.*')
   end
 
   it 'should raise ArgumentError if either list or pattern is not nil' do
-    lambda {
+    expect {
       @c_string.list = ['test','driven']
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError if both list and pattern are nil' do
-    lambda {
+    expect {
       @c_string.pattern = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   describe 'list attribute' do
@@ -56,18 +56,18 @@ describe CString do
     end
 
     it 'list should be assigned properly by constructor' do
-      @c_string.list.should == ['test', 'behavior']
+      expect(@c_string.list).to eq(['test', 'behavior'])
     end
 
     it 'list shoudl be assigned properly by method' do
       @c_string.list = ['spec']
-      @c_string.list.should == ['spec']
+      expect(@c_string.list).to eq(['spec'])
     end
 
     it 'should raise ArgumentError if both pattern and list is not nil' do
-      lambda {
+      expect {
         @c_string.pattern = 'file.*'
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 end

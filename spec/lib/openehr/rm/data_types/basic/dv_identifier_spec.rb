@@ -11,98 +11,98 @@ describe DvIdentifier do
   end
 
   it 'should be an instance of DvIdentifier' do
-    @dv_identifier.should be_an_instance_of DvIdentifier
+    expect(@dv_identifier).to be_an_instance_of DvIdentifier
   end
 
   it 's issuer should be Ruby hospital' do
-    @dv_identifier.issuer.should == 'Ruby Hospital'
+    expect(@dv_identifier.issuer).to eq('Ruby Hospital')
   end
 
   it 's assigner should be Information office' do
-    @dv_identifier.assigner.should == 'Information office'
+    expect(@dv_identifier.assigner).to eq('Information office')
   end
 
   it 's id should be 0123456-0' do
-    @dv_identifier.id.should == '0123456-0'
+    expect(@dv_identifier.id).to eq('0123456-0')
   end
 
   it 's type should be personal id' do
-    @dv_identifier.type.should == 'personal id'
+    expect(@dv_identifier.type).to eq('personal id')
   end
 
   it 's issuer should be change to other hospital' do
-    lambda {
+    expect {
       @dv_identifier.issuer = 'Other Hospital'
-    }.should change(@dv_identifier, :issuer).
+    }.to change(@dv_identifier, :issuer).
       from('Ruby Hospital').to('Other Hospital')
   end
 
   it 'raise ArgumentError for nil issuer' do
-    lambda {
+    expect {
       @dv_identifier.issuer = nil
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 'raise ArgumentError for empty issuer' do
-    lambda {
+    expect {
       @dv_identifier.issuer = ''
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 's assigner should change from Information office to Service office' do
-    lambda {
+    expect {
       @dv_identifier.assigner = 'Service office'
-    }.should change{@dv_identifier.assigner}.
+    }.to change{@dv_identifier.assigner}.
       from('Information office').to('Service office')
   end
 
   it 'raise ArgumentError for nil assigner' do
-    lambda {
+    expect {
       @dv_identifier.assigner = nil
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 'raise ArgumentError for empty assigner' do
-    lambda {
+    expect {
       @dv_identifier.assigner = ''
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 's id should change from 0123456-0 to TEST-0987' do
-    lambda {
+    expect {
       @dv_identifier.id = 'TEST-0987'
-    }.should change(@dv_identifier, :id).
+    }.to change(@dv_identifier, :id).
       from('0123456-0').to('TEST-0987')
   end
 
   it 'raise ArgumentError for nil id' do
-    lambda {
+    expect {
       @dv_identifier.id = nil
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 'raise ArgumentError for empty id' do
-    lambda {
+    expect {
       @dv_identifier.id = ''
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 's type should change form personal id to test id' do
-    lambda {
+    expect {
       @dv_identifier.type = "test id"
-    }.should change(@dv_identifier, :type).
+    }.to change(@dv_identifier, :type).
       from('personal id').to('test id')
   end
 
   it 'raise ArgumentError for nil type' do
-    lambda {
+    expect {
       @dv_identifier.type = nil
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 
   it 'raise ArgumentError for empty issuer' do
-    lambda {
+    expect {
       @dv_identifier.type = ''
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 end

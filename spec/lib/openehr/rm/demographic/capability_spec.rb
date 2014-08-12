@@ -18,11 +18,11 @@ describe Capability do
   end
 
   it 'should be an instance of Capability' do
-    @capability.should be_an_instance_of Capability
+    expect(@capability).to be_an_instance_of Capability
   end
 
   it 'credential should be assigned properly' do
-    @capability.credentials.archetype_node_id.should == 'at0001'
+    expect(@capability.credentials.archetype_node_id).to eq('at0001')
   end
 
   it 'should raise ArgumentError when nil assigned to credentials' do
@@ -32,6 +32,6 @@ describe Capability do
   end
 
   it 'time_validity should be assigned properly' do
-    @capability.time_validity.lower.value.should == '2009-11-21'
+    expect(@capability.time_validity.lower.value).to eq('2009-11-21')
   end
 end

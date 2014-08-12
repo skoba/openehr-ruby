@@ -7,19 +7,19 @@ describe ValidityKind do
   end
 
   it 'should be an instance of ValidityKind' do
-    @validity_kind.should be_an_instance_of ValidityKind
+    expect(@validity_kind).to be_an_instance_of ValidityKind
   end
 
   it 'mandatory should be equal 1001' do
-    ValidityKind::MANDATORY.should be_equal 1001
+    expect(ValidityKind::MANDATORY).to be_equal 1001
   end
 
   it 'optional should be equal 1002' do
-    ValidityKind::OPTIONAL.should be_equal 1002
+    expect(ValidityKind::OPTIONAL).to be_equal 1002
   end
 
   it 'disallowed should be equal 1003' do
-    ValidityKind::DISALLOWED.should be_equal 1003
+    expect(ValidityKind::DISALLOWED).to be_equal 1003
   end
 
   it 'should not raise ArgumentError with valid value' do

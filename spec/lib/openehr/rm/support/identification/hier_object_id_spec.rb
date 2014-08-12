@@ -7,6 +7,6 @@ describe HierObjectID do
   end
 
   it 'should be an instance of HierObjectID' do
-    @hier_object_id.should be_an_instance_of HierObjectID
+    expect(@hier_object_id).to be_an_instance_of HierObjectID
   end
 end

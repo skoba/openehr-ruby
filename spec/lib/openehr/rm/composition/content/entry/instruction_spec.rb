@@ -29,34 +29,34 @@ describe Instruction do
   end
 
   it 'should be an instance of Instruction' do
-    @instruction.should be_an_instance_of Instruction
+    expect(@instruction).to be_an_instance_of Instruction
   end
 
   it 'narrative should be assigned properly' do
-    @instruction.narrative.value.should == 'instruction test'
+    expect(@instruction.narrative.value).to eq('instruction test')
   end
 
   it 'should raise ArgumentError when narrative is assined with nil' do
-    lambda {
+    expect {
       @instruction.narrative = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'activities should be assigned properly' do
-    @instruction.activities.size.should be_equal 5
+    expect(@instruction.activities.size).to be_equal 5
   end
 
   it 'should raise ArgumentError with empty activities' do
-    lambda {
+    expect {
       @instruction.activities = [ ]
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'expiry_time should be assigned properly' do
-    @instruction.expiry_time.value.should == '2009-11-18T20:58:34'
+    expect(@instruction.expiry_time.value).to eq('2009-11-18T20:58:34')
   end
 
   it 'wf_definition should be assigned properly' do
-    @instruction.wf_definition.value.should == 'behavior driven'
+    expect(@instruction.wf_definition.value).to eq('behavior driven')
   end
 end

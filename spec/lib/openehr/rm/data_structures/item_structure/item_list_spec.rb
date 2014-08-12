@@ -17,37 +17,37 @@ describe ItemList do
   end
 
   it 'should be instance of ItemList' do
-    @item_list.should be_an_instance_of ItemList
+    expect(@item_list).to be_an_instance_of ItemList
   end
 
   it 'count should be 3' do
-    @item_list.item_count.should be_equal 3
+    expect(@item_list.item_count).to be_equal 3
   end
 
   it 'count should be 0' do
     @item_list.items = nil
-    @item_list.item_count.should be_equal 0
+    expect(@item_list.item_count).to be_equal 0
   end
 
 
   it 'retrieve the names of all items' do
-    @item_list.names.should == %w{one two three}.collect{|n|
-      DvText.new(:value => n)}
+    expect(@item_list.names).to eq(%w{one two three}.collect{|n|
+      DvText.new(:value => n)})
   end
 
   it 'should return the item with a name' do
-    @item_list.named_item('one').name.value.should == 'one'
+    expect(@item_list.named_item('one').name.value).to eq('one')
   end
 
   it 'should return nil when item is not exist' do
-    @item_list.named_item('four').should be_nil
+    expect(@item_list.named_item('four')).to be_nil
   end
 
   it 'retrieve the ith item with number' do
-    @item_list.ith_item(1).name.value.should == 'one'
+    expect(@item_list.ith_item(1).name.value).to eq('one')
   end
 
   it 'generate cluster of items' do
-    @item_list.as_hierarchy.name.value.should == 'item list'
+    expect(@item_list.as_hierarchy.name.value).to eq('item list')
   end
 end

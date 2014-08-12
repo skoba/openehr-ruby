@@ -11,16 +11,16 @@ describe Cluster do
   end
 
   it 'should be an isntance of Cluster' do
-    @cluster.should be_an_instance_of Cluster
+    expect(@cluster).to be_an_instance_of Cluster
   end
 
   it 'item size should be 2' do
-    @cluster.items.size.should == 2
+    expect(@cluster.items.size).to eq(2)
   end
 
   it 'should raise ArgumentError with empty items' do
-    lambda {
+    expect {
       @cluster.items = []
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

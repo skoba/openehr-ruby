@@ -25,11 +25,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is PT0s' do
-          @at.list[0].value.should == 'PT0s'
+          expect(@at.list[0].value).to eq('PT0s')
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -39,19 +39,19 @@ describe ADLParser do
         end
 
         it '1st item of the list is P1d' do
-          @at.list[0].value.should == 'P1d'
+          expect(@at.list[0].value).to eq('P1d')
         end
 
         it 'day is 1' do
-          @at.list[0].days.should == 1
+          expect(@at.list[0].days).to eq(1)
         end
 
         it 'months is 0' do
-          @at.list[0].months.should be 0
+          expect(@at.list[0].months).to be 0
         end
 
         it 'does not have assumed_value' do
-          @at.should_not have_assumed_value
+          expect(@at).not_to have_assumed_value
         end
       end
 
@@ -61,11 +61,11 @@ describe ADLParser do
         end
 
         it '1st item of the list is PT2h5m0s' do
-          @at.list[0].value.should == 'PT2h5m0s'
+          expect(@at.list[0].value).to eq('PT2h5m0s')
         end
 
         it 'hours should 2' do
-          @at.list[0].hours.should be 2
+          expect(@at.list[0].hours).to be 2
         end
       end
 
@@ -75,19 +75,19 @@ describe ADLParser do
         end
 
         it 'lower range is PT1h55m0s' do
-          @at.range.lower.value.should == 'PT1h55m0s'
+          expect(@at.range.lower.value).to eq('PT1h55m0s')
         end
 
         it 'upper range is PT2h5m0s' do
-          @at.range.upper.value.should == 'PT2h5m0s'
+          expect(@at.range.upper.value).to eq('PT2h5m0s')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
       end
 
@@ -97,15 +97,15 @@ describe ADLParser do
         end
 
         it 'upper range is PT1h' do
-          @at.range.upper.value.should == 'PT1h'
+          expect(@at.range.upper.value).to eq('PT1h')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
       end
 
@@ -115,15 +115,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is P1DT1H2M3S' do
-          @at.list[0].value.should == 'P1DT1H2M3S'
+          expect(@at.list[0].value).to eq('P1DT1H2M3S')
         end
 
         it 'day is 1' do
-          @at.list[0].days.should == 1
+          expect(@at.list[0].days).to eq(1)
         end
 
         it 'seconds is 3' do
-          @at.list[0].seconds.should be 3
+          expect(@at.list[0].seconds).to be 3
         end
       end
 
@@ -133,15 +133,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is P1W2DT1H2M3S' do
-          @at.list[0].value.should == 'P1W2DT1H2M3S'
+          expect(@at.list[0].value).to eq('P1W2DT1H2M3S')
         end
 
         it 'weeks is 1' do
-          @at.list[0].weeks.should be 1
+          expect(@at.list[0].weeks).to be 1
         end
 
         it 'minutes is 2' do
-          @at.list[0].minutes.should be 2
+          expect(@at.list[0].minutes).to be 2
         end
       end
 
@@ -151,15 +151,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is P3M1W2DT1H2M3S' do
-          @at.list[0].value.should == 'P3M1W2DT1H2M3S'
+          expect(@at.list[0].value).to eq('P3M1W2DT1H2M3S')
         end
 
         it 'months are 3' do
-          @at.list[0].months.should be 3
+          expect(@at.list[0].months).to be 3
         end
 
         it 'hours are 1' do
-          @at.list[0].hours.should be 1
+          expect(@at.list[0].hours).to be 1
         end
       end
 
@@ -169,7 +169,7 @@ describe ADLParser do
         end
 
         it 'pattern is PDTH' do
-          @at.pattern.should == 'PDTH'
+          expect(@at.pattern).to eq('PDTH')
         end
       end
 
@@ -179,27 +179,27 @@ describe ADLParser do
         end
 
         it 'upper range is PT10M' do
-          @at.range.upper.value.should == 'PT10M'
+          expect(@at.range.upper.value).to eq('PT10M')
         end
 
         it 'lower range is PT10M' do
-          @at.range.lower.value.should == 'PT10M'
+          expect(@at.range.lower.value).to eq('PT10M')
         end
 
         it 'lower range minutes are 10' do
-          @at.range.lower.minutes.should be 10
+          expect(@at.range.lower.minutes).to be 10
         end
 
         it 'lower range months are 0' do
-          @at.range.lower.months.should be 0
+          expect(@at.range.lower.months).to be 0
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
       end
 
@@ -209,7 +209,7 @@ describe ADLParser do
         end
 
         it 'pattern is PYMWDTHMS' do
-          @at.pattern.should == 'PYMWDTHMS'
+          expect(@at.pattern).to eq('PYMWDTHMS')
         end
       end
 
@@ -221,27 +221,27 @@ describe ADLParser do
         end
 
         it 'upper range is PT0.004s' do
-          @at.range.upper.value.should == 'PT0.004s'
+          expect(@at.range.upper.value).to eq('PT0.004s')
         end
 
         it 'lower range is PT0.004s' do
-          @at.range.lower.value.should == 'PT0.004s'
+          expect(@at.range.lower.value).to eq('PT0.004s')
         end
 
         it 'lower range fractional second are 0.004' do
-          @at.range.lower.fractional_second.should == 0.004
+          expect(@at.range.lower.fractional_second).to eq(0.004)
         end
 
         it 'lower range fractional second are 0.004' do
-          @at.range.lower.fractional_second.should == 0.004
+          expect(@at.range.lower.fractional_second).to eq(0.004)
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
       end
 
@@ -251,27 +251,27 @@ describe ADLParser do
         end
 
         it 'upper range is PT10.01s' do
-          @at.range.upper.value.should == 'PT10.01s'
+          expect(@at.range.upper.value).to eq('PT10.01s')
         end
 
         it 'lower range is PT10.01s' do
-          @at.range.lower.value.should == 'PT10.01s'
+          expect(@at.range.lower.value).to eq('PT10.01s')
         end
 
         it 'lower range seconds are 10' do
-          @at.range.lower.seconds.should == 10
+          expect(@at.range.lower.seconds).to eq(10)
         end
 
         it 'lower range fractionsl second are 0.01' do
-          @at.range.lower.fractional_second.should == 0.01
+          expect(@at.range.lower.fractional_second).to eq(0.01)
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
       end
 
@@ -281,27 +281,27 @@ describe ADLParser do
         end
 
         it 'upper range is PT1.1s' do
-          @at.range.upper.value.should == 'PT1.1s'
+          expect(@at.range.upper.value).to eq('PT1.1s')
         end
 
         it 'lower range is PT1.1s' do
-          @at.range.lower.value.should == 'PT1.1s'
+          expect(@at.range.lower.value).to eq('PT1.1s')
         end
 
         it 'upper range seconds are 1' do
-          @at.range.upper.seconds.should == 1
+          expect(@at.range.upper.seconds).to eq(1)
         end
 
         it 'upper range fractional second are 0.1' do
-          @at.range.upper.fractional_second.should == 0.1
+          expect(@at.range.upper.fractional_second).to eq(0.1)
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
       end
 
@@ -311,23 +311,23 @@ describe ADLParser do
         end
 
         it 'has PTMS pattern' do
-          @at.pattern.should == 'PTMS'
+          expect(@at.pattern).to eq('PTMS')
         end
 
         it 'range is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'lower range is PT0S' do
-          @at.range.lower.value.should == 'PT0S'
+          expect(@at.range.lower.value).to eq('PT0S')
         end
 
         it 'lower range second is 0' do
-          @at.range.lower.seconds.should == 0
+          expect(@at.range.lower.seconds).to eq(0)
         end
 
         it 'is not upper included' do
-          @at.range.should_not be_upper_included
+          expect(@at.range).not_to be_upper_included
         end
       end
     end
@@ -343,15 +343,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is PT0s' do
-          @at.list[0].value.should == 'PT0s'
+          expect(@at.list[0].value).to eq('PT0s')
         end
 
         it 'has assumed_value' do
-          @at.should have_assumed_value
+          expect(@at).to have_assumed_value
         end
 
         it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+          expect(@at.assumed_value.value).to eq('P1d')
         end
       end
 
@@ -361,19 +361,19 @@ describe ADLParser do
         end
 
         it '1st item of the list is P1d' do
-          @at.list[0].value.should == 'P1d'
+          expect(@at.list[0].value).to eq('P1d')
         end
 
         it 'day is 1' do
-          @at.list[0].days.should == 1
+          expect(@at.list[0].days).to eq(1)
         end
 
         it 'months is 0' do
-          @at.list[0].months.should be 0
+          expect(@at.list[0].months).to be 0
         end
 
         it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+          expect(@at.assumed_value.value).to eq('P1d')
         end
       end
 
@@ -383,15 +383,15 @@ describe ADLParser do
         end
 
         it '1st item of the list is PT2h5m0s' do
-          @at.list[0].value.should == 'PT2h5m0s'
+          expect(@at.list[0].value).to eq('PT2h5m0s')
         end
 
         it 'hours should 2' do
-          @at.list[0].hours.should be 2
+          expect(@at.list[0].hours).to be 2
         end
 
         it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+          expect(@at.assumed_value.value).to eq('P1d')
         end
       end
 
@@ -401,23 +401,23 @@ describe ADLParser do
         end
 
         it 'lower range is PT1h55m0s' do
-          @at.range.lower.value.should == 'PT1h55m0s'
+          expect(@at.range.lower.value).to eq('PT1h55m0s')
         end
 
         it 'upper range is PT2h5m0s' do
-          @at.range.upper.value.should == 'PT2h5m0s'
+          expect(@at.range.upper.value).to eq('PT2h5m0s')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+          expect(@at.assumed_value.value).to eq('P1d')
         end
       end
 
@@ -427,19 +427,19 @@ describe ADLParser do
         end
 
         it 'upper range is PT1h' do
-          @at.range.upper.value.should == 'PT1h'
+          expect(@at.range.upper.value).to eq('PT1h')
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower unbounded' do
-          @at.range.should be_lower_unbounded
+          expect(@at.range).to be_lower_unbounded
         end
 
         it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+          expect(@at.assumed_value.value).to eq('P1d')
         end
       end
 
@@ -449,11 +449,11 @@ describe ADLParser do
         end
 
         it 'pattern is PDTH' do
-          @at.pattern.should == 'PDTH'
+          expect(@at.pattern).to eq('PDTH')
         end
 
         it 'assumed value is P1d' do
-          @at.assumed_value.value.should == 'P1d'
+          expect(@at.assumed_value.value).to eq('P1d')
         end
       end
 
@@ -465,35 +465,35 @@ describe ADLParser do
         end
 
         it 'upper range is PT10M' do
-          @at.range.upper.value.should == 'PT10M'
+          expect(@at.range.upper.value).to eq('PT10M')
         end
 
         it 'lower range is PT10M' do
-          @at.range.lower.value.should == 'PT10M'
+          expect(@at.range.lower.value).to eq('PT10M')
         end
 
         it 'lower range minutes are 10' do
-          @at.range.lower.minutes.should be 10
+          expect(@at.range.lower.minutes).to be 10
         end
 
         it 'lower range months are 0' do
-          @at.range.lower.months.should be 0
+          expect(@at.range.lower.months).to be 0
         end
 
         it 'is upper included' do
-          @at.range.should be_upper_included
+          expect(@at.range).to be_upper_included
         end
 
         it 'is lower included' do
-          @at.range.should be_lower_included
+          expect(@at.range).to be_lower_included
         end
 
         it 'assumed value is PT12M' do
-          @at.assumed_value.value.should == 'PT12M'
+          expect(@at.assumed_value.value).to eq('PT12M')
         end
 
         it 'assumed value minutes is 12' do
-          @at.assumed_value.minutes.should be 12
+          expect(@at.assumed_value.minutes).to be 12
         end
       end
     end

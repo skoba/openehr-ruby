@@ -10,10 +10,10 @@ describe AccessGroupRef do
   end
 
   it 'should be an instance of AccessGroupRef' do
-    @access_group_ref.should be_an_instance_of AccessGroupRef
+    expect(@access_group_ref).to be_an_instance_of AccessGroupRef
   end
 
   it 'type should be equal ACCESS_GROUP' do
-    @access_group_ref.type.should == 'ACCESS_GROUP'
+    expect(@access_group_ref.type).to eq('ACCESS_GROUP')
   end
 end

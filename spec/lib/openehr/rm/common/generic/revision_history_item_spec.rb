@@ -12,15 +12,15 @@ describe RevisionHistoryItem do
   end
 
   it 'should be an instance of RevisionHistoryItem' do
-    @revision_history_item.should be_an_instance_of RevisionHistoryItem
+    expect(@revision_history_item).to be_an_instance_of RevisionHistoryItem
   end
 
   it 's version_id.objectid should be RIO' do
-    @revision_history_item.version_id.objectid.should == 'RIO'
+    expect(@revision_history_item.version_id.objectid).to eq('RIO')
   end
 
   it 's audits.size should be 30' do
-    @revision_history_item.audits.size.should be_equal 30
+    expect(@revision_history_item.audits.size).to be_equal 30
   end
 
   it 'should raise ArgumentError when nil is assigned to version id' do

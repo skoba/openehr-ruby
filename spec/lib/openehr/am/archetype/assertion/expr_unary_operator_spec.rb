@@ -15,7 +15,7 @@ describe ExprUnaryOperator do
   end
 
   it 'operand shoud be assigned properly' do
-    @expr_unary_operator.operand.type.should == 'Real'
+    expect(@expr_unary_operator.operand.type).to eq('Real')
   end
 
   it 'should raise ArgumentError when operand is nil' do

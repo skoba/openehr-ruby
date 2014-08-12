@@ -8,22 +8,22 @@ describe DvBoolean do
   end
 
   it 'should be an instance of DvBoolean' do
-    @dv_boolean.should be_an_instance_of DvBoolean
+    expect(@dv_boolean).to be_an_instance_of DvBoolean
   end
 
   it 'should be true' do
-    @dv_boolean.value.should be_true
-    @dv_boolean.value?.should be_true
+    expect(@dv_boolean.value).to be_truthy
+    expect(@dv_boolean.value?).to be_truthy
   end
 
   it 's value assigned false, then it should not be false' do
     @dv_boolean.value = false
-    @dv_boolean.value.should_not be_true
+    expect(@dv_boolean.value).not_to be_truthy
   end
 
   it 'raise ArgumentError' do
-    lambda {
+    expect {
       @dv_boolean.value = nil
-    }.should raise_error(ArgumentError)
+    }.to raise_error(ArgumentError)
   end
 end

@@ -8,29 +8,29 @@ describe DvUri do
   end
 
   it 's fragment_id should be file0' do
-    @dv_uri.fragment_id.should == 'file0'
+    expect(@dv_uri.fragment_id).to eq('file0')
   end
 
   it 's path should be /changeset/test' do
-    @dv_uri.path.should == '/changeset/test'
+    expect(@dv_uri.path).to eq('/changeset/test')
   end
 
   it 's query should be cmd=93' do
-    @dv_uri.query.should == 'cmd=93'
+    expect(@dv_uri.query).to eq('cmd=93')
   end
 
   it 's scheme should be http' do
-    @dv_uri.scheme.should == 'http'
+    expect(@dv_uri.scheme).to eq('http')
   end
 
   it 's value should be http://www.openehr.jp/changeset/test?cmd=93#file0' do
-    @dv_uri.value.should == 'http://www.openehr.jp/changeset/test?cmd=93#file0'
+    expect(@dv_uri.value).to eq('http://www.openehr.jp/changeset/test?cmd=93#file0')
   end
 
   it 's value change' do
-    lambda {
+    expect {
       @dv_uri.value="svn://www.openehr.jp/openehr-jp/"
-    }.should change(@dv_uri, :value).to('svn://www.openehr.jp/openehr-jp/')
+    }.to change(@dv_uri, :value).to('svn://www.openehr.jp/openehr-jp/')
   end
 end
 

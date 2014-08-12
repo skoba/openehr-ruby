@@ -14,22 +14,22 @@ describe TranslationDetails do
   end
 
   it 'should be an instance of TranslationDetails' do
-    @translation_details.should be_an_instance_of TranslationDetails
+    expect(@translation_details).to be_an_instance_of TranslationDetails
   end
 
   it 'language should be ja' do
-    @translation_details.language.code_string.should == 'ja'
+    expect(@translation_details.language.code_string).to eq('ja')
   end
 
   it 'authour should be Shinji KOBAYASHI' do
-    @translation_details.author['name'].should == 'Shinji KOBAYASHI'
+    expect(@translation_details.author['name']).to eq('Shinji KOBAYASHI')
   end
 
   it 'accreditation should be skoba@moss.gr.jp' do
-    @translation_details.accreditation.should == 'Japanese Medical license 333'
+    expect(@translation_details.accreditation).to eq('Japanese Medical license 333')
   end
 
   it 'other_details should ja, Japanese' do
-    @translation_details.other_details.values[0].should == 'Japanese'
+    expect(@translation_details.other_details.values[0]).to eq('Japanese')
   end
 end

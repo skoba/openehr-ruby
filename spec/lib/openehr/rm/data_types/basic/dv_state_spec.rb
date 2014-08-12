@@ -15,11 +15,11 @@ describe DvState do
   end
 
   it 'should be an instance of DvState' do
-    @dv_state.should be_an_instance_of DvState
+    expect(@dv_state).to be_an_instance_of DvState
   end
 
   it 's value should be initial' do
-    @dv_state.value.value.should == 'initial'
+    expect(@dv_state.value.value).to eq('initial')
   end
 
   it 'should change other value assigned' do
@@ -27,22 +27,22 @@ describe DvState do
                                  :terminology_id => @terminology_id)
     dv_coded_text = DvCodedText.new(:value =>'planned',
                                     :defining_code => code_phrase)
-    lambda {
+    expect {
       @dv_state.value = dv_coded_text
-    }.should change{@dv_state.value.value}.from('initial').to('planned')
+    }.to change{@dv_state.value.value}.from('initial').to('planned')
   end
 
   it 'is not terminal' do
-    @dv_state.is_terminal?.should be_false
+    expect(@dv_state.is_terminal?).to be_falsey
   end
 
   it 'should not be terminal * another expression' do
-    @dv_state.should_not be_terminal
+    expect(@dv_state).not_to be_terminal
   end
 
   it 'should change to terminal' do
-    lambda {
+    expect {
       @dv_state.is_terminal = true
-    }.should change(@dv_state, :is_terminal?).from(false).to(true)
+    }.to change(@dv_state, :is_terminal?).from(false).to(true)
   end
 end

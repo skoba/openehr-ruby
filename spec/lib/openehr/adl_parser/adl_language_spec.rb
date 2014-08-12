@@ -16,11 +16,11 @@ describe ADLParser do
       end
 
       it 'original language is en' do
-        @original_language.code_string.should == 'en'
+        expect(@original_language.code_string).to eq('en')
       end
 
       it 'terminology_id ISO_639-1' do
-        @original_language.terminology_id.value.should == 'ISO_639-1'
+        expect(@original_language.terminology_id.value).to eq('ISO_639-1')
       end
     end
 
@@ -30,7 +30,7 @@ describe ADLParser do
       end
 
       it 'translation is not nil' do
-        @translations.should_not be_nil
+        expect(@translations).not_to be_nil
       end
 
       context 'German translation' do
@@ -39,19 +39,19 @@ describe ADLParser do
         end
 
         it 'translation is not nil' do
-          @de.should_not be_nil
+          expect(@de).not_to be_nil
         end
 
         it 'German code_string is de' do
-          @de.language.code_string.should == 'de'
+          expect(@de.language.code_string).to eq('de')
         end
 
         it 'terminology id is ISO_639-1' do
-          @de.language.terminology_id.value.should == 'ISO_639-1'
+          expect(@de.language.terminology_id.value).to eq('ISO_639-1')
         end
 
         it 'accreditation is British Medical Translator id 00400595' do
-          @de.accreditation.should == 'British Medical Translator id 00400595'
+          expect(@de.accreditation).to eq('British Medical Translator id 00400595')
         end
 
         context 'author' do
@@ -60,11 +60,11 @@ describe ADLParser do
           end
 
           it 'name is Harry Potter' do
-            @author['name'].should == 'Harry Potter'
+            expect(@author['name']).to eq('Harry Potter')
           end
 
           it 'email is harry@something.somewhere.co.uk' do
-            @author['email'].should == 'harry@something.somewhere.co.uk'
+            expect(@author['email']).to eq('harry@something.somewhere.co.uk')
           end
         end
 
@@ -74,11 +74,11 @@ describe ADLParser do
           end
 
           it 'review 1 is Ron Weasley' do
-            @other_details['review 1'].should == 'Ron Weasley'
+            expect(@other_details['review 1']).to eq('Ron Weasley')
           end
 
           it 'review 2 is Rubeus Hagrid' do
-            @other_details['review 2'].should == 'Rubeus Hagrid'
+            expect(@other_details['review 2']).to eq('Rubeus Hagrid')
           end
         end
       end
@@ -89,15 +89,15 @@ describe ADLParser do
         end
 
         it 'code is ru' do
-          @ru.language.code_string.should == 'ru'
+          expect(@ru.language.code_string).to eq('ru')
         end
 
         it 'terminology id is ISO_639-1' do
-          @ru.language.terminology_id.value.should == 'ISO_639-1'
+          expect(@ru.language.terminology_id.value).to eq('ISO_639-1')
         end
 
         it 'accreditation is Russion Translator id 892230A' do
-          @ru.accreditation.should == 'Russion Translator id 892230A'
+          expect(@ru.accreditation).to eq('Russion Translator id 892230A')
         end
 
         context 'author' do
@@ -106,11 +106,11 @@ describe ADLParser do
           end
 
           it 'name is Vladimir Nabokov' do
-            @author['name'].should == 'Vladimir Nabokov'
+            expect(@author['name']).to eq('Vladimir Nabokov')
           end
 
           it 'email is vladimir@something.somewhere.ru' do
-            @author['email'].should == 'vladimir@something.somewhere.ru'
+            expect(@author['email']).to eq('vladimir@something.somewhere.ru')
           end
         end
       end

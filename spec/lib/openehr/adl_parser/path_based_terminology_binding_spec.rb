@@ -10,7 +10,7 @@ describe ADLParser do
     end
 
     it 'key is path' do
-      @item.should have_key '/data[at0002]/events[at0003]/data[at0001]/item[at0004]'
+      expect(@item).to have_key '/data[at0002]/events[at0003]/data[at0001]/item[at0004]'
     end
 
     context 'term' do
@@ -19,11 +19,11 @@ describe ADLParser do
       end
 
       it 'terminology id is LNC205' do
-        @term.terminology_id.name.should == 'LNC205'
+        expect(@term.terminology_id.name).to eq('LNC205')
       end
 
       it 'code is 8310-5' do
-        @term.code_string.should == '8310-5'
+        expect(@term.code_string).to eq('8310-5')
       end
     end
   end

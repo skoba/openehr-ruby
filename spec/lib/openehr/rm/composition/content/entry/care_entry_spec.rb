@@ -23,15 +23,15 @@ describe CareEntry do
   end
 
   it 'should be an instance of CareEntry' do
-    @care_entry.should be_an_instance_of CareEntry
+    expect(@care_entry).to be_an_instance_of CareEntry
   end
 
   it 'protocol should be assigned properly' do
-    @care_entry.protocol.archetype_node_id.should == 'at0003'
+    expect(@care_entry.protocol.archetype_node_id).to eq('at0003')
   end
 
   it 'guideline should be assined properly' do
-    @care_entry.guideline_id.type.should == 'care guideline'
+    expect(@care_entry.guideline_id.type).to eq('care guideline')
   end
 end
 

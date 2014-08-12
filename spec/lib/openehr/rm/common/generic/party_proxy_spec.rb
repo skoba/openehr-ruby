@@ -9,10 +9,10 @@ describe PartyProxy do
   end
 
   it 'should be an isntance of PartyProxy' do
-    @party_proxy.should be_an_instance_of PartyProxy
+    expect(@party_proxy).to be_an_instance_of PartyProxy
   end
 
   it 'exnternal_ref.namespace should be NERV' do
-    @party_proxy.external_ref.namespace.should == 'NERV'
+    expect(@party_proxy.external_ref.namespace).to eq('NERV')
   end
 end

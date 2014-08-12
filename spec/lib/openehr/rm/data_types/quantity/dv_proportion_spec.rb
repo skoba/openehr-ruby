@@ -25,49 +25,49 @@ describe DvProportion do
 
   describe 'PK_RATIO type' do
     it 'should be an instance of DvProportion' do
-      @dv_proportion0.should be_an_instance_of DvProportion
+      expect(@dv_proportion0).to be_an_instance_of DvProportion
     end
 
     it 's numerator should be equal 2' do
-      @dv_proportion0.numerator.should be_equal 2
+      expect(@dv_proportion0.numerator).to be_equal 2
     end
 
     it 's denominator should be equal 3' do
-      @dv_proportion0.denominator.should be_equal 3
+      expect(@dv_proportion0.denominator).to be_equal 3
     end
 
     it 's type should be equal 0' do
-      @dv_proportion0.type.should == 0
+      expect(@dv_proportion0.type).to eq(0)
     end
 
     it 's magnitude should be 2/3' do
-      @dv_proportion0.magnitude.should == 2.0/3.0
+      expect(@dv_proportion0.magnitude).to eq(2.0/3.0)
     end
 
     it 's accuracy should be 1' do
-      @dv_proportion0.accuracy.should == 1
+      expect(@dv_proportion0.accuracy).to eq(1)
     end
 
     it 'is_integral? should be true' do
-      @dv_proportion0.is_integral?.should be_true
+      expect(@dv_proportion0.is_integral?).to be_truthy
     end
 
     it 'should be comperable to same type DvProportion' do
       dv_propotion_type = DvProportion.new(:numerator => 3,
                                            :denominator => 4,
                                            :type => 0)
-      @dv_proportion0.is_strictly_comparable_to?(dv_propotion_type).
-        should be_true
+      expect(@dv_proportion0.is_strictly_comparable_to?(dv_propotion_type)).
+        to be_truthy
     end
 
     it 'should not be comparable to other type DvPropotion' do
-      @dv_proportion0.is_strictly_comparable_to?(@dv_proportion1).
-        should_not be_true
+      expect(@dv_proportion0.is_strictly_comparable_to?(@dv_proportion1)).
+        not_to be_truthy
     end
 
     it 'should not be comperable to other class' do
-      @dv_proportion0.is_strictly_comparable_to?(1).
-        should_not be_true
+      expect(@dv_proportion0.is_strictly_comparable_to?(1)).
+        not_to be_truthy
     end
 
     it 'should raise ArguentError with invalid type -1' do
@@ -84,7 +84,7 @@ describe DvProportion do
 
     it 's precision should be 0' do
       @dv_proportion0.precision = 0
-      @dv_proportion0.precision.should == 0
+      expect(@dv_proportion0.precision).to eq(0)
     end
 
     it 'should raise ArgumentError when is_integral? and precision !=0' do
@@ -101,7 +101,7 @@ describe DvProportion do
 
   describe 'PK_UNITARY type' do
     it 'should be an instance of DvPropotion' do
-      @dv_proportion1.should be_an_instance_of DvProportion
+      expect(@dv_proportion1).to be_an_instance_of DvProportion
     end
 
     it 'should raise ArgumentError without denominator 1' do
@@ -113,7 +113,7 @@ describe DvProportion do
 
   describe 'PK_PERCENT type' do
     it 'should be an instance of DvProportion' do
-      @dv_proportion2.should be_an_instance_of DvProportion
+      expect(@dv_proportion2).to be_an_instance_of DvProportion
     end
 
     it 'should raise ArgumentError without denominator 100' do
@@ -125,7 +125,7 @@ describe DvProportion do
 
   describe 'PK_FRACTION type' do
     it 'should be an instance of DvProportion' do
-      @dv_proportion3.should be_an_instance_of DvProportion
+      expect(@dv_proportion3).to be_an_instance_of DvProportion
     end
 
     it 'should raise ArgumentError with fractional denominator' do
@@ -143,7 +143,7 @@ describe DvProportion do
 
   describe 'PK_FRACTION_INTEGER type' do
     it 'should be an instance of DvProportion' do
-      @dv_proportion4.should be_an_instance_of DvProportion
+      expect(@dv_proportion4).to be_an_instance_of DvProportion
     end
 
     it 'should raise ArgumentError with fractional denominator' do

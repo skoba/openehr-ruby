@@ -19,30 +19,30 @@ describe ItemTree do
   end
 
   it 'should be an instance of ItemTree' do
-    @item_tree.should be_an_instance_of ItemTree
+    expect(@item_tree).to be_an_instance_of ItemTree
   end
 
   it 'first item name should be one' do
-    @item_tree.items[0].name.value.should == 'one'
+    expect(@item_tree.items[0].name.value).to eq('one')
   end
 
   it 'has valid element path' do
-    @item_tree.has_element_path?('at0002').should be_true
+    expect(@item_tree.has_element_path?('at0002')).to be_truthy
   end
 
   it 'should return false with wrong node' do
-    @item_tree.has_element_path?('at0005').should be_false
+    expect(@item_tree.has_element_path?('at0005')).to be_falsey
   end
 
   it 'path at002 should return two' do
-    @item_tree.element_at_path('at0003').name.value.should == 'two'
+    expect(@item_tree.element_at_path('at0003').name.value).to eq('two')
   end
 
   it 'path at005 should return nil' do
-    @item_tree.element_at_path('at0005').should be_nil
+    expect(@item_tree.element_at_path('at0005')).to be_nil
   end
 
   it 'should returns ItemTree as Cluster' do
-    @item_tree.as_hierarchy.name.value.should == 'item tree'
+    expect(@item_tree.as_hierarchy.name.value).to eq('item tree')
   end
 end

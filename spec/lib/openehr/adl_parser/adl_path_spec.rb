@@ -11,7 +11,7 @@ describe ADLParser do
   end
 
   it 'root path is /' do
-    @root.path.should == '/'
+    expect(@root.path).to eq('/')
   end
 
   context 'wheels' do
@@ -20,7 +20,7 @@ describe ADLParser do
     end
 
     it 'wheels path is /wheels' do
-      @wheels.path.should == '/wheels'
+      expect(@wheels.path).to eq('/wheels')
     end
 
     context 'first wheel' do
@@ -29,17 +29,17 @@ describe ADLParser do
       end
 
       it 'path is /wheels[at0001]' do
-        @first_wheel.path.should == '/wheels[at0001]'
+        expect(@first_wheel.path).to eq('/wheels[at0001]')
       end
 
       it 'description path is /wheels[at0001]/description' do
         description = @first_wheel.attributes[0]
-        description.path.should == '/wheels[at0001]/description'
+        expect(description.path).to eq('/wheels[at0001]/description')
       end
 
       it 'wheel parts path is /wheels[at0001]/parts' do
         wheel_parts = @first_wheel.attributes[1]
-        wheel_parts.path.should == '/wheels[at0001]/parts'
+        expect(wheel_parts.path).to eq('/wheels[at0001]/parts')
       end
 
       context 'parts node' do
@@ -48,7 +48,7 @@ describe ADLParser do
         end
         
         it 'parts node path is /wheels[at0001]/parts[at0002]' do
-          @parts_node.path.should == '/wheels[at0001]/parts[at0002]'
+          expect(@parts_node.path).to eq('/wheels[at0001]/parts[at0002]')
         end
 
         context 'somthing of wheel part' do
@@ -57,7 +57,7 @@ describe ADLParser do
           end
 
           it 'something of WHEEL_PART path is /wheels[at0001]/parts[at0002]/something' do
-            @something.path.should == '/wheels[at0001]/parts[at0002]/something'
+            expect(@something.path).to eq('/wheels[at0001]/parts[at0002]/something')
           end
         end
 
@@ -67,8 +67,9 @@ describe ADLParser do
           end
 
           it 'something else of WHEEL_PART path is /wheels[at0001]/parts[at0002]/something_else' do
-            @something_else.path.should ==
+            expect(@something_else.path).to eq(
               '/wheels[at0001]/parts[at0002]/something_else'
+            )
           end
         end
       end
@@ -80,17 +81,17 @@ describe ADLParser do
       end
 
       it 'path is /wheels[at0003]' do
-        @second_wheel.path.should == '/wheels[at0003]'
+        expect(@second_wheel.path).to eq('/wheels[at0003]')
       end
 
       it 'description path is /wheels[at0003]/description' do
         description = @second_wheel.attributes[0]
-        description.path.should == '/wheels[at0003]/description'
+        expect(description.path).to eq('/wheels[at0003]/description')
       end
 
       it 'wheel parts path is /wheels[at0003]/parts' do
         wheel_parts = @second_wheel.attributes[1]
-        wheel_parts.path.should == '/wheels[at0003]/parts'
+        expect(wheel_parts.path).to eq('/wheels[at0003]/parts')
       end
 
       context 'parts node' do
@@ -99,11 +100,11 @@ describe ADLParser do
         end
 
         it 'wheel parts node path is /wheels[at0003]/parts' do
-          @parts_node.path.should == '/wheels[at0003]/parts'
+          expect(@parts_node.path).to eq('/wheels[at0003]/parts')
         end
 
         it 'wheel parts node target path is /wheels[at0001]/parts[at0002]' do
-          @parts_node.target_path.should == '/wheels[at0001]/parts[at0002]'
+          expect(@parts_node.target_path).to eq('/wheels[at0001]/parts[at0002]')
         end
       end
     end
@@ -114,12 +115,12 @@ describe ADLParser do
       end
 
       it 'path is /wheels[at0004]' do
-        @third_wheel.path.should == '/wheels[at0004]'
+        expect(@third_wheel.path).to eq('/wheels[at0004]')
       end
 
       it 'description path is /wheels[at0004]/description' do
         description = @third_wheel.attributes[0]
-        description.path.should == '/wheels[at0004]/description'
+        expect(description.path).to eq('/wheels[at0004]/description')
       end
 
       context 'parts node' do
@@ -128,11 +129,11 @@ describe ADLParser do
         end
 
         it 'parts node path is /wheels[at0004]/parts' do
-          @parts_node.path.should == '/wheels[at0004]/parts'
+          expect(@parts_node.path).to eq('/wheels[at0004]/parts')
         end
 
         it 'parts node target path is /wheels[at0001]/parts[at0002]' do
-          @parts_node.target_path.should == '/wheels[at0001]/parts[at0002]'
+          expect(@parts_node.target_path).to eq('/wheels[at0001]/parts[at0002]')
         end
       end
     end
@@ -143,12 +144,12 @@ describe ADLParser do
       end
 
       it 'path is /wheels[at0005]' do
-        @fourth_wheel.path.should == '/wheels[at0005]'
+        expect(@fourth_wheel.path).to eq('/wheels[at0005]')
       end
 
       it 'description path is /wheels[at0005]/description' do
         description = @fourth_wheel.attributes[0]
-        description.path.should == '/wheels[at0005]/description'
+        expect(description.path).to eq('/wheels[at0005]/description')
       end
 
       context 'parts node' do
@@ -157,11 +158,11 @@ describe ADLParser do
         end
 
         it 'parts node path is /wheels[at0005]/parts' do
-          @parts_node.path.should == '/wheels[at0005]/parts'
+          expect(@parts_node.path).to eq('/wheels[at0005]/parts')
         end
 
         it 'parts node target path is /engine[at0001]/parts[at0002]' do
-          @parts_node.target_path.should == '/engine[at0001]/parts[at0002]'
+          expect(@parts_node.target_path).to eq('/engine[at0001]/parts[at0002]')
         end
       end
     end
@@ -169,7 +170,7 @@ describe ADLParser do
     context 'fifhth wheel' do
       it 'fifth wheel is nil' do
         fifth_wheel = @wheels.children[4]
-        fifth_wheel.should be_nil
+        expect(fifth_wheel).to be_nil
       end
     end
   end

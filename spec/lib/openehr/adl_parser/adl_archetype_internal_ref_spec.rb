@@ -13,7 +13,7 @@ describe ADLParser do
     end
 
     it 'Archetype instance is generated' do
-      @archetype.should be_instance_of Archetype
+      expect(@archetype).to be_instance_of Archetype
     end
 
     context 'attribute 1 node' do
@@ -22,11 +22,11 @@ describe ADLParser do
       end
 
       it 's path is attribute 1' do
-        @node.path.should == '/attribute1'
+        expect(@node.path).to eq('/attribute1')
       end
 
       it 's rm attribute name is SECTION' do
-        @node.rm_attribute_name.should == 'attribute1'
+        expect(@node.rm_attribute_name).to eq('attribute1')
       end
 
       context 'children' do
@@ -35,7 +35,7 @@ describe ADLParser do
         end
 
         it 's rm type name is SECTION' do
-          @child.rm_type_name.should == 'SECTION'
+          expect(@child.rm_type_name).to eq('SECTION')
         end
       end
     end
@@ -46,7 +46,7 @@ describe ADLParser do
       end
 
       it 's path is attribute 2' do
-        @node.path.should == '/attribute2'
+        expect(@node.path).to eq('/attribute2')
       end
 
       context 'child' do
@@ -55,23 +55,23 @@ describe ADLParser do
         end
 
         it 'is instance of ArchetypeInternalRef' do
-          @child.should be_an_instance_of ArchetypeInternalRef
+          expect(@child).to be_an_instance_of ArchetypeInternalRef
         end
 
         it 's target path is /attribute1' do
-          @child.target_path.should == '/attribute1'
+          expect(@child.target_path).to eq('/attribute1')
         end
 
         it 'path is /attribute2' do
-          @child.path.should == '/attribute2'
+          expect(@child.path).to eq('/attribute2')
         end
 
         it 's occurrences upper is 2' do
-          @child.occurrences.upper.should be 2
+          expect(@child.occurrences.upper).to be 2
         end
 
         it 's occurrences lower is 1' do
-          @child.occurrences.lower.should be 1
+          expect(@child.occurrences.lower).to be 1
         end
       end
 
@@ -81,7 +81,7 @@ describe ADLParser do
         end
 
         it 's path is /attribute3' do
-          @node.path.should == '/attribute3'
+          expect(@node.path).to eq('/attribute3')
         end
 
         context 'child1' do
@@ -90,15 +90,15 @@ describe ADLParser do
           end
 
           it 's path is /attribute3' do
-            @child1.path.should == '/attribute3'
+            expect(@child1.path).to eq('/attribute3')
           end
 
           it 's target path is /items[at0001]' do
-            @child1.target_path.should == '/items[at0001]'
+            expect(@child1.target_path).to eq('/items[at0001]')
           end
 
           it 's rm type name is COMPLEX_OBJECT' do
-            @child1.rm_type_name.should == 'COMPLEX_OBJECT'
+            expect(@child1.rm_type_name).to eq('COMPLEX_OBJECT')
           end
         end
 
@@ -108,15 +108,15 @@ describe ADLParser do
           end
 
           it 's path is /attribute3' do
-            @child2.path.should == '/attribute3'
+            expect(@child2.path).to eq('/attribute3')
           end
 
           it 's target path is /items[at0002]' do
-            @child2.target_path.should == '/items[at0002]'
+            expect(@child2.target_path).to eq('/items[at0002]')
           end
 
           it 's rm_type_name is COMPLEX_OBJECT' do
-            @child2.rm_type_name.should == 'COMPLEX_OBJECT'
+            expect(@child2.rm_type_name).to eq('COMPLEX_OBJECT')
           end
         end
       end

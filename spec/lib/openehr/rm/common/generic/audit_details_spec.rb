@@ -18,23 +18,23 @@ describe AuditDetails do
   end
 
   it 'should be an instance of AuditDetails' do
-    @audit_details.should be_an_instance_of AuditDetails
+    expect(@audit_details).to be_an_instance_of AuditDetails
   end
 
   it 'system_id should be MAGI' do
-    @audit_details.system_id.should == 'MAGI'
+    expect(@audit_details.system_id).to eq('MAGI')
   end
 
   it 'committer namespece should be UNKNOWN' do
-    @audit_details.committer.namespace.should == 'UNKNOWN'
+    expect(@audit_details.committer.namespace).to eq('UNKNOWN')
   end
 
   it 'change_type.value should be creation' do
-    @audit_details.change_type.value.should == 'creation'
+    expect(@audit_details.change_type.value).to eq('creation')
   end
 
   it 'description should be test environment' do
-    @audit_details.description.value.should == 'test environment'
+    expect(@audit_details.description.value).to eq('test environment')
   end
 
   it 'should raise ArgumentError when system_id was assigned nil' do

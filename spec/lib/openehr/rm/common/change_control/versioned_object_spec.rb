@@ -48,89 +48,90 @@ describe VersionedObject do
   end
 
   it 'should be an instance of VersionedObject' do
-    @versioned_object.should be_an_instance_of VersionedObject
+    expect(@versioned_object).to be_an_instance_of VersionedObject
   end
 
   it 'uid value should be STU::VWX::5' do
-    @versioned_object.uid.value.should == 'STU::VWX::5'
+    expect(@versioned_object.uid.value).to eq('STU::VWX::5')
   end
 
   it 'owner_id namespace should be test' do
-    @versioned_object.owner_id.namespace.should == 'test'
+    expect(@versioned_object.owner_id.namespace).to eq('test')
   end
 
   it 'all_versions.size should be 3' do
-    @versioned_object.all_versions.size.should == 3
+    expect(@versioned_object.all_versions.size).to eq(3)
   end
 
   it 'version_count should be 3' do
-    @versioned_object.version_count.should == 3
+    expect(@versioned_object.version_count).to eq(3)
   end
 
   it 'time_created should equal 2009-11-09T09:53:22' do
-    @versioned_object.time_created.value.should == '2009-11-09T09:53:22'
+    expect(@versioned_object.time_created.value).to eq('2009-11-09T09:53:22')
   end
 
   it 'all_version_ids should return all ids of versions' do
     ids = @versioned_object.all_version_ids
     ids.each do |id|
-      %w(ABC::DEF::1 GHI::JKL::2 MNO::PQR::3).should include id.value
+      expect(%w(ABC::DEF::1 GHI::JKL::2 MNO::PQR::3)).to include id.value
     end
   end
 
   it 'should have version id ABC::DEF::1' do
     object_version_id = ObjectVersionID.new(:value => 'ABC::DEF::1')
-    @versioned_object.has_version_id?(object_version_id).should be_true
+    expect(@versioned_object.has_version_id?(object_version_id)).to be_truthy
   end
 
   it 'should not have version id BCD::EFG::12' do
     object_version_id = ObjectVersionID.new(:value => 'BCD::EFG::12')
-    @versioned_object.has_version_id?(object_version_id).should be_false
+    expect(@versioned_object.has_version_id?(object_version_id)).to be_falsey
   end
 
   it 'ABC::DEF::1 should not be original version' do
     object_version_id = ObjectVersionID.new(:value => 'ABC::DEF::1')
-    @versioned_object.is_original_version?(object_version_id).should be_false
+    expect(@versioned_object.is_original_version?(object_version_id)).to be_falsey
   end
 
   it 'GHI::JKL::2 should be original version' do
     object_version_id = ObjectVersionID.new(:value => 'GHI::JKL::2')
-    @versioned_object.is_original_version?(object_version_id).should be_true
+    expect(@versioned_object.is_original_version?(object_version_id)).to be_truthy
   end
 
   it 'should have 2009-07-15T09:24:26 committed version' do
     exist_time = DvDateTime.new(:value => '2009-07-15T09:24:26')
-    @versioned_object.has_version_at_time?(exist_time).should be_true
+    expect(@versioned_object.has_version_at_time?(exist_time)).to be_truthy
   end
 
   it 'should retrun version3 with id MNO::PQR::3' do
     uid = ObjectVersionID.new(:value => 'MNO::PQR::3')
-    @versioned_object.version_with_id(uid).commit_audit.time_committed.
-      should == DvDateTime.new(:value => '2009-07-15T09:24:26')
+    expect(@versioned_object.version_with_id(uid).commit_audit.time_committed).
+      to eq(DvDateTime.new(:value => '2009-07-15T09:24:26'))
   end
 
   it 'should return version2 with 2008-12-12T19:32:14' do
     exist_date = DvDateTime.new(:value => '2008-12-12T19:32:14')
-    @versioned_object.version_at_time(exist_date).lifecycle_state.
-      defining_code.code_string.should == '553'
+    expect(@versioned_object.version_at_time(exist_date).lifecycle_state.
+      defining_code.code_string).to eq('553')
   end
 
   it 'latest_version should return version3' do
-    @versioned_object.latest_version.uid.value.should == 'MNO::PQR::3'
+    expect(@versioned_object.latest_version.uid.value).to eq('MNO::PQR::3')
   end
 
   it 'latest_trunk_version should return ABC::DEF::1' do
-    @versioned_object.latest_trunk_version.uid.value.should ==
+    expect(@versioned_object.latest_trunk_version.uid.value).to eq(
       'ABC::DEF::1'
+    )
   end
 
   it 'trunk_lifecycle_state should return 532' do
-    @versioned_object.trunk_lifecycle_state.defining_code.
-      code_string.should == '532'
+    expect(@versioned_object.trunk_lifecycle_state.defining_code.
+      code_string).to eq('532')
   end
 
   it 'revision_history items are 3' do
-    @versioned_object.revision_history.items.size.should == 3
+    expect(@versioned_object.revision_history.items.size).to eq(3)
   end
 
   it 'should be able to commit original version' do
@@ -150,7 +151,7 @@ describe VersionedObject do
                               :data => 'data',
                               :attestations => attestations,
                               :signature => 'A41bdad')
-    @versioned_object.all_versions.size.should == 4
+    expect(@versioned_object.all_versions.size).to eq(4)
   end
 
   it 'should raise ArgumentError with invalid preceeding version' do
@@ -161,7 +162,7 @@ describe VersionedObject do
     defining_code = double(CodePhrase, :code_string => '523')
     lifecycle_state = double(DvCodedText, :defining_code => defining_code)
     attestations = double(Array, :empty? => false)
-    lambda {
+    expect {
       @versioned_object.
       commit_original_version(:contribution => contribution,
                               :uid => uid,
@@ -171,7 +172,7 @@ describe VersionedObject do
                               :data => 'data',
                               :attestations => attestations,
                               :signature => 'A41bdad')
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should be able to commit original merged version' do
@@ -192,7 +193,7 @@ describe VersionedObject do
                               :data => 'merged data',
                               :attestations => attestations,
                               :signature => 'dc3dbdad')
-    @versioned_object.latest_version.data.should == 'merged data'
+    expect(@versioned_object.latest_version.data).to eq('merged data')
   end
 
   it 'should be able to commit imported_version' do
@@ -214,8 +215,8 @@ describe VersionedObject do
     @versioned_object.commit_imported_version(:contribution => contribution,
                                               :commit_audit => audit,
                                               :item => original_version)
-    @versioned_object.latest_version.commit_audit.time_committed.value.
-      should == '2009-11-09T23:42:18'
+    expect(@versioned_object.latest_version.commit_audit.time_committed.value).
+      to eq('2009-11-09T23:42:18')
   end
 
   it 'should be able to commit attestation' do
@@ -224,8 +225,8 @@ describe VersionedObject do
     @versioned_object.commit_attestation(:attestation => attestation,
                                          :uid => uid,
                                          :signature => 'CDAEbad')
-    @versioned_object.version_with_id(uid).signature.
-      should == 'CDAEbad'
+    expect(@versioned_object.version_with_id(uid).signature).
+      to eq('CDAEbad')
   end
 
   it 'should raise ArgumentError when time_created is nil' do

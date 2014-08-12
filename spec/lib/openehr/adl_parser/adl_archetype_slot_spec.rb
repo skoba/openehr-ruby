@@ -14,23 +14,23 @@ describe ADLParser do
     end
 
     it 'is an isntance of ArchetypeSlot' do
-      @slot.should be_an_instance_of ArchetypeSlot
+      expect(@slot).to be_an_instance_of ArchetypeSlot
     end
 
     it 's rm_type name is SECTION' do
-      @slot.rm_type_name.should == 'SECTION'
+      expect(@slot.rm_type_name).to eq('SECTION')
     end
 
     it 's node_id is at0000' do
-      @slot.node_id.should == 'at0001'
+      expect(@slot.node_id).to eq('at0001')
     end
 
     it 's occurrences upper is 1' do
-      @slot.occurrences.upper.should be 1
+      expect(@slot.occurrences.upper).to be 1
     end
 
     it 's occurrences lower is 0' do
-      @slot.occurrences.lower.should be 0
+      expect(@slot.occurrences.lower).to be 0
     end
 
     context 'include' do
@@ -38,7 +38,7 @@ describe ADLParser do
         @includes = @slot.includes
       end
       it 's includes 1 constraint' do
-        @includes.size.should be 1
+        expect(@includes.size).to be 1
       end
 
       context 'assert expression node' do
@@ -47,11 +47,11 @@ describe ADLParser do
         end
 
         it 'item is an instance of ExprBinaryOperator' do
-          @item.should be_an_instance_of ExprBinaryOperator
+          expect(@item).to be_an_instance_of ExprBinaryOperator
         end
 
         it 'operator is OP_MATCHES' do
-          @item.operator.should == OperatorKind::OP_MATCHES
+          expect(@item.operator).to eq(OperatorKind::OP_MATCHES)
         end
         
         context 'left operand' do
@@ -60,11 +60,11 @@ describe ADLParser do
           end
 
           it 'is instance of ExprLeaf' do
-            @left_operand.should be_an_instance_of ExprLeaf
+            expect(@left_operand).to be_an_instance_of ExprLeaf
           end
 
           it 's item is domain_concept' do
-            @left_operand.item.should == 'domain_concept'
+            expect(@left_operand.item).to eq('domain_concept')
           end
         end
 
@@ -74,15 +74,15 @@ describe ADLParser do
           end
 
           it 'is an instance of ExprLeaf' do
-            @right_operand.should be_an_instance_of ExprLeaf
+            expect(@right_operand).to be_an_instance_of ExprLeaf
           end
 
           it 's item type is CString' do
-            @right_operand.item.should be_an_instance_of CString
+            expect(@right_operand.item).to be_an_instance_of CString
           end
 
           it 's item pattern is /blood_pressure.v1/' do
-            @right_operand.item.pattern.should == '/blood_pressure.v1/'
+            expect(@right_operand.item.pattern).to eq('/blood_pressure.v1/')
           end
         end
       end
@@ -94,7 +94,7 @@ describe ADLParser do
       end
 
       it 's excludes 2 cnstraints' do
-        @excludes.size.should be 2
+        expect(@excludes.size).to be 2
       end
 
       context '1st node' do
@@ -103,11 +103,11 @@ describe ADLParser do
         end
 
         it 'is an instance of ExprBinaryOperator' do
-          @node.should be_an_instance_of ExprBinaryOperator
+          expect(@node).to be_an_instance_of ExprBinaryOperator
         end
 
         it 's operator is OP_MATCHES' do
-          @node.operator.should == OperatorKind::OP_MATCHES
+          expect(@node.operator).to eq(OperatorKind::OP_MATCHES)
         end
 
         context 'left operand' do
@@ -116,11 +116,11 @@ describe ADLParser do
           end
 
           it 'is an instance of ExprLeaf' do
-            @left_operand.should be_an_instance_of ExprLeaf
+            expect(@left_operand).to be_an_instance_of ExprLeaf
           end
 
           it 's item type is domain_concept' do
-            @left_operand.item.should == 'domain_concept'
+            expect(@left_operand.item).to eq('domain_concept')
           end
         end
 
@@ -130,15 +130,15 @@ describe ADLParser do
           end
 
           it 'is an instance of ExprLeaf' do
-            @right_operand.should be_an_instance_of ExprLeaf
+            expect(@right_operand).to be_an_instance_of ExprLeaf
           end
 
           it 's item should be an instance of CString' do
-            @right_operand.item.should be_an_instance_of CString
+            expect(@right_operand.item).to be_an_instance_of CString
           end
 
           it 's item pattern is /blood_pressure.v2/' do
-            @right_operand.item.pattern.should == '/blood_pressure.v2/'
+            expect(@right_operand.item.pattern).to eq('/blood_pressure.v2/')
           end
         end
       end
@@ -149,11 +149,11 @@ describe ADLParser do
         end
 
         it 'is an instance of ExprBinaryOperator' do
-          @node.should be_an_instance_of ExprBinaryOperator
+          expect(@node).to be_an_instance_of ExprBinaryOperator
         end
 
         it 's operator is OP_MATCHES' do
-          @node.operator.should == OperatorKind::OP_MATCHES
+          expect(@node.operator).to eq(OperatorKind::OP_MATCHES)
         end
 
         context 'left operand' do
@@ -162,11 +162,11 @@ describe ADLParser do
           end
 
           it 'is an instance of ExprLeaf' do
-            @left_operand.should be_an_instance_of ExprLeaf
+            expect(@left_operand).to be_an_instance_of ExprLeaf
           end
 
           it 's item is domain_concept' do
-            @left_operand.item.should == 'domain_concept'
+            expect(@left_operand.item).to eq('domain_concept')
           end
         end
 
@@ -176,15 +176,15 @@ describe ADLParser do
           end
 
           it 'is an instance of ExprLeaf' do
-            @right_operand.should be_an_instance_of ExprLeaf
+            expect(@right_operand).to be_an_instance_of ExprLeaf
           end
 
           it 's item type is CString' do
-            @right_operand.item.should be_an_instance_of CString
+            expect(@right_operand.item).to be_an_instance_of CString
           end
 
           it 's item pattern is /.*/' do
-            @right_operand.item.pattern.should == '/.*/'
+            expect(@right_operand.item.pattern).to eq('/.*/')
           end
         end
       end

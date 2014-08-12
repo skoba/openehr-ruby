@@ -7,6 +7,6 @@ describe DvCount do
   end
 
   it 'should be an instance of DvCount' do
-    @dv_count.should be_an_instance_of DvCount
+    expect(@dv_count).to be_an_instance_of DvCount
   end
 end

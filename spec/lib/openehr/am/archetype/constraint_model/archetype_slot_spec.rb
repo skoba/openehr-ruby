@@ -16,11 +16,11 @@ describe ArchetypeSlot do
   end
 
   it 'should be an instance of ArchetypeSlot' do
-    @archetype_slot.should be_an_instance_of ArchetypeSlot
+    expect(@archetype_slot).to be_an_instance_of ArchetypeSlot
   end
 
   it 'includes should be assigned properly' do
-    @archetype_slot.includes.size.should be_equal 2
+    expect(@archetype_slot.includes.size).to be_equal 2
   end
 
   it 'should raise ArgumentError when includes are empty' do
@@ -30,7 +30,7 @@ describe ArchetypeSlot do
   end
 
   it 'excludes should be assigned properly' do
-    @archetype_slot.excludes.size.should be_equal 10
+    expect(@archetype_slot.excludes.size).to be_equal 10
   end
 
   it 'should raise ArgumentError when excludes are empty' do
@@ -40,22 +40,22 @@ describe ArchetypeSlot do
   end
 
   it 'any_allowed should be false when includes and excludes are not nil' do
-    @archetype_slot.should_not be_any_allowed
+    expect(@archetype_slot).not_to be_any_allowed
   end
 
   it 'any_allowed should be false when includes are nil and excludes are not nil' do
     @archetype_slot.includes = nil
-    @archetype_slot.should_not be_any_allowed
+    expect(@archetype_slot).not_to be_any_allowed
   end
 
   it 'any_allowed should be false when includes are not nil and excludes are nil' do
     @archetype_slot.excludes = nil
-    @archetype_slot.should_not be_any_allowed
+    expect(@archetype_slot).not_to be_any_allowed
   end
 
   it 'any_allowed should be true when includes and excludes are nil' do
     @archetype_slot.includes = nil
     @archetype_slot.excludes = nil
-    @archetype_slot.should be_any_allowed
+    expect(@archetype_slot).to be_any_allowed
   end
 end

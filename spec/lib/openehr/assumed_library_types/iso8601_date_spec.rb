@@ -7,27 +7,27 @@ describe ISO8601Date do
   end
 
   it 'should be an instance of ISO8601Date' do
-    @iso8601date.should be_an_instance_of ISO8601Date
+    expect(@iso8601date).to be_an_instance_of ISO8601Date
   end
 
   it 'year should be equal 2009' do
-    @iso8601date.year.should be_equal 2009
+    expect(@iso8601date.year).to be_equal 2009
   end
 
   it 'month should be equal 9' do
-    @iso8601date.month.should be_equal 9
+    expect(@iso8601date.month).to be_equal 9
   end
 
   it 'day should be equal 10' do
-    @iso8601date.day.should be_equal 10
+    expect(@iso8601date.day).to be_equal 10
   end
 
   it 'should be 2009-09-10 as_string' do
-    @iso8601date.as_string.should == '2009-09-10'
+    expect(@iso8601date.as_string).to eq('2009-09-10')
   end
 
   it 'should be extended ' do
-    @iso8601date.is_extended?.should be_true
+    expect(@iso8601date.is_extended?).to be_truthy
   end
 
   it 'should parse vaild date form' do
@@ -35,11 +35,11 @@ describe ISO8601Date do
   end
 
   it 'should parse valid adte form' do
-    ISO8601Date.should be_valid_iso8601_date '2009-09-22'
+    expect(ISO8601Date).to be_valid_iso8601_date '2009-09-22'
   end
 
   it 'should not parse invalid date form' do
-    ISO8601Date.should_not be_valid_iso8601_date '2009-13-54'
+    expect(ISO8601Date).not_to be_valid_iso8601_date '2009-13-54'
   end
 
   describe 'year behavior' do
@@ -111,7 +111,7 @@ describe ISO8601Date do
       end
 
       it '2009 should not be leap year' do
-        @iso8601date.should_not be_leapyear 2009
+        expect(@iso8601date).not_to be_leapyear 2009
       end
 
       it '2009-02-28 should not raise ArgumentError' do
@@ -129,7 +129,7 @@ describe ISO8601Date do
       end
 
       it '2008 should be leap year' do
-        @iso8601date.should be_leapyear 2008
+        expect(@iso8601date).to be_leapyear 2008
       end
 
       it '2008-02-29 should not raise ArgumentError' do
@@ -146,8 +146,8 @@ describe ISO8601Date do
         @iso8601date.year = 2000
       end
 
-      it 'should not leapyear' do
-        @iso8601date.should be_leapyear 2000
+      it 'is leapyear' do
+        expect(@iso8601date.leapyear? 2000).to be_truthy
       end
 
       it '2000-02-29 should not raise ArgumentError' do
@@ -187,15 +187,15 @@ describe ISO8601Date do
       end
       
       it 'day should be unknown' do
-        @iso8601date.should be_day_unknown
+        expect(@iso8601date).to be_day_unknown
       end
       
       it 'should be 2009-09 as string' do
-        @iso8601date.as_string.should == '2009-09'
+        expect(@iso8601date.as_string).to eq('2009-09')
       end
       
       it 'should be partial' do
-        @iso8601date.is_partial?.should be_true
+        expect(@iso8601date.is_partial?).to be_truthy
       end
       
       it 'constructor pass partial date' do
@@ -222,7 +222,7 @@ describe ISO8601Date do
       end
 
       it 's as_string should be 2009' do
-        @iso8601date.as_string.should == '2009'
+        expect(@iso8601date.as_string).to eq('2009')
       end
 
       it 'constructor pass only year data' do

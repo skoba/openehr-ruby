@@ -13,11 +13,11 @@ describe GenericEntry do
   end
 
   it 'should be an instance of GenericEntry' do
-    @generic_entry.should be_an_instance_of GenericEntry
+    expect(@generic_entry).to be_an_instance_of GenericEntry
   end
 
   it 'data should be assigned properly' do
-    @generic_entry.data.archetype_node_id.should == 'at0003'
+    expect(@generic_entry.data.archetype_node_id).to eq('at0003')
   end
 
   it 'should raise ArgumentError when data are nil' do

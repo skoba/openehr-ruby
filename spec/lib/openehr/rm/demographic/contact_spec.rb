@@ -16,30 +16,30 @@ describe Contact do
   end
 
   it 'should be an instance of Contact' do
-    @contact.should be_an_instance_of Contact
+    expect(@contact).to be_an_instance_of Contact
   end
 
   it 'addresses should be assigned properly' do
-    @contact.addresses.size.should == 2
+    expect(@contact.addresses.size).to eq(2)
   end
 
   it 'should raise ArgumentError with nil address' do
-    lambda {
+    expect {
       @contact.addresses = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty addresses' do
-    lambda {
+    expect {
       @contact.addresses = [ ]
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'time_validity should be assigned properly' do
-    @contact.time_validity.upper.value.should == '2009-11-20'
+    expect(@contact.time_validity.upper.value).to eq('2009-11-20')
   end
 
   it 'purpose should be inherit as name' do
-    @contact.purpose.value.should == 'contact'
+    expect(@contact.purpose.value).to eq('contact')
   end
 end

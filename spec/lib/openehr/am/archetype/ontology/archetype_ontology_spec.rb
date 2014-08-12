@@ -26,71 +26,71 @@ describe ArchetypeOntology do
   end
 
   it 'should be an instance of ArchetypeOntology' do
-    @archetype_ontology.should be_an_instance_of ArchetypeOntology
+    expect(@archetype_ontology).to be_an_instance_of ArchetypeOntology
   end
 
   it 'specialisation depth should be assigned properly' do
-    @archetype_ontology.specialisation_depth.should be_equal 0
+    expect(@archetype_ontology.specialisation_depth).to be_equal 0
   end
 
   it 'primary language is ja' do
-    @archetype_ontology.primary_language.should == 'ja'
+    expect(@archetype_ontology.primary_language).to eq('ja')
   end
 
   it 'languages available are ja, en' do
-    @archetype_ontology.languages_available.should == ['ja', 'en']
+    expect(@archetype_ontology.languages_available).to eq(['ja', 'en'])
   end
 
   it 'term_definition should be assigned properly' do
-    @archetype_ontology.term_definition(:lang => 'ja', :code => 'at0000').items['text'].should == 'Archetype Concept'
+    expect(@archetype_ontology.term_definition(:lang => 'ja', :code => 'at0000').items['text']).to eq('Archetype Concept')
   end
 
   it 'term_codes should returnd all at codes' do
-    @archetype_ontology.term_codes.should == ['at0000','at0001']
+    expect(@archetype_ontology.term_codes).to eq(['at0000','at0001'])
   end
 
   it 'constraint_definitions should be assigned properly' do
-    @archetype_ontology.constraint_definition(:lang => 'ja', :code => 'ac0003').items['text'].
-      should == 'test'
+    expect(@archetype_ontology.constraint_definition(:lang => 'ja', :code => 'ac0003').items['text']).
+      to eq('test')
   end
 
   it 'constrant_codes should return all ac codes' do
-    @archetype_ontology.constraint_codes.should == ['ac0003']
+    expect(@archetype_ontology.constraint_codes).to eq(['ac0003'])
   end
 
   it 'term_bindings should be assigned properly' do
-    @archetype_ontology.term_bindings['SNOMED-CT(2003)']['at0000'].
-      code_string.should == '163020007'
+    expect(@archetype_ontology.term_bindings['SNOMED-CT(2003)']['at0000'].
+      code_string).to eq('163020007')
   end
 
   it 'terminologies_available should return available terminology' do
-    @archetype_ontology.terminologies_available.should == ['SNOMED-CT(2003)']
+    expect(@archetype_ontology.terminologies_available).to eq(['SNOMED-CT(2003)'])
   end
 
   it 'has language ja' do
-    @archetype_ontology.should have_language 'ja'
+    expect(@archetype_ontology).to have_language 'ja'
   end
 
   it 'has language en' do
-    @archetype_ontology.should have_language 'en'
+    expect(@archetype_ontology).to have_language 'en'
   end
 
   it 'does not have language es' do
-    @archetype_ontology.should_not have_language 'es'
+    expect(@archetype_ontology).not_to have_language 'es'
   end
 
   it 'has terminology SNOMED-CT(2003)' do
-    @archetype_ontology.should have_terminology 'SNOMED-CT(2003)'
+    expect(@archetype_ontology).to have_terminology 'SNOMED-CT(2003)'
   end
 
   it 'does not have MHLW code' do
-    @archetype_ontology.should_not have_terminology 'MHLW'
+    expect(@archetype_ontology).not_to have_terminology 'MHLW'
   end
 
   it 'term binding code_string is 163020007' do
-    @archetype_ontology.term_binding(:terminology => 'SNOMED-CT(2003)',
-                                     :code => 'at0000').code_string.
-      should == '163020007'
+    expect(@archetype_ontology.term_binding(:terminology => 'SNOMED-CT(2003)',
+                                     :code => 'at0000').code_string).
+      to eq('163020007')
   end
 end
                             

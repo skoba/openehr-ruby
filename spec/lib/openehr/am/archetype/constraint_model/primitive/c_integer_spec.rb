@@ -11,33 +11,33 @@ describe CInteger do
   end
 
   it 'should be an instance of CInteger' do
-    @c_integer.should be_an_instance_of CInteger
+    expect(@c_integer).to be_an_instance_of CInteger
   end
 
   it 'type is DvInteger' do
-    @c_integer.type.should == 'Integer'
+    expect(@c_integer.type).to eq('Integer')
   end
 
   it 'should raise ArgumentError if both range and list are nil' do
-    lambda {
+    expect {
       @c_integer.list = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   describe 'list method' do
     it 'constructor should assign list properly' do
-      @c_integer.list.should == [1,2]
+      expect(@c_integer.list).to eq([1,2])
     end
 
     it 'list method should re-assign properly' do
       @c_integer.list = [2,3]
-      @c_integer.list.should == [2,3]
+      expect(@c_integer.list).to eq([2,3])
     end
 
     it 'should be raise ArgumentError if both list and range are not nil' do
-      lambda {
+      expect {
         @c_integer.range = Interval.new(:lower => 1,:upper =>3)
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 
@@ -50,18 +50,18 @@ describe CInteger do
     end
 
     it 'constructor should assign range properly' do
-      @c_integer.range.lower.should be_equal 0
+      expect(@c_integer.range.lower).to be_equal 0
     end
 
     it 'range method should re-assigne properly' do
       @c_integer.range = Interval.new(:lower => 20)
-      @c_integer.range.lower.should be_equal 20
+      expect(@c_integer.range.lower).to be_equal 20
     end
 
     it 'should raise ArgumentError if bhot range and list are not nil' do
-      lambda {
+      expect {
         @c_integer.list = [10,100]
-      }.should raise_error ArgumentError
+      }.to raise_error ArgumentError
     end
   end
 end

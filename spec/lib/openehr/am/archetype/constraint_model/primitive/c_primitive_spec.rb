@@ -11,28 +11,28 @@ describe CPrimitive do
   end
 
   it 'should be an instance of CPrimitive' do
-    @c_primitive.should be_an_instance_of CPrimitive
+    expect(@c_primitive).to be_an_instance_of CPrimitive
   end
 
   it 'type is ANY' do
-    @c_primitive.type.should == 'ANY'
+    expect(@c_primitive.type).to eq('ANY')
   end
 
   it 'default value should be assigned properly' do
-    @c_primitive.default_value.value.should == 'DEFAULT'
+    expect(@c_primitive.default_value.value).to eq('DEFAULT')
   end
 
   it 'assumed_value should be assigned properly' do
-    @c_primitive.assumed_value.value.should == 'ASSUMED'
+    expect(@c_primitive.assumed_value.value).to eq('ASSUMED')
   end
 
   it 'should be true when assumed_value is assigned' do
-    @c_primitive.should have_assumed_value
+    expect(@c_primitive).to have_assumed_value
   end
 
   it 'should not be true when assumed_value is not assigned' do
     @c_primitive.assumed_value = nil
-    @c_primitive.should_not have_assumed_value
+    expect(@c_primitive).not_to have_assumed_value
   end
 
   it 'type should not empty' do

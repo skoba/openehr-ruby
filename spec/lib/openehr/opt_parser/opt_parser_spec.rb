@@ -53,19 +53,19 @@ module OpenEHR
           end
 
           it 'lower included is true' do
-            expect(opt.definition.occurrences.lower_included?).to be_true
+            expect(opt.definition.occurrences.lower_included?).to be_truthy
           end
 
           it 'upper included is true' do
-            expect(opt.definition.occurrences.upper_included?).to be_true
+            expect(opt.definition.occurrences.upper_included?).to be_truthy
           end
 
           it 'lower_unbounded is false' do
-            expect(opt.definition.occurrences.lower_unbounded?).to be_false
+            expect(opt.definition.occurrences.lower_unbounded?).to be_falsey
           end
 
           it 'upper_unbounded is false' do
-            expect(opt.definition.occurrences.upper_unbounded?).to be_false
+            expect(opt.definition.occurrences.upper_unbounded?).to be_falsey
           end
         end
 

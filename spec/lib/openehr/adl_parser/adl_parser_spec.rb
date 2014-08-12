@@ -12,7 +12,7 @@ describe OpenEHR::Parser::ADLParser do
     end
 
     it 'is an instance fo ADLParser' do
-      @ap.should be_an_instance_of OpenEHR::Parser::ADLParser
+      expect(@ap).to be_an_instance_of OpenEHR::Parser::ADLParser
     end
 
     context 'openEHR-EHR-SECTION.summary.v1 parse' do
@@ -22,24 +22,25 @@ describe OpenEHR::Parser::ADLParser do
         end
 
         it 'archetype is an instance of Archetype' do
-          @archetype.should be_an_instance_of OpenEHR::AM::Archetype::Archetype
+          expect(@archetype).to be_an_instance_of OpenEHR::AM::Archetype::Archetype
         end
 
         it 'archetype_id should be openEHR-EHR-SECTION-summary' do
-          @archetype.archetype_id.value.should == 
+          expect(@archetype.archetype_id.value).to eq( 
             'openEHR-EHR-SECTION.summary.v1'
+          )
         end
 
         it 'adl_version should be 1.4' do
-          @archetype.adl_version.should == '1.4'
+          expect(@archetype.adl_version).to eq('1.4')
         end
 
         it 'concept should be at0000' do
-          @archetype.concept.should == 'at0000'
+          expect(@archetype.concept).to eq('at0000')
         end
 
         it 'original language is en' do
-          @archetype.original_language.code_string.should == 'en'
+          expect(@archetype.original_language.code_string).to eq('en')
         end
 
         context 'description' do
@@ -53,19 +54,19 @@ describe OpenEHR::Parser::ADLParser do
             end
 
             it 'name is Sam Heard' do
-              @original_author['name'].should == 'Sam Heard'
+              expect(@original_author['name']).to eq('Sam Heard')
             end
 
             it 'organisation is Ocean Informatics' do
-              @original_author['organisation'].should == 'Ocean Informatics'
+              expect(@original_author['organisation']).to eq('Ocean Informatics')
             end
 
             it 'date is 9/01/2007' do
-              @original_author['date'].should == '9/01/2007'
+              expect(@original_author['date']).to eq('9/01/2007')
             end
 
             it 'email is sam.heard@oceaninformatics.biz' do
-              @original_author['email'].should == 'sam.heard@oceaninformatics.biz'
+              expect(@original_author['email']).to eq('sam.heard@oceaninformatics.biz')
             end
           end
 
@@ -80,32 +81,32 @@ describe OpenEHR::Parser::ADLParser do
               end
 
               it 'language is en' do
-                @en.language.code_string.should == 'en'
+                expect(@en.language.code_string).to eq('en')
               end 
 
               it 'purpose is A heading...' do
-                @en.purpose.should == "A heading containing summary information based on particular evaluation entries"
+                expect(@en.purpose).to eq("A heading containing summary information based on particular evaluation entries")
               end
 
               it 'use is A heading for...' do
-                @en.use.should == "A heading for organising clinical data under a heading of summary"
+                expect(@en.use).to eq("A heading for organising clinical data under a heading of summary")
               end
 
               it 'keywords are review, conclusions, risk' do
-                @en.keywords.should == ['review', 'conclusions', 'risk']
+                expect(@en.keywords).to eq(['review', 'conclusions', 'risk'])
               end
 
               it 'misuse should be nil' do
-                @en.misuse.should be_nil
+                expect(@en.misuse).to be_nil
               end
             end
 
             it 'lifecycle_state is Initial' do
-              @description.lifecycle_state.should == 'Initial'
+              expect(@description.lifecycle_state).to eq('Initial')
             end
 
             it 'other_contributors is nil' do
-              @description.other_contributors.should be_nil
+              expect(@description.other_contributors).to be_nil
             end
           end # of details
         end # of description
@@ -116,19 +117,19 @@ describe OpenEHR::Parser::ADLParser do
           end
 
           it 'rm_type is SECTION' do
-            @definition.rm_type_name.should == 'SECTION'
+            expect(@definition.rm_type_name).to eq('SECTION')
           end
 
           it 'node_id is at0000' do
-            @definition.node_id.should == 'at0000'
+            expect(@definition.node_id).to eq('at0000')
           end
 
           it 'root path is /' do
-            @definition.path.should == '/'
+            expect(@definition.path).to eq('/')
           end
 
           it 'not any allowed' do
-            @definition.any_allowed?.should == false
+            expect(@definition.any_allowed?).to eq(false)
           end
 
           context 'c_attribute specs' do
@@ -137,27 +138,27 @@ describe OpenEHR::Parser::ADLParser do
             end
 
             it 'attribute is instance of CMultipleAttribute' do
-              @attribute.should be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute
+              expect(@attribute).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute
             end
 
             it 'rm_attribute_name is items' do
-              @attribute.rm_attribute_name.should == 'items'
+              expect(@attribute.rm_attribute_name).to eq('items')
             end
 
             it 'path is /items' do
-              @attribute.path.should == '/items'
+              expect(@attribute.path).to eq('/items')
             end
 
             it 'cardinarity is unorderd' do
-              @attribute.cardinality.should_not be_ordered
+              expect(@attribute.cardinality).not_to be_ordered
             end
 
             it 'lower interval of cardinality is 0' do
-              @attribute.cardinality.interval.lower.should be 0
+              expect(@attribute.cardinality.interval.lower).to be 0
             end
 
             it 'interval of cardinality is upper unbounded' do
-              @attribute.cardinality.interval.should be_upper_unbounded
+              expect(@attribute.cardinality.interval).to be_upper_unbounded
             end
             context 'children archetype slot specs' do
               before(:all) do
@@ -165,19 +166,19 @@ describe OpenEHR::Parser::ADLParser do
               end
 
               it 'is an instance of ArchetypeSlot' do
-                @archetype_slot.should be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot
+                expect(@archetype_slot).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot
               end
 
               it 's rm type name is EVALUATION' do
-                @archetype_slot.rm_type_name.should == 'EVALUATION'
+                expect(@archetype_slot.rm_type_name).to eq('EVALUATION')
               end
 
               it 's lower of occurrences should be 0' do
-                @archetype_slot.occurrences.lower.should be 0
+                expect(@archetype_slot.occurrences.lower).to be 0
               end
 
               it 's upper of occurrences should be 1' do
-                @archetype_slot.occurrences.upper.should be 1
+                expect(@archetype_slot.occurrences.upper).to be 1
               end
 
               context 'assertions' do
@@ -191,15 +192,15 @@ describe OpenEHR::Parser::ADLParser do
                   end
 
                   it 'assertion0 should be an instance of Assertion' do
-                    @assertion0.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+                    expect(@assertion0).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'expression type of assertion0 is Boolean' do
-                    @assertion0.expression.type.should == 'Boolean'
+                    expect(@assertion0.expression.type).to eq('Boolean')
                   end
 
                   it 'expression value of assertion0 is /clinical_synopsis\.v1/' do
-                    @assertion0.expression.right_operand.item.pattern.should == '/clinical_synopsis\.v1/'
+                    expect(@assertion0.expression.right_operand.item.pattern).to eq('/clinical_synopsis\.v1/')
                   end
                 end
 
@@ -209,16 +210,17 @@ describe OpenEHR::Parser::ADLParser do
                   end
 
                   it 'assertion1 is an instanse of Assertion' do
-                    @assertion1.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+                    expect(@assertion1).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion1 type is Boolean' do
-                    @assertion1.expression.type.should == 'Boolean'
+                    expect(@assertion1.expression.type).to eq('Boolean')
                   end
 
                   it 'expression value of assertion1 is /problem\.v1/' do
-                    @assertion1.expression.right_operand.item.pattern.should ==
+                    expect(@assertion1.expression.right_operand.item.pattern).to eq(
                       '/problem\.v1/'
+                    )
                   end
                 end
 
@@ -228,16 +230,17 @@ describe OpenEHR::Parser::ADLParser do
                   end
 
                   it 'assertion2 is an instanse of Assertion' do
-                    @assertion2.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+                    expect(@assertion2).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion2 type is Boolean' do
-                    @assertion2.expression.type.should == 'Boolean'
+                    expect(@assertion2.expression.type).to eq('Boolean')
                   end
 
                   it 'expression value of Assertion2 is /problem\.v1/' do
-                    @assertion2.expression.right_operand.item.pattern.should ==
+                    expect(@assertion2.expression.right_operand.item.pattern).to eq(
                       '/problem-diagnosis\.v1/'
+                    )
                   end
                 end
 
@@ -247,16 +250,17 @@ describe OpenEHR::Parser::ADLParser do
                   end
 
                   it 'assertion3 is an instanse of Assertion' do
-                    @assertion3.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+                    expect(@assertion3).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion3 type is Boolean' do
-                    @assertion3.expression.type.should == 'Boolean'
+                    expect(@assertion3.expression.type).to eq('Boolean')
                   end
 
                   it 'expression value of assertion3 is /problem\.v1/' do
-                    @assertion3.expression.right_operand.item.pattern.should ==
+                    expect(@assertion3.expression.right_operand.item.pattern).to eq(
                       '/problem-diagnosis-histological\.v1/'
+                    )
                   end
                 end
 
@@ -266,16 +270,17 @@ describe OpenEHR::Parser::ADLParser do
                   end
 
                   it 'assertion4 is an instanse of Assertion' do
-                    @assertion4.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+                    expect(@assertion4).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion4 type is Boolean' do
-                    @assertion4.expression.type.should == 'Boolean'
+                    expect(@assertion4.expression.type).to eq('Boolean')
                   end
 
                   it 'expression value of assertion4 is /problem\.v1/' do
-                    @assertion4.expression.right_operand.item.pattern.should ==
+                    expect(@assertion4.expression.right_operand.item.pattern).to eq(
                       '/problem-genetic\.v1/'
+                    )
                   end
                 end
 
@@ -285,22 +290,23 @@ describe OpenEHR::Parser::ADLParser do
                   end
 
                   it 'assertion5 is an instanse of Assertion' do
-                    @assertion5.should be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
+                    expect(@assertion5).to be_an_instance_of OpenEHR::AM::Archetype::Assertion::Assertion
                   end
 
                   it 'Assertion5 type is Boolean' do
-                    @assertion5.expression.type.should == 'Boolean'
+                    expect(@assertion5.expression.type).to eq('Boolean')
                   end
 
                   it 'expression value of assertion5 is /problem\.v1/' do
-                    @assertion5.expression.right_operand.item.pattern.should ==
+                    expect(@assertion5.expression.right_operand.item.pattern).to eq(
                       '/risk\.v1/'
+                    )
                   end
                 end
 
                 context '7th assertion(is null)' do
                   it '7th assersion is nil' do
-                    @includes[6].should be_nil
+                    expect(@includes[6]).to be_nil
                   end
                 end
               end
@@ -314,26 +320,27 @@ describe OpenEHR::Parser::ADLParser do
           end
 
           it 'is an ArchtypeOntology instance' do
-            @archetype_ontology.should be_an_instance_of OpenEHR::AM::Archetype::Ontology::ArchetypeOntology
+            expect(@archetype_ontology).to be_an_instance_of OpenEHR::AM::Archetype::Ontology::ArchetypeOntology
           end
 
           it 'term_definitions parsed and assigned properly' do
-            @archetype_ontology.term_definition(:lang => 'en',
-               :code => 'at0000').items['text'].should == 'Summary'
+            expect(@archetype_ontology.term_definition(:lang => 'en',
+               :code => 'at0000').items['text']).to eq('Summary')
           end
 
           it 'description term_definitions parsed and assigned properly' do
-            @archetype_ontology.term_definition(:lang => 'en',
-               :code => 'at0000').items['description'].should ==
+            expect(@archetype_ontology.term_definition(:lang => 'en',
+               :code => 'at0000').items['description']).to eq(
                  'A heading for conclusions and other evaluations'
+            )
           end
 
           it 'term_codes should be assigned properly' do
-            @archetype_ontology.term_codes.should == ['at0000']
+            expect(@archetype_ontology.term_codes).to eq(['at0000'])
           end
 
           it 'ArchetypeOntology has en lang' do
-            @archetype_ontology.should have_language 'en'
+            expect(@archetype_ontology).to have_language 'en'
           end
         end
       end

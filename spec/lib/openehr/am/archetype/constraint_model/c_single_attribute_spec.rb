@@ -13,10 +13,10 @@ describe CSingleAttribute do
   end
 
   it 'should be an instance of CSingleAttribute' do
-    @c_single_attribute.should be_an_instance_of CSingleAttribute
+    expect(@c_single_attribute).to be_an_instance_of CSingleAttribute
   end
 
   it 'alternative should be assigned properly' do
-    @c_single_attribute.alternatives.size.should be_equal 5
+    expect(@c_single_attribute.alternatives.size).to be_equal 5
   end
 end

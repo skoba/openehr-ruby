@@ -23,16 +23,16 @@ describe AdminEntry do
   end
 
   it 'should be an instance of AdminEntry' do
-    @admin_entry.should be_an_instance_of AdminEntry
+    expect(@admin_entry).to be_an_instance_of AdminEntry
   end
 
   it 'data should be assigned properly' do
-    @admin_entry.data.archetype_node_id.should == 'at0002'
+    expect(@admin_entry.data.archetype_node_id).to eq('at0002')
   end
 
   it 'should raise ArgumentError when nil assigned to data' do
-    lambda {
+    expect {
       @admin_entry.data = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

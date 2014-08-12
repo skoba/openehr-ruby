@@ -9,14 +9,14 @@ describe ADLParser do
     end
 
     it 'is an instance of Archetype' do
-      @archetype.should be_an_instance_of OpenEHR::AM::Archetype::Archetype
+      expect(@archetype).to be_an_instance_of OpenEHR::AM::Archetype::Archetype
     end
 
 # If porpose in description section was nil, __unknown__ is altered
 # for backward compatibility
 
     it 'purpose is __unknown__' do
-      @archetype.description.details['en'].purpose.should == '__unknown__'
+      expect(@archetype.description.details['en'].purpose).to eq('__unknown__')
     end
   end
 end

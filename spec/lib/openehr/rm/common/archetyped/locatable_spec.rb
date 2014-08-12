@@ -22,44 +22,44 @@ describe Locatable do
   end
 
   it 'should be_an_instance_of Locatable' do
-    @locatable.should be_an_instance_of Locatable
+    expect(@locatable).to be_an_instance_of Locatable
   end
 
   it 'archetype_node_id should be at001' do
-    @locatable.archetype_node_id.should == 'at001'
+    expect(@locatable.archetype_node_id).to eq('at001')
   end
 
   it 'is_archetype_root? should be true' do
-    @locatable.is_archetype_root?.should be_true
+    expect(@locatable.is_archetype_root?).to be_truthy
   end
 
   it 'is_archetype_root? should be false when archetype_details is nil' do
     @locatable.archetype_details = nil
-    @locatable.is_archetype_root?.should be_false
+    expect(@locatable.is_archetype_root?).to be_falsey
   end
 
   it 'link size should be 10' do
-    @locatable.links.size.should == 10
+    expect(@locatable.links.size).to eq(10)
   end
 
   it 'name.value should problem/soap' do
-    @locatable.name.value.should == 'problem/SOAP'
+    expect(@locatable.name.value).to eq('problem/SOAP')
   end
 
   it 'uid.value should be ehr::localhost/3030' do
-    @locatable.uid.value.should == 'ehr::localhost/3030'
+    expect(@locatable.uid.value).to eq('ehr::localhost/3030')
   end
 
   it 'archetype_details.rm_version should be 1.2.4' do
-    @locatable.archetype_details.rm_version.should == '1.2.4'
+    expect(@locatable.archetype_details.rm_version).to eq('1.2.4')
   end
 
   it 'feeer_audit.system_id should MAGI' do
-    @locatable.feeder_audit.system_id.should == 'MAGI'
+    expect(@locatable.feeder_audit.system_id).to eq('MAGI')
   end
 
   it 'concept should be physical_examination' do
-    @locatable.concept.value.should == 'physical_examination'
+    expect(@locatable.concept.value).to eq('physical_examination')
   end
 
   it 'should raise ArgumentError with nil archetype_node_id' do

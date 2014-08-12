@@ -86,7 +86,7 @@ module OpenEHR
         if node_cache[:archetype].has_key?(index)
           cached = node_cache[:archetype][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:archetype][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -190,7 +190,7 @@ module OpenEHR
         if node_cache[:arch_identification].has_key?(index)
           cached = node_cache[:arch_identification][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_identification][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -248,7 +248,7 @@ module OpenEHR
         if node_cache[:arch_head].has_key?(index)
           cached = node_cache[:arch_head][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_head][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -271,11 +271,13 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           r4 = _nt_SYM_ARCHETYPE
           r4.extend(ArchHead2)
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -309,16 +311,16 @@ module OpenEHR
         if node_cache[:arch_meta_data].has_key?(index)
           cached = node_cache[:arch_meta_data][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_meta_data][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('(', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('(')
           r1 = nil
@@ -328,9 +330,9 @@ module OpenEHR
           r2 = _nt_arch_meta_data_items
           s0 << r2
           if r2
-            if has_terminal?(')', false, index)
-              r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(')', false, index))
+              r3 = true
+              @index += match_len
             else
               terminal_parse_failure(')')
               r3 = nil
@@ -385,7 +387,7 @@ module OpenEHR
         if node_cache[:arch_meta_data_items].has_key?(index)
           cached = node_cache[:arch_meta_data_items][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_meta_data_items][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -398,9 +400,9 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3, s3 = index, []
-            if has_terminal?(';', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(';', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(';')
               r4 = nil
@@ -485,7 +487,7 @@ module OpenEHR
         if node_cache[:arch_meta_data_item].has_key?(index)
           cached = node_cache[:arch_meta_data_item][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_meta_data_item][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -516,6 +518,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
@@ -534,6 +537,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -575,7 +579,7 @@ module OpenEHR
         if node_cache[:arch_specialisation].has_key?(index)
           cached = node_cache[:arch_specialisation][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_specialisation][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -631,7 +635,7 @@ module OpenEHR
         if node_cache[:arch_concept].has_key?(index)
           cached = node_cache[:arch_concept][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_concept][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -677,7 +681,7 @@ module OpenEHR
         if node_cache[:arch_language].has_key?(index)
           cached = node_cache[:arch_language][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_language][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -758,7 +762,7 @@ module OpenEHR
         if node_cache[:arch_description].has_key?(index)
           cached = node_cache[:arch_description][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_description][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -814,7 +818,7 @@ module OpenEHR
         if node_cache[:arch_definition].has_key?(index)
           cached = node_cache[:arch_definition][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_definition][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -864,7 +868,7 @@ module OpenEHR
         if node_cache[:arch_invariant].has_key?(index)
           cached = node_cache[:arch_invariant][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_invariant][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -966,7 +970,7 @@ module OpenEHR
         if node_cache[:arch_ontology].has_key?(index)
           cached = node_cache[:arch_ontology][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arch_ontology][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1028,7 +1032,7 @@ module OpenEHR
         if node_cache[:V_CADL_TEXT].has_key?(index)
           cached = node_cache[:V_CADL_TEXT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_CADL_TEXT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1039,9 +1043,9 @@ module OpenEHR
         r2 = _nt_c_complex_object
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -1057,15 +1061,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_assertions
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -1081,6 +1086,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -1158,7 +1164,7 @@ module OpenEHR
         if node_cache[:c_complex_object].has_key?(index)
           cached = node_cache[:c_complex_object][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_complex_object][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1197,15 +1203,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_c_complex_object_head
           s8 << r9
           if r9
-            if has_terminal?('', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r10 = nil
@@ -1221,6 +1228,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -1269,7 +1277,7 @@ module OpenEHR
         if node_cache[:c_complex_object_head].has_key?(index)
           cached = node_cache[:c_complex_object_head][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_complex_object_head][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1292,15 +1300,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_c_complex_object_id
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -1316,6 +1325,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -1370,7 +1380,7 @@ module OpenEHR
         if node_cache[:c_complex_object_id].has_key?(index)
           cached = node_cache[:c_complex_object_id][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_complex_object_id][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1397,6 +1407,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
@@ -1415,6 +1426,7 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             @index = i0
@@ -1458,7 +1470,7 @@ module OpenEHR
         if node_cache[:c_complex_object_body].has_key?(index)
           cached = node_cache[:c_complex_object_body][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_complex_object_body][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1469,9 +1481,9 @@ module OpenEHR
         r2 = _nt_c_any
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -1487,15 +1499,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_c_attributes
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -1511,6 +1524,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -1651,7 +1665,7 @@ module OpenEHR
         if node_cache[:c_object].has_key?(index)
           cached = node_cache[:c_object][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_object][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1662,9 +1676,9 @@ module OpenEHR
         r2 = _nt_c_dv_quantity
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -1680,15 +1694,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_c_ordinal
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -1704,15 +1719,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_c_primitive_object
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -1728,15 +1744,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_c_complex_object
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -1752,15 +1769,16 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 i13, s13 = index, []
                 r14 = _nt_c_code_phrase
                 s13 << r14
                 if r14
-                  if has_terminal?('', false, index)
-                    r15 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r15 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r15 = nil
@@ -1776,15 +1794,16 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r0 = r13
                 else
                   i16, s16 = index, []
                   r17 = _nt_constraint_ref
                   s16 << r17
                   if r17
-                    if has_terminal?('', false, index)
-                      r18 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                      @index += 0
+                    if (match_len = has_terminal?('', false, index))
+                      r18 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('')
                       r18 = nil
@@ -1800,15 +1819,16 @@ module OpenEHR
                     r16 = nil
                   end
                   if r16
+                    r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                     r0 = r16
                   else
                     i19, s19 = index, []
                     r20 = _nt_archetype_slot
                     s19 << r20
                     if r20
-                      if has_terminal?('', false, index)
-                        r21 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                        @index += 0
+                      if (match_len = has_terminal?('', false, index))
+                        r21 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('')
                         r21 = nil
@@ -1824,15 +1844,16 @@ module OpenEHR
                       r19 = nil
                     end
                     if r19
+                      r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                       r0 = r19
                     else
                       i22, s22 = index, []
                       r23 = _nt_archetype_internal_ref
                       s22 << r23
                       if r23
-                        if has_terminal?('', false, index)
-                          r24 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                          @index += 0
+                        if (match_len = has_terminal?('', false, index))
+                          r24 = true
+                          @index += match_len
                         else
                           terminal_parse_failure('')
                           r24 = nil
@@ -1848,15 +1869,16 @@ module OpenEHR
                         r22 = nil
                       end
                       if r22
+                        r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                         r0 = r22
                       else
                         i25, s25 = index, []
                         r26 = _nt_V_C_DOMAIN_TYPE
                         s25 << r26
                         if r26
-                          if has_terminal?('', false, index)
-                            r27 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                            @index += 0
+                          if (match_len = has_terminal?('', false, index))
+                            r27 = true
+                            @index += match_len
                           else
                             terminal_parse_failure('')
                             r27 = nil
@@ -1872,6 +1894,7 @@ module OpenEHR
                           r25 = nil
                         end
                         if r25
+                          r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
                           r0 = r25
                         else
                           @index = i0
@@ -1957,7 +1980,7 @@ module OpenEHR
         if node_cache[:archetype_internal_ref].has_key?(index)
           cached = node_cache[:archetype_internal_ref][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:archetype_internal_ref][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -1992,6 +2015,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
@@ -2018,6 +2042,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             @index = i0
@@ -2142,7 +2167,7 @@ module OpenEHR
         if node_cache[:archetype_slot].has_key?(index)
           cached = node_cache[:archetype_slot][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:archetype_slot][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -2185,6 +2210,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -2219,6 +2245,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -2253,6 +2280,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               @index = i0
@@ -2312,7 +2340,7 @@ module OpenEHR
         if node_cache[:c_archetype_slot_head].has_key?(index)
           cached = node_cache[:c_archetype_slot_head][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_archetype_slot_head][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -2339,6 +2367,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
@@ -2357,6 +2386,7 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             @index = i0
@@ -2413,7 +2443,7 @@ module OpenEHR
         if node_cache[:c_archetype_slot_id].has_key?(index)
           cached = node_cache[:c_archetype_slot_id][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_archetype_slot_id][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -2440,6 +2470,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
@@ -2458,6 +2489,7 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             @index = i0
@@ -2496,7 +2528,7 @@ module OpenEHR
         if node_cache[:c_primitive_object].has_key?(index)
           cached = node_cache[:c_primitive_object][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_primitive_object][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -2506,9 +2538,9 @@ module OpenEHR
         r1 = _nt_c_primitive
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -2530,7 +2562,7 @@ module OpenEHR
       end
 
       module CPrimitive0
-        def c_boolean
+        def c_date_time
           elements[0]
         end
 
@@ -2538,12 +2570,12 @@ module OpenEHR
 
       module CPrimitive1
         def value
-          c_boolean.value
+          c_date_time.value
         end
       end
 
       module CPrimitive2
-        def c_date_time
+        def c_time
           elements[0]
         end
 
@@ -2551,12 +2583,12 @@ module OpenEHR
 
       module CPrimitive3
         def value
-          c_date_time.value
+          c_time.value
         end
       end
 
       module CPrimitive4
-        def c_time
+        def c_date
           elements[0]
         end
 
@@ -2564,12 +2596,12 @@ module OpenEHR
 
       module CPrimitive5
         def value
-          c_time.value
+          c_date.value
         end
       end
 
       module CPrimitive6
-        def c_date
+        def c_duration
           elements[0]
         end
 
@@ -2577,12 +2609,12 @@ module OpenEHR
 
       module CPrimitive7
         def value
-          c_date.value
+          c_duration.value
         end
       end
 
       module CPrimitive8
-        def c_duration
+        def c_real
           elements[0]
         end
 
@@ -2590,12 +2622,12 @@ module OpenEHR
 
       module CPrimitive9
         def value
-          c_duration.value
+          c_real.value
         end
       end
 
       module CPrimitive10
-        def c_real
+        def c_integer
           elements[0]
         end
 
@@ -2603,12 +2635,12 @@ module OpenEHR
 
       module CPrimitive11
         def value
-          c_real.value
+          c_integer.value
         end
       end
 
       module CPrimitive12
-        def c_integer
+        def c_boolean
           elements[0]
         end
 
@@ -2616,7 +2648,7 @@ module OpenEHR
 
       module CPrimitive13
         def value
-          c_integer.value
+          c_boolean.value
         end
       end
 
@@ -2638,7 +2670,7 @@ module OpenEHR
         if node_cache[:c_primitive].has_key?(index)
           cached = node_cache[:c_primitive][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_primitive][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -2646,12 +2678,12 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        r2 = _nt_c_boolean
+        r2 = _nt_c_date_time
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -2667,15 +2699,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
-          r5 = _nt_c_date_time
+          r5 = _nt_c_time
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -2691,15 +2724,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
-            r8 = _nt_c_time
+            r8 = _nt_c_date
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -2715,15 +2749,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
-              r11 = _nt_c_date
+              r11 = _nt_c_duration
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -2739,15 +2774,16 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 i13, s13 = index, []
-                r14 = _nt_c_duration
+                r14 = _nt_c_real
                 s13 << r14
                 if r14
-                  if has_terminal?('', false, index)
-                    r15 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r15 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r15 = nil
@@ -2763,15 +2799,16 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r0 = r13
                 else
                   i16, s16 = index, []
-                  r17 = _nt_c_real
+                  r17 = _nt_c_integer
                   s16 << r17
                   if r17
-                    if has_terminal?('', false, index)
-                      r18 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                      @index += 0
+                    if (match_len = has_terminal?('', false, index))
+                      r18 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('')
                       r18 = nil
@@ -2787,15 +2824,16 @@ module OpenEHR
                     r16 = nil
                   end
                   if r16
+                    r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                     r0 = r16
                   else
                     i19, s19 = index, []
-                    r20 = _nt_c_integer
+                    r20 = _nt_c_boolean
                     s19 << r20
                     if r20
-                      if has_terminal?('', false, index)
-                        r21 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                        @index += 0
+                      if (match_len = has_terminal?('', false, index))
+                        r21 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('')
                         r21 = nil
@@ -2811,15 +2849,16 @@ module OpenEHR
                       r19 = nil
                     end
                     if r19
+                      r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                       r0 = r19
                     else
                       i22, s22 = index, []
                       r23 = _nt_c_string
                       s22 << r23
                       if r23
-                        if has_terminal?('', false, index)
-                          r24 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                          @index += 0
+                        if (match_len = has_terminal?('', false, index))
+                          r24 = true
+                          @index += match_len
                         else
                           terminal_parse_failure('')
                           r24 = nil
@@ -2835,6 +2874,7 @@ module OpenEHR
                         r22 = nil
                       end
                       if r22
+                        r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                         r0 = r22
                       else
                         @index = i0
@@ -2873,16 +2913,16 @@ module OpenEHR
         if node_cache[:c_any].has_key?(index)
           cached = node_cache[:c_any][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_any][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('*', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('*', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('*')
           r1 = nil
@@ -2941,7 +2981,7 @@ module OpenEHR
         if node_cache[:c_attributes].has_key?(index)
           cached = node_cache[:c_attributes][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_attributes][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3015,7 +3055,7 @@ module OpenEHR
         if node_cache[:c_attribute].has_key?(index)
           cached = node_cache[:c_attribute][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_attribute][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3166,7 +3206,7 @@ module OpenEHR
         if node_cache[:c_attr_head].has_key?(index)
           cached = node_cache[:c_attr_head][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_attr_head][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3197,6 +3237,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
@@ -3219,6 +3260,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             i10, s10 = index, []
@@ -3241,6 +3283,7 @@ module OpenEHR
               r10 = nil
             end
             if r10
+              r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
               r0 = r10
             else
               i14, s14 = index, []
@@ -3259,6 +3302,7 @@ module OpenEHR
                 r14 = nil
               end
               if r14
+                r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
                 r0 = r14
               else
                 @index = i0
@@ -3306,7 +3350,7 @@ module OpenEHR
         if node_cache[:c_attr_body].has_key?(index)
           cached = node_cache[:c_attr_body][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_attr_body][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3390,7 +3434,7 @@ module OpenEHR
         if node_cache[:c_attr_values].has_key?(index)
           cached = node_cache[:c_attr_values][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_attr_values][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3401,9 +3445,9 @@ module OpenEHR
         r2 = _nt_c_any
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -3419,6 +3463,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
@@ -3431,9 +3476,9 @@ module OpenEHR
               r8 = _nt_c_object
               s7 << r8
               if r8
-                if has_terminal?('', false, index)
-                  r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r9 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r9 = nil
@@ -3465,6 +3510,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -3498,7 +3544,7 @@ module OpenEHR
         if node_cache[:c_includes].has_key?(index)
           cached = node_cache[:c_includes][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_includes][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3546,7 +3592,7 @@ module OpenEHR
         if node_cache[:c_excludes].has_key?(index)
           cached = node_cache[:c_excludes][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_excludes][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3610,7 +3656,7 @@ module OpenEHR
         if node_cache[:c_existence].has_key?(index)
           cached = node_cache[:c_existence][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_existence][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3699,7 +3745,7 @@ module OpenEHR
         if node_cache[:existence_spec].has_key?(index)
           cached = node_cache[:existence_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:existence_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -3726,15 +3772,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
           r6 = _nt_V_INTEGER
           s5 << r6
           if r6
-            if has_terminal?('', false, index)
-              r7 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r7 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r7 = nil
@@ -3750,6 +3797,7 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             @index = i0
@@ -3799,7 +3847,7 @@ module OpenEHR
         if node_cache[:c_cardinality].has_key?(index)
           cached = node_cache[:c_cardinality][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_cardinality][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4042,7 +4090,7 @@ module OpenEHR
         if node_cache[:cardinality_spec].has_key?(index)
           cached = node_cache[:cardinality_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:cardinality_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4053,9 +4101,9 @@ module OpenEHR
         r2 = _nt_occurrence_spec
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -4068,9 +4116,9 @@ module OpenEHR
               r5 = _nt_SYM_ORDERED
               s1 << r5
               if r5
-                if has_terminal?(';', false, index)
-                  r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?(';', false, index))
+                  r6 = true
+                  @index += match_len
                 else
                   terminal_parse_failure(';')
                   r6 = nil
@@ -4097,15 +4145,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
           r10 = _nt_occurrence_spec
           s9 << r10
           if r10
-            if has_terminal?(';', false, index)
-              r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(';', false, index))
+              r11 = true
+              @index += match_len
             else
               terminal_parse_failure(';')
               r11 = nil
@@ -4129,15 +4178,16 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i14, s14 = index, []
             r15 = _nt_occurrence_spec
             s14 << r15
             if r15
-              if has_terminal?(';', false, index)
-                r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(';', false, index))
+                r16 = true
+                @index += match_len
               else
                 terminal_parse_failure(';')
                 r16 = nil
@@ -4150,9 +4200,9 @@ module OpenEHR
                   r18 = _nt_SYM_UNORDERD
                   s14 << r18
                   if r18
-                    if has_terminal?(';', false, index)
-                      r19 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?(';', false, index))
+                      r19 = true
+                      @index += match_len
                     else
                       terminal_parse_failure(';')
                       r19 = nil
@@ -4179,15 +4229,16 @@ module OpenEHR
               r14 = nil
             end
             if r14
+              r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
               r0 = r14
             else
               i22, s22 = index, []
               r23 = _nt_occurrence_spec
               s22 << r23
               if r23
-                if has_terminal?(';', false, index)
-                  r24 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?(';', false, index))
+                  r24 = true
+                  @index += match_len
                 else
                   terminal_parse_failure(';')
                   r24 = nil
@@ -4211,6 +4262,7 @@ module OpenEHR
                 r22 = nil
               end
               if r22
+                r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                 r0 = r22
               else
                 i27, s27 = index, []
@@ -4220,9 +4272,9 @@ module OpenEHR
                   r29 = _nt_SYM_UNIQUE
                   s27 << r29
                   if r29
-                    if has_terminal?(';', false, index)
-                      r30 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?(';', false, index))
+                      r30 = true
+                      @index += match_len
                     else
                       terminal_parse_failure(';')
                       r30 = nil
@@ -4247,6 +4299,7 @@ module OpenEHR
                   r27 = nil
                 end
                 if r27
+                  r27 = SyntaxNode.new(input, (index-1)...index) if r27 == true
                   r0 = r27
                 else
                   i33, s33 = index, []
@@ -4256,9 +4309,9 @@ module OpenEHR
                     r35 = _nt_SYM_UNIQUE
                     s33 << r35
                     if r35
-                      if has_terminal?(';', false, index)
-                        r36 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?(';', false, index))
+                        r36 = true
+                        @index += match_len
                       else
                         terminal_parse_failure(';')
                         r36 = nil
@@ -4283,6 +4336,7 @@ module OpenEHR
                     r33 = nil
                   end
                   if r33
+                    r33 = SyntaxNode.new(input, (index-1)...index) if r33 == true
                     r0 = r33
                   else
                     i39, s39 = index, []
@@ -4301,6 +4355,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i42, s42 = index, []
@@ -4319,6 +4374,7 @@ module OpenEHR
                         r42 = nil
                       end
                       if r42
+                        r42 = SyntaxNode.new(input, (index-1)...index) if r42 == true
                         r0 = r42
                       else
                         @index = i0
@@ -4374,7 +4430,7 @@ module OpenEHR
         if node_cache[:c_occurrences].has_key?(index)
           cached = node_cache[:c_occurrences][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_occurrences][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4469,7 +4525,7 @@ module OpenEHR
         if node_cache[:occurrence_spec].has_key?(index)
           cached = node_cache[:occurrence_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:occurrence_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4496,15 +4552,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
           r6 = _nt_cardinality_limit_value
           s5 << r6
           if r6
-            if has_terminal?('', false, index)
-              r7 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r7 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r7 = nil
@@ -4520,6 +4577,7 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             @index = i0
@@ -4556,7 +4614,7 @@ module OpenEHR
         if node_cache[:cardinality_limit_value].has_key?(index)
           cached = node_cache[:cardinality_limit_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:cardinality_limit_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4567,9 +4625,9 @@ module OpenEHR
         r2 = _nt_integer_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -4585,17 +4643,19 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
-          if has_terminal?('*', false, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          if (match_len = has_terminal?('*', false, index))
+            r4 = instantiate_node(SyntaxNode,input, index...(index + match_len))
             r4.extend(CardinalityLimitValue2)
-            @index += 1
+            @index += match_len
           else
             terminal_parse_failure('*')
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -4649,7 +4709,7 @@ module OpenEHR
         if node_cache[:c_integer].has_key?(index)
           cached = node_cache[:c_integer][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_integer][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4660,9 +4720,9 @@ module OpenEHR
         r2 = _nt_c_integer_spec
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -4686,15 +4746,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_c_integer_spec
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -4710,6 +4771,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -4779,7 +4841,7 @@ module OpenEHR
         if node_cache[:c_integer_spec].has_key?(index)
           cached = node_cache[:c_integer_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_integer_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4790,9 +4852,9 @@ module OpenEHR
         r2 = _nt_integer_list_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -4808,15 +4870,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_integer_interval_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -4832,6 +4895,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
@@ -4839,9 +4903,9 @@ module OpenEHR
             s7 << r8
             if r8
               i9 = index
-              if has_terminal?('..', false, index)
-                r10 = instantiate_node(SyntaxNode,input, index...(index + 2))
-                @index += 2
+              if (match_len = has_terminal?('..', false, index))
+                r10 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                @index += match_len
               else
                 terminal_parse_failure('..')
                 r10 = nil
@@ -4854,9 +4918,9 @@ module OpenEHR
               end
               s7 << r9
               if r9
-                if has_terminal?('', false, index)
-                  r11 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r11 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r11 = nil
@@ -4873,15 +4937,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i12, s12 = index, []
               r13 = _nt_occurrence_spec
               s12 << r13
               if r13
-                if has_terminal?('', false, index)
-                  r14 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r14 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r14 = nil
@@ -4897,6 +4962,7 @@ module OpenEHR
                 r12 = nil
               end
               if r12
+                r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                 r0 = r12
               else
                 @index = i0
@@ -4955,7 +5021,7 @@ module OpenEHR
         if node_cache[:c_real_spec].has_key?(index)
           cached = node_cache[:c_real_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_real_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -4966,9 +5032,9 @@ module OpenEHR
         r2 = _nt_real_list_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -4984,15 +5050,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_real_interval_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -5008,15 +5075,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_real_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -5032,6 +5100,7 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               @index = i0
@@ -5086,7 +5155,7 @@ module OpenEHR
         if node_cache[:c_real].has_key?(index)
           cached = node_cache[:c_real][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_real][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5097,9 +5166,9 @@ module OpenEHR
         r2 = _nt_c_real_spec
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -5123,15 +5192,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_c_real_spec
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -5147,6 +5217,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -5216,7 +5287,7 @@ module OpenEHR
         if node_cache[:c_date_constraint].has_key?(index)
           cached = node_cache[:c_date_constraint][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_date_constraint][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5227,9 +5298,9 @@ module OpenEHR
         r2 = _nt_date_interval_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -5245,15 +5316,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_date_list_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -5269,15 +5341,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_date_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -5293,15 +5366,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_V_ISO8601_DATE_CONSTRAINT_PATTERN
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -5317,6 +5391,7 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 @index = i0
@@ -5373,7 +5448,7 @@ module OpenEHR
         if node_cache[:c_date].has_key?(index)
           cached = node_cache[:c_date][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_date][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5384,9 +5459,9 @@ module OpenEHR
         r2 = _nt_c_date_constraint
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -5410,15 +5485,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_c_date_constraint
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -5434,6 +5510,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -5503,7 +5580,7 @@ module OpenEHR
         if node_cache[:c_time_constraint].has_key?(index)
           cached = node_cache[:c_time_constraint][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_time_constraint][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5514,9 +5591,9 @@ module OpenEHR
         r2 = _nt_time_interval_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -5532,15 +5609,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_time_list_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -5556,15 +5634,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_time_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -5580,15 +5659,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_V_ISO8601_TIME_CONSTRAINT_PATTERN
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -5604,6 +5684,7 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 @index = i0
@@ -5660,7 +5741,7 @@ module OpenEHR
         if node_cache[:c_time].has_key?(index)
           cached = node_cache[:c_time][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_time][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5671,9 +5752,9 @@ module OpenEHR
         r2 = _nt_c_time_constraint
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -5697,15 +5778,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_c_time_constraint
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -5721,6 +5803,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -5777,7 +5860,7 @@ module OpenEHR
         if node_cache[:c_date_time_constraint].has_key?(index)
           cached = node_cache[:c_date_time_constraint][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_date_time_constraint][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5788,9 +5871,9 @@ module OpenEHR
         r2 = _nt_date_time_interval_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -5806,15 +5889,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_date_time_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -5830,15 +5914,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -5854,6 +5939,7 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               @index = i0
@@ -5909,7 +5995,7 @@ module OpenEHR
         if node_cache[:c_date_time].has_key?(index)
           cached = node_cache[:c_date_time][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_date_time][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -5920,9 +6006,9 @@ module OpenEHR
         r2 = _nt_c_date_time_constraint
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -5946,15 +6032,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_c_date_time_constraint
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -5970,6 +6057,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -6044,7 +6132,7 @@ module OpenEHR
         if node_cache[:c_duration_constraint].has_key?(index)
           cached = node_cache[:c_duration_constraint][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_duration_constraint][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6055,9 +6143,9 @@ module OpenEHR
         r2 = _nt_duration_pattern
         s1 << r2
         if r2
-          if has_terminal?('/', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('/', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('/')
             r3 = nil
@@ -6067,9 +6155,9 @@ module OpenEHR
             r4 = _nt_duration_interval_value
             s1 << r4
             if r4
-              if has_terminal?('', false, index)
-                r5 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r5 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r5 = nil
@@ -6087,15 +6175,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_duration_pattern
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -6111,15 +6200,16 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             i9, s9 = index, []
             r10 = _nt_duration_interval_value
             s9 << r10
             if r10
-              if has_terminal?('', false, index)
-                r11 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r11 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r11 = nil
@@ -6135,15 +6225,16 @@ module OpenEHR
               r9 = nil
             end
             if r9
+              r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
               r0 = r9
             else
               i12, s12 = index, []
               r13 = _nt_duration_value
               s12 << r13
               if r13
-                if has_terminal?('', false, index)
-                  r14 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r14 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r14 = nil
@@ -6159,6 +6250,7 @@ module OpenEHR
                 r12 = nil
               end
               if r12
+                r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                 r0 = r12
               else
                 @index = i0
@@ -6191,7 +6283,7 @@ module OpenEHR
         if node_cache[:duration_pattern].has_key?(index)
           cached = node_cache[:duration_pattern][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:duration_pattern][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6201,9 +6293,9 @@ module OpenEHR
         r1 = _nt_V_ISO8601_DURATION_CONSTRAINT_PATTERN
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -6267,7 +6359,7 @@ module OpenEHR
         if node_cache[:c_duration].has_key?(index)
           cached = node_cache[:c_duration][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_duration][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6278,9 +6370,9 @@ module OpenEHR
         r2 = _nt_c_duration_constraint
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -6293,9 +6385,9 @@ module OpenEHR
               r5 = _nt_duration_value
               s1 << r5
               if r5
-                if has_terminal?('', false, index)
-                  r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r6 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r6 = nil
@@ -6314,15 +6406,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
           r8 = _nt_c_duration_constraint
           s7 << r8
           if r8
-            if has_terminal?('', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r9 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r9 = nil
@@ -6338,6 +6431,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             @index = i0
@@ -6414,7 +6508,7 @@ module OpenEHR
         if node_cache[:c_string_spec].has_key?(index)
           cached = node_cache[:c_string_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_string_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6425,9 +6519,9 @@ module OpenEHR
         r2 = _nt_string_list_value
         s1 << r2
         if r2
-          if has_terminal?(',', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(',', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(',')
             r3 = nil
@@ -6451,15 +6545,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_string_list_value
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -6475,15 +6570,16 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             i9, s9 = index, []
             r10 = _nt_V_REGEXP
             s9 << r10
             if r10
-              if has_terminal?('', false, index)
-                r11 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r11 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r11 = nil
@@ -6499,15 +6595,16 @@ module OpenEHR
               r9 = nil
             end
             if r9
+              r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
               r0 = r9
             else
               i12, s12 = index, []
               r13 = _nt_V_STRING
               s12 << r13
               if r13
-                if has_terminal?('', false, index)
-                  r14 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r14 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r14 = nil
@@ -6523,6 +6620,7 @@ module OpenEHR
                 r12 = nil
               end
               if r12
+                r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                 r0 = r12
               else
                 @index = i0
@@ -6583,7 +6681,7 @@ module OpenEHR
         if node_cache[:c_string].has_key?(index)
           cached = node_cache[:c_string][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_string][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6597,9 +6695,9 @@ module OpenEHR
           r3 = _nt_white_space
           s1 << r3
           if r3
-            if has_terminal?(';', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(';', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(';')
               r4 = nil
@@ -6624,15 +6722,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
           r8 = _nt_c_string_spec
           s7 << r8
           if r8
-            if has_terminal?('', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r9 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r9 = nil
@@ -6648,6 +6747,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             @index = i0
@@ -6665,12 +6765,16 @@ module OpenEHR
           elements[0]
         end
 
-        def white_space
-          elements[2]
+        def white_space1
+          elements[1]
+        end
+
+        def white_space2
+          elements[3]
         end
 
         def SYM_FALSE
-          elements[3]
+          elements[4]
         end
       end
 
@@ -6743,7 +6847,7 @@ module OpenEHR
         if node_cache[:c_boolean_spec].has_key?(index)
           cached = node_cache[:c_boolean_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_boolean_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6754,20 +6858,24 @@ module OpenEHR
         r2 = _nt_SYM_TRUE
         s1 << r2
         if r2
-          if has_terminal?(',', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure(',')
-            r3 = nil
-          end
+          r3 = _nt_white_space
           s1 << r3
           if r3
-            r4 = _nt_white_space
+            if (match_len = has_terminal?(',', false, index))
+              r4 = true
+              @index += match_len
+            else
+              terminal_parse_failure(',')
+              r4 = nil
+            end
             s1 << r4
             if r4
-              r5 = _nt_SYM_FALSE
+              r5 = _nt_white_space
               s1 << r5
+              if r5
+                r6 = _nt_SYM_FALSE
+                s1 << r6
+              end
             end
           end
         end
@@ -6780,99 +6888,103 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
-          i6, s6 = index, []
-          r7 = _nt_SYM_TRUE
-          s6 << r7
-          if r7
-            r8 = _nt_white_space
-            s6 << r8
-            if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+          i7, s7 = index, []
+          r8 = _nt_SYM_TRUE
+          s7 << r8
+          if r8
+            r9 = _nt_white_space
+            s7 << r9
+            if r9
+              if (match_len = has_terminal?('', false, index))
+                r10 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
-                r9 = nil
+                r10 = nil
               end
-              s6 << r9
+              s7 << r10
             end
           end
-          if s6.last
-            r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
-            r6.extend(CBooleanSpec2)
-            r6.extend(CBooleanSpec3)
+          if s7.last
+            r7 = instantiate_node(SyntaxNode,input, i7...index, s7)
+            r7.extend(CBooleanSpec2)
+            r7.extend(CBooleanSpec3)
           else
-            @index = i6
-            r6 = nil
+            @index = i7
+            r7 = nil
           end
-          if r6
-            r0 = r6
+          if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
+            r0 = r7
           else
-            i10, s10 = index, []
-            r11 = _nt_SYM_FALSE
-            s10 << r11
-            if r11
-              r12 = _nt_white_space
-              s10 << r12
-              if r12
-                if has_terminal?(',', false, index)
-                  r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+            i11, s11 = index, []
+            r12 = _nt_SYM_FALSE
+            s11 << r12
+            if r12
+              r13 = _nt_white_space
+              s11 << r13
+              if r13
+                if (match_len = has_terminal?(',', false, index))
+                  r14 = true
+                  @index += match_len
                 else
                   terminal_parse_failure(',')
-                  r13 = nil
+                  r14 = nil
                 end
-                s10 << r13
-                if r13
-                  r14 = _nt_white_space
-                  s10 << r14
-                  if r14
-                    r15 = _nt_SYM_TRUE
-                    s10 << r15
+                s11 << r14
+                if r14
+                  r15 = _nt_white_space
+                  s11 << r15
+                  if r15
+                    r16 = _nt_SYM_TRUE
+                    s11 << r16
                   end
                 end
               end
             end
-            if s10.last
-              r10 = instantiate_node(SyntaxNode,input, i10...index, s10)
-              r10.extend(CBooleanSpec4)
-              r10.extend(CBooleanSpec5)
+            if s11.last
+              r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
+              r11.extend(CBooleanSpec4)
+              r11.extend(CBooleanSpec5)
             else
-              @index = i10
-              r10 = nil
+              @index = i11
+              r11 = nil
             end
-            if r10
-              r0 = r10
+            if r11
+              r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
+              r0 = r11
             else
-              i16, s16 = index, []
-              r17 = _nt_SYM_FALSE
-              s16 << r17
-              if r17
-                r18 = _nt_white_space
-                s16 << r18
-                if r18
-                  if has_terminal?('', false, index)
-                    r19 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+              i17, s17 = index, []
+              r18 = _nt_SYM_FALSE
+              s17 << r18
+              if r18
+                r19 = _nt_white_space
+                s17 << r19
+                if r19
+                  if (match_len = has_terminal?('', false, index))
+                    r20 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
-                    r19 = nil
+                    r20 = nil
                   end
-                  s16 << r19
+                  s17 << r20
                 end
               end
-              if s16.last
-                r16 = instantiate_node(SyntaxNode,input, i16...index, s16)
-                r16.extend(CBooleanSpec6)
-                r16.extend(CBooleanSpec7)
+              if s17.last
+                r17 = instantiate_node(SyntaxNode,input, i17...index, s17)
+                r17.extend(CBooleanSpec6)
+                r17.extend(CBooleanSpec7)
               else
-                @index = i16
-                r16 = nil
+                @index = i17
+                r17 = nil
               end
-              if r16
-                r0 = r16
+              if r17
+                r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
+                r0 = r17
               else
                 @index = i0
                 r0 = nil
@@ -6928,7 +7040,7 @@ module OpenEHR
         if node_cache[:c_boolean].has_key?(index)
           cached = node_cache[:c_boolean][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_boolean][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -6939,9 +7051,9 @@ module OpenEHR
         r2 = _nt_c_boolean_spec
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -6965,15 +7077,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_c_boolean_spec
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -6989,6 +7102,7 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             @index = i0
@@ -7027,7 +7141,7 @@ module OpenEHR
         if node_cache[:constraint_ref].has_key?(index)
           cached = node_cache[:constraint_ref][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:constraint_ref][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7037,9 +7151,9 @@ module OpenEHR
         r1 = _nt_V_LOCAL_TERM_CODE_REF
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -7089,7 +7203,7 @@ module OpenEHR
         if node_cache[:V_REGEXP].has_key?(index)
           cached = node_cache[:V_REGEXP][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_REGEXP][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7098,24 +7212,26 @@ module OpenEHR
         i0, s0 = index, []
         i2, s2 = index, []
         i3 = index
-        if has_terminal?('=', false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('=', false, index))
+          r4 = true
+          @index += match_len
         else
           terminal_parse_failure('=')
           r4 = nil
         end
         if r4
+          r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
           r3 = r4
         else
-          if has_terminal?('!', false, index)
-            r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('!', false, index))
+            r5 = true
+            @index += match_len
           else
             terminal_parse_failure('!')
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r3 = r5
           else
             @index = i3
@@ -7124,9 +7240,9 @@ module OpenEHR
         end
         s2 << r3
         if r3
-          if has_terminal?('~', false, index)
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('~', false, index))
+            r6 = true
+            @index += match_len
           else
             terminal_parse_failure('~')
             r6 = nil
@@ -7149,9 +7265,9 @@ module OpenEHR
         if r1
           i7 = index
           i8, s8 = index, []
-          if has_terminal?('/', false, index)
-            r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('/', false, index))
+            r9 = true
+            @index += match_len
           else
             terminal_parse_failure('/')
             r9 = nil
@@ -7161,21 +7277,22 @@ module OpenEHR
             s10, i10 = [], index
             loop do
               i11 = index
-              if has_terminal?('\/', false, index)
-                r12 = instantiate_node(SyntaxNode,input, index...(index + 2))
-                @index += 2
+              if (match_len = has_terminal?('\/', false, index))
+                r12 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                @index += match_len
               else
                 terminal_parse_failure('\/')
                 r12 = nil
               end
               if r12
+                r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                 r11 = r12
               else
                 i13, s13 = index, []
                 i14 = index
-                if has_terminal?('/', false, index)
-                  r15 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('/', false, index))
+                  r15 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('/')
                   r15 = nil
@@ -7189,7 +7306,7 @@ module OpenEHR
                 s13 << r14
                 if r14
                   if index < input_length
-                    r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                    r16 = true
                     @index += 1
                   else
                     terminal_parse_failure("any character")
@@ -7205,6 +7322,7 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r11 = r13
                 else
                   @index = i11
@@ -7220,9 +7338,9 @@ module OpenEHR
             r10 = instantiate_node(SyntaxNode,input, i10...index, s10)
             s8 << r10
             if r10
-              if has_terminal?('/', false, index)
-                r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('/', false, index))
+                r17 = true
+                @index += match_len
               else
                 terminal_parse_failure('/')
                 r17 = nil
@@ -7238,12 +7356,13 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r7 = r8
           else
             i18, s18 = index, []
-            if has_terminal?('^', false, index)
-              r19 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('^', false, index))
+              r19 = true
+              @index += match_len
             else
               terminal_parse_failure('^')
               r19 = nil
@@ -7254,9 +7373,9 @@ module OpenEHR
               loop do
                 i21, s21 = index, []
                 i22 = index
-                if has_terminal?('^', false, index)
-                  r23 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('^', false, index))
+                  r23 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('^')
                   r23 = nil
@@ -7270,7 +7389,7 @@ module OpenEHR
                 s21 << r22
                 if r22
                   if index < input_length
-                    r24 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                    r24 = true
                     @index += 1
                   else
                     terminal_parse_failure("any character")
@@ -7294,9 +7413,9 @@ module OpenEHR
               r20 = instantiate_node(SyntaxNode,input, i20...index, s20)
               s18 << r20
               if r20
-                if has_terminal?('^', false, index)
-                  r25 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('^', false, index))
+                  r25 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('^')
                   r25 = nil
@@ -7312,6 +7431,7 @@ module OpenEHR
               r18 = nil
             end
             if r18
+              r18 = SyntaxNode.new(input, (index-1)...index) if r18 == true
               r7 = r18
             else
               @index = i7
@@ -7348,7 +7468,7 @@ module OpenEHR
         if node_cache[:code_string].has_key?(index)
           cached = node_cache[:code_string][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:code_string][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7372,9 +7492,9 @@ module OpenEHR
         end
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -7434,7 +7554,7 @@ module OpenEHR
         if node_cache[:code_string_list].has_key?(index)
           cached = node_cache[:code_string_list][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:code_string_list][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7447,9 +7567,9 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3, s3 = index, []
-            if has_terminal?(',', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r4 = nil
@@ -7533,7 +7653,7 @@ module OpenEHR
         if node_cache[:code_string_spec].has_key?(index)
           cached = node_cache[:code_string_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:code_string_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7544,9 +7664,9 @@ module OpenEHR
         r2 = _nt_code_string_list
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -7562,15 +7682,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_code_string
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -7586,6 +7707,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -7691,7 +7813,7 @@ module OpenEHR
         if node_cache[:c_code_phrase].has_key?(index)
           cached = node_cache[:c_code_phrase][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_code_phrase][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7705,9 +7827,9 @@ module OpenEHR
           r3 = _nt_code_string_spec
           s1 << r3
           if r3
-            if has_terminal?(';', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(';', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(';')
               r4 = nil
@@ -7720,9 +7842,9 @@ module OpenEHR
                 r6 = _nt_code_string
                 s1 << r6
                 if r6
-                  if has_terminal?(']', false, index)
-                    r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?(']', false, index))
+                    r7 = true
+                    @index += match_len
                   else
                     terminal_parse_failure(']')
                     r7 = nil
@@ -7746,6 +7868,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -7755,9 +7878,9 @@ module OpenEHR
             r11 = _nt_code_string_spec
             s9 << r11
             if r11
-              if has_terminal?(']', false, index)
-                r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(']', false, index))
+                r12 = true
+                @index += match_len
               else
                 terminal_parse_failure(']')
                 r12 = nil
@@ -7778,15 +7901,16 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i14, s14 = index, []
             r15 = _nt_V_TERM_CODE
             s14 << r15
             if r15
-              if has_terminal?(']', false, index)
-                r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(']', false, index))
+                r16 = true
+                @index += match_len
               else
                 terminal_parse_failure(']')
                 r16 = nil
@@ -7806,6 +7930,7 @@ module OpenEHR
               r14 = nil
             end
             if r14
+              r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
               r0 = r14
             else
               @index = i0
@@ -7830,16 +7955,16 @@ module OpenEHR
         if node_cache[:SYM_C_DV_ORDINAL].has_key?(index)
           cached = node_cache[:SYM_C_DV_ORDINAL][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_C_DV_ORDINAL][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('C_DV_ORDINAL', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 12))
-          @index += 12
+        if (match_len = has_terminal?('C_DV_ORDINAL', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('C_DV_ORDINAL')
           r1 = nil
@@ -7938,7 +8063,7 @@ module OpenEHR
         if node_cache[:c_ordinal].has_key?(index)
           cached = node_cache[:c_ordinal][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_ordinal][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -7949,9 +8074,9 @@ module OpenEHR
         r2 = _nt_c_ordinal_spec
         s1 << r2
         if r2
-          if has_terminal?(';', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure(';')
             r3 = nil
@@ -7979,6 +8104,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
@@ -7988,9 +8114,9 @@ module OpenEHR
             r9 = _nt_space
             s7 << r9
             if r9
-              if has_terminal?('', false, index)
-                r10 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r10 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r10 = nil
@@ -8007,6 +8133,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             i11, s11 = index, []
@@ -8037,6 +8164,7 @@ module OpenEHR
               r11 = nil
             end
             if r11
+              r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
               r0 = r11
             else
               @index = i0
@@ -8081,7 +8209,7 @@ module OpenEHR
         if node_cache[:c_ordinal_spec].has_key?(index)
           cached = node_cache[:c_ordinal_spec][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_ordinal_spec][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -8092,9 +8220,9 @@ module OpenEHR
         r2 = _nt_ordinal_list
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -8110,15 +8238,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_ordinal
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -8134,6 +8263,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -8181,7 +8311,7 @@ module OpenEHR
         if node_cache[:ordinal_list].has_key?(index)
           cached = node_cache[:ordinal_list][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:ordinal_list][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -8194,9 +8324,9 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3, s3 = index, []
-            if has_terminal?(',', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r4 = nil
@@ -8275,7 +8405,7 @@ module OpenEHR
         if node_cache[:ordinal].has_key?(index)
           cached = node_cache[:ordinal][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:ordinal][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -8301,9 +8431,9 @@ module OpenEHR
               end
               s0 << r4
               if r4
-                if has_terminal?('', false, index)
-                  r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r6 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r6 = nil
@@ -8488,7 +8618,7 @@ module OpenEHR
         if node_cache[:c_dv_quantity].has_key?(index)
           cached = node_cache[:c_dv_quantity][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_dv_quantity][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -8541,6 +8671,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i11, s11 = index, []
@@ -8589,6 +8720,7 @@ module OpenEHR
             r11 = nil
           end
           if r11
+            r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
             r0 = r11
           else
             i21, s21 = index, []
@@ -8637,6 +8769,7 @@ module OpenEHR
               r21 = nil
             end
             if r21
+              r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
               r0 = r21
             else
               i31, s31 = index, []
@@ -8685,6 +8818,7 @@ module OpenEHR
                 r31 = nil
               end
               if r31
+                r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
                 r0 = r31
               else
                 i41, s41 = index, []
@@ -8733,6 +8867,7 @@ module OpenEHR
                   r41 = nil
                 end
                 if r41
+                  r41 = SyntaxNode.new(input, (index-1)...index) if r41 == true
                   r0 = r41
                 else
                   i51, s51 = index, []
@@ -8781,6 +8916,7 @@ module OpenEHR
                     r51 = nil
                   end
                   if r51
+                    r51 = SyntaxNode.new(input, (index-1)...index) if r51 == true
                     r0 = r51
                   else
                     @index = i0
@@ -8808,16 +8944,16 @@ module OpenEHR
         if node_cache[:SYM_C_DV_QUANTITY].has_key?(index)
           cached = node_cache[:SYM_C_DV_QUANTITY][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_C_DV_QUANTITY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('C_DV_QUANTITY', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 13))
-          @index += 13
+        if (match_len = has_terminal?('C_DV_QUANTITY', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('C_DV_QUANTITY')
           r1 = nil
@@ -8873,7 +9009,7 @@ module OpenEHR
         if node_cache[:property].has_key?(index)
           cached = node_cache[:property][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:property][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -8923,16 +9059,16 @@ module OpenEHR
         if node_cache[:SYM_PROPERTY].has_key?(index)
           cached = node_cache[:SYM_PROPERTY][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_PROPERTY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('property', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-          @index += 8
+        if (match_len = has_terminal?('property', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('property')
           r1 = nil
@@ -8988,7 +9124,7 @@ module OpenEHR
         if node_cache[:quantity_list].has_key?(index)
           cached = node_cache[:quantity_list][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:quantity_list][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -9572,7 +9708,7 @@ module OpenEHR
         if node_cache[:assumed_quantity_value].has_key?(index)
           cached = node_cache[:assumed_quantity_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:assumed_quantity_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -9690,6 +9826,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i25, s25 = index, []
@@ -9803,6 +9940,7 @@ module OpenEHR
             r25 = nil
           end
           if r25
+            r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
             r0 = r25
           else
             i49, s49 = index, []
@@ -9916,6 +10054,7 @@ module OpenEHR
               r49 = nil
             end
             if r49
+              r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
               r0 = r49
             else
               i73, s73 = index, []
@@ -10029,6 +10168,7 @@ module OpenEHR
                 r73 = nil
               end
               if r73
+                r73 = SyntaxNode.new(input, (index-1)...index) if r73 == true
                 r0 = r73
               else
                 i97, s97 = index, []
@@ -10142,6 +10282,7 @@ module OpenEHR
                   r97 = nil
                 end
                 if r97
+                  r97 = SyntaxNode.new(input, (index-1)...index) if r97 == true
                   r0 = r97
                 else
                   i121, s121 = index, []
@@ -10255,6 +10396,7 @@ module OpenEHR
                     r121 = nil
                   end
                   if r121
+                    r121 = SyntaxNode.new(input, (index-1)...index) if r121 == true
                     r0 = r121
                   else
                     @index = i0
@@ -10282,16 +10424,16 @@ module OpenEHR
         if node_cache[:SYM_QUANTITY_LIST].has_key?(index)
           cached = node_cache[:SYM_QUANTITY_LIST][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_QUANTITY_LIST][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('list', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-          @index += 4
+        if (match_len = has_terminal?('list', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('list')
           r1 = nil
@@ -10349,7 +10491,7 @@ module OpenEHR
         if node_cache[:c_quantity_items].has_key?(index)
           cached = node_cache[:c_quantity_items][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_quantity_items][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -10514,16 +10656,16 @@ module OpenEHR
         if node_cache[:c_quantity_item].has_key?(index)
           cached = node_cache[:c_quantity_item][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:c_quantity_item][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -10533,9 +10675,9 @@ module OpenEHR
           r2 = _nt_V_STRING
           s0 << r2
           if r2
-            if has_terminal?(']', false, index)
-              r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(']', false, index))
+              r3 = true
+              @index += match_len
             else
               terminal_parse_failure(']')
               r3 = nil
@@ -10672,16 +10814,16 @@ module OpenEHR
         if node_cache[:SYM_UNITS].has_key?(index)
           cached = node_cache[:SYM_UNITS][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_UNITS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('units', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-          @index += 5
+        if (match_len = has_terminal?('units', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('units')
           r1 = nil
@@ -10715,16 +10857,16 @@ module OpenEHR
         if node_cache[:SYM_MAGNITUDE].has_key?(index)
           cached = node_cache[:SYM_MAGNITUDE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_MAGNITUDE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('magnitude', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-          @index += 9
+        if (match_len = has_terminal?('magnitude', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('magnitude')
           r1 = nil
@@ -10758,16 +10900,16 @@ module OpenEHR
         if node_cache[:SYM_PRECISION].has_key?(index)
           cached = node_cache[:SYM_PRECISION][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_PRECISION][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('precision', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-          @index += 9
+        if (match_len = has_terminal?('precision', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('precision')
           r1 = nil
@@ -10801,16 +10943,16 @@ module OpenEHR
         if node_cache[:SYM_ASSUMED_VALUE].has_key?(index)
           cached = node_cache[:SYM_ASSUMED_VALUE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ASSUMED_VALUE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('assumed_value', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 13))
-          @index += 13
+        if (match_len = has_terminal?('assumed_value', false, index))
+          r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('assumed_value')
           r1 = nil
@@ -10841,16 +10983,16 @@ module OpenEHR
         if node_cache[:V_C_DOMAIN_TYPE].has_key?(index)
           cached = node_cache[:V_C_DOMAIN_TYPE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_C_DOMAIN_TYPE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('(', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r2 = true
+          @index += match_len
         else
           terminal_parse_failure('(')
           r2 = nil
@@ -10862,10 +11004,11 @@ module OpenEHR
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[A-Z]', true, index)
+          if has_terminal?(@regexps[gr = '\A[A-Z]'] ||= Regexp.new(gr), :regexp, index)
             r3 = true
             @index += 1
           else
+            terminal_parse_failure('[A-Z]')
             r3 = nil
           end
           s0 << r3
@@ -10882,9 +11025,9 @@ module OpenEHR
             r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
             s0 << r4
             if r4
-              if has_terminal?(')', false, index)
-                r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(')', false, index))
+                r7 = true
+                @index += match_len
               else
                 terminal_parse_failure(')')
                 r7 = nil
@@ -10898,10 +11041,11 @@ module OpenEHR
               if r6
                 s8, i8 = [], index
                 loop do
-                  if has_terminal?('\G[ \\n]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[ \\n]'] ||= Regexp.new(gr), :regexp, index)
                     r9 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[ \\n]')
                     r9 = nil
                   end
                   if r9
@@ -10913,9 +11057,9 @@ module OpenEHR
                 r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
                 s0 << r8
                 if r8
-                  if has_terminal?('<', false, index)
-                    r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('<', false, index))
+                    r10 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('<')
                     r10 = nil
@@ -10924,10 +11068,11 @@ module OpenEHR
                   if r10
                     s11, i11 = [], index
                     loop do
-                      if has_terminal?('\G[^>]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[^>]'] ||= Regexp.new(gr), :regexp, index)
                         r12 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[^>]')
                         r12 = nil
                       end
                       if r12
@@ -10939,9 +11084,9 @@ module OpenEHR
                     r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
                     s0 << r11
                     if r11
-                      if has_terminal?('>', false, index)
-                        r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?('>', false, index))
+                        r13 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('>')
                         r13 = nil
@@ -10985,7 +11130,7 @@ module OpenEHR
         if node_cache[:V_ASSERTION_TEXT].has_key?(index)
           cached = node_cache[:V_ASSERTION_TEXT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ASSERTION_TEXT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -10995,9 +11140,9 @@ module OpenEHR
         r1 = _nt_assertions
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -11050,7 +11195,7 @@ module OpenEHR
         if node_cache[:assertions].has_key?(index)
           cached = node_cache[:assertions][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:assertions][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -11066,9 +11211,9 @@ module OpenEHR
             r4 = _nt_assertion
             s3 << r4
             if r4
-              if has_terminal?('', false, index)
-                r5 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r5 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r5 = nil
@@ -11145,7 +11290,7 @@ module OpenEHR
         if node_cache[:assertion].has_key?(index)
           cached = node_cache[:assertion][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:assertion][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -11156,9 +11301,9 @@ module OpenEHR
         r3 = _nt_any_identifier
         s2 << r3
         if r3
-          if has_terminal?(':', false, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(':', false, index))
+            r4 = true
+            @index += match_len
           else
             terminal_parse_failure(':')
             r4 = nil
@@ -11231,7 +11376,7 @@ module OpenEHR
         if node_cache[:boolean_expression].has_key?(index)
           cached = node_cache[:boolean_expression][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:boolean_expression][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -11242,9 +11387,9 @@ module OpenEHR
         r2 = _nt_boolean_node
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -11260,15 +11405,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_boolean_leaf
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -11284,6 +11430,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -11642,7 +11789,7 @@ module OpenEHR
         if node_cache[:boolean_node].has_key?(index)
           cached = node_cache[:boolean_node][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:boolean_node][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -11665,6 +11812,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
@@ -11699,6 +11847,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i11, s11 = index, []
@@ -11708,9 +11857,9 @@ module OpenEHR
               r13 = _nt_boolean_leaf
               s11 << r13
               if r13
-                if has_terminal?('', false, index)
-                  r14 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r14 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r14 = nil
@@ -11727,6 +11876,7 @@ module OpenEHR
               r11 = nil
             end
             if r11
+              r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
               r0 = r11
             else
               i15, s15 = index, []
@@ -11749,6 +11899,7 @@ module OpenEHR
                 r15 = nil
               end
               if r15
+                r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                 r0 = r15
               else
                 i19, s19 = index, []
@@ -11771,6 +11922,7 @@ module OpenEHR
                   r19 = nil
                 end
                 if r19
+                  r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                   r0 = r19
                 else
                   i23, s23 = index, []
@@ -11793,6 +11945,7 @@ module OpenEHR
                     r23 = nil
                   end
                   if r23
+                    r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                     r0 = r23
                   else
                     i27, s27 = index, []
@@ -11815,6 +11968,7 @@ module OpenEHR
                       r27 = nil
                     end
                     if r27
+                      r27 = SyntaxNode.new(input, (index-1)...index) if r27 == true
                       r0 = r27
                     else
                       i31, s31 = index, []
@@ -11837,6 +11991,7 @@ module OpenEHR
                         r31 = nil
                       end
                       if r31
+                        r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
                         r0 = r31
                       else
                         i35, s35 = index, []
@@ -11859,6 +12014,7 @@ module OpenEHR
                           r35 = nil
                         end
                         if r35
+                          r35 = SyntaxNode.new(input, (index-1)...index) if r35 == true
                           r0 = r35
                         else
                           i39, s39 = index, []
@@ -11881,6 +12037,7 @@ module OpenEHR
                             r39 = nil
                           end
                           if r39
+                            r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                             r0 = r39
                           else
                             i43, s43 = index, []
@@ -11903,6 +12060,7 @@ module OpenEHR
                               r43 = nil
                             end
                             if r43
+                              r43 = SyntaxNode.new(input, (index-1)...index) if r43 == true
                               r0 = r43
                             else
                               i47, s47 = index, []
@@ -11925,6 +12083,7 @@ module OpenEHR
                                 r47 = nil
                               end
                               if r47
+                                r47 = SyntaxNode.new(input, (index-1)...index) if r47 == true
                                 r0 = r47
                               else
                                 i51, s51 = index, []
@@ -11947,6 +12106,7 @@ module OpenEHR
                                   r51 = nil
                                 end
                                 if r51
+                                  r51 = SyntaxNode.new(input, (index-1)...index) if r51 == true
                                   r0 = r51
                                 else
                                   @index = i0
@@ -12020,7 +12180,7 @@ module OpenEHR
         if node_cache[:boolean_leaf].has_key?(index)
           cached = node_cache[:boolean_leaf][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:boolean_leaf][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12028,9 +12188,9 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        if has_terminal?('(', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r2 = true
+          @index += match_len
         else
           terminal_parse_failure('(')
           r2 = nil
@@ -12040,9 +12200,9 @@ module OpenEHR
           r3 = _nt_boolean_expression
           s1 << r3
           if r3
-            if has_terminal?(')', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(')', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(')')
               r4 = nil
@@ -12059,15 +12219,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
           r6 = _nt_SYM_TRUE
           s5 << r6
           if r6
-            if has_terminal?('', false, index)
-              r7 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r7 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r7 = nil
@@ -12083,15 +12244,16 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             i8, s8 = index, []
             r9 = _nt_SYM_FALSE
             s8 << r9
             if r9
-              if has_terminal?('', false, index)
-                r10 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r10 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r10 = nil
@@ -12107,6 +12269,7 @@ module OpenEHR
               r8 = nil
             end
             if r8
+              r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
               r0 = r8
             else
               @index = i0
@@ -12151,7 +12314,7 @@ module OpenEHR
         if node_cache[:arithmetic_expression].has_key?(index)
           cached = node_cache[:arithmetic_expression][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arithmetic_expression][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12162,9 +12325,9 @@ module OpenEHR
         r2 = _nt_arithmetic_node
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -12180,15 +12343,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_arithmetic_leaf
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -12204,6 +12368,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -12326,7 +12491,7 @@ module OpenEHR
         if node_cache[:arithmetic_node].has_key?(index)
           cached = node_cache[:arithmetic_node][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arithmetic_node][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12337,9 +12502,9 @@ module OpenEHR
         r2 = _nt_arithmetic_leaf
         s1 << r2
         if r2
-          if has_terminal?('+', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('+', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('+')
             r3 = nil
@@ -12359,15 +12524,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
           r6 = _nt_arithmetic_leaf
           s5 << r6
           if r6
-            if has_terminal?('-', false, index)
-              r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('-', false, index))
+              r7 = true
+              @index += match_len
             else
               terminal_parse_failure('-')
               r7 = nil
@@ -12387,15 +12553,16 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             i9, s9 = index, []
             r10 = _nt_arithmetic_leaf
             s9 << r10
             if r10
-              if has_terminal?('*', false, index)
-                r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('*', false, index))
+                r11 = true
+                @index += match_len
               else
                 terminal_parse_failure('*')
                 r11 = nil
@@ -12415,15 +12582,16 @@ module OpenEHR
               r9 = nil
             end
             if r9
+              r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
               r0 = r9
             else
               i13, s13 = index, []
               r14 = _nt_arithmetic_leaf
               s13 << r14
               if r14
-                if has_terminal?('/', false, index)
-                  r15 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('/', false, index))
+                  r15 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('/')
                   r15 = nil
@@ -12443,15 +12611,16 @@ module OpenEHR
                 r13 = nil
               end
               if r13
+                r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                 r0 = r13
               else
                 i17, s17 = index, []
                 r18 = _nt_arithmetic_leaf
                 s17 << r18
                 if r18
-                  if has_terminal?('^', false, index)
-                    r19 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('^', false, index))
+                    r19 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('^')
                     r19 = nil
@@ -12471,6 +12640,7 @@ module OpenEHR
                   r17 = nil
                 end
                 if r17
+                  r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
                   r0 = r17
                 else
                   @index = i0
@@ -12559,7 +12729,7 @@ module OpenEHR
         if node_cache[:arithmetic_leaf].has_key?(index)
           cached = node_cache[:arithmetic_leaf][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:arithmetic_leaf][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12567,9 +12737,9 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        if has_terminal?('(', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r2 = true
+          @index += match_len
         else
           terminal_parse_failure('(')
           r2 = nil
@@ -12579,9 +12749,9 @@ module OpenEHR
           r3 = _nt_arithmetic_expression
           s1 << r3
           if r3
-            if has_terminal?(')', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(')', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(')')
               r4 = nil
@@ -12602,15 +12772,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
           r7 = _nt_integer_value
           s6 << r7
           if r7
-            if has_terminal?('', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r8 = nil
@@ -12626,15 +12797,16 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             i9, s9 = index, []
             r10 = _nt_real_value
             s9 << r10
             if r10
-              if has_terminal?('', false, index)
-                r11 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r11 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r11 = nil
@@ -12650,6 +12822,7 @@ module OpenEHR
               r9 = nil
             end
             if r9
+              r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
               r0 = r9
             else
               i12, s12 = index, []
@@ -12668,6 +12841,7 @@ module OpenEHR
                 r12 = nil
               end
               if r12
+                r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                 r0 = r12
               else
                 @index = i0
@@ -12726,7 +12900,7 @@ module OpenEHR
         if node_cache[:object_path].has_key?(index)
           cached = node_cache[:object_path][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:object_path][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12737,9 +12911,9 @@ module OpenEHR
         r2 = _nt_movable_path
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -12755,15 +12929,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_absolute_path
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -12779,15 +12954,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_relative_path
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -12803,6 +12979,7 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               @index = i0
@@ -12838,7 +13015,7 @@ module OpenEHR
         if node_cache[:movable_path].has_key?(index)
           cached = node_cache[:movable_path][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:movable_path][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12851,9 +13028,9 @@ module OpenEHR
           r2 = _nt_relative_path
           s0 << r2
           if r2
-            if has_terminal?('', false, index)
-              r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r3 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r3 = nil
@@ -12889,16 +13066,16 @@ module OpenEHR
         if node_cache[:absolute_path].has_key?(index)
           cached = node_cache[:absolute_path][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:absolute_path][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('/', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('/', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('/')
           r1 = nil
@@ -12913,9 +13090,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?('', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r4 = nil
@@ -12961,7 +13138,7 @@ module OpenEHR
         if node_cache[:relative_path].has_key?(index)
           cached = node_cache[:relative_path][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:relative_path][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -12974,9 +13151,9 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3, s3 = index, []
-            if has_terminal?('/', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('/', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure('/')
               r4 = nil
@@ -13002,9 +13179,9 @@ module OpenEHR
           r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
           s0 << r2
           if r2
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -13044,7 +13221,7 @@ module OpenEHR
         if node_cache[:path_segment].has_key?(index)
           cached = node_cache[:path_segment][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:path_segment][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13062,9 +13239,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?('', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r4 = nil
@@ -13091,15 +13268,15 @@ module OpenEHR
         if node_cache[:SYM_MOVABLE_LEADER].has_key?(index)
           cached = node_cache[:SYM_MOVABLE_LEADER][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_MOVABLE_LEADER][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('//', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('//', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('//')
           r0 = nil
@@ -13147,7 +13324,7 @@ module OpenEHR
         if node_cache[:V_DADL_TEXT].has_key?(index)
           cached = node_cache[:V_DADL_TEXT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_DADL_TEXT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13170,6 +13347,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
@@ -13188,6 +13366,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -13239,7 +13418,7 @@ module OpenEHR
         if node_cache[:attr_vals].has_key?(index)
           cached = node_cache[:attr_vals][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:attr_vals][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13252,9 +13431,9 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3, s3 = index, []
-            if has_terminal?(';', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(';', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(';')
               r5 = nil
@@ -13332,7 +13511,7 @@ module OpenEHR
         if node_cache[:attr_val].has_key?(index)
           cached = node_cache[:attr_val][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:attr_val][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13384,7 +13563,7 @@ module OpenEHR
         if node_cache[:attr_id].has_key?(index)
           cached = node_cache[:attr_id][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:attr_id][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13448,7 +13627,7 @@ module OpenEHR
         if node_cache[:object_block].has_key?(index)
           cached = node_cache[:object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13471,6 +13650,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
@@ -13489,6 +13669,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -13532,7 +13713,7 @@ module OpenEHR
         if node_cache[:complex_object_block].has_key?(index)
           cached = node_cache[:complex_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:complex_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13543,9 +13724,9 @@ module OpenEHR
         r2 = _nt_single_attr_object_block
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -13561,15 +13742,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_multiple_attr_object_block
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -13585,6 +13767,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -13614,7 +13797,7 @@ module OpenEHR
         if node_cache[:multiple_attr_object_block].has_key?(index)
           cached = node_cache[:multiple_attr_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:multiple_attr_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13671,7 +13854,7 @@ module OpenEHR
         if node_cache[:untyped_multiple_attr_object_block].has_key?(index)
           cached = node_cache[:untyped_multiple_attr_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:untyped_multiple_attr_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13707,7 +13890,7 @@ module OpenEHR
         if node_cache[:multiple_attr_object_block_head].has_key?(index)
           cached = node_cache[:multiple_attr_object_block_head][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:multiple_attr_object_block_head][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13731,7 +13914,7 @@ module OpenEHR
         if node_cache[:keyed_objects].has_key?(index)
           cached = node_cache[:keyed_objects][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:keyed_objects][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13784,7 +13967,7 @@ module OpenEHR
         if node_cache[:keyed_object].has_key?(index)
           cached = node_cache[:keyed_object][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:keyed_object][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13836,16 +14019,16 @@ module OpenEHR
         if node_cache[:object_key].has_key?(index)
           cached = node_cache[:object_key][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:object_key][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -13855,9 +14038,9 @@ module OpenEHR
           r2 = _nt_simple_value
           s0 << r2
           if r2
-            if has_terminal?(']', false, index)
-              r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(']', false, index))
+              r3 = true
+              @index += match_len
             else
               terminal_parse_failure(']')
               r3 = nil
@@ -13900,7 +14083,7 @@ module OpenEHR
         if node_cache[:single_attr_object_block].has_key?(index)
           cached = node_cache[:single_attr_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:single_attr_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -13973,7 +14156,7 @@ module OpenEHR
         if node_cache[:untyped_single_attr_object_block].has_key?(index)
           cached = node_cache[:untyped_single_attr_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:untyped_single_attr_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14000,6 +14183,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i5, s5 = index, []
@@ -14018,6 +14202,7 @@ module OpenEHR
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r0 = r5
           else
             @index = i0
@@ -14035,7 +14220,7 @@ module OpenEHR
         if node_cache[:single_attr_object_complex_head].has_key?(index)
           cached = node_cache[:single_attr_object_complex_head][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:single_attr_object_complex_head][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14065,7 +14250,7 @@ module OpenEHR
         if node_cache[:primitive_object_block].has_key?(index)
           cached = node_cache[:primitive_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:primitive_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14122,7 +14307,7 @@ module OpenEHR
         if node_cache[:untyped_primitive_object_block].has_key?(index)
           cached = node_cache[:untyped_primitive_object_block][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:untyped_primitive_object_block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14223,7 +14408,7 @@ module OpenEHR
         if node_cache[:primitive_object_value].has_key?(index)
           cached = node_cache[:primitive_object_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:primitive_object_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14234,9 +14419,9 @@ module OpenEHR
         r2 = _nt_term_code_list_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -14252,15 +14437,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_term_code
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -14276,15 +14462,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_simple_list_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -14300,15 +14487,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_simple_interval_value
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -14324,15 +14512,16 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 i13, s13 = index, []
                 r14 = _nt_simple_value
                 s13 << r14
                 if r14
-                  if has_terminal?('', false, index)
-                    r15 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r15 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r15 = nil
@@ -14348,6 +14537,7 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r0 = r13
                 else
                   @index = i0
@@ -14498,7 +14688,7 @@ module OpenEHR
         if node_cache[:simple_value].has_key?(index)
           cached = node_cache[:simple_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:simple_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14509,9 +14699,9 @@ module OpenEHR
         r2 = _nt_integer_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -14527,15 +14717,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_real_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -14551,15 +14742,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_boolean_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -14575,15 +14767,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_uri_value
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -14599,15 +14792,16 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 i13, s13 = index, []
                 r14 = _nt_date_value
                 s13 << r14
                 if r14
-                  if has_terminal?('', false, index)
-                    r15 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r15 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r15 = nil
@@ -14623,15 +14817,16 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r0 = r13
                 else
                   i16, s16 = index, []
                   r17 = _nt_time_value
                   s16 << r17
                   if r17
-                    if has_terminal?('', false, index)
-                      r18 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                      @index += 0
+                    if (match_len = has_terminal?('', false, index))
+                      r18 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('')
                       r18 = nil
@@ -14647,15 +14842,16 @@ module OpenEHR
                     r16 = nil
                   end
                   if r16
+                    r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                     r0 = r16
                   else
                     i19, s19 = index, []
                     r20 = _nt_date_time_value
                     s19 << r20
                     if r20
-                      if has_terminal?('', false, index)
-                        r21 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                        @index += 0
+                      if (match_len = has_terminal?('', false, index))
+                        r21 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('')
                         r21 = nil
@@ -14671,15 +14867,16 @@ module OpenEHR
                       r19 = nil
                     end
                     if r19
+                      r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                       r0 = r19
                     else
                       i22, s22 = index, []
                       r23 = _nt_duration_value
                       s22 << r23
                       if r23
-                        if has_terminal?('', false, index)
-                          r24 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                          @index += 0
+                        if (match_len = has_terminal?('', false, index))
+                          r24 = true
+                          @index += match_len
                         else
                           terminal_parse_failure('')
                           r24 = nil
@@ -14695,15 +14892,16 @@ module OpenEHR
                         r22 = nil
                       end
                       if r22
+                        r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                         r0 = r22
                       else
                         i25, s25 = index, []
                         r26 = _nt_string_value
                         s25 << r26
                         if r26
-                          if has_terminal?('', false, index)
-                            r27 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                            @index += 0
+                          if (match_len = has_terminal?('', false, index))
+                            r27 = true
+                            @index += match_len
                           else
                             terminal_parse_failure('')
                             r27 = nil
@@ -14719,15 +14917,16 @@ module OpenEHR
                           r25 = nil
                         end
                         if r25
+                          r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
                           r0 = r25
                         else
                           i28, s28 = index, []
                           r29 = _nt_character_value
                           s28 << r29
                           if r29
-                            if has_terminal?('', false, index)
-                              r30 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                              @index += 0
+                            if (match_len = has_terminal?('', false, index))
+                              r30 = true
+                              @index += match_len
                             else
                               terminal_parse_failure('')
                               r30 = nil
@@ -14743,6 +14942,7 @@ module OpenEHR
                             r28 = nil
                           end
                           if r28
+                            r28 = SyntaxNode.new(input, (index-1)...index) if r28 == true
                             r0 = r28
                           else
                             @index = i0
@@ -14885,7 +15085,7 @@ module OpenEHR
         if node_cache[:simple_list_value].has_key?(index)
           cached = node_cache[:simple_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:simple_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -14896,9 +15096,9 @@ module OpenEHR
         r2 = _nt_integer_list_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -14914,15 +15114,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_real_list_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -14938,15 +15139,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_boolean_list_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -14962,15 +15164,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_character_list_value
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -14986,15 +15189,16 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 i13, s13 = index, []
                 r14 = _nt_date_list_value
                 s13 << r14
                 if r14
-                  if has_terminal?('', false, index)
-                    r15 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r15 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r15 = nil
@@ -15010,15 +15214,16 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r0 = r13
                 else
                   i16, s16 = index, []
                   r17 = _nt_time_list_value
                   s16 << r17
                   if r17
-                    if has_terminal?('', false, index)
-                      r18 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                      @index += 0
+                    if (match_len = has_terminal?('', false, index))
+                      r18 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('')
                       r18 = nil
@@ -15034,15 +15239,16 @@ module OpenEHR
                     r16 = nil
                   end
                   if r16
+                    r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                     r0 = r16
                   else
                     i19, s19 = index, []
                     r20 = _nt_date_time_list_value
                     s19 << r20
                     if r20
-                      if has_terminal?('', false, index)
-                        r21 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                        @index += 0
+                      if (match_len = has_terminal?('', false, index))
+                        r21 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('')
                         r21 = nil
@@ -15058,15 +15264,16 @@ module OpenEHR
                       r19 = nil
                     end
                     if r19
+                      r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                       r0 = r19
                     else
                       i22, s22 = index, []
                       r23 = _nt_duration_list_value
                       s22 << r23
                       if r23
-                        if has_terminal?('', false, index)
-                          r24 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                          @index += 0
+                        if (match_len = has_terminal?('', false, index))
+                          r24 = true
+                          @index += match_len
                         else
                           terminal_parse_failure('')
                           r24 = nil
@@ -15082,15 +15289,16 @@ module OpenEHR
                         r22 = nil
                       end
                       if r22
+                        r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                         r0 = r22
                       else
                         i25, s25 = index, []
                         r26 = _nt_string_list_value
                         s25 << r26
                         if r26
-                          if has_terminal?('', false, index)
-                            r27 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                            @index += 0
+                          if (match_len = has_terminal?('', false, index))
+                            r27 = true
+                            @index += match_len
                           else
                             terminal_parse_failure('')
                             r27 = nil
@@ -15106,6 +15314,7 @@ module OpenEHR
                           r25 = nil
                         end
                         if r25
+                          r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
                           r0 = r25
                         else
                           @index = i0
@@ -15208,7 +15417,7 @@ module OpenEHR
         if node_cache[:simple_interval_value].has_key?(index)
           cached = node_cache[:simple_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:simple_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15219,9 +15428,9 @@ module OpenEHR
         r2 = _nt_integer_interval_value
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -15237,15 +15446,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_real_interval_value
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -15261,15 +15471,16 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             i7, s7 = index, []
             r8 = _nt_date_interval_value
             s7 << r8
             if r8
-              if has_terminal?('', false, index)
-                r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                @index += 0
+              if (match_len = has_terminal?('', false, index))
+                r9 = true
+                @index += match_len
               else
                 terminal_parse_failure('')
                 r9 = nil
@@ -15285,15 +15496,16 @@ module OpenEHR
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r0 = r7
             else
               i10, s10 = index, []
               r11 = _nt_time_interval_value
               s10 << r11
               if r11
-                if has_terminal?('', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                  @index += 0
+                if (match_len = has_terminal?('', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('')
                   r12 = nil
@@ -15309,15 +15521,16 @@ module OpenEHR
                 r10 = nil
               end
               if r10
+                r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                 r0 = r10
               else
                 i13, s13 = index, []
                 r14 = _nt_date_time_interval_value
                 s13 << r14
                 if r14
-                  if has_terminal?('', false, index)
-                    r15 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r15 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r15 = nil
@@ -15333,15 +15546,16 @@ module OpenEHR
                   r13 = nil
                 end
                 if r13
+                  r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                   r0 = r13
                 else
                   i16, s16 = index, []
                   r17 = _nt_duration_interval_value
                   s16 << r17
                   if r17
-                    if has_terminal?('', false, index)
-                      r18 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                      @index += 0
+                    if (match_len = has_terminal?('', false, index))
+                      r18 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('')
                       r18 = nil
@@ -15357,6 +15571,7 @@ module OpenEHR
                     r16 = nil
                   end
                   if r16
+                    r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                     r0 = r16
                   else
                     @index = i0
@@ -15391,7 +15606,7 @@ module OpenEHR
         if node_cache[:term_code].has_key?(index)
           cached = node_cache[:term_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:term_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15401,9 +15616,9 @@ module OpenEHR
         r1 = _nt_V_QUALIFIED_TERM_CODE_REF
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -15471,7 +15686,7 @@ module OpenEHR
         if node_cache[:term_code_list_value].has_key?(index)
           cached = node_cache[:term_code_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:term_code_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15485,9 +15700,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -15527,15 +15742,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
           r8 = _nt_term_code
           s7 << r8
           if r8
-            if has_terminal?(',', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r9 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r9 = nil
@@ -15555,6 +15771,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             @index = i0
@@ -15585,7 +15802,7 @@ module OpenEHR
         if node_cache[:uri_value].has_key?(index)
           cached = node_cache[:uri_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:uri_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15595,9 +15812,9 @@ module OpenEHR
         r1 = _nt_V_URI
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -15649,7 +15866,7 @@ module OpenEHR
         if node_cache[:any_identifier].has_key?(index)
           cached = node_cache[:any_identifier][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:any_identifier][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15660,9 +15877,9 @@ module OpenEHR
         r2 = _nt_type_identifier
         s1 << r2
         if r2
-          if has_terminal?('', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r3 = nil
@@ -15678,15 +15895,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i4, s4 = index, []
           r5 = _nt_V_ATTRIBUTE_IDENTIFIER
           s4 << r5
           if r5
-            if has_terminal?('', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r6 = nil
@@ -15702,6 +15920,7 @@ module OpenEHR
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             @index = i0
@@ -15783,7 +16002,7 @@ module OpenEHR
         if node_cache[:type_identifier].has_key?(index)
           cached = node_cache[:type_identifier][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:type_identifier][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15791,9 +16010,9 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        if has_terminal?('(', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r2 = true
+          @index += match_len
         else
           terminal_parse_failure('(')
           r2 = nil
@@ -15803,9 +16022,9 @@ module OpenEHR
           r3 = _nt_V_GENERIC_TYPE_IDENTIFIER
           s1 << r3
           if r3
-            if has_terminal?(')', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(')', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(')')
               r4 = nil
@@ -15826,6 +16045,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i6, s6 = index, []
@@ -15844,12 +16064,13 @@ module OpenEHR
             r6 = nil
           end
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r0 = r6
           else
             i9, s9 = index, []
-            if has_terminal?('(', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('(', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure('(')
               r10 = nil
@@ -15859,9 +16080,9 @@ module OpenEHR
               r11 = _nt_V_TYPE_IDENTIFIER
               s9 << r11
               if r11
-                if has_terminal?(')', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?(')', false, index))
+                  r12 = true
+                  @index += match_len
                 else
                   terminal_parse_failure(')')
                   r12 = nil
@@ -15882,6 +16103,7 @@ module OpenEHR
               r9 = nil
             end
             if r9
+              r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
               r0 = r9
             else
               i14, s14 = index, []
@@ -15900,6 +16122,7 @@ module OpenEHR
                 r14 = nil
               end
               if r14
+                r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
                 r0 = r14
               else
                 @index = i0
@@ -15931,7 +16154,7 @@ module OpenEHR
         if node_cache[:boolean_value].has_key?(index)
           cached = node_cache[:boolean_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:boolean_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -15941,11 +16164,13 @@ module OpenEHR
         r1 = _nt_SYM_TRUE
         r1.extend(BooleanValue0)
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           r2 = _nt_SYM_FALSE
           r2.extend(BooleanValue1)
           if r2
+            r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
             r0 = r2
           else
             @index = i0
@@ -16017,7 +16242,7 @@ module OpenEHR
         if node_cache[:boolean_list_value].has_key?(index)
           cached = node_cache[:boolean_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:boolean_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -16031,9 +16256,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -16047,9 +16272,9 @@ module OpenEHR
                 r8 = _nt_boolean_value
                 s7 << r8
                 if r8
-                  if has_terminal?('', false, index)
-                    r9 = instantiate_node(SyntaxNode,input, index...(index + 0))
-                    @index += 0
+                  if (match_len = has_terminal?('', false, index))
+                    r9 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('')
                     r9 = nil
@@ -16096,6 +16321,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i10, s10 = index, []
@@ -16118,6 +16344,7 @@ module OpenEHR
             r10 = nil
           end
           if r10
+            r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
             r0 = r10
           else
             @index = i0
@@ -16148,17 +16375,18 @@ module OpenEHR
         if node_cache[:integer_value].has_key?(index)
           cached = node_cache[:integer_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:integer_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[+-]', true, index)
+        if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
           r2 = true
           @index += 1
         else
+          terminal_parse_failure('[+-]')
           r2 = nil
         end
         if r2
@@ -16171,9 +16399,9 @@ module OpenEHR
           r3 = _nt_V_INTEGER
           s0 << r3
           if r3
-            if has_terminal?('', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 0))
-              @index += 0
+            if (match_len = has_terminal?('', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure('')
               r4 = nil
@@ -16250,7 +16478,7 @@ module OpenEHR
         if node_cache[:integer_list_value].has_key?(index)
           cached = node_cache[:integer_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:integer_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -16264,9 +16492,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -16310,15 +16538,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_integer_value
           s8 << r9
           if r9
-            if has_terminal?(',', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r10 = nil
@@ -16342,6 +16571,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -16631,7 +16861,7 @@ module OpenEHR
         if node_cache[:integer_interval_value].has_key?(index)
           cached = node_cache[:integer_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:integer_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -16674,6 +16904,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -16708,6 +16939,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -16742,6 +16974,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               i23, s23 = index, []
@@ -16772,6 +17005,7 @@ module OpenEHR
                 r23 = nil
               end
               if r23
+                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                 r0 = r23
               else
                 i29, s29 = index, []
@@ -16798,6 +17032,7 @@ module OpenEHR
                   r29 = nil
                 end
                 if r29
+                  r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                   r0 = r29
                 else
                   i34, s34 = index, []
@@ -16824,6 +17059,7 @@ module OpenEHR
                     r34 = nil
                   end
                   if r34
+                    r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                     r0 = r34
                   else
                     i39, s39 = index, []
@@ -16850,6 +17086,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i44, s44 = index, []
@@ -16876,6 +17113,7 @@ module OpenEHR
                         r44 = nil
                       end
                       if r44
+                        r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                         r0 = r44
                       else
                         i49, s49 = index, []
@@ -16898,6 +17136,7 @@ module OpenEHR
                           r49 = nil
                         end
                         if r49
+                          r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                           r0 = r49
                         else
                           @index = i0
@@ -16934,7 +17173,7 @@ module OpenEHR
         if node_cache[:real_value].has_key?(index)
           cached = node_cache[:real_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:real_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -16942,24 +17181,26 @@ module OpenEHR
 
         i0, s0 = index, []
         i2 = index
-        if has_terminal?('+', false, index)
-          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('+', false, index))
+          r3 = true
+          @index += match_len
         else
           terminal_parse_failure('+')
           r3 = nil
         end
         if r3
+          r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
           r2 = r3
         else
-          if has_terminal?('-', false, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('-', false, index))
+            r4 = true
+            @index += match_len
           else
             terminal_parse_failure('-')
             r4 = nil
           end
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r2 = r4
           else
             @index = i2
@@ -17045,7 +17286,7 @@ module OpenEHR
         if node_cache[:real_list_value].has_key?(index)
           cached = node_cache[:real_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:real_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -17059,9 +17300,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -17100,15 +17341,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_real_value
           s8 << r9
           if r9
-            if has_terminal?(',', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r10 = nil
@@ -17132,6 +17374,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -17421,7 +17664,7 @@ module OpenEHR
         if node_cache[:real_interval_value].has_key?(index)
           cached = node_cache[:real_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:real_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -17464,6 +17707,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -17498,6 +17742,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -17532,6 +17777,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               i23, s23 = index, []
@@ -17562,6 +17808,7 @@ module OpenEHR
                 r23 = nil
               end
               if r23
+                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                 r0 = r23
               else
                 i29, s29 = index, []
@@ -17588,6 +17835,7 @@ module OpenEHR
                   r29 = nil
                 end
                 if r29
+                  r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                   r0 = r29
                 else
                   i34, s34 = index, []
@@ -17614,6 +17862,7 @@ module OpenEHR
                     r34 = nil
                   end
                   if r34
+                    r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                     r0 = r34
                   else
                     i39, s39 = index, []
@@ -17640,6 +17889,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i44, s44 = index, []
@@ -17666,6 +17916,7 @@ module OpenEHR
                         r44 = nil
                       end
                       if r44
+                        r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                         r0 = r44
                       else
                         i49, s49 = index, []
@@ -17688,6 +17939,7 @@ module OpenEHR
                           r49 = nil
                         end
                         if r49
+                          r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                           r0 = r49
                         else
                           @index = i0
@@ -17725,7 +17977,7 @@ module OpenEHR
         if node_cache[:character_value].has_key?(index)
           cached = node_cache[:character_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:character_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -17735,9 +17987,9 @@ module OpenEHR
         r1 = _nt_V_CHAR
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -17806,7 +18058,7 @@ module OpenEHR
         if node_cache[:character_list_value].has_key?(index)
           cached = node_cache[:character_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:character_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -17820,9 +18072,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -17866,15 +18118,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_character_value
           s8 << r9
           if r9
-            if has_terminal?(',', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r10 = nil
@@ -17894,6 +18147,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -17924,7 +18178,7 @@ module OpenEHR
         if node_cache[:string_value].has_key?(index)
           cached = node_cache[:string_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:string_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -17934,9 +18188,9 @@ module OpenEHR
         r1 = _nt_V_STRING
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -18012,7 +18266,7 @@ module OpenEHR
         if node_cache[:string_list_value].has_key?(index)
           cached = node_cache[:string_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:string_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -18026,9 +18280,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -18072,15 +18326,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_V_STRING
           s8 << r9
           if r9
-            if has_terminal?(',', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r10 = nil
@@ -18104,6 +18359,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -18135,7 +18391,7 @@ module OpenEHR
         if node_cache[:date_value].has_key?(index)
           cached = node_cache[:date_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:date_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -18145,9 +18401,9 @@ module OpenEHR
         r1 = _nt_V_ISO8601_EXTENDED_DATE
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -18223,7 +18479,7 @@ module OpenEHR
         if node_cache[:date_list_value].has_key?(index)
           cached = node_cache[:date_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:date_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -18237,9 +18493,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -18283,15 +18539,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_date_value
           s8 << r9
           if r9
-            if has_terminal?(',', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r10 = nil
@@ -18315,6 +18572,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -18604,7 +18862,7 @@ module OpenEHR
         if node_cache[:date_interval_value].has_key?(index)
           cached = node_cache[:date_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:date_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -18647,6 +18905,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -18681,6 +18940,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -18715,6 +18975,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               i23, s23 = index, []
@@ -18745,6 +19006,7 @@ module OpenEHR
                 r23 = nil
               end
               if r23
+                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                 r0 = r23
               else
                 i29, s29 = index, []
@@ -18771,6 +19033,7 @@ module OpenEHR
                   r29 = nil
                 end
                 if r29
+                  r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                   r0 = r29
                 else
                   i34, s34 = index, []
@@ -18797,6 +19060,7 @@ module OpenEHR
                     r34 = nil
                   end
                   if r34
+                    r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                     r0 = r34
                   else
                     i39, s39 = index, []
@@ -18823,6 +19087,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i44, s44 = index, []
@@ -18849,6 +19114,7 @@ module OpenEHR
                         r44 = nil
                       end
                       if r44
+                        r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                         r0 = r44
                       else
                         i49, s49 = index, []
@@ -18871,6 +19137,7 @@ module OpenEHR
                           r49 = nil
                         end
                         if r49
+                          r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                           r0 = r49
                         else
                           @index = i0
@@ -18909,7 +19176,7 @@ module OpenEHR
         if node_cache[:time_value].has_key?(index)
           cached = node_cache[:time_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:time_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -18919,9 +19186,9 @@ module OpenEHR
         r1 = _nt_V_ISO8601_EXTENDED_TIME
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -18997,7 +19264,7 @@ module OpenEHR
         if node_cache[:time_list_value].has_key?(index)
           cached = node_cache[:time_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:time_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -19011,9 +19278,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -19057,15 +19324,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
           r9 = _nt_time_value
           s8 << r9
           if r9
-            if has_terminal?(',', false, index)
-              r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r10 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r10 = nil
@@ -19089,6 +19357,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
             @index = i0
@@ -19378,7 +19647,7 @@ module OpenEHR
         if node_cache[:time_interval_value].has_key?(index)
           cached = node_cache[:time_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:time_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -19421,6 +19690,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -19455,6 +19725,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -19489,6 +19760,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               i23, s23 = index, []
@@ -19519,6 +19791,7 @@ module OpenEHR
                 r23 = nil
               end
               if r23
+                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                 r0 = r23
               else
                 i29, s29 = index, []
@@ -19545,6 +19818,7 @@ module OpenEHR
                   r29 = nil
                 end
                 if r29
+                  r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                   r0 = r29
                 else
                   i34, s34 = index, []
@@ -19571,6 +19845,7 @@ module OpenEHR
                     r34 = nil
                   end
                   if r34
+                    r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                     r0 = r34
                   else
                     i39, s39 = index, []
@@ -19597,6 +19872,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i44, s44 = index, []
@@ -19623,6 +19899,7 @@ module OpenEHR
                         r44 = nil
                       end
                       if r44
+                        r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                         r0 = r44
                       else
                         i49, s49 = index, []
@@ -19645,6 +19922,7 @@ module OpenEHR
                           r49 = nil
                         end
                         if r49
+                          r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                           r0 = r49
                         else
                           @index = i0
@@ -19683,7 +19961,7 @@ module OpenEHR
         if node_cache[:date_time_value].has_key?(index)
           cached = node_cache[:date_time_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:date_time_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -19693,9 +19971,9 @@ module OpenEHR
         r1 = _nt_V_ISO8601_EXTENDED_DATE_TIME
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -19760,7 +20038,7 @@ module OpenEHR
         if node_cache[:date_time_list_value].has_key?(index)
           cached = node_cache[:date_time_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:date_time_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -19774,9 +20052,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -19816,15 +20094,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
           r8 = _nt_date_time_value
           s7 << r8
           if r8
-            if has_terminal?(',', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r9 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r9 = nil
@@ -19844,6 +20123,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             @index = i0
@@ -20133,7 +20413,7 @@ module OpenEHR
         if node_cache[:date_time_interval_value].has_key?(index)
           cached = node_cache[:date_time_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:date_time_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -20176,6 +20456,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -20210,6 +20491,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -20244,6 +20526,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               i23, s23 = index, []
@@ -20274,6 +20557,7 @@ module OpenEHR
                 r23 = nil
               end
               if r23
+                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                 r0 = r23
               else
                 i29, s29 = index, []
@@ -20300,6 +20584,7 @@ module OpenEHR
                   r29 = nil
                 end
                 if r29
+                  r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                   r0 = r29
                 else
                   i34, s34 = index, []
@@ -20326,6 +20611,7 @@ module OpenEHR
                     r34 = nil
                   end
                   if r34
+                    r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                     r0 = r34
                   else
                     i39, s39 = index, []
@@ -20352,6 +20638,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i44, s44 = index, []
@@ -20378,6 +20665,7 @@ module OpenEHR
                         r44 = nil
                       end
                       if r44
+                        r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                         r0 = r44
                       else
                         i49, s49 = index, []
@@ -20400,6 +20688,7 @@ module OpenEHR
                           r49 = nil
                         end
                         if r49
+                          r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                           r0 = r49
                         else
                           @index = i0
@@ -20438,7 +20727,7 @@ module OpenEHR
         if node_cache[:duration_value].has_key?(index)
           cached = node_cache[:duration_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:duration_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -20448,9 +20737,9 @@ module OpenEHR
         r1 = _nt_V_ISO8601_DURATION
         s0 << r1
         if r1
-          if has_terminal?('', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 0))
-            @index += 0
+          if (match_len = has_terminal?('', false, index))
+            r2 = true
+            @index += match_len
           else
             terminal_parse_failure('')
             r2 = nil
@@ -20518,7 +20807,7 @@ module OpenEHR
         if node_cache[:duration_list_value].has_key?(index)
           cached = node_cache[:duration_list_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:duration_list_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -20532,9 +20821,9 @@ module OpenEHR
           s3, i3 = [], index
           loop do
             i4, s4 = index, []
-            if has_terminal?(',', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r5 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r5 = nil
@@ -20574,15 +20863,16 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i7, s7 = index, []
           r8 = _nt_duration_value
           s7 << r8
           if r8
-            if has_terminal?(',', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(',', false, index))
+              r9 = true
+              @index += match_len
             else
               terminal_parse_failure(',')
               r9 = nil
@@ -20602,6 +20892,7 @@ module OpenEHR
             r7 = nil
           end
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r0 = r7
           else
             @index = i0
@@ -20891,7 +21182,7 @@ module OpenEHR
         if node_cache[:duration_interval_value].has_key?(index)
           cached = node_cache[:duration_interval_value][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:duration_interval_value][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -20934,6 +21225,7 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i9, s9 = index, []
@@ -20968,6 +21260,7 @@ module OpenEHR
             r9 = nil
           end
           if r9
+            r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
             r0 = r9
           else
             i16, s16 = index, []
@@ -21002,6 +21295,7 @@ module OpenEHR
               r16 = nil
             end
             if r16
+              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
               r0 = r16
             else
               i23, s23 = index, []
@@ -21032,6 +21326,7 @@ module OpenEHR
                 r23 = nil
               end
               if r23
+                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                 r0 = r23
               else
                 i29, s29 = index, []
@@ -21058,6 +21353,7 @@ module OpenEHR
                   r29 = nil
                 end
                 if r29
+                  r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                   r0 = r29
                 else
                   i34, s34 = index, []
@@ -21084,6 +21380,7 @@ module OpenEHR
                     r34 = nil
                   end
                   if r34
+                    r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                     r0 = r34
                   else
                     i39, s39 = index, []
@@ -21110,6 +21407,7 @@ module OpenEHR
                       r39 = nil
                     end
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r0 = r39
                     else
                       i44, s44 = index, []
@@ -21136,6 +21434,7 @@ module OpenEHR
                         r44 = nil
                       end
                       if r44
+                        r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                         r0 = r44
                       else
                         i49, s49 = index, []
@@ -21158,6 +21457,7 @@ module OpenEHR
                           r49 = nil
                         end
                         if r49
+                          r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                           r0 = r49
                         else
                           @index = i0
@@ -21182,16 +21482,17 @@ module OpenEHR
         if node_cache[:ALPHANUM].has_key?(index)
           cached = node_cache[:ALPHANUM][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:ALPHANUM][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('\G[a-zA-Z0-9]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9]'] ||= Regexp.new(gr), :regexp, index)
           r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z0-9]')
           r0 = nil
         end
 
@@ -21205,16 +21506,17 @@ module OpenEHR
         if node_cache[:IDCHAR].has_key?(index)
           cached = node_cache[:IDCHAR][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:IDCHAR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('\G[a-zA-Z0-9_]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9_]'] ||= Regexp.new(gr), :regexp, index)
           r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z0-9_]')
           r0 = nil
         end
 
@@ -21228,16 +21530,17 @@ module OpenEHR
         if node_cache[:NAMECHAR].has_key?(index)
           cached = node_cache[:NAMECHAR][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:NAMECHAR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('\G[a-zA-Z0-9\\._\\-]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9\\._\\-]'] ||= Regexp.new(gr), :regexp, index)
           r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z0-9\\._\\-]')
           r0 = nil
         end
 
@@ -21251,16 +21554,17 @@ module OpenEHR
         if node_cache[:NAMECHAR_SPACE].has_key?(index)
           cached = node_cache[:NAMECHAR_SPACE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:NAMECHAR_SPACE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('\G[a-zA-Z0-9\\._\\- ]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9\\._\\- ]'] ||= Regexp.new(gr), :regexp, index)
           r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z0-9\\._\\- ]')
           r0 = nil
         end
 
@@ -21274,16 +21578,17 @@ module OpenEHR
         if node_cache[:NAMECHAR_PAREN].has_key?(index)
           cached = node_cache[:NAMECHAR_PAREN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:NAMECHAR_PAREN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('\G[a-zA-Z0-9\\._\\-\\(\\)]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9\\._\\-\\(\\)]'] ||= Regexp.new(gr), :regexp, index)
           r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z0-9\\._\\-\\(\\)]')
           r0 = nil
         end
 
@@ -21300,27 +21605,29 @@ module OpenEHR
         if node_cache[:NAMESTR].has_key?(index)
           cached = node_cache[:NAMESTR][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:NAMESTR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[a-zA-Z]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z]')
           r1 = nil
         end
         s0 << r1
         if r1
           s2, i2 = [], index
           loop do
-            if has_terminal?('\G[a-zA-Z0-9_]', true, index)
+            if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9_]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[a-zA-Z0-9_]')
               r3 = nil
             end
             if r3
@@ -21361,7 +21668,7 @@ module OpenEHR
         if node_cache[:space].has_key?(index)
           cached = node_cache[:space][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:space][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -21408,7 +21715,7 @@ module OpenEHR
         if node_cache[:COMMENT].has_key?(index)
           cached = node_cache[:COMMENT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:COMMENT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -21418,9 +21725,9 @@ module OpenEHR
         r1 = _nt_white_space
         s0 << r1
         if r1
-          if has_terminal?('--', false, index)
-            r2 = instantiate_node(SyntaxNode,input, index...(index + 2))
-            @index += 2
+          if (match_len = has_terminal?('--', false, index))
+            r2 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+            @index += match_len
           else
             terminal_parse_failure('--')
             r2 = nil
@@ -21429,10 +21736,11 @@ module OpenEHR
           if r2
             s3, i3 = [], index
             loop do
-              if has_terminal?('\G[^\\n]', true, index)
+              if has_terminal?(@regexps[gr = '\A[^\\n]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[^\\n]')
                 r4 = nil
               end
               if r4
@@ -21444,9 +21752,9 @@ module OpenEHR
             r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
             s0 << r3
             if r3
-              if has_terminal?("\n", false, index)
-                r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?("\n", false, index))
+                r5 = true
+                @index += match_len
               else
                 terminal_parse_failure("\n")
                 r5 = nil
@@ -21473,7 +21781,7 @@ module OpenEHR
         if node_cache[:white_space].has_key?(index)
           cached = node_cache[:white_space][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:white_space][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -21481,10 +21789,11 @@ module OpenEHR
 
         s0, i0 = [], index
         loop do
-          if has_terminal?('\G[ \\t\\r\\n]', true, index)
+          if has_terminal?(@regexps[gr = '\A[ \\t\\r\\n]'] ||= Regexp.new(gr), :regexp, index)
             r1 = true
             @index += 1
           else
+            terminal_parse_failure('[ \\t\\r\\n]')
             r1 = nil
           end
           if r1
@@ -21505,15 +21814,15 @@ module OpenEHR
         if node_cache[:Minus_code].has_key?(index)
           cached = node_cache[:Minus_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Minus_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('-', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('-', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('-')
           r0 = nil
@@ -21529,15 +21838,15 @@ module OpenEHR
         if node_cache[:Plus_Code].has_key?(index)
           cached = node_cache[:Plus_Code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Plus_Code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('+', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('+', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('+')
           r0 = nil
@@ -21553,15 +21862,15 @@ module OpenEHR
         if node_cache[:Star_code].has_key?(index)
           cached = node_cache[:Star_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Star_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('*', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('*', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('*')
           r0 = nil
@@ -21577,15 +21886,15 @@ module OpenEHR
         if node_cache[:Slash_code].has_key?(index)
           cached = node_cache[:Slash_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Slash_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('/', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('/', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('/')
           r0 = nil
@@ -21601,15 +21910,15 @@ module OpenEHR
         if node_cache[:Carret_code].has_key?(index)
           cached = node_cache[:Carret_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Carret_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('^', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('^', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('^')
           r0 = nil
@@ -21625,15 +21934,15 @@ module OpenEHR
         if node_cache[:Dot_code].has_key?(index)
           cached = node_cache[:Dot_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Dot_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('.', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('.', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('.')
           r0 = nil
@@ -21649,15 +21958,15 @@ module OpenEHR
         if node_cache[:Semicolon_code].has_key?(index)
           cached = node_cache[:Semicolon_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Semicolon_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?(';', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(';', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure(';')
           r0 = nil
@@ -21673,15 +21982,15 @@ module OpenEHR
         if node_cache[:Colon_code].has_key?(index)
           cached = node_cache[:Colon_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Colon_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?(':', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(':', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure(':')
           r0 = nil
@@ -21697,15 +22006,15 @@ module OpenEHR
         if node_cache[:Comma_code].has_key?(index)
           cached = node_cache[:Comma_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Comma_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?(',', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(',', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure(',')
           r0 = nil
@@ -21721,15 +22030,15 @@ module OpenEHR
         if node_cache[:Expclamation_code].has_key?(index)
           cached = node_cache[:Expclamation_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Expclamation_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('!', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('!', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('!')
           r0 = nil
@@ -21745,15 +22054,15 @@ module OpenEHR
         if node_cache[:Left_parenthesis_code].has_key?(index)
           cached = node_cache[:Left_parenthesis_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Left_parenthesis_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('(', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('(')
           r0 = nil
@@ -21769,15 +22078,15 @@ module OpenEHR
         if node_cache[:Right_parenthesis_code].has_key?(index)
           cached = node_cache[:Right_parenthesis_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Right_parenthesis_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?(')', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(')', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure(')')
           r0 = nil
@@ -21793,15 +22102,15 @@ module OpenEHR
         if node_cache[:Dollar_code].has_key?(index)
           cached = node_cache[:Dollar_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Dollar_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('$', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('$', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('$')
           r0 = nil
@@ -21817,15 +22126,15 @@ module OpenEHR
         if node_cache[:SYM_DT_UNKNOWN].has_key?(index)
           cached = node_cache[:SYM_DT_UNKNOWN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_DT_UNKNOWN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('??', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('??', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('??')
           r0 = nil
@@ -21841,15 +22150,15 @@ module OpenEHR
         if node_cache[:Question_mark_code].has_key?(index)
           cached = node_cache[:Question_mark_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Question_mark_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('?', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('?', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('?')
           r0 = nil
@@ -21865,15 +22174,15 @@ module OpenEHR
         if node_cache[:SYM_INTERVAL_DELIM].has_key?(index)
           cached = node_cache[:SYM_INTERVAL_DELIM][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_INTERVAL_DELIM][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('|', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('|', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('|')
           r0 = nil
@@ -21895,16 +22204,16 @@ module OpenEHR
         if node_cache[:Left_bracket_code].has_key?(index)
           cached = node_cache[:Left_bracket_code][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Left_bracket_code][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -21932,15 +22241,15 @@ module OpenEHR
         if node_cache[:Right_bracket_codde].has_key?(index)
           cached = node_cache[:Right_bracket_codde][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:Right_bracket_codde][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?(']', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(']', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure(']')
           r0 = nil
@@ -21962,16 +22271,16 @@ module OpenEHR
         if node_cache[:SYM_EQ].has_key?(index)
           cached = node_cache[:SYM_EQ][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_EQ][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('=', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('=', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('=')
           r1 = nil
@@ -22005,7 +22314,7 @@ module OpenEHR
         if node_cache[:SYM_GE].has_key?(index)
           cached = node_cache[:SYM_GE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_GE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -22013,24 +22322,26 @@ module OpenEHR
 
         i0, s0 = index, []
         i1 = index
-        if has_terminal?('=>', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('=>', false, index))
+          r2 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('=>')
           r2 = nil
         end
         if r2
+          r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
           r1 = r2
         else
-          if has_terminal?('>=', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 2))
-            @index += 2
+          if (match_len = has_terminal?('>=', false, index))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+            @index += match_len
           else
             terminal_parse_failure('>=')
             r3 = nil
           end
           if r3
+            r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
             r1 = r3
           else
             @index = i1
@@ -22066,7 +22377,7 @@ module OpenEHR
         if node_cache[:SYM_LE].has_key?(index)
           cached = node_cache[:SYM_LE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_LE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -22074,24 +22385,26 @@ module OpenEHR
 
         i0, s0 = index, []
         i1 = index
-        if has_terminal?('<=', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('<=', false, index))
+          r2 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('<=')
           r2 = nil
         end
         if r2
+          r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
           r1 = r2
         else
-          if has_terminal?('=>', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 2))
-            @index += 2
+          if (match_len = has_terminal?('=>', false, index))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+            @index += match_len
           else
             terminal_parse_failure('=>')
             r3 = nil
           end
           if r3
+            r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
             r1 = r3
           else
             @index = i1
@@ -22127,16 +22440,16 @@ module OpenEHR
         if node_cache[:SYM_LT].has_key?(index)
           cached = node_cache[:SYM_LT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_LT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('<', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('<', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('<')
           r1 = nil
@@ -22170,16 +22483,16 @@ module OpenEHR
         if node_cache[:SYM_GT].has_key?(index)
           cached = node_cache[:SYM_GT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_GT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('>', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('>', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('>')
           r1 = nil
@@ -22213,16 +22526,16 @@ module OpenEHR
         if node_cache[:SYM_START_DBLOCK].has_key?(index)
           cached = node_cache[:SYM_START_DBLOCK][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_START_DBLOCK][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('<', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('<', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('<')
           r1 = nil
@@ -22256,16 +22569,16 @@ module OpenEHR
         if node_cache[:SYM_END_DBLOCK].has_key?(index)
           cached = node_cache[:SYM_END_DBLOCK][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_END_DBLOCK][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('>', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('>', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('>')
           r1 = nil
@@ -22299,16 +22612,16 @@ module OpenEHR
         if node_cache[:SYM_START_CBLOCK].has_key?(index)
           cached = node_cache[:SYM_START_CBLOCK][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_START_CBLOCK][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('{', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('{', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('{')
           r1 = nil
@@ -22336,15 +22649,15 @@ module OpenEHR
         if node_cache[:SYM_END_CBLOCK].has_key?(index)
           cached = node_cache[:SYM_END_CBLOCK][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_END_CBLOCK][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('}', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('}', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('}')
           r0 = nil
@@ -22360,15 +22673,15 @@ module OpenEHR
         if node_cache[:SYM_ELLIPSIS].has_key?(index)
           cached = node_cache[:SYM_ELLIPSIS][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ELLIPSIS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('..', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('..', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('..')
           r0 = nil
@@ -22384,15 +22697,15 @@ module OpenEHR
         if node_cache[:SYM_LIST_CONTINUE].has_key?(index)
           cached = node_cache[:SYM_LIST_CONTINUE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_LIST_CONTINUE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('...', false, index)
-          r0 = instantiate_node(SyntaxNode,input, index...(index + 3))
-          @index += 3
+        if (match_len = has_terminal?('...', false, index))
+          r0 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
           terminal_parse_failure('...')
           r0 = nil
@@ -22414,73 +22727,81 @@ module OpenEHR
         if node_cache[:SYM_INFINITY].has_key?(index)
           cached = node_cache[:SYM_INFINITY][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_INFINITY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ii]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ii]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ff]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ff]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ff]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ii]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ii]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Nn]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Nn]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ii]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ii]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Yy]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Yy]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Yy]')
                         r8 = nil
                       end
                       s0 << r8
@@ -22519,81 +22840,90 @@ module OpenEHR
         if node_cache[:SYM_ARCHETYPE].has_key?(index)
           cached = node_cache[:SYM_ARCHETYPE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ARCHETYPE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Aa]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Aa]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Rr]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Rr]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Cc]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Cc]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Hh]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Hh]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Hh]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ee]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ee]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Tt]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Tt]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Yy]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Yy]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Yy]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Pp]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Pp]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Ee]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Ee]')
                           r9 = nil
                         end
                         s0 << r9
@@ -22639,7 +22969,7 @@ module OpenEHR
         if node_cache[:SYM_MATCHES].has_key?(index)
           cached = node_cache[:SYM_MATCHES][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_MATCHES][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -22648,58 +22978,65 @@ module OpenEHR
         i0, s0 = index, []
         i1 = index
         i2, s2 = index, []
-        if has_terminal?('\G[Mm]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Mm]'] ||= Regexp.new(gr), :regexp, index)
           r3 = true
           @index += 1
         else
+          terminal_parse_failure('[Mm]')
           r3 = nil
         end
         s2 << r3
         if r3
-          if has_terminal?('\G[Aa]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
             r4 = true
             @index += 1
           else
+            terminal_parse_failure('[Aa]')
             r4 = nil
           end
           s2 << r4
           if r4
-            if has_terminal?('\G[Tt]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
               r5 = true
               @index += 1
             else
+              terminal_parse_failure('[Tt]')
               r5 = nil
             end
             s2 << r5
             if r5
-              if has_terminal?('\G[Cc]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                 r6 = true
                 @index += 1
               else
+                terminal_parse_failure('[Cc]')
                 r6 = nil
               end
               s2 << r6
               if r6
-                if has_terminal?('\G[Hh]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Hh]'] ||= Regexp.new(gr), :regexp, index)
                   r7 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Hh]')
                   r7 = nil
                 end
                 s2 << r7
                 if r7
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r8 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r8 = nil
                   end
                   s2 << r8
                   if r8
-                    if has_terminal?('\G[Ss]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                       r9 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ss]')
                       r9 = nil
                     end
                     s2 << r9
@@ -22717,46 +23054,51 @@ module OpenEHR
           r2 = nil
         end
         if r2
+          r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
           r1 = r2
         else
           i10, s10 = index, []
-          if has_terminal?('\G[Ii]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
             r11 = true
             @index += 1
           else
+            terminal_parse_failure('[Ii]')
             r11 = nil
           end
           s10 << r11
           if r11
-            if has_terminal?('\G[Ss]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
               r12 = true
               @index += 1
             else
+              terminal_parse_failure('[Ss]')
               r12 = nil
             end
             s10 << r12
             if r12
-              if has_terminal?('_', false, index)
-                r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('_', false, index))
+                r13 = true
+                @index += match_len
               else
                 terminal_parse_failure('_')
                 r13 = nil
               end
               s10 << r13
               if r13
-                if has_terminal?('\G[Ii]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                   r14 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ii]')
                   r14 = nil
                 end
                 s10 << r14
                 if r14
-                  if has_terminal?('\G[Nn]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                     r15 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Nn]')
                     r15 = nil
                   end
                   s10 << r15
@@ -22772,6 +23114,7 @@ module OpenEHR
             r10 = nil
           end
           if r10
+            r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
             r1 = r10
           else
             @index = i1
@@ -22807,41 +23150,45 @@ module OpenEHR
         if node_cache[:SYM_THEN].has_key?(index)
           cached = node_cache[:SYM_THEN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_THEN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Tt]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Tt]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Hh]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Hh]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Hh]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ee]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ee]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Nn]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Nn]')
                 r4 = nil
               end
               s0 << r4
@@ -22876,41 +23223,45 @@ module OpenEHR
         if node_cache[:SYM_ELSE].has_key?(index)
           cached = node_cache[:SYM_ELSE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ELSE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ee]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ee]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ll]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ll]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ss]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ss]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ee]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ee]')
                 r4 = nil
               end
               s0 << r4
@@ -22945,33 +23296,36 @@ module OpenEHR
         if node_cache[:SYM_AND].has_key?(index)
           cached = node_cache[:SYM_AND][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_AND][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Aa]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Aa]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Dd]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Dd]')
               r3 = nil
             end
             s0 << r3
@@ -23005,25 +23359,27 @@ module OpenEHR
         if node_cache[:SYM_OR].has_key?(index)
           cached = node_cache[:SYM_OR][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_OR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Oo]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Oo]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Rr]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Rr]')
             r2 = nil
           end
           s0 << r2
@@ -23056,33 +23412,36 @@ module OpenEHR
         if node_cache[:SYM_XOR].has_key?(index)
           cached = node_cache[:SYM_XOR][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_XOR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Xx]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Xx]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Xx]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Oo]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Oo]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Rr]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Rr]')
               r3 = nil
             end
             s0 << r3
@@ -23116,33 +23475,36 @@ module OpenEHR
         if node_cache[:SYM_NOT].has_key?(index)
           cached = node_cache[:SYM_NOT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_NOT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Nn]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Nn]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Oo]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Oo]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Tt]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Tt]')
               r3 = nil
             end
             s0 << r3
@@ -23176,65 +23538,72 @@ module OpenEHR
         if node_cache[:SYM_IMPLIES].has_key?(index)
           cached = node_cache[:SYM_IMPLIES][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_IMPLIES][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ii]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ii]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Mm]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Mm]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Mm]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Pp]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Pp]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ll]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ll]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ii]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ii]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ss]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ss]')
                       r7 = nil
                     end
                     s0 << r7
@@ -23272,41 +23641,45 @@ module OpenEHR
         if node_cache[:SYM_TRUE].has_key?(index)
           cached = node_cache[:SYM_TRUE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_TRUE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Tt]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Tt]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Rr]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Rr]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Uu]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Uu]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ee]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ee]')
                 r4 = nil
               end
               s0 << r4
@@ -23341,49 +23714,54 @@ module OpenEHR
         if node_cache[:SYM_FALSE].has_key?(index)
           cached = node_cache[:SYM_FALSE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_FALSE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ff]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ff]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ff]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Aa]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Aa]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ll]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ll]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ss]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ss]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ee]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ee]')
                   r5 = nil
                 end
                 s0 << r5
@@ -23419,66 +23797,72 @@ module OpenEHR
         if node_cache[:SYM_FORALL].has_key?(index)
           cached = node_cache[:SYM_FORALL][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_FORALL][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ff]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ff]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ff]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Oo]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Oo]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Rr]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Rr]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('_', false, index)
-                r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('_', false, index))
+                r4 = true
+                @index += match_len
               else
                 terminal_parse_failure('_')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Aa]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Aa]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ll]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ll]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ll]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ll]')
                       r7 = nil
                     end
                     s0 << r7
@@ -23516,57 +23900,63 @@ module OpenEHR
         if node_cache[:SYM_EXISTS].has_key?(index)
           cached = node_cache[:SYM_EXISTS][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_EXISTS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ee]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ee]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Xx]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Xx]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Xx]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ii]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ii]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ss]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ss]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Tt]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Tt]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ss]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ss]')
                     r6 = nil
                   end
                   s0 << r6
@@ -23603,81 +23993,90 @@ module OpenEHR
         if node_cache[:SYM_EXISTENCE].has_key?(index)
           cached = node_cache[:SYM_EXISTENCE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_EXISTENCE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ee]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ee]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Xx]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Xx]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Xx]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ii]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ii]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ss]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ss]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Tt]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Tt]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Nn]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Nn]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Cc]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Cc]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Ee]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Ee]')
                           r9 = nil
                         end
                         s0 << r9
@@ -23717,97 +24116,108 @@ module OpenEHR
         if node_cache[:SYM_OCCURRENCES].has_key?(index)
           cached = node_cache[:SYM_OCCURRENCES][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_OCCURRENCES][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Oo]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Oo]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Cc]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Cc]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Cc]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Cc]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Uu]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Uu]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Rr]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Rr]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Rr]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Rr]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ee]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ee]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Nn]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Nn]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Cc]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Cc]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Ee]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Ee]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Ss]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Ss]')
                               r11 = nil
                             end
                             s0 << r11
@@ -23849,97 +24259,108 @@ module OpenEHR
         if node_cache[:SYM_CARDINALITY].has_key?(index)
           cached = node_cache[:SYM_CARDINALITY][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_CARDINALITY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Cc]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Cc]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Aa]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Aa]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Rr]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Rr]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Dd]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Dd]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ii]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ii]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Nn]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Nn]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Aa]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Aa]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ll]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ll]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Ii]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Ii]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Tt]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Tt]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Yy]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Yy]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Yy]')
                               r11 = nil
                             end
                             s0 << r11
@@ -23981,65 +24402,72 @@ module OpenEHR
         if node_cache[:SYM_ORDERED].has_key?(index)
           cached = node_cache[:SYM_ORDERED][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ORDERED][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Oo]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Oo]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Rr]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Rr]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Dd]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Dd]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ee]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ee]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Rr]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Rr]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Dd]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Dd]')
                       r7 = nil
                     end
                     s0 << r7
@@ -24077,81 +24505,90 @@ module OpenEHR
         if node_cache[:SYM_UNORDERD].has_key?(index)
           cached = node_cache[:SYM_UNORDERD][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_UNORDERD][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Uu]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Uu]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Oo]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Oo]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Rr]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Rr]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Dd]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Dd]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Rr]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Rr]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ee]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ee]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Dd]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Dd]')
                           r9 = nil
                         end
                         s0 << r9
@@ -24191,57 +24628,63 @@ module OpenEHR
         if node_cache[:SYM_UNIQUE].has_key?(index)
           cached = node_cache[:SYM_UNIQUE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_UNIQUE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Uu]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Uu]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ii]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ii]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Qq]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Qq]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Qq]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Uu]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Uu]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r6 = nil
                   end
                   s0 << r6
@@ -24278,73 +24721,81 @@ module OpenEHR
         if node_cache[:SYM_INFINITY].has_key?(index)
           cached = node_cache[:SYM_INFINITY][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_INFINITY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ii]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ii]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ff]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ff]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ff]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ii]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ii]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Nn]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Nn]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ii]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ii]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Yy]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Yy]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Yy]')
                         r8 = nil
                       end
                       s0 << r8
@@ -24383,74 +24834,81 @@ module OpenEHR
         if node_cache[:SYM_USE_NODE].has_key?(index)
           cached = node_cache[:SYM_USE_NODE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_USE_NODE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Uu]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Uu]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ss]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ss]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ee]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ee]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('_', false, index)
-                r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('_', false, index))
+                r4 = true
+                @index += match_len
               else
                 terminal_parse_failure('_')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Nn]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Nn]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Oo]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Oo]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Dd]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Dd]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ee]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ee]')
                         r8 = nil
                       end
                       s0 << r8
@@ -24495,7 +24953,7 @@ module OpenEHR
         if node_cache[:SYM_ALLOW_ARCHETYPE].has_key?(index)
           cached = node_cache[:SYM_ALLOW_ARCHETYPE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ALLOW_ARCHETYPE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -24504,42 +24962,47 @@ module OpenEHR
         i0, s0 = index, []
         i1 = index
         i2, s2 = index, []
-        if has_terminal?('\G[Aa]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
           r3 = true
           @index += 1
         else
+          terminal_parse_failure('[Aa]')
           r3 = nil
         end
         s2 << r3
         if r3
-          if has_terminal?('\G[Ll]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
             r4 = true
             @index += 1
           else
+            terminal_parse_failure('[Ll]')
             r4 = nil
           end
           s2 << r4
           if r4
-            if has_terminal?('\G[Ll]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
               r5 = true
               @index += 1
             else
+              terminal_parse_failure('[Ll]')
               r5 = nil
             end
             s2 << r5
             if r5
-              if has_terminal?('\G[Oo]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                 r6 = true
                 @index += 1
               else
+                terminal_parse_failure('[Oo]')
                 r6 = nil
               end
               s2 << r6
               if r6
-                if has_terminal?('\G[Ww]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ww]'] ||= Regexp.new(gr), :regexp, index)
                   r7 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ww]')
                   r7 = nil
                 end
                 s2 << r7
@@ -24555,29 +25018,33 @@ module OpenEHR
           r2 = nil
         end
         if r2
+          r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
           r1 = r2
         else
           i8, s8 = index, []
-          if has_terminal?('\G[Uu]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
             r9 = true
             @index += 1
           else
+            terminal_parse_failure('[Uu]')
             r9 = nil
           end
           s8 << r9
           if r9
-            if has_terminal?('\G[Ss]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
               r10 = true
               @index += 1
             else
+              terminal_parse_failure('[Ss]')
               r10 = nil
             end
             s8 << r10
             if r10
-              if has_terminal?('\G[Ee]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                 r11 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ee]')
                 r11 = nil
               end
               s8 << r11
@@ -24591,6 +25058,7 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r1 = r8
           else
             @index = i1
@@ -24599,83 +25067,92 @@ module OpenEHR
         end
         s0 << r1
         if r1
-          if has_terminal?('_', false, index)
-            r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('_', false, index))
+            r12 = true
+            @index += match_len
           else
             terminal_parse_failure('_')
             r12 = nil
           end
           s0 << r12
           if r12
-            if has_terminal?('\G[Aa]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
               r13 = true
               @index += 1
             else
+              terminal_parse_failure('[Aa]')
               r13 = nil
             end
             s0 << r13
             if r13
-              if has_terminal?('\G[Rr]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                 r14 = true
                 @index += 1
               else
+                terminal_parse_failure('[Rr]')
                 r14 = nil
               end
               s0 << r14
               if r14
-                if has_terminal?('\G[Cc]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                   r15 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Cc]')
                   r15 = nil
                 end
                 s0 << r15
                 if r15
-                  if has_terminal?('\G[Hh]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Hh]'] ||= Regexp.new(gr), :regexp, index)
                     r16 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Hh]')
                     r16 = nil
                   end
                   s0 << r16
                   if r16
-                    if has_terminal?('\G[Ee]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                       r17 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ee]')
                       r17 = nil
                     end
                     s0 << r17
                     if r17
-                      if has_terminal?('\G[Tt]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                         r18 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Tt]')
                         r18 = nil
                       end
                       s0 << r18
                       if r18
-                        if has_terminal?('\G[Yy]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Yy]'] ||= Regexp.new(gr), :regexp, index)
                           r19 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Yy]')
                           r19 = nil
                         end
                         s0 << r19
                         if r19
-                          if has_terminal?('\G[Pp]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                             r20 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Pp]')
                             r20 = nil
                           end
                           s0 << r20
                           if r20
-                            if has_terminal?('\G[Ee]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                               r21 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Ee]')
                               r21 = nil
                             end
                             s0 << r21
@@ -24717,65 +25194,72 @@ module OpenEHR
         if node_cache[:SYM_INCLUDE].has_key?(index)
           cached = node_cache[:SYM_INCLUDE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_INCLUDE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ii]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ii]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Cc]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Cc]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ll]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ll]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Uu]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Uu]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Dd]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Dd]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ee]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ee]')
                       r7 = nil
                     end
                     s0 << r7
@@ -24813,65 +25297,72 @@ module OpenEHR
         if node_cache[:SYM_EXCLUDE].has_key?(index)
           cached = node_cache[:SYM_EXCLUDE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_EXCLUDE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ee]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ee]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Xx]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Xx]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Xx]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Cc]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Cc]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ll]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ll]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Uu]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Uu]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Dd]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Dd]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ee]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ee]')
                       r7 = nil
                     end
                     s0 << r7
@@ -24909,154 +25400,171 @@ module OpenEHR
         if node_cache[:SYM_TEMPLATE_COMPONENT].has_key?(index)
           cached = node_cache[:SYM_TEMPLATE_COMPONENT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_TEMPLATE_COMPONENT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Tt]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Tt]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ee]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ee]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Mm]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Mm]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Mm]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Pp]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Pp]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ll]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ll]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Aa]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Aa]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ee]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ee]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?(' _', false, index)
-                          r9 = instantiate_node(SyntaxNode,input, index...(index + 2))
-                          @index += 2
+                        if (match_len = has_terminal?(' _', false, index))
+                          r9 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                          @index += match_len
                         else
                           terminal_parse_failure(' _')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Cc]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Cc]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Oo]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Oo]')
                               r11 = nil
                             end
                             s0 << r11
                             if r11
-                              if has_terminal?('\G[Mm]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[Mm]'] ||= Regexp.new(gr), :regexp, index)
                                 r12 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[Mm]')
                                 r12 = nil
                               end
                               s0 << r12
                               if r12
-                                if has_terminal?('\G[Pp]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                                   r13 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[Pp]')
                                   r13 = nil
                                 end
                                 s0 << r13
                                 if r13
-                                  if has_terminal?('\G[Oo]', true, index)
+                                  if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                                     r14 = true
                                     @index += 1
                                   else
+                                    terminal_parse_failure('[Oo]')
                                     r14 = nil
                                   end
                                   s0 << r14
                                   if r14
-                                    if has_terminal?('\G[Nn]', true, index)
+                                    if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                                       r15 = true
                                       @index += 1
                                     else
+                                      terminal_parse_failure('[Nn]')
                                       r15 = nil
                                     end
                                     s0 << r15
                                     if r15
-                                      if has_terminal?('\G[Ee]', true, index)
+                                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                                         r16 = true
                                         @index += 1
                                       else
+                                        terminal_parse_failure('[Ee]')
                                         r16 = nil
                                       end
                                       s0 << r16
                                       if r16
-                                        if has_terminal?('\G[Nn]', true, index)
+                                        if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                                           r17 = true
                                           @index += 1
                                         else
+                                          terminal_parse_failure('[Nn]')
                                           r17 = nil
                                         end
                                         s0 << r17
                                         if r17
-                                          if has_terminal?('\G[Tt]', true, index)
+                                          if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                                             r18 = true
                                             @index += 1
                                           else
+                                            terminal_parse_failure('[Tt]')
                                             r18 = nil
                                           end
                                           s0 << r18
@@ -25105,73 +25613,81 @@ module OpenEHR
         if node_cache[:SYM_TEMPLATE].has_key?(index)
           cached = node_cache[:SYM_TEMPLATE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_TEMPLATE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Tt]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Tt]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ee]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ee]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Mm]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Mm]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Mm]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Pp]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Pp]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ll]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ll]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Aa]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Aa]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ee]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ee]')
                         r8 = nil
                       end
                       s0 << r8
@@ -25210,170 +25726,189 @@ module OpenEHR
         if node_cache[:SYM_OPERATIONAL_TEMPLATE].has_key?(index)
           cached = node_cache[:SYM_OPERATIONAL_TEMPLATE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_OPERATIONAL_TEMPLATE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Oo]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Oo]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Pp]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Pp]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ee]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ee]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Rr]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Rr]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Aa]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Aa]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Tt]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Tt]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ii]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ii]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Oo]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Oo]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Nn]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Nn]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Aa]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Aa]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Ll]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Ll]')
                               r11 = nil
                             end
                             s0 << r11
                             if r11
-                              if has_terminal?('_', false, index)
-                                r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                @index += 1
+                              if (match_len = has_terminal?('_', false, index))
+                                r12 = true
+                                @index += match_len
                               else
                                 terminal_parse_failure('_')
                                 r12 = nil
                               end
                               s0 << r12
                               if r12
-                                if has_terminal?('\G[Tt]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                                   r13 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[Tt]')
                                   r13 = nil
                                 end
                                 s0 << r13
                                 if r13
-                                  if has_terminal?('\G[Ee]', true, index)
+                                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                                     r14 = true
                                     @index += 1
                                   else
+                                    terminal_parse_failure('[Ee]')
                                     r14 = nil
                                   end
                                   s0 << r14
                                   if r14
-                                    if has_terminal?('\G[Mm]', true, index)
+                                    if has_terminal?(@regexps[gr = '\A[Mm]'] ||= Regexp.new(gr), :regexp, index)
                                       r15 = true
                                       @index += 1
                                     else
+                                      terminal_parse_failure('[Mm]')
                                       r15 = nil
                                     end
                                     s0 << r15
                                     if r15
-                                      if has_terminal?('\G[Pp]', true, index)
+                                      if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                                         r16 = true
                                         @index += 1
                                       else
+                                        terminal_parse_failure('[Pp]')
                                         r16 = nil
                                       end
                                       s0 << r16
                                       if r16
-                                        if has_terminal?('\G[Ll]', true, index)
+                                        if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                                           r17 = true
                                           @index += 1
                                         else
+                                          terminal_parse_failure('[Ll]')
                                           r17 = nil
                                         end
                                         s0 << r17
                                         if r17
-                                          if has_terminal?('\G[Aa]', true, index)
+                                          if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                                             r18 = true
                                             @index += 1
                                           else
+                                            terminal_parse_failure('[Aa]')
                                             r18 = nil
                                           end
                                           s0 << r18
                                           if r18
-                                            if has_terminal?('\G[Tt]', true, index)
+                                            if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                                               r19 = true
                                               @index += 1
                                             else
+                                              terminal_parse_failure('[Tt]')
                                               r19 = nil
                                             end
                                             s0 << r19
                                             if r19
-                                              if has_terminal?('\G[Ee]', true, index)
+                                              if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                                                 r20 = true
                                                 @index += 1
                                               else
+                                                terminal_parse_failure('[Ee]')
                                                 r20 = nil
                                               end
                                               s0 << r20
@@ -25424,98 +25959,108 @@ module OpenEHR
         if node_cache[:SYM_ADL_VERSION].has_key?(index)
           cached = node_cache[:SYM_ADL_VERSION][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ADL_VERSION][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Aa]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Aa]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Dd]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Dd]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ll]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ll]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('_', false, index)
-                r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('_', false, index))
+                r4 = true
+                @index += match_len
               else
                 terminal_parse_failure('_')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Vv]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Vv]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Vv]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ee]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ee]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Rr]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Rr]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ss]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ss]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Ii]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Ii]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Oo]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Oo]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Nn]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Nn]')
                               r11 = nil
                             end
                             s0 << r11
@@ -25557,89 +26102,99 @@ module OpenEHR
         if node_cache[:SYM_IS_CONTROLLED].has_key?(index)
           cached = node_cache[:SYM_IS_CONTROLLED][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_IS_CONTROLLED][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Cc]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Cc]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Oo]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Oo]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Nn]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Nn]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Tt]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Tt]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Rr]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Rr]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Oo]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Oo]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ll]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ll]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ll]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ll]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Ee]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Ee]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Dd]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Dd]')
                             r10 = nil
                           end
                           s0 << r10
@@ -25680,81 +26235,90 @@ module OpenEHR
         if node_cache[:SYM_IS_GENERATED].has_key?(index)
           cached = node_cache[:SYM_IS_GENERATED][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_IS_GENERATED][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Gg]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Gg]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Gg]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ee]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ee]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Nn]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Nn]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ee]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ee]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Rr]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Rr]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Aa]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Aa]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ee]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ee]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Dd]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Dd]')
                           r9 = nil
                         end
                         s0 << r9
@@ -25794,89 +26358,99 @@ module OpenEHR
         if node_cache[:SYM_SPECIALIZE].has_key?(index)
           cached = node_cache[:SYM_SPECIALIZE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_SPECIALIZE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ss]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ss]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Pp]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Pp]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ee]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ee]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Cc]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Cc]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ii]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ii]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Aa]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Aa]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Ll]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Ll]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ii]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ii]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[SsZz]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[SsZz]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[SsZz]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Ee]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Ee]')
                             r10 = nil
                           end
                           s0 << r10
@@ -25917,65 +26491,72 @@ module OpenEHR
         if node_cache[:SYM_CONCEPT].has_key?(index)
           cached = node_cache[:SYM_CONCEPT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_CONCEPT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Cc]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Cc]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Oo]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Oo]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Nn]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Nn]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Cc]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Cc]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ee]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ee]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Pp]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Pp]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
@@ -26013,73 +26594,81 @@ module OpenEHR
         if node_cache[:SYM_LANGUAGE].has_key?(index)
           cached = node_cache[:SYM_LANGUAGE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_LANGUAGE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ll]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ll]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Aa]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Aa]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Nn]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Nn]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Gg]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Gg]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Gg]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Uu]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Uu]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Uu]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Aa]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Aa]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Gg]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Gg]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Gg]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ee]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ee]')
                         r8 = nil
                       end
                       s0 << r8
@@ -26118,97 +26707,108 @@ module OpenEHR
         if node_cache[:SYM_DESCRIPTION].has_key?(index)
           cached = node_cache[:SYM_DESCRIPTION][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_DESCRIPTION][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Dd]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Dd]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ee]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ee]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ss]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ss]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Cc]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Cc]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Cc]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Rr]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Rr]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ii]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ii]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Pp]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Pp]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Pp]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Tt]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Tt]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Ii]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Ii]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Oo]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Oo]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Nn]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Nn]')
                               r11 = nil
                             end
                             s0 << r11
@@ -26250,89 +26850,99 @@ module OpenEHR
         if node_cache[:SYM_DEFINITION].has_key?(index)
           cached = node_cache[:SYM_DEFINITION][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_DEFINITION][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Dd]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Dd]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Dd]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Ee]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Ee]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Ee]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Ff]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Ff]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Ff]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Ii]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Ii]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Nn]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Nn]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ii]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ii]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ii]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ii]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Oo]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Oo]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Nn]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Nn]')
                             r10 = nil
                           end
                           s0 << r10
@@ -26373,81 +26983,90 @@ module OpenEHR
         if node_cache[:SYM_INVARIANT].has_key?(index)
           cached = node_cache[:SYM_INVARIANT][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_INVARIANT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Ii]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Ii]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Vv]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Vv]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Vv]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Aa]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Aa]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Rr]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Rr]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Rr]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Ii]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Ii]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Aa]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Aa]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Nn]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Nn]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Tt]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Tt]')
                           r9 = nil
                         end
                         s0 << r9
@@ -26487,73 +27106,81 @@ module OpenEHR
         if node_cache[:SYM_ONTOLOGY].has_key?(index)
           cached = node_cache[:SYM_ONTOLOGY][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ONTOLOGY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Oo]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Oo]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Tt]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Tt]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Oo]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Oo]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Ll]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Ll]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Ll]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Oo]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Oo]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Gg]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Gg]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Gg]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Yy]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Yy]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Yy]')
                         r8 = nil
                       end
                       s0 << r8
@@ -26592,97 +27219,108 @@ module OpenEHR
         if node_cache[:SYM_ANNOTATIONS].has_key?(index)
           cached = node_cache[:SYM_ANNOTATIONS][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:SYM_ANNOTATIONS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[Aa]', true, index)
+        if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[Aa]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[Nn]', true, index)
+          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[Nn]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[Nn]', true, index)
+            if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[Nn]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[Oo]', true, index)
+              if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[Oo]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[Tt]', true, index)
+                if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[Tt]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[Aa]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[Aa]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[Aa]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[Tt]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[Tt]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[Tt]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[Ii]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[Ii]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[Ii]')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[Oo]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[Oo]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[Oo]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[Nn]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[Nn]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[Nn]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Ss]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Ss]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Ss]')
                               r11 = nil
                             end
                             s0 << r11
@@ -26730,7 +27368,7 @@ module OpenEHR
         if node_cache[:V_VERSION_STRING].has_key?(index)
           cached = node_cache[:V_VERSION_STRING][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_VERSION_STRING][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -26739,10 +27377,11 @@ module OpenEHR
         i0, s0 = index, []
         s1, i1 = [], index
         loop do
-          if has_terminal?('\G[0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[0-9]')
             r2 = nil
           end
           if r2
@@ -26759,9 +27398,9 @@ module OpenEHR
         end
         s0 << r1
         if r1
-          if has_terminal?('.', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('.', false, index))
+            r3 = true
+            @index += match_len
           else
             terminal_parse_failure('.')
             r3 = nil
@@ -26770,10 +27409,11 @@ module OpenEHR
           if r3
             s4, i4 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r5 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r5 = nil
               end
               if r5
@@ -26793,9 +27433,9 @@ module OpenEHR
               s6, i6 = [], index
               loop do
                 i7, s7 = index, []
-                if has_terminal?('.', false, index)
-                  r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('.', false, index))
+                  r8 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('.')
                   r8 = nil
@@ -26804,10 +27444,11 @@ module OpenEHR
                 if r8
                   s9, i9 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r10 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r10 = nil
                     end
                     if r10
@@ -26890,7 +27531,7 @@ module OpenEHR
         if node_cache[:V_ARCHETYPE_ID].has_key?(index)
           cached = node_cache[:V_ARCHETYPE_ID][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ARCHETYPE_ID][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -26903,9 +27544,9 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3, s3 = index, []
-            if has_terminal?('-', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('-', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure('-')
               r4 = nil
@@ -26939,9 +27580,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?('.', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('.', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure('.')
               r6 = nil
@@ -26954,9 +27595,9 @@ module OpenEHR
                 s8, i8 = [], index
                 loop do
                   i9, s9 = index, []
-                  if has_terminal?('-', false, index)
-                    r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('-', false, index))
+                    r10 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('-')
                     r10 = nil
@@ -26982,29 +27623,31 @@ module OpenEHR
                 r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
                 s0 << r8
                 if r8
-                  if has_terminal?('.v', false, index)
-                    r12 = instantiate_node(SyntaxNode,input, index...(index + 2))
-                    @index += 2
+                  if (match_len = has_terminal?('.v', false, index))
+                    r12 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                    @index += match_len
                   else
                     terminal_parse_failure('.v')
                     r12 = nil
                   end
                   s0 << r12
                   if r12
-                    if has_terminal?('\G[1-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[1-9]'] ||= Regexp.new(gr), :regexp, index)
                       r13 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[1-9]')
                       r13 = nil
                     end
                     s0 << r13
                     if r13
                       s14, i14 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r15 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r15 = nil
                         end
                         if r15
@@ -27050,27 +27693,29 @@ module OpenEHR
         if node_cache[:V_IDENTIFIER].has_key?(index)
           cached = node_cache[:V_IDENTIFIER][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_IDENTIFIER][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[a-zA-Z]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-zA-Z]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[a-zA-Z]')
           r1 = nil
         end
         s0 << r1
         if r1
           s2, i2 = [], index
           loop do
-            if has_terminal?('\G[a-zA-Z0-9_]', true, index)
+            if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9_]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[a-zA-Z0-9_]')
               r3 = nil
             end
             if r3
@@ -27111,7 +27756,7 @@ module OpenEHR
         if node_cache[:V_URI].has_key?(index)
           cached = node_cache[:V_URI][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_URI][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -27120,10 +27765,11 @@ module OpenEHR
         i0, s0 = index, []
         s1, i1 = [], index
         loop do
-          if has_terminal?('\G[a-z]', true, index)
+          if has_terminal?(@regexps[gr = '\A[a-z]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[a-z]')
             r2 = nil
           end
           if r2
@@ -27140,9 +27786,9 @@ module OpenEHR
         end
         s0 << r1
         if r1
-          if has_terminal?('://', false, index)
-            r3 = instantiate_node(SyntaxNode,input, index...(index + 3))
-            @index += 3
+          if (match_len = has_terminal?('://', false, index))
+            r3 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+            @index += match_len
           else
             terminal_parse_failure('://')
             r3 = nil
@@ -27151,10 +27797,11 @@ module OpenEHR
           if r3
             s4, i4 = [], index
             loop do
-              if has_terminal?('\G[^<>|\\\\{}^~"\\[\\] ]', true, index)
+              if has_terminal?(@regexps[gr = '\A[^<>|\\\\{}^~"\\[\\] ]'] ||= Regexp.new(gr), :regexp, index)
                 r5 = true
                 @index += 1
               else
+                terminal_parse_failure('[^<>|\\\\{}^~"\\[\\] ]')
                 r5 = nil
               end
               if r5
@@ -27206,16 +27853,16 @@ module OpenEHR
         if node_cache[:V_QUALIFIED_TERM_CODE_REF].has_key?(index)
           cached = node_cache[:V_QUALIFIED_TERM_CODE_REF][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_QUALIFIED_TERM_CODE_REF][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -27239,9 +27886,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?('::', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?('::', false, index))
+              r4 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
               terminal_parse_failure('::')
               r4 = nil
@@ -27265,9 +27912,9 @@ module OpenEHR
               end
               s0 << r5
               if r5
-                if has_terminal?(']', false, index)
-                  r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?(']', false, index))
+                  r7 = true
+                  @index += match_len
                 else
                   terminal_parse_failure(']')
                   r7 = nil
@@ -27312,16 +27959,16 @@ module OpenEHR
         if node_cache[:ERR_V_QUALIFIED_TERM_CODE_REF].has_key?(index)
           cached = node_cache[:ERR_V_QUALIFIED_TERM_CODE_REF][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:ERR_V_QUALIFIED_TERM_CODE_REF][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -27346,9 +27993,9 @@ module OpenEHR
           end
           s2 << r3
           if r3
-            if has_terminal?('::', false, index)
-              r5 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?('::', false, index))
+              r5 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
               terminal_parse_failure('::')
               r5 = nil
@@ -27382,9 +28029,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?(']', false, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(']', false, index))
+              r8 = true
+              @index += match_len
             else
               terminal_parse_failure(']')
               r8 = nil
@@ -27431,16 +28078,16 @@ module OpenEHR
         if node_cache[:V_LOCAL_TERM_CODE_REF].has_key?(index)
           cached = node_cache[:V_LOCAL_TERM_CODE_REF][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_LOCAL_TERM_CODE_REF][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -27472,9 +28119,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?(']', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(']', false, index))
+              r6 = true
+              @index += match_len
             else
               terminal_parse_failure(']')
               r6 = nil
@@ -27510,36 +28157,38 @@ module OpenEHR
         if node_cache[:V_LOCAL_CODE].has_key?(index)
           cached = node_cache[:V_LOCAL_CODE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_LOCAL_CODE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('a', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('a', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('a')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[ct]', true, index)
+          if has_terminal?(@regexps[gr = '\A[ct]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[ct]')
             r2 = nil
           end
           s0 << r2
           if r2
             s3, i3 = [], index
             loop do
-              if has_terminal?('\G[0-9\\.]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9\\.]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9\\.]')
                 r4 = nil
               end
               if r4
@@ -27593,16 +28242,16 @@ module OpenEHR
         if node_cache[:V_TERM_CODE].has_key?(index)
           cached = node_cache[:V_TERM_CODE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_TERM_CODE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('[', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('[')
           r1 = nil
@@ -27611,10 +28260,11 @@ module OpenEHR
         if r1
           s2, i2 = [], index
           loop do
-            if has_terminal?('\G[a-zA-Z0-9()._\\-]', true, index)
+            if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9()._\\-]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[a-zA-Z0-9()._\\-]')
               r3 = nil
             end
             if r3
@@ -27631,9 +28281,9 @@ module OpenEHR
           end
           s0 << r2
           if r2
-            if has_terminal?('::', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?('::', false, index))
+              r4 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
               terminal_parse_failure('::')
               r4 = nil
@@ -27685,7 +28335,7 @@ module OpenEHR
         if node_cache[:V_ISO8601_EXTENDED_DATE_TIME].has_key?(index)
           cached = node_cache[:V_ISO8601_EXTENDED_DATE_TIME][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_EXTENDED_DATE_TIME][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -27695,10 +28345,11 @@ module OpenEHR
         i1, s1 = index, []
         s2, i2 = [], index
         loop do
-          if has_terminal?('\G[0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
             r3 = true
             @index += 1
           else
+            terminal_parse_failure('[0-9]')
             r3 = nil
           end
           if r3
@@ -27718,135 +28369,145 @@ module OpenEHR
         end
         s1 << r2
         if r2
-          if has_terminal?('-', false, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('-', false, index))
+            r4 = true
+            @index += match_len
           else
             terminal_parse_failure('-')
             r4 = nil
           end
           s1 << r4
           if r4
-            if has_terminal?('\G[0-1]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-1]'] ||= Regexp.new(gr), :regexp, index)
               r5 = true
               @index += 1
             else
+              terminal_parse_failure('[0-1]')
               r5 = nil
             end
             s1 << r5
             if r5
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r6 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r6 = nil
               end
               s1 << r6
               if r6
-                if has_terminal?('-', false, index)
-                  r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('-', false, index))
+                  r7 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('-')
                   r7 = nil
                 end
                 s1 << r7
                 if r7
-                  if has_terminal?('\G[0-3]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-3]'] ||= Regexp.new(gr), :regexp, index)
                     r8 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-3]')
                     r8 = nil
                   end
                   s1 << r8
                   if r8
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r9 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r9 = nil
                     end
                     s1 << r9
                     if r9
-                      if has_terminal?('T', false, index)
-                        r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?('T', false, index))
+                        r10 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('T')
                         r10 = nil
                       end
                       s1 << r10
                       if r10
-                        if has_terminal?('\G[0-2]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-2]'] ||= Regexp.new(gr), :regexp, index)
                           r11 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-2]')
                           r11 = nil
                         end
                         s1 << r11
                         if r11
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r12 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r12 = nil
                           end
                           s1 << r12
                           if r12
-                            if has_terminal?(':', false, index)
-                              r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                              @index += 1
+                            if (match_len = has_terminal?(':', false, index))
+                              r13 = true
+                              @index += match_len
                             else
                               terminal_parse_failure(':')
                               r13 = nil
                             end
                             s1 << r13
                             if r13
-                              if has_terminal?('\G[0-6]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[0-6]'] ||= Regexp.new(gr), :regexp, index)
                                 r14 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[0-6]')
                                 r14 = nil
                               end
                               s1 << r14
                               if r14
-                                if has_terminal?('\G[0-9]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                   r15 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[0-9]')
                                   r15 = nil
                                 end
                                 s1 << r15
                                 if r15
-                                  if has_terminal?(':', false, index)
-                                    r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                    @index += 1
+                                  if (match_len = has_terminal?(':', false, index))
+                                    r16 = true
+                                    @index += match_len
                                   else
                                     terminal_parse_failure(':')
                                     r16 = nil
                                   end
                                   s1 << r16
                                   if r16
-                                    if has_terminal?('\G[0-6]', true, index)
+                                    if has_terminal?(@regexps[gr = '\A[0-6]'] ||= Regexp.new(gr), :regexp, index)
                                       r17 = true
                                       @index += 1
                                     else
+                                      terminal_parse_failure('[0-6]')
                                       r17 = nil
                                     end
                                     s1 << r17
                                     if r17
-                                      if has_terminal?('\G[0-9]', true, index)
+                                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                         r18 = true
                                         @index += 1
                                       else
+                                        terminal_parse_failure('[0-9]')
                                         r18 = nil
                                       end
                                       s1 << r18
                                       if r18
                                         i20, s20 = index, []
-                                        if has_terminal?(',', false, index)
-                                          r21 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                          @index += 1
+                                        if (match_len = has_terminal?(',', false, index))
+                                          r21 = true
+                                          @index += match_len
                                         else
                                           terminal_parse_failure(',')
                                           r21 = nil
@@ -27855,10 +28516,11 @@ module OpenEHR
                                         if r21
                                           s22, i22 = [], index
                                           loop do
-                                            if has_terminal?('\G[0-9]', true, index)
+                                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                               r23 = true
                                               @index += 1
                                             else
+                                              terminal_parse_failure('[0-9]')
                                               r23 = nil
                                             end
                                             if r23
@@ -27890,31 +28552,34 @@ module OpenEHR
                                         s1 << r19
                                         if r19
                                           i25 = index
-                                          if has_terminal?('Z', false, index)
-                                            r26 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                            @index += 1
+                                          if (match_len = has_terminal?('Z', false, index))
+                                            r26 = true
+                                            @index += match_len
                                           else
                                             terminal_parse_failure('Z')
                                             r26 = nil
                                           end
                                           if r26
+                                            r26 = SyntaxNode.new(input, (index-1)...index) if r26 == true
                                             r25 = r26
                                           else
                                             i27, s27 = index, []
-                                            if has_terminal?('\G[+-]', true, index)
+                                            if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                                               r28 = true
                                               @index += 1
                                             else
+                                              terminal_parse_failure('[+-]')
                                               r28 = nil
                                             end
                                             s27 << r28
                                             if r28
                                               s29, i29 = [], index
                                               loop do
-                                                if has_terminal?('\G[0-9]', true, index)
+                                                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                                   r30 = true
                                                   @index += 1
                                                 else
+                                                  terminal_parse_failure('[0-9]')
                                                   r30 = nil
                                                 end
                                                 if r30
@@ -27942,6 +28607,7 @@ module OpenEHR
                                               r27 = nil
                                             end
                                             if r27
+                                              r27 = SyntaxNode.new(input, (index-1)...index) if r27 == true
                                               r25 = r27
                                             else
                                               @index = i25
@@ -27979,15 +28645,17 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i31, s31 = index, []
           s32, i32 = [], index
           loop do
-            if has_terminal?('\G[0-9]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
               r33 = true
               @index += 1
             else
+              terminal_parse_failure('[0-9]')
               r33 = nil
             end
             if r33
@@ -28007,132 +28675,143 @@ module OpenEHR
           end
           s31 << r32
           if r32
-            if has_terminal?('-', false, index)
-              r34 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('-', false, index))
+              r34 = true
+              @index += match_len
             else
               terminal_parse_failure('-')
               r34 = nil
             end
             s31 << r34
             if r34
-              if has_terminal?('\G[0-1]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-1]'] ||= Regexp.new(gr), :regexp, index)
                 r35 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-1]')
                 r35 = nil
               end
               s31 << r35
               if r35
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r36 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r36 = nil
                 end
                 s31 << r36
                 if r36
-                  if has_terminal?('-', false, index)
-                    r37 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('-', false, index))
+                    r37 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('-')
                     r37 = nil
                   end
                   s31 << r37
                   if r37
-                    if has_terminal?('\G[0-3]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-3]'] ||= Regexp.new(gr), :regexp, index)
                       r38 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-3]')
                       r38 = nil
                     end
                     s31 << r38
                     if r38
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r39 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r39 = nil
                       end
                       s31 << r39
                       if r39
-                        if has_terminal?('T', false, index)
-                          r40 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                          @index += 1
+                        if (match_len = has_terminal?('T', false, index))
+                          r40 = true
+                          @index += match_len
                         else
                           terminal_parse_failure('T')
                           r40 = nil
                         end
                         s31 << r40
                         if r40
-                          if has_terminal?('\G[0-2]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-2]'] ||= Regexp.new(gr), :regexp, index)
                             r41 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-2]')
                             r41 = nil
                           end
                           s31 << r41
                           if r41
-                            if has_terminal?('\G[0-9]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                               r42 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-9]')
                               r42 = nil
                             end
                             s31 << r42
                             if r42
-                              if has_terminal?(':', false, index)
-                                r43 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                @index += 1
+                              if (match_len = has_terminal?(':', false, index))
+                                r43 = true
+                                @index += match_len
                               else
                                 terminal_parse_failure(':')
                                 r43 = nil
                               end
                               s31 << r43
                               if r43
-                                if has_terminal?('\G[0-6]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[0-6]'] ||= Regexp.new(gr), :regexp, index)
                                   r44 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[0-6]')
                                   r44 = nil
                                 end
                                 s31 << r44
                                 if r44
-                                  if has_terminal?('\G[0-9]', true, index)
+                                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                     r45 = true
                                     @index += 1
                                   else
+                                    terminal_parse_failure('[0-9]')
                                     r45 = nil
                                   end
                                   s31 << r45
                                   if r45
                                     i47 = index
-                                    if has_terminal?('Z', false, index)
-                                      r48 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                      @index += 1
+                                    if (match_len = has_terminal?('Z', false, index))
+                                      r48 = true
+                                      @index += match_len
                                     else
                                       terminal_parse_failure('Z')
                                       r48 = nil
                                     end
                                     if r48
+                                      r48 = SyntaxNode.new(input, (index-1)...index) if r48 == true
                                       r47 = r48
                                     else
                                       i49, s49 = index, []
-                                      if has_terminal?('\G[+-]', true, index)
+                                      if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                                         r50 = true
                                         @index += 1
                                       else
+                                        terminal_parse_failure('[+-]')
                                         r50 = nil
                                       end
                                       s49 << r50
                                       if r50
                                         s51, i51 = [], index
                                         loop do
-                                          if has_terminal?('\G[0-9]', true, index)
+                                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                             r52 = true
                                             @index += 1
                                           else
+                                            terminal_parse_failure('[0-9]')
                                             r52 = nil
                                           end
                                           if r52
@@ -28160,6 +28839,7 @@ module OpenEHR
                                         r49 = nil
                                       end
                                       if r49
+                                        r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                                         r47 = r49
                                       else
                                         @index = i47
@@ -28193,15 +28873,17 @@ module OpenEHR
             r31 = nil
           end
           if r31
+            r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
             r0 = r31
           else
             i53, s53 = index, []
             s54, i54 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r55 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r55 = nil
               end
               if r55
@@ -28221,107 +28903,116 @@ module OpenEHR
             end
             s53 << r54
             if r54
-              if has_terminal?('-', false, index)
-                r56 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('-', false, index))
+                r56 = true
+                @index += match_len
               else
                 terminal_parse_failure('-')
                 r56 = nil
               end
               s53 << r56
               if r56
-                if has_terminal?('\G[0-1]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-1]'] ||= Regexp.new(gr), :regexp, index)
                   r57 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-1]')
                   r57 = nil
                 end
                 s53 << r57
                 if r57
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r58 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r58 = nil
                   end
                   s53 << r58
                   if r58
-                    if has_terminal?('-', false, index)
-                      r59 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?('-', false, index))
+                      r59 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('-')
                       r59 = nil
                     end
                     s53 << r59
                     if r59
-                      if has_terminal?('\G[0-3]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-3]'] ||= Regexp.new(gr), :regexp, index)
                         r60 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-3]')
                         r60 = nil
                       end
                       s53 << r60
                       if r60
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r61 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r61 = nil
                         end
                         s53 << r61
                         if r61
-                          if has_terminal?('T', false, index)
-                            r62 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                            @index += 1
+                          if (match_len = has_terminal?('T', false, index))
+                            r62 = true
+                            @index += match_len
                           else
                             terminal_parse_failure('T')
                             r62 = nil
                           end
                           s53 << r62
                           if r62
-                            if has_terminal?('\G[0-2]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-2]'] ||= Regexp.new(gr), :regexp, index)
                               r63 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-2]')
                               r63 = nil
                             end
                             s53 << r63
                             if r63
-                              if has_terminal?('\G[0-9]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                 r64 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[0-9]')
                                 r64 = nil
                               end
                               s53 << r64
                               if r64
                                 i66 = index
-                                if has_terminal?('Z', false, index)
-                                  r67 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                  @index += 1
+                                if (match_len = has_terminal?('Z', false, index))
+                                  r67 = true
+                                  @index += match_len
                                 else
                                   terminal_parse_failure('Z')
                                   r67 = nil
                                 end
                                 if r67
+                                  r67 = SyntaxNode.new(input, (index-1)...index) if r67 == true
                                   r66 = r67
                                 else
                                   i68, s68 = index, []
-                                  if has_terminal?('\G[+-]', true, index)
+                                  if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                                     r69 = true
                                     @index += 1
                                   else
+                                    terminal_parse_failure('[+-]')
                                     r69 = nil
                                   end
                                   s68 << r69
                                   if r69
                                     s70, i70 = [], index
                                     loop do
-                                      if has_terminal?('\G[0-9]', true, index)
+                                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                         r71 = true
                                         @index += 1
                                       else
+                                        terminal_parse_failure('[0-9]')
                                         r71 = nil
                                       end
                                       if r71
@@ -28349,6 +29040,7 @@ module OpenEHR
                                     r68 = nil
                                   end
                                   if r68
+                                    r68 = SyntaxNode.new(input, (index-1)...index) if r68 == true
                                     r66 = r68
                                   else
                                     @index = i66
@@ -28379,6 +29071,7 @@ module OpenEHR
               r53 = nil
             end
             if r53
+              r53 = SyntaxNode.new(input, (index-1)...index) if r53 == true
               r0 = r53
             else
               @index = i0
@@ -28412,7 +29105,7 @@ module OpenEHR
         if node_cache[:V_ISO8601_EXTENDED_TIME].has_key?(index)
           cached = node_cache[:V_ISO8601_EXTENDED_TIME][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_EXTENDED_TIME][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -28420,76 +29113,82 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        if has_terminal?('\G[0-2]', true, index)
+        if has_terminal?(@regexps[gr = '\A[0-2]'] ||= Regexp.new(gr), :regexp, index)
           r2 = true
           @index += 1
         else
+          terminal_parse_failure('[0-2]')
           r2 = nil
         end
         s1 << r2
         if r2
-          if has_terminal?('\G[0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
             r3 = true
             @index += 1
           else
+            terminal_parse_failure('[0-9]')
             r3 = nil
           end
           s1 << r3
           if r3
-            if has_terminal?(':', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(':', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure(':')
               r4 = nil
             end
             s1 << r4
             if r4
-              if has_terminal?('\G[0-6]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-6]'] ||= Regexp.new(gr), :regexp, index)
                 r5 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-6]')
                 r5 = nil
               end
               s1 << r5
               if r5
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r6 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r6 = nil
                 end
                 s1 << r6
                 if r6
-                  if has_terminal?(':', false, index)
-                    r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?(':', false, index))
+                    r7 = true
+                    @index += match_len
                   else
                     terminal_parse_failure(':')
                     r7 = nil
                   end
                   s1 << r7
                   if r7
-                    if has_terminal?('\G[0-6]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-6]'] ||= Regexp.new(gr), :regexp, index)
                       r8 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-6]')
                       r8 = nil
                     end
                     s1 << r8
                     if r8
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r9 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r9 = nil
                       end
                       s1 << r9
                       if r9
                         i11, s11 = index, []
-                        if has_terminal?(',', false, index)
-                          r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                          @index += 1
+                        if (match_len = has_terminal?(',', false, index))
+                          r12 = true
+                          @index += match_len
                         else
                           terminal_parse_failure(',')
                           r12 = nil
@@ -28498,10 +29197,11 @@ module OpenEHR
                         if r12
                           s13, i13 = [], index
                           loop do
-                            if has_terminal?('\G[0-9]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                               r14 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-9]')
                               r14 = nil
                             end
                             if r14
@@ -28533,31 +29233,34 @@ module OpenEHR
                         s1 << r10
                         if r10
                           i16 = index
-                          if has_terminal?('Z', false, index)
-                            r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                            @index += 1
+                          if (match_len = has_terminal?('Z', false, index))
+                            r17 = true
+                            @index += match_len
                           else
                             terminal_parse_failure('Z')
                             r17 = nil
                           end
                           if r17
+                            r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
                             r16 = r17
                           else
                             i18, s18 = index, []
-                            if has_terminal?('\G[+-]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                               r19 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[+-]')
                               r19 = nil
                             end
                             s18 << r19
                             if r19
                               s20, i20 = [], index
                               loop do
-                                if has_terminal?('\G[0-9]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                   r21 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[0-9]')
                                   r21 = nil
                                 end
                                 if r21
@@ -28585,6 +29288,7 @@ module OpenEHR
                               r18 = nil
                             end
                             if r18
+                              r18 = SyntaxNode.new(input, (index-1)...index) if r18 == true
                               r16 = r18
                             else
                               @index = i16
@@ -28614,76 +29318,84 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i22, s22 = index, []
-          if has_terminal?('\G[0-2]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-2]'] ||= Regexp.new(gr), :regexp, index)
             r23 = true
             @index += 1
           else
+            terminal_parse_failure('[0-2]')
             r23 = nil
           end
           s22 << r23
           if r23
-            if has_terminal?('\G[0-9]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
               r24 = true
               @index += 1
             else
+              terminal_parse_failure('[0-9]')
               r24 = nil
             end
             s22 << r24
             if r24
-              if has_terminal?(':', false, index)
-                r25 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(':', false, index))
+                r25 = true
+                @index += match_len
               else
                 terminal_parse_failure(':')
                 r25 = nil
               end
               s22 << r25
               if r25
-                if has_terminal?('\G[0-6]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-6]'] ||= Regexp.new(gr), :regexp, index)
                   r26 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-6]')
                   r26 = nil
                 end
                 s22 << r26
                 if r26
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r27 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r27 = nil
                   end
                   s22 << r27
                   if r27
                     i29 = index
-                    if has_terminal?('Z', false, index)
-                      r30 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?('Z', false, index))
+                      r30 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('Z')
                       r30 = nil
                     end
                     if r30
+                      r30 = SyntaxNode.new(input, (index-1)...index) if r30 == true
                       r29 = r30
                     else
                       i31, s31 = index, []
-                      if has_terminal?('\G[+-]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                         r32 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[+-]')
                         r32 = nil
                       end
                       s31 << r32
                       if r32
                         s33, i33 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r34 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r34 = nil
                           end
                           if r34
@@ -28711,6 +29423,7 @@ module OpenEHR
                         r31 = nil
                       end
                       if r31
+                        r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
                         r29 = r31
                       else
                         @index = i29
@@ -28736,6 +29449,7 @@ module OpenEHR
             r22 = nil
           end
           if r22
+            r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
             r0 = r22
           else
             @index = i0
@@ -28759,7 +29473,7 @@ module OpenEHR
         if node_cache[:V_ISO8601_EXTENDED_DATE].has_key?(index)
           cached = node_cache[:V_ISO8601_EXTENDED_DATE][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_EXTENDED_DATE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -28769,10 +29483,11 @@ module OpenEHR
         i1, s1 = index, []
         s2, i2 = [], index
         loop do
-          if has_terminal?('\G[0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
             r3 = true
             @index += 1
           else
+            terminal_parse_failure('[0-9]')
             r3 = nil
           end
           if r3
@@ -28792,52 +29507,56 @@ module OpenEHR
         end
         s1 << r2
         if r2
-          if has_terminal?('-', false, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('-', false, index))
+            r4 = true
+            @index += match_len
           else
             terminal_parse_failure('-')
             r4 = nil
           end
           s1 << r4
           if r4
-            if has_terminal?('\G[0-1]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-1]'] ||= Regexp.new(gr), :regexp, index)
               r5 = true
               @index += 1
             else
+              terminal_parse_failure('[0-1]')
               r5 = nil
             end
             s1 << r5
             if r5
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r6 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r6 = nil
               end
               s1 << r6
               if r6
-                if has_terminal?('-', false, index)
-                  r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('-', false, index))
+                  r7 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('-')
                   r7 = nil
                 end
                 s1 << r7
                 if r7
-                  if has_terminal?('\G[0-3]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-3]'] ||= Regexp.new(gr), :regexp, index)
                     r8 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-3]')
                     r8 = nil
                   end
                   s1 << r8
                   if r8
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r9 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r9 = nil
                     end
                     s1 << r9
@@ -28855,15 +29574,17 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i10, s10 = index, []
           s11, i11 = [], index
           loop do
-            if has_terminal?('\G[0-9]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
               r12 = true
               @index += 1
             else
+              terminal_parse_failure('[0-9]')
               r12 = nil
             end
             if r12
@@ -28883,27 +29604,29 @@ module OpenEHR
           end
           s10 << r11
           if r11
-            if has_terminal?('-', false, index)
-              r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('-', false, index))
+              r13 = true
+              @index += match_len
             else
               terminal_parse_failure('-')
               r13 = nil
             end
             s10 << r13
             if r13
-              if has_terminal?('\G[0-1]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-1]'] ||= Regexp.new(gr), :regexp, index)
                 r14 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-1]')
                 r14 = nil
               end
               s10 << r14
               if r14
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r15 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r15 = nil
                 end
                 s10 << r15
@@ -28918,6 +29641,7 @@ module OpenEHR
             r10 = nil
           end
           if r10
+            r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
             r0 = r10
           else
             @index = i0
@@ -29076,7 +29800,7 @@ module OpenEHR
         if node_cache[:V_ISO8601_DURATION].has_key?(index)
           cached = node_cache[:V_ISO8601_DURATION][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_DURATION][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -29084,9 +29808,9 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        if has_terminal?('P', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('P', false, index))
+          r2 = true
+          @index += match_len
         else
           terminal_parse_failure('P')
           r2 = nil
@@ -29096,10 +29820,11 @@ module OpenEHR
           i4, s4 = index, []
           s5, i5 = [], index
           loop do
-            if has_terminal?('\G[0-9]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
               r6 = true
               @index += 1
             else
+              terminal_parse_failure('[0-9]')
               r6 = nil
             end
             if r6
@@ -29116,10 +29841,11 @@ module OpenEHR
           end
           s4 << r5
           if r5
-            if has_terminal?('\G[yY]', true, index)
+            if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
               r7 = true
               @index += 1
             else
+              terminal_parse_failure('[yY]')
               r7 = nil
             end
             s4 << r7
@@ -29141,10 +29867,11 @@ module OpenEHR
             i9, s9 = index, []
             s10, i10 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r11 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r11 = nil
               end
               if r11
@@ -29161,10 +29888,11 @@ module OpenEHR
             end
             s9 << r10
             if r10
-              if has_terminal?('\G[mM]', true, index)
+              if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                 r12 = true
                 @index += 1
               else
+                terminal_parse_failure('[mM]')
                 r12 = nil
               end
               s9 << r12
@@ -29186,10 +29914,11 @@ module OpenEHR
               i14, s14 = index, []
               s15, i15 = [], index
               loop do
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r16 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r16 = nil
                 end
                 if r16
@@ -29206,10 +29935,11 @@ module OpenEHR
               end
               s14 << r15
               if r15
-                if has_terminal?('\G[wW]', true, index)
+                if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                   r17 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[wW]')
                   r17 = nil
                 end
                 s14 << r17
@@ -29231,10 +29961,11 @@ module OpenEHR
                 i19, s19 = index, []
                 s20, i20 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r21 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r21 = nil
                   end
                   if r21
@@ -29251,10 +29982,11 @@ module OpenEHR
                 end
                 s19 << r20
                 if r20
-                  if has_terminal?('\G[dD]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                     r22 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[dD]')
                     r22 = nil
                   end
                   s19 << r22
@@ -29273,9 +30005,9 @@ module OpenEHR
                 end
                 s1 << r18
                 if r18
-                  if has_terminal?('T', false, index)
-                    r23 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('T', false, index))
+                    r23 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('T')
                     r23 = nil
@@ -29285,10 +30017,11 @@ module OpenEHR
                     i24, s24 = index, []
                     s25, i25 = [], index
                     loop do
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r26 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r26 = nil
                       end
                       if r26
@@ -29305,10 +30038,11 @@ module OpenEHR
                     end
                     s24 << r25
                     if r25
-                      if has_terminal?('\G[hH]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
                         r27 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[hH]')
                         r27 = nil
                       end
                       s24 << r27
@@ -29325,10 +30059,11 @@ module OpenEHR
                       i29, s29 = index, []
                       s30, i30 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r31 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r31 = nil
                         end
                         if r31
@@ -29345,10 +30080,11 @@ module OpenEHR
                       end
                       s29 << r30
                       if r30
-                        if has_terminal?('\G[mM]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                           r32 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[mM]')
                           r32 = nil
                         end
                         s29 << r32
@@ -29370,10 +30106,11 @@ module OpenEHR
                         i34, s34 = index, []
                         s35, i35 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r36 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r36 = nil
                           end
                           if r36
@@ -29391,9 +30128,9 @@ module OpenEHR
                         s34 << r35
                         if r35
                           i38, s38 = index, []
-                          if has_terminal?('.', false, index)
-                            r39 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                            @index += 1
+                          if (match_len = has_terminal?('.', false, index))
+                            r39 = true
+                            @index += match_len
                           else
                             terminal_parse_failure('.')
                             r39 = nil
@@ -29402,10 +30139,11 @@ module OpenEHR
                           if r39
                             s40, i40 = [], index
                             loop do
-                              if has_terminal?('\G[0-9]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                 r41 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[0-9]')
                                 r41 = nil
                               end
                               if r41
@@ -29436,10 +30174,11 @@ module OpenEHR
                           end
                           s34 << r37
                           if r37
-                            if has_terminal?('\G[sS]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[sS]'] ||= Regexp.new(gr), :regexp, index)
                               r42 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[sS]')
                               r42 = nil
                             end
                             s34 << r42
@@ -29474,12 +30213,13 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i43, s43 = index, []
-          if has_terminal?('P', false, index)
-            r44 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('P', false, index))
+            r44 = true
+            @index += match_len
           else
             terminal_parse_failure('P')
             r44 = nil
@@ -29489,10 +30229,11 @@ module OpenEHR
             i46, s46 = index, []
             s47, i47 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r48 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r48 = nil
               end
               if r48
@@ -29509,10 +30250,11 @@ module OpenEHR
             end
             s46 << r47
             if r47
-              if has_terminal?('\G[yY]', true, index)
+              if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                 r49 = true
                 @index += 1
               else
+                terminal_parse_failure('[yY]')
                 r49 = nil
               end
               s46 << r49
@@ -29534,10 +30276,11 @@ module OpenEHR
               i51, s51 = index, []
               s52, i52 = [], index
               loop do
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r53 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r53 = nil
                 end
                 if r53
@@ -29554,10 +30297,11 @@ module OpenEHR
               end
               s51 << r52
               if r52
-                if has_terminal?('\G[mM]', true, index)
+                if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                   r54 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[mM]')
                   r54 = nil
                 end
                 s51 << r54
@@ -29579,10 +30323,11 @@ module OpenEHR
                 i56, s56 = index, []
                 s57, i57 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r58 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r58 = nil
                   end
                   if r58
@@ -29599,10 +30344,11 @@ module OpenEHR
                 end
                 s56 << r57
                 if r57
-                  if has_terminal?('\G[wW]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                     r59 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[wW]')
                     r59 = nil
                   end
                   s56 << r59
@@ -29624,10 +30370,11 @@ module OpenEHR
                   i61, s61 = index, []
                   s62, i62 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r63 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r63 = nil
                     end
                     if r63
@@ -29644,10 +30391,11 @@ module OpenEHR
                   end
                   s61 << r62
                   if r62
-                    if has_terminal?('\G[dD]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                       r64 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[dD]')
                       r64 = nil
                     end
                     s61 << r64
@@ -29666,9 +30414,9 @@ module OpenEHR
                   end
                   s43 << r60
                   if r60
-                    if has_terminal?('T', false, index)
-                      r65 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?('T', false, index))
+                      r65 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('T')
                       r65 = nil
@@ -29678,10 +30426,11 @@ module OpenEHR
                       i67, s67 = index, []
                       s68, i68 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r69 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r69 = nil
                         end
                         if r69
@@ -29698,10 +30447,11 @@ module OpenEHR
                       end
                       s67 << r68
                       if r68
-                        if has_terminal?('\G[hH]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
                           r70 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[hH]')
                           r70 = nil
                         end
                         s67 << r70
@@ -29723,10 +30473,11 @@ module OpenEHR
                         i71, s71 = index, []
                         s72, i72 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r73 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r73 = nil
                           end
                           if r73
@@ -29743,10 +30494,11 @@ module OpenEHR
                         end
                         s71 << r72
                         if r72
-                          if has_terminal?('\G[mM]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                             r74 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[mM]')
                             r74 = nil
                           end
                           s71 << r74
@@ -29763,10 +30515,11 @@ module OpenEHR
                           i76, s76 = index, []
                           s77, i77 = [], index
                           loop do
-                            if has_terminal?('\G[0-9]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                               r78 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-9]')
                               r78 = nil
                             end
                             if r78
@@ -29784,9 +30537,9 @@ module OpenEHR
                           s76 << r77
                           if r77
                             i80, s80 = index, []
-                            if has_terminal?('.', false, index)
-                              r81 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                              @index += 1
+                            if (match_len = has_terminal?('.', false, index))
+                              r81 = true
+                              @index += match_len
                             else
                               terminal_parse_failure('.')
                               r81 = nil
@@ -29795,10 +30548,11 @@ module OpenEHR
                             if r81
                               s82, i82 = [], index
                               loop do
-                                if has_terminal?('\G[0-9]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                   r83 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[0-9]')
                                   r83 = nil
                                 end
                                 if r83
@@ -29829,10 +30583,11 @@ module OpenEHR
                             end
                             s76 << r79
                             if r79
-                              if has_terminal?('\G[sS]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[sS]'] ||= Regexp.new(gr), :regexp, index)
                                 r84 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[sS]')
                                 r84 = nil
                               end
                               s76 << r84
@@ -29867,12 +30622,13 @@ module OpenEHR
             r43 = nil
           end
           if r43
+            r43 = SyntaxNode.new(input, (index-1)...index) if r43 == true
             r0 = r43
           else
             i85, s85 = index, []
-            if has_terminal?('P', false, index)
-              r86 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('P', false, index))
+              r86 = true
+              @index += match_len
             else
               terminal_parse_failure('P')
               r86 = nil
@@ -29882,10 +30638,11 @@ module OpenEHR
               i88, s88 = index, []
               s89, i89 = [], index
               loop do
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r90 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r90 = nil
                 end
                 if r90
@@ -29902,10 +30659,11 @@ module OpenEHR
               end
               s88 << r89
               if r89
-                if has_terminal?('\G[yY]', true, index)
+                if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                   r91 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[yY]')
                   r91 = nil
                 end
                 s88 << r91
@@ -29927,10 +30685,11 @@ module OpenEHR
                 i93, s93 = index, []
                 s94, i94 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r95 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r95 = nil
                   end
                   if r95
@@ -29947,10 +30706,11 @@ module OpenEHR
                 end
                 s93 << r94
                 if r94
-                  if has_terminal?('\G[mM]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                     r96 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[mM]')
                     r96 = nil
                   end
                   s93 << r96
@@ -29972,10 +30732,11 @@ module OpenEHR
                   i98, s98 = index, []
                   s99, i99 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r100 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r100 = nil
                     end
                     if r100
@@ -29992,10 +30753,11 @@ module OpenEHR
                   end
                   s98 << r99
                   if r99
-                    if has_terminal?('\G[wW]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                       r101 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[wW]')
                       r101 = nil
                     end
                     s98 << r101
@@ -30017,10 +30779,11 @@ module OpenEHR
                     i103, s103 = index, []
                     s104, i104 = [], index
                     loop do
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r105 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r105 = nil
                       end
                       if r105
@@ -30037,10 +30800,11 @@ module OpenEHR
                     end
                     s103 << r104
                     if r104
-                      if has_terminal?('\G[dD]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                         r106 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[dD]')
                         r106 = nil
                       end
                       s103 << r106
@@ -30059,9 +30823,9 @@ module OpenEHR
                     end
                     s85 << r102
                     if r102
-                      if has_terminal?('T', false, index)
-                        r107 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?('T', false, index))
+                        r107 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('T')
                         r107 = nil
@@ -30071,10 +30835,11 @@ module OpenEHR
                         i109, s109 = index, []
                         s110, i110 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r111 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r111 = nil
                           end
                           if r111
@@ -30091,10 +30856,11 @@ module OpenEHR
                         end
                         s109 << r110
                         if r110
-                          if has_terminal?('\G[hH]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
                             r112 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[hH]')
                             r112 = nil
                           end
                           s109 << r112
@@ -30116,10 +30882,11 @@ module OpenEHR
                           i114, s114 = index, []
                           s115, i115 = [], index
                           loop do
-                            if has_terminal?('\G[0-9]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                               r116 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-9]')
                               r116 = nil
                             end
                             if r116
@@ -30136,10 +30903,11 @@ module OpenEHR
                           end
                           s114 << r115
                           if r115
-                            if has_terminal?('\G[mM]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                               r117 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[mM]')
                               r117 = nil
                             end
                             s114 << r117
@@ -30161,10 +30929,11 @@ module OpenEHR
                             i119, s119 = index, []
                             s120, i120 = [], index
                             loop do
-                              if has_terminal?('\G[0-9]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                 r121 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[0-9]')
                                 r121 = nil
                               end
                               if r121
@@ -30182,9 +30951,9 @@ module OpenEHR
                             s119 << r120
                             if r120
                               i123, s123 = index, []
-                              if has_terminal?('.', false, index)
-                                r124 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                @index += 1
+                              if (match_len = has_terminal?('.', false, index))
+                                r124 = true
+                                @index += match_len
                               else
                                 terminal_parse_failure('.')
                                 r124 = nil
@@ -30193,10 +30962,11 @@ module OpenEHR
                               if r124
                                 s125, i125 = [], index
                                 loop do
-                                  if has_terminal?('\G[0-9]', true, index)
+                                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                     r126 = true
                                     @index += 1
                                   else
+                                    terminal_parse_failure('[0-9]')
                                     r126 = nil
                                   end
                                   if r126
@@ -30227,10 +30997,11 @@ module OpenEHR
                               end
                               s119 << r122
                               if r122
-                                if has_terminal?('\G[sS]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[sS]'] ||= Regexp.new(gr), :regexp, index)
                                   r127 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[sS]')
                                   r127 = nil
                                 end
                                 s119 << r127
@@ -30265,12 +31036,13 @@ module OpenEHR
               r85 = nil
             end
             if r85
+              r85 = SyntaxNode.new(input, (index-1)...index) if r85 == true
               r0 = r85
             else
               i128, s128 = index, []
-              if has_terminal?('P', false, index)
-                r129 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('P', false, index))
+                r129 = true
+                @index += match_len
               else
                 terminal_parse_failure('P')
                 r129 = nil
@@ -30280,10 +31052,11 @@ module OpenEHR
                 i130, s130 = index, []
                 s131, i131 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r132 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r132 = nil
                   end
                   if r132
@@ -30300,10 +31073,11 @@ module OpenEHR
                 end
                 s130 << r131
                 if r131
-                  if has_terminal?('\G[yY]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                     r133 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[yY]')
                     r133 = nil
                   end
                   s130 << r133
@@ -30320,10 +31094,11 @@ module OpenEHR
                   i135, s135 = index, []
                   s136, i136 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r137 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r137 = nil
                     end
                     if r137
@@ -30340,10 +31115,11 @@ module OpenEHR
                   end
                   s135 << r136
                   if r136
-                    if has_terminal?('\G[mM]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                       r138 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[mM]')
                       r138 = nil
                     end
                     s135 << r138
@@ -30365,10 +31141,11 @@ module OpenEHR
                     i140, s140 = index, []
                     s141, i141 = [], index
                     loop do
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r142 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r142 = nil
                       end
                       if r142
@@ -30385,10 +31162,11 @@ module OpenEHR
                     end
                     s140 << r141
                     if r141
-                      if has_terminal?('\G[wW]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                         r143 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[wW]')
                         r143 = nil
                       end
                       s140 << r143
@@ -30410,10 +31188,11 @@ module OpenEHR
                       i145, s145 = index, []
                       s146, i146 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r147 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r147 = nil
                         end
                         if r147
@@ -30430,10 +31209,11 @@ module OpenEHR
                       end
                       s145 << r146
                       if r146
-                        if has_terminal?('\G[dD]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                           r148 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[dD]')
                           r148 = nil
                         end
                         s145 << r148
@@ -30463,12 +31243,13 @@ module OpenEHR
                 r128 = nil
               end
               if r128
+                r128 = SyntaxNode.new(input, (index-1)...index) if r128 == true
                 r0 = r128
               else
                 i149, s149 = index, []
-                if has_terminal?('P', false, index)
-                  r150 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('P', false, index))
+                  r150 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('P')
                   r150 = nil
@@ -30478,10 +31259,11 @@ module OpenEHR
                   i152, s152 = index, []
                   s153, i153 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r154 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r154 = nil
                     end
                     if r154
@@ -30498,10 +31280,11 @@ module OpenEHR
                   end
                   s152 << r153
                   if r153
-                    if has_terminal?('\G[yY]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                       r155 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[yY]')
                       r155 = nil
                     end
                     s152 << r155
@@ -30523,10 +31306,11 @@ module OpenEHR
                     i156, s156 = index, []
                     s157, i157 = [], index
                     loop do
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r158 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r158 = nil
                       end
                       if r158
@@ -30543,10 +31327,11 @@ module OpenEHR
                     end
                     s156 << r157
                     if r157
-                      if has_terminal?('\G[mM]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                         r159 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[mM]')
                         r159 = nil
                       end
                       s156 << r159
@@ -30563,10 +31348,11 @@ module OpenEHR
                       i161, s161 = index, []
                       s162, i162 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r163 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r163 = nil
                         end
                         if r163
@@ -30583,10 +31369,11 @@ module OpenEHR
                       end
                       s161 << r162
                       if r162
-                        if has_terminal?('\G[wW]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                           r164 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[wW]')
                           r164 = nil
                         end
                         s161 << r164
@@ -30608,10 +31395,11 @@ module OpenEHR
                         i166, s166 = index, []
                         s167, i167 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r168 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r168 = nil
                           end
                           if r168
@@ -30628,10 +31416,11 @@ module OpenEHR
                         end
                         s166 << r167
                         if r167
-                          if has_terminal?('\G[dD]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                             r169 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[dD]')
                             r169 = nil
                           end
                           s166 << r169
@@ -30661,12 +31450,13 @@ module OpenEHR
                   r149 = nil
                 end
                 if r149
+                  r149 = SyntaxNode.new(input, (index-1)...index) if r149 == true
                   r0 = r149
                 else
                   i170, s170 = index, []
-                  if has_terminal?('P', false, index)
-                    r171 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('P', false, index))
+                    r171 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('P')
                     r171 = nil
@@ -30676,10 +31466,11 @@ module OpenEHR
                     i173, s173 = index, []
                     s174, i174 = [], index
                     loop do
-                      if has_terminal?('\G[0-9]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                         r175 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[0-9]')
                         r175 = nil
                       end
                       if r175
@@ -30696,10 +31487,11 @@ module OpenEHR
                     end
                     s173 << r174
                     if r174
-                      if has_terminal?('\G[yY]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                         r176 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[yY]')
                         r176 = nil
                       end
                       s173 << r176
@@ -30721,10 +31513,11 @@ module OpenEHR
                       i178, s178 = index, []
                       s179, i179 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r180 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r180 = nil
                         end
                         if r180
@@ -30741,10 +31534,11 @@ module OpenEHR
                       end
                       s178 << r179
                       if r179
-                        if has_terminal?('\G[mM]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                           r181 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[mM]')
                           r181 = nil
                         end
                         s178 << r181
@@ -30766,10 +31560,11 @@ module OpenEHR
                         i182, s182 = index, []
                         s183, i183 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r184 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r184 = nil
                           end
                           if r184
@@ -30786,10 +31581,11 @@ module OpenEHR
                         end
                         s182 << r183
                         if r183
-                          if has_terminal?('\G[wW]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                             r185 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[wW]')
                             r185 = nil
                           end
                           s182 << r185
@@ -30806,10 +31602,11 @@ module OpenEHR
                           i187, s187 = index, []
                           s188, i188 = [], index
                           loop do
-                            if has_terminal?('\G[0-9]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                               r189 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-9]')
                               r189 = nil
                             end
                             if r189
@@ -30826,10 +31623,11 @@ module OpenEHR
                           end
                           s187 << r188
                           if r188
-                            if has_terminal?('\G[dD]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                               r190 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[dD]')
                               r190 = nil
                             end
                             s187 << r190
@@ -30859,12 +31657,13 @@ module OpenEHR
                     r170 = nil
                   end
                   if r170
+                    r170 = SyntaxNode.new(input, (index-1)...index) if r170 == true
                     r0 = r170
                   else
                     i191, s191 = index, []
-                    if has_terminal?('P', false, index)
-                      r192 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?('P', false, index))
+                      r192 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('P')
                       r192 = nil
@@ -30874,10 +31673,11 @@ module OpenEHR
                       i194, s194 = index, []
                       s195, i195 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r196 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r196 = nil
                         end
                         if r196
@@ -30894,10 +31694,11 @@ module OpenEHR
                       end
                       s194 << r195
                       if r195
-                        if has_terminal?('\G[yY]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                           r197 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[yY]')
                           r197 = nil
                         end
                         s194 << r197
@@ -30919,10 +31720,11 @@ module OpenEHR
                         i199, s199 = index, []
                         s200, i200 = [], index
                         loop do
-                          if has_terminal?('\G[0-9]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                             r201 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[0-9]')
                             r201 = nil
                           end
                           if r201
@@ -30939,10 +31741,11 @@ module OpenEHR
                         end
                         s199 << r200
                         if r200
-                          if has_terminal?('\G[mM]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                             r202 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[mM]')
                             r202 = nil
                           end
                           s199 << r202
@@ -30964,10 +31767,11 @@ module OpenEHR
                           i204, s204 = index, []
                           s205, i205 = [], index
                           loop do
-                            if has_terminal?('\G[0-9]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                               r206 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[0-9]')
                               r206 = nil
                             end
                             if r206
@@ -30984,10 +31788,11 @@ module OpenEHR
                           end
                           s204 << r205
                           if r205
-                            if has_terminal?('\G[wW]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                               r207 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[wW]')
                               r207 = nil
                             end
                             s204 << r207
@@ -31009,10 +31814,11 @@ module OpenEHR
                             i208, s208 = index, []
                             s209, i209 = [], index
                             loop do
-                              if has_terminal?('\G[0-9]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                                 r210 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[0-9]')
                                 r210 = nil
                               end
                               if r210
@@ -31029,10 +31835,11 @@ module OpenEHR
                             end
                             s208 << r209
                             if r209
-                              if has_terminal?('\G[dD]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                                 r211 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[dD]')
                                 r211 = nil
                               end
                               s208 << r211
@@ -31057,6 +31864,7 @@ module OpenEHR
                       r191 = nil
                     end
                     if r191
+                      r191 = SyntaxNode.new(input, (index-1)...index) if r191 == true
                       r0 = r191
                     else
                       @index = i0
@@ -31082,91 +31890,99 @@ module OpenEHR
         if node_cache[:V_ISO8601_DATE_CONSTRAINT_PATTERN].has_key?(index)
           cached = node_cache[:V_ISO8601_DATE_CONSTRAINT_PATTERN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_DATE_CONSTRAINT_PATTERN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[yY]', true, index)
+        if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[yY]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[yY]', true, index)
+          if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[yY]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[yY]', true, index)
+            if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[yY]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[yY]', true, index)
+              if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[yY]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('-', false, index)
-                  r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('-', false, index))
+                  r5 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('-')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[mM?X]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[mM?X]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[mM?X]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[mM?X]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('-', false, index)
-                        r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?('-', false, index))
+                        r8 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('-')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[dD?X]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[dD?X]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[dD?X]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[dD?X]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[dD?X]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[dD?X]')
                             r10 = nil
                           end
                           s0 << r10
@@ -31200,75 +32016,81 @@ module OpenEHR
         if node_cache[:V_ISO8601_TIME_CONSTRAINT_PATTERN].has_key?(index)
           cached = node_cache[:V_ISO8601_TIME_CONSTRAINT_PATTERN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_TIME_CONSTRAINT_PATTERN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[hH]', true, index)
+        if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[hH]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[hH]', true, index)
+          if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[hH]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?(':', false, index)
-              r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(':', false, index))
+              r3 = true
+              @index += match_len
             else
               terminal_parse_failure(':')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[mM?X]', true, index)
+              if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[mM?X]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('\G[mM?X]', true, index)
+                if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                   r5 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[mM?X]')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?(':', false, index)
-                    r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?(':', false, index))
+                    r6 = true
+                    @index += match_len
                   else
                     terminal_parse_failure(':')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[sS?X]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[sS?X]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[sS?X]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('\G[sS?X]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[sS?X]'] ||= Regexp.new(gr), :regexp, index)
                         r8 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[sS?X]')
                         r8 = nil
                       end
                       s0 << r8
@@ -31300,165 +32122,180 @@ module OpenEHR
         if node_cache[:V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN].has_key?(index)
           cached = node_cache[:V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_DATE_TIME_CONSTRAINT_PATTERN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[yY]', true, index)
+        if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[yY]')
           r1 = nil
         end
         s0 << r1
         if r1
-          if has_terminal?('\G[yY]', true, index)
+          if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
             r2 = true
             @index += 1
           else
+            terminal_parse_failure('[yY]')
             r2 = nil
           end
           s0 << r2
           if r2
-            if has_terminal?('\G[yY]', true, index)
+            if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
               r3 = true
               @index += 1
             else
+              terminal_parse_failure('[yY]')
               r3 = nil
             end
             s0 << r3
             if r3
-              if has_terminal?('\G[yY]', true, index)
+              if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                 r4 = true
                 @index += 1
               else
+                terminal_parse_failure('[yY]')
                 r4 = nil
               end
               s0 << r4
               if r4
-                if has_terminal?('-', false, index)
-                  r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('-', false, index))
+                  r5 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('-')
                   r5 = nil
                 end
                 s0 << r5
                 if r5
-                  if has_terminal?('\G[mM?X]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                     r6 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[mM?X]')
                     r6 = nil
                   end
                   s0 << r6
                   if r6
-                    if has_terminal?('\G[mM?X]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                       r7 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[mM?X]')
                       r7 = nil
                     end
                     s0 << r7
                     if r7
-                      if has_terminal?('-', false, index)
-                        r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?('-', false, index))
+                        r8 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('-')
                         r8 = nil
                       end
                       s0 << r8
                       if r8
-                        if has_terminal?('\G[dD?X]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[dD?X]'] ||= Regexp.new(gr), :regexp, index)
                           r9 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[dD?X]')
                           r9 = nil
                         end
                         s0 << r9
                         if r9
-                          if has_terminal?('\G[dD?X]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[dD?X]'] ||= Regexp.new(gr), :regexp, index)
                             r10 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[dD?X]')
                             r10 = nil
                           end
                           s0 << r10
                           if r10
-                            if has_terminal?('\G[Tt ]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[Tt ]'] ||= Regexp.new(gr), :regexp, index)
                               r11 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[Tt ]')
                               r11 = nil
                             end
                             s0 << r11
                             if r11
-                              if has_terminal?('\G[hH?X]', true, index)
+                              if has_terminal?(@regexps[gr = '\A[hH?X]'] ||= Regexp.new(gr), :regexp, index)
                                 r12 = true
                                 @index += 1
                               else
+                                terminal_parse_failure('[hH?X]')
                                 r12 = nil
                               end
                               s0 << r12
                               if r12
-                                if has_terminal?('\G[hH?X]', true, index)
+                                if has_terminal?(@regexps[gr = '\A[hH?X]'] ||= Regexp.new(gr), :regexp, index)
                                   r13 = true
                                   @index += 1
                                 else
+                                  terminal_parse_failure('[hH?X]')
                                   r13 = nil
                                 end
                                 s0 << r13
                                 if r13
-                                  if has_terminal?(':', false, index)
-                                    r14 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                    @index += 1
+                                  if (match_len = has_terminal?(':', false, index))
+                                    r14 = true
+                                    @index += match_len
                                   else
                                     terminal_parse_failure(':')
                                     r14 = nil
                                   end
                                   s0 << r14
                                   if r14
-                                    if has_terminal?('\G[mM?X]', true, index)
+                                    if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                                       r15 = true
                                       @index += 1
                                     else
+                                      terminal_parse_failure('[mM?X]')
                                       r15 = nil
                                     end
                                     s0 << r15
                                     if r15
-                                      if has_terminal?('\G[mM?X]', true, index)
+                                      if has_terminal?(@regexps[gr = '\A[mM?X]'] ||= Regexp.new(gr), :regexp, index)
                                         r16 = true
                                         @index += 1
                                       else
+                                        terminal_parse_failure('[mM?X]')
                                         r16 = nil
                                       end
                                       s0 << r16
                                       if r16
-                                        if has_terminal?(':', false, index)
-                                          r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                          @index += 1
+                                        if (match_len = has_terminal?(':', false, index))
+                                          r17 = true
+                                          @index += match_len
                                         else
                                           terminal_parse_failure(':')
                                           r17 = nil
                                         end
                                         s0 << r17
                                         if r17
-                                          if has_terminal?('\G[sS?X]', true, index)
+                                          if has_terminal?(@regexps[gr = '\A[sS?X]'] ||= Regexp.new(gr), :regexp, index)
                                             r18 = true
                                             @index += 1
                                           else
+                                            terminal_parse_failure('[sS?X]')
                                             r18 = nil
                                           end
                                           s0 << r18
                                           if r18
-                                            if has_terminal?('\G[sS?X]', true, index)
+                                            if has_terminal?(@regexps[gr = '\A[sS?X]'] ||= Regexp.new(gr), :regexp, index)
                                               r19 = true
                                               @index += 1
                                             else
+                                              terminal_parse_failure('[sS?X]')
                                               r19 = nil
                                             end
                                             s0 << r19
@@ -31519,7 +32356,7 @@ module OpenEHR
         if node_cache[:V_ISO8601_DURATION_CONSTRAINT_PATTERN].has_key?(index)
           cached = node_cache[:V_ISO8601_DURATION_CONSTRAINT_PATTERN][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ISO8601_DURATION_CONSTRAINT_PATTERN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -31527,19 +32364,20 @@ module OpenEHR
 
         i0 = index
         i1, s1 = index, []
-        if has_terminal?('P', false, index)
-          r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('P', false, index))
+          r2 = true
+          @index += match_len
         else
           terminal_parse_failure('P')
           r2 = nil
         end
         s1 << r2
         if r2
-          if has_terminal?('\G[yY]', true, index)
+          if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
             r4 = true
             @index += 1
           else
+            terminal_parse_failure('[yY]')
             r4 = nil
           end
           if r4
@@ -31549,10 +32387,11 @@ module OpenEHR
           end
           s1 << r3
           if r3
-            if has_terminal?('\G[mM]', true, index)
+            if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
               r6 = true
               @index += 1
             else
+              terminal_parse_failure('[mM]')
               r6 = nil
             end
             if r6
@@ -31562,10 +32401,11 @@ module OpenEHR
             end
             s1 << r5
             if r5
-              if has_terminal?('\G[wW]', true, index)
+              if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                 r8 = true
                 @index += 1
               else
+                terminal_parse_failure('[wW]')
                 r8 = nil
               end
               if r8
@@ -31575,10 +32415,11 @@ module OpenEHR
               end
               s1 << r7
               if r7
-                if has_terminal?('\G[dD]', true, index)
+                if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                   r10 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[dD]')
                   r10 = nil
                 end
                 if r10
@@ -31588,27 +32429,29 @@ module OpenEHR
                 end
                 s1 << r9
                 if r9
-                  if has_terminal?('T', false, index)
-                    r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('T', false, index))
+                    r11 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('T')
                     r11 = nil
                   end
                   s1 << r11
                   if r11
-                    if has_terminal?('\G[hH]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
                       r12 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[hH]')
                       r12 = nil
                     end
                     s1 << r12
                     if r12
-                      if has_terminal?('\G[mM]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                         r14 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[mM]')
                         r14 = nil
                       end
                       if r14
@@ -31618,10 +32461,11 @@ module OpenEHR
                       end
                       s1 << r13
                       if r13
-                        if has_terminal?('\G[sS]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[sS]'] ||= Regexp.new(gr), :regexp, index)
                           r16 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[sS]')
                           r16 = nil
                         end
                         if r16
@@ -31646,22 +32490,24 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i17, s17 = index, []
-          if has_terminal?('P', false, index)
-            r18 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('P', false, index))
+            r18 = true
+            @index += match_len
           else
             terminal_parse_failure('P')
             r18 = nil
           end
           s17 << r18
           if r18
-            if has_terminal?('\G[yY]', true, index)
+            if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
               r20 = true
               @index += 1
             else
+              terminal_parse_failure('[yY]')
               r20 = nil
             end
             if r20
@@ -31671,10 +32517,11 @@ module OpenEHR
             end
             s17 << r19
             if r19
-              if has_terminal?('\G[mM]', true, index)
+              if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                 r22 = true
                 @index += 1
               else
+                terminal_parse_failure('[mM]')
                 r22 = nil
               end
               if r22
@@ -31684,10 +32531,11 @@ module OpenEHR
               end
               s17 << r21
               if r21
-                if has_terminal?('\G[wW]', true, index)
+                if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                   r24 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[wW]')
                   r24 = nil
                 end
                 if r24
@@ -31697,10 +32545,11 @@ module OpenEHR
                 end
                 s17 << r23
                 if r23
-                  if has_terminal?('\G[dD]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                     r26 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[dD]')
                     r26 = nil
                   end
                   if r26
@@ -31710,19 +32559,20 @@ module OpenEHR
                   end
                   s17 << r25
                   if r25
-                    if has_terminal?('T', false, index)
-                      r27 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?('T', false, index))
+                      r27 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('T')
                       r27 = nil
                     end
                     s17 << r27
                     if r27
-                      if has_terminal?('\G[hH]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
                         r29 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[hH]')
                         r29 = nil
                       end
                       if r29
@@ -31732,18 +32582,20 @@ module OpenEHR
                       end
                       s17 << r28
                       if r28
-                        if has_terminal?('\G[mM]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                           r30 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[mM]')
                           r30 = nil
                         end
                         s17 << r30
                         if r30
-                          if has_terminal?('\G[sS]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[sS]'] ||= Regexp.new(gr), :regexp, index)
                             r32 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[sS]')
                             r32 = nil
                           end
                           if r32
@@ -31768,22 +32620,24 @@ module OpenEHR
             r17 = nil
           end
           if r17
+            r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
             r0 = r17
           else
             i33, s33 = index, []
-            if has_terminal?('P', false, index)
-              r34 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('P', false, index))
+              r34 = true
+              @index += match_len
             else
               terminal_parse_failure('P')
               r34 = nil
             end
             s33 << r34
             if r34
-              if has_terminal?('\G[yY]', true, index)
+              if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                 r36 = true
                 @index += 1
               else
+                terminal_parse_failure('[yY]')
                 r36 = nil
               end
               if r36
@@ -31793,10 +32647,11 @@ module OpenEHR
               end
               s33 << r35
               if r35
-                if has_terminal?('\G[mM]', true, index)
+                if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                   r38 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[mM]')
                   r38 = nil
                 end
                 if r38
@@ -31806,10 +32661,11 @@ module OpenEHR
                 end
                 s33 << r37
                 if r37
-                  if has_terminal?('\G[wW]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                     r40 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[wW]')
                     r40 = nil
                   end
                   if r40
@@ -31819,10 +32675,11 @@ module OpenEHR
                   end
                   s33 << r39
                   if r39
-                    if has_terminal?('\G[dD]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                       r42 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[dD]')
                       r42 = nil
                     end
                     if r42
@@ -31832,19 +32689,20 @@ module OpenEHR
                     end
                     s33 << r41
                     if r41
-                      if has_terminal?('T', false, index)
-                        r43 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                        @index += 1
+                      if (match_len = has_terminal?('T', false, index))
+                        r43 = true
+                        @index += match_len
                       else
                         terminal_parse_failure('T')
                         r43 = nil
                       end
                       s33 << r43
                       if r43
-                        if has_terminal?('\G[hH]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[hH]'] ||= Regexp.new(gr), :regexp, index)
                           r45 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[hH]')
                           r45 = nil
                         end
                         if r45
@@ -31854,10 +32712,11 @@ module OpenEHR
                         end
                         s33 << r44
                         if r44
-                          if has_terminal?('\G[mM]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                             r47 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[mM]')
                             r47 = nil
                           end
                           if r47
@@ -31867,10 +32726,11 @@ module OpenEHR
                           end
                           s33 << r46
                           if r46
-                            if has_terminal?('\G[sS]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[sS]'] ||= Regexp.new(gr), :regexp, index)
                               r48 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[sS]')
                               r48 = nil
                             end
                             s33 << r48
@@ -31890,30 +32750,33 @@ module OpenEHR
               r33 = nil
             end
             if r33
+              r33 = SyntaxNode.new(input, (index-1)...index) if r33 == true
               r0 = r33
             else
               i49, s49 = index, []
-              if has_terminal?('P', false, index)
-                r50 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('P', false, index))
+                r50 = true
+                @index += match_len
               else
                 terminal_parse_failure('P')
                 r50 = nil
               end
               s49 << r50
               if r50
-                if has_terminal?('\G[yY]', true, index)
+                if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                   r51 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[yY]')
                   r51 = nil
                 end
                 s49 << r51
                 if r51
-                  if has_terminal?('\G[mM]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                     r53 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[mM]')
                     r53 = nil
                   end
                   if r53
@@ -31923,10 +32786,11 @@ module OpenEHR
                   end
                   s49 << r52
                   if r52
-                    if has_terminal?('\G[wW]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                       r55 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[wW]')
                       r55 = nil
                     end
                     if r55
@@ -31936,10 +32800,11 @@ module OpenEHR
                     end
                     s49 << r54
                     if r54
-                      if has_terminal?('\G[dD]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                         r57 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[dD]')
                         r57 = nil
                       end
                       if r57
@@ -31960,22 +32825,24 @@ module OpenEHR
                 r49 = nil
               end
               if r49
+                r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                 r0 = r49
               else
                 i58, s58 = index, []
-                if has_terminal?('P', false, index)
-                  r59 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('P', false, index))
+                  r59 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('P')
                   r59 = nil
                 end
                 s58 << r59
                 if r59
-                  if has_terminal?('\G[yY]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                     r61 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[yY]')
                     r61 = nil
                   end
                   if r61
@@ -31985,18 +32852,20 @@ module OpenEHR
                   end
                   s58 << r60
                   if r60
-                    if has_terminal?('\G[mM]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                       r62 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[mM]')
                       r62 = nil
                     end
                     s58 << r62
                     if r62
-                      if has_terminal?('\G[wW]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                         r64 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[wW]')
                         r64 = nil
                       end
                       if r64
@@ -32006,10 +32875,11 @@ module OpenEHR
                       end
                       s58 << r63
                       if r63
-                        if has_terminal?('\G[dD]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                           r66 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[dD]')
                           r66 = nil
                         end
                         if r66
@@ -32030,22 +32900,24 @@ module OpenEHR
                   r58 = nil
                 end
                 if r58
+                  r58 = SyntaxNode.new(input, (index-1)...index) if r58 == true
                   r0 = r58
                 else
                   i67, s67 = index, []
-                  if has_terminal?('P', false, index)
-                    r68 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('P', false, index))
+                    r68 = true
+                    @index += match_len
                   else
                     terminal_parse_failure('P')
                     r68 = nil
                   end
                   s67 << r68
                   if r68
-                    if has_terminal?('\G[yY]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                       r70 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[yY]')
                       r70 = nil
                     end
                     if r70
@@ -32055,10 +32927,11 @@ module OpenEHR
                     end
                     s67 << r69
                     if r69
-                      if has_terminal?('\G[mM]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                         r72 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[mM]')
                         r72 = nil
                       end
                       if r72
@@ -32068,18 +32941,20 @@ module OpenEHR
                       end
                       s67 << r71
                       if r71
-                        if has_terminal?('\G[wW]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                           r73 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[wW]')
                           r73 = nil
                         end
                         s67 << r73
                         if r73
-                          if has_terminal?('\G[dD]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                             r75 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[dD]')
                             r75 = nil
                           end
                           if r75
@@ -32100,22 +32975,24 @@ module OpenEHR
                     r67 = nil
                   end
                   if r67
+                    r67 = SyntaxNode.new(input, (index-1)...index) if r67 == true
                     r0 = r67
                   else
                     i76, s76 = index, []
-                    if has_terminal?('P', false, index)
-                      r77 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?('P', false, index))
+                      r77 = true
+                      @index += match_len
                     else
                       terminal_parse_failure('P')
                       r77 = nil
                     end
                     s76 << r77
                     if r77
-                      if has_terminal?('\G[yY]', true, index)
+                      if has_terminal?(@regexps[gr = '\A[yY]'] ||= Regexp.new(gr), :regexp, index)
                         r79 = true
                         @index += 1
                       else
+                        terminal_parse_failure('[yY]')
                         r79 = nil
                       end
                       if r79
@@ -32125,10 +33002,11 @@ module OpenEHR
                       end
                       s76 << r78
                       if r78
-                        if has_terminal?('\G[mM]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[mM]'] ||= Regexp.new(gr), :regexp, index)
                           r81 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[mM]')
                           r81 = nil
                         end
                         if r81
@@ -32138,10 +33016,11 @@ module OpenEHR
                         end
                         s76 << r80
                         if r80
-                          if has_terminal?('\G[wW]', true, index)
+                          if has_terminal?(@regexps[gr = '\A[wW]'] ||= Regexp.new(gr), :regexp, index)
                             r83 = true
                             @index += 1
                           else
+                            terminal_parse_failure('[wW]')
                             r83 = nil
                           end
                           if r83
@@ -32151,10 +33030,11 @@ module OpenEHR
                           end
                           s76 << r82
                           if r82
-                            if has_terminal?('\G[dD]', true, index)
+                            if has_terminal?(@regexps[gr = '\A[dD]'] ||= Regexp.new(gr), :regexp, index)
                               r84 = true
                               @index += 1
                             else
+                              terminal_parse_failure('[dD]')
                               r84 = nil
                             end
                             s76 << r84
@@ -32170,6 +33050,7 @@ module OpenEHR
                       r76 = nil
                     end
                     if r76
+                      r76 = SyntaxNode.new(input, (index-1)...index) if r76 == true
                       r0 = r76
                     else
                       @index = i0
@@ -32201,17 +33082,18 @@ module OpenEHR
         if node_cache[:V_TYPE_IDENTIFIER].has_key?(index)
           cached = node_cache[:V_TYPE_IDENTIFIER][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_TYPE_IDENTIFIER][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[A-Z]', true, index)
+        if has_terminal?(@regexps[gr = '\A[A-Z]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[A-Z]')
           r1 = nil
         end
         s0 << r1
@@ -32257,17 +33139,18 @@ module OpenEHR
         if node_cache[:V_GENERIC_TYPE_IDENTIFIER].has_key?(index)
           cached = node_cache[:V_GENERIC_TYPE_IDENTIFIER][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_GENERIC_TYPE_IDENTIFIER][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[A-Z]', true, index)
+        if has_terminal?(@regexps[gr = '\A[A-Z]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[A-Z]')
           r1 = nil
         end
         s0 << r1
@@ -32284,9 +33167,9 @@ module OpenEHR
           r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
           s0 << r2
           if r2
-            if has_terminal?('<', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('<', false, index))
+              r4 = true
+              @index += match_len
             else
               terminal_parse_failure('<')
               r4 = nil
@@ -32295,10 +33178,11 @@ module OpenEHR
             if r4
               s5, i5 = [], index
               loop do
-                if has_terminal?('\G[a-zA-Z0-9,_]', true, index)
+                if has_terminal?(@regexps[gr = '\A[a-zA-Z0-9,_]'] ||= Regexp.new(gr), :regexp, index)
                   r6 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[a-zA-Z0-9,_]')
                   r6 = nil
                 end
                 if r6
@@ -32315,9 +33199,9 @@ module OpenEHR
               end
               s0 << r5
               if r5
-                if has_terminal?('>', false, index)
-                  r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('>', false, index))
+                  r7 = true
+                  @index += match_len
                 else
                   terminal_parse_failure('>')
                   r7 = nil
@@ -32355,17 +33239,18 @@ module OpenEHR
         if node_cache[:V_ATTRIBUTE_IDENTIFIER].has_key?(index)
           cached = node_cache[:V_ATTRIBUTE_IDENTIFIER][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_ATTRIBUTE_IDENTIFIER][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('\G[a-z]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-z]'] ||= Regexp.new(gr), :regexp, index)
           r1 = true
           @index += 1
         else
+          terminal_parse_failure('[a-z]')
           r1 = nil
         end
         s0 << r1
@@ -32425,7 +33310,7 @@ module OpenEHR
         if node_cache[:V_INTEGER].has_key?(index)
           cached = node_cache[:V_INTEGER][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_INTEGER][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -32435,10 +33320,11 @@ module OpenEHR
         i1, s1 = index, []
         s2, i2 = [], index
         loop do
-          if has_terminal?('\G[0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
             r3 = true
             @index += 1
           else
+            terminal_parse_failure('[0-9]')
             r3 = nil
           end
           if r3
@@ -32455,18 +33341,20 @@ module OpenEHR
         end
         s1 << r2
         if r2
-          if has_terminal?('\G[eE]', true, index)
+          if has_terminal?(@regexps[gr = '\A[eE]'] ||= Regexp.new(gr), :regexp, index)
             r4 = true
             @index += 1
           else
+            terminal_parse_failure('[eE]')
             r4 = nil
           end
           s1 << r4
           if r4
-            if has_terminal?('\G[+-]', true, index)
+            if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
               r6 = true
               @index += 1
             else
+              terminal_parse_failure('[+-]')
               r6 = nil
             end
             if r6
@@ -32476,10 +33364,11 @@ module OpenEHR
             end
             s1 << r5
             if r5
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r7 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r7 = nil
               end
               s1 << r7
@@ -32495,23 +33384,26 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i8, s8 = index, []
-          if has_terminal?('\G[1-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[1-9]'] ||= Regexp.new(gr), :regexp, index)
             r9 = true
             @index += 1
           else
+            terminal_parse_failure('[1-9]')
             r9 = nil
           end
           s8 << r9
           if r9
             s10, i10 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r11 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r11 = nil
               end
               if r11
@@ -32537,16 +33429,19 @@ module OpenEHR
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r0 = r8
           else
-            if has_terminal?('\G[0-9]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
               r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
               r12.extend(VINTEGER4)
               @index += 1
             else
+              terminal_parse_failure('[0-9]')
               r12 = nil
             end
             if r12
+              r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
               r0 = r12
             else
               @index = i0
@@ -32580,7 +33475,7 @@ module OpenEHR
         if node_cache[:V_REAL].has_key?(index)
           cached = node_cache[:V_REAL][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_REAL][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
@@ -32590,10 +33485,11 @@ module OpenEHR
         i1, s1 = index, []
         s2, i2 = [], index
         loop do
-          if has_terminal?('\G[0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
             r3 = true
             @index += 1
           else
+            terminal_parse_failure('[0-9]')
             r3 = nil
           end
           if r3
@@ -32610,9 +33506,9 @@ module OpenEHR
         end
         s1 << r2
         if r2
-          if has_terminal?('.', false, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('.', false, index))
+            r4 = true
+            @index += match_len
           else
             terminal_parse_failure('.')
             r4 = nil
@@ -32621,10 +33517,11 @@ module OpenEHR
           if r4
             s5, i5 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r6 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r6 = nil
               end
               if r6
@@ -32641,18 +33538,20 @@ module OpenEHR
             end
             s1 << r5
             if r5
-              if has_terminal?('\G[eE]', true, index)
+              if has_terminal?(@regexps[gr = '\A[eE]'] ||= Regexp.new(gr), :regexp, index)
                 r7 = true
                 @index += 1
               else
+                terminal_parse_failure('[eE]')
                 r7 = nil
               end
               s1 << r7
               if r7
-                if has_terminal?('\G[+-]', true, index)
+                if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                   r9 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[+-]')
                   r9 = nil
                 end
                 if r9
@@ -32664,10 +33563,11 @@ module OpenEHR
                 if r8
                   s10, i10 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r11 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r11 = nil
                     end
                     if r11
@@ -32696,23 +33596,26 @@ module OpenEHR
           r1 = nil
         end
         if r1
+          r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
           r0 = r1
         else
           i12, s12 = index, []
-          if has_terminal?('\G[1-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[1-9]'] ||= Regexp.new(gr), :regexp, index)
             r13 = true
             @index += 1
           else
+            terminal_parse_failure('[1-9]')
             r13 = nil
           end
           s12 << r13
           if r13
             s14, i14 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r15 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r15 = nil
               end
               if r15
@@ -32729,9 +33632,9 @@ module OpenEHR
             end
             s12 << r14
             if r14
-              if has_terminal?('.', false, index)
-                r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('.', false, index))
+                r16 = true
+                @index += match_len
               else
                 terminal_parse_failure('.')
                 r16 = nil
@@ -32740,10 +33643,11 @@ module OpenEHR
               if r16
                 s17, i17 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r18 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r18 = nil
                   end
                   if r18
@@ -32770,20 +33674,22 @@ module OpenEHR
             r12 = nil
           end
           if r12
+            r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
             r0 = r12
           else
             i19, s19 = index, []
-            if has_terminal?('\G[0-9]', true, index)
+            if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
               r20 = true
               @index += 1
             else
+              terminal_parse_failure('[0-9]')
               r20 = nil
             end
             s19 << r20
             if r20
-              if has_terminal?('.', false, index)
-                r21 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('.', false, index))
+                r21 = true
+                @index += match_len
               else
                 terminal_parse_failure('.')
                 r21 = nil
@@ -32792,10 +33698,11 @@ module OpenEHR
               if r21
                 s22, i22 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r23 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r23 = nil
                   end
                   if r23
@@ -32822,6 +33729,7 @@ module OpenEHR
               r19 = nil
             end
             if r19
+              r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
               r0 = r19
             else
               @index = i0
@@ -32846,17 +33754,18 @@ module OpenEHR
         if node_cache[:V_CHAR].has_key?(index)
           cached = node_cache[:V_CHAR][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_CHAR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
-        if has_terminal?('\G[^\\\\\\n\\"]', true, index)
+        if has_terminal?(@regexps[gr = '\A[^\\\\\\n\\"]'] ||= Regexp.new(gr), :regexp, index)
           r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
           r0.extend(VCHAR0)
           @index += 1
         else
+          terminal_parse_failure('[^\\\\\\n\\"]')
           r0 = nil
         end
 
@@ -32886,16 +33795,16 @@ module OpenEHR
         if node_cache[:V_STRING].has_key?(index)
           cached = node_cache[:V_STRING][index]
           if cached
-            cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+            node_cache[:V_STRING][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
             @index = cached.interval.end
           end
           return cached
         end
 
         i0, s0 = index, []
-        if has_terminal?('"', false, index)
-          r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('"', false, index))
+          r1 = true
+          @index += match_len
         else
           terminal_parse_failure('"')
           r1 = nil
@@ -32905,21 +33814,22 @@ module OpenEHR
           s2, i2 = [], index
           loop do
             i3 = index
-            if has_terminal?('\"', false, index)
-              r4 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?('\"', false, index))
+              r4 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
               terminal_parse_failure('\"')
               r4 = nil
             end
             if r4
+              r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
               r3 = r4
             else
               i5, s5 = index, []
               i6 = index
-              if has_terminal?('"', false, index)
-                r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('"', false, index))
+                r7 = true
+                @index += match_len
               else
                 terminal_parse_failure('"')
                 r7 = nil
@@ -32933,7 +33843,7 @@ module OpenEHR
               s5 << r6
               if r6
                 if index < input_length
-                  r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                  r8 = true
                   @index += 1
                 else
                   terminal_parse_failure("any character")
@@ -32949,6 +33859,7 @@ module OpenEHR
                 r5 = nil
               end
               if r5
+                r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
                 r3 = r5
               else
                 @index = i3
@@ -32964,9 +33875,9 @@ module OpenEHR
           r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
           s0 << r2
           if r2
-            if has_terminal?('"', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?('"', false, index))
+              r9 = true
+              @index += match_len
             else
               terminal_parse_failure('"')
               r9 = nil

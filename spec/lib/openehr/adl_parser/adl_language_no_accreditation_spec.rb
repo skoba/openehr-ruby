@@ -12,7 +12,7 @@ describe ADLParser do
     end
 
     it 'exists' do
-      @translations.should_not be_nil
+      expect(@translations).not_to be_nil
     end
 
     context 'German translation' do
@@ -21,7 +21,7 @@ describe ADLParser do
       end
 
       it 'exists' do
-        @de.should_not be_nil
+        expect(@de).not_to be_nil
       end
 
       context 'author' do
@@ -30,21 +30,21 @@ describe ADLParser do
         end
 
         it 'exists' do
-          @author.should_not be_nil
+          expect(@author).not_to be_nil
         end
 
         it 'name is Harry Potter' do
-          @author['name'].should == 'Harry Potter'
+          expect(@author['name']).to eq('Harry Potter')
         end
 
         it 'email is harry@something.somewhere.co.uk' do
-          @author['email'].should == 'harry@something.somewhere.co.uk'
+          expect(@author['email']).to eq('harry@something.somewhere.co.uk')
         end
       end
 
       context 'accreditation' do
         it 'not exist' do
-          @de.accreditation.should be_nil
+          expect(@de.accreditation).to be_nil
         end
       end
 
@@ -54,11 +54,11 @@ describe ADLParser do
         end
 
         it 'review 1 is Ron Weasley' do
-          @other_details['review 1'].should == 'Ron Weasley'
+          expect(@other_details['review 1']).to eq('Ron Weasley')
         end
 
         it 'review 2 is Rubeus Hagrid' do
-          @other_details['review 2'].should == 'Rubeus Hagrid'
+          expect(@other_details['review 2']).to eq('Rubeus Hagrid')
         end
       end
     end

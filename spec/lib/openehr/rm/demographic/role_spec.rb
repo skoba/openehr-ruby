@@ -23,11 +23,11 @@ describe Role do
   end
 
   it 'should be an instance of Role' do
-    @role.should be_an_instance_of Role
+    expect(@role).to be_an_instance_of Role
   end
 
   it 'performer should assigned properly' do
-    @role.performer.type.should == 'ROLE'
+    expect(@role.performer.type).to eq('ROLE')
   end
 
   it 'should raise ArgumentError with nil performer' do
@@ -37,7 +37,7 @@ describe Role do
   end
 
   it 'capabilities should be assigned properly' do
-    @role.capabilities.size.should be_equal 2
+    expect(@role.capabilities.size).to be_equal 2
   end
 
   it 'should raise ArgumentError with empty capabilities' do
@@ -53,6 +53,6 @@ describe Role do
   end
 
   it 'time_validity should be properly assigned' do
-    @role.time_validity.lower.value.should == '2009-11-21'
+    expect(@role.time_validity.lower.value).to eq('2009-11-21')
   end
 end

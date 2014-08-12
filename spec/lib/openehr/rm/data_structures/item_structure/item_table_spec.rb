@@ -28,79 +28,79 @@ describe ItemTable do
   end
 
   it 'should be an instance of ItemTable' do
-    @item_table.should be_an_instance_of ItemTable
+    expect(@item_table).to be_an_instance_of ItemTable
   end
 
   it 's row count should be 2' do
-    @item_table.row_count.should be_equal 2
+    expect(@item_table.row_count).to be_equal 2
   end
 
   it 's row_count should be 0 when rows are nil' do
     @item_table.rows = nil
-    @item_table.row_count.should be_equal 0
+    expect(@item_table.row_count).to be_equal 0
   end
 
   it 's column_count should be 3' do
-    @item_table.column_count.should be_equal 3
+    expect(@item_table.column_count).to be_equal 3
   end
 
   it 'column_count should be 0 when @rows == nil' do
     @item_table.rows = nil
-    @item_table.column_count.should be_equal 0
+    expect(@item_table.column_count).to be_equal 0
   end
 
   it 's row_names should be cluster cluster' do
-    @item_table.row_names.should == %w{cluster cluster}.collect{|n|
-      DvText.new(:value => n)}
+    expect(@item_table.row_names).to eq(%w{cluster cluster}.collect{|n|
+      DvText.new(:value => n)})
   end
 
   it 's row_names should be empty when items are nil' do
     @item_table.rows = nil
-    @item_table.row_names.should == []
+    expect(@item_table.row_names).to eq([])
   end
 
   it 's column_names should one two three' do
-    @item_table.column_names.should == %w{one two three}.collect{|s|
-      DvText.new(:value => s)}
+    expect(@item_table.column_names).to eq(%w{one two three}.collect{|s|
+      DvText.new(:value => s)})
   end
 
   it 's column_names should empty when items aer nil' do
     @item_table.rows = nil
-    @item_table.column_names.should == []
+    expect(@item_table.column_names).to eq([])
   end
 
   it 's ith_row(integer) should be ith row' do
-    @item_table.ith_row(2).items[1].name.value.should == 'five'
+    expect(@item_table.ith_row(2).items[1].name.value).to eq('five')
   end
 
   it 'should be invalid index under 0' do
-    lambda {@item_table.ith_row(0) }.should raise_error(ArgumentError)
+    expect {@item_table.ith_row(0) }.to raise_error(ArgumentError)
   end
 
   it 'should be true because it has_row_with_name cluster' do
-    @item_table.has_row_with_name?('one').should be_true
+    expect(@item_table.has_row_with_name?('one')).to be_truthy
   end
 
   it 'should be true because it does not have_row_with_name key' do
-    @item_table.has_row_with_name?('two').should_not be_true
+    expect(@item_table.has_row_with_name?('two')).not_to be_truthy
   end
 
   it 'should raise argument error key is nil' do
-    lambda {@item_table.has_row_with_name?(nil)
-      }.should raise_error(ArgumentError)
+    expect {@item_table.has_row_with_name?(nil)
+      }.to raise_error(ArgumentError)
   end
 
   it 'should raise argument error key is empty' do
-    lambda {@item_table.has_row_with_name?('')
-      }.should raise_error(ArgumentError)
+    expect {@item_table.has_row_with_name?('')
+      }.to raise_error(ArgumentError)
   end
 
   it 'should be true because it has_column_with_name one' do
-    @item_table.has_column_with_name?('one').should be_true
+    expect(@item_table.has_column_with_name?('one')).to be_truthy
   end
 
   it 'should be false it has_column with name ten' do
-    @item_table.has_column_with_name?('ten').should be_false
+    expect(@item_table.has_column_with_name?('ten')).to be_falsey
   end
 
   it 'second row should be named_row four' do
@@ -108,28 +108,28 @@ describe ItemTable do
   end
 
   it 'should be true if row has key' do
-    @item_table.has_row_with_key?(Set['one','two']).should be_true
+    expect(@item_table.has_row_with_key?(Set['one','two'])).to be_truthy
   end
 
   it 'should not be true if row has not key' do
-    @item_table.has_row_with_key?(Set['two','five']).should be_false
+    expect(@item_table.has_row_with_key?(Set['two','five'])).to be_falsey
   end
 
   it 'should be a first row that has one' do
-    @item_table.row_with_key(Set['one', 'two']).items[0].name.value.should =='one'
+    expect(@item_table.row_with_key(Set['one', 'two']).items[0].name.value).to eq('one')
   end
 
   it 'should raise argument error if row has no key' do
-    lambda {
-      @item_table.row_with_key(Set['two','five'])}.should raise_error(ArgumentError)
+    expect {
+      @item_table.row_with_key(Set['two','five'])}.to raise_error(ArgumentError)
   end
 
   it 'should be element at cell ij' do 
-    @item_table.element_at_cell_ij(2,2).name.value.should == 'five'
+    expect(@item_table.element_at_cell_ij(2,2).name.value).to eq('five')
   end
 
   it 'should not be element at cell with wrong ij' do
-    @item_table.element_at_cell_ij(2,3).name.value.should_not == 'five'
+    expect(@item_table.element_at_cell_ij(2,3).name.value).not_to eq('five')
   end
 
   it 'should be two element at named cell by row column' do
@@ -138,10 +138,10 @@ describe ItemTable do
 
   it 'should return nil when rows are nil' do
     @item_table.rows = nil
-    @item_table.row_count.should be_equal 0
+    expect(@item_table.row_count).to be_equal 0
   end
 
   it 'should be first row as hierachy' do
-    @item_table.as_hierarchy.name.value.should == 'cluster'
+    expect(@item_table.as_hierarchy.name.value).to eq('cluster')
   end
 end

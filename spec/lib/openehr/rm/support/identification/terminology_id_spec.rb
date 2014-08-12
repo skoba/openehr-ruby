@@ -7,24 +7,24 @@ describe TerminologyID do
   end
 
   it 'should be an instance of TerminologyID' do
-    @terminology_id.should be_an_instance_of TerminologyID
+    expect(@terminology_id).to be_an_instance_of TerminologyID
   end
 
   it 's name should be ICD10' do
-    @terminology_id.name.should == 'ICD10'
+    expect(@terminology_id.name).to eq('ICD10')
   end
 
   it 's version_id should be 2003' do
-    @terminology_id.version_id.should == '2003'
+    expect(@terminology_id.version_id).to eq('2003')
   end
 
   it 's value should be ICD10(2003)' do
-    @terminology_id.value.should == 'ICD10(2003)'
+    expect(@terminology_id.value).to eq('ICD10(2003)')
   end
 
   it 'should only name when version_id is nil' do
     @terminology_id.version_id = ''
-    @terminology_id.value.should == 'ICD10'
+    expect(@terminology_id.value).to eq('ICD10')
   end
 
   it 'should has another constructor' do

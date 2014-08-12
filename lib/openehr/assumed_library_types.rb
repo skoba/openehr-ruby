@@ -247,7 +247,6 @@ module OpenEHR
         month_unknown? or day_unknown?
       end
       
-      protected
       def leapyear?(year)
         case
         when (year % 400) == 0 then true

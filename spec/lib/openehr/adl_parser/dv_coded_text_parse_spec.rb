@@ -13,15 +13,15 @@ describe ADLParser do
     end
 
     it 'is an instance of CCodePhrase' do
-      @c_code_phrase.should be_an_instance_of CCodePhrase
+      expect(@c_code_phrase).to be_an_instance_of CCodePhrase
     end
 
     it 'terminology is openehr' do
-      @c_code_phrase.terminology_id.value.should == 'openehr'
+      expect(@c_code_phrase.terminology_id.value).to eq('openehr')
     end
 
     it 'code list is 431' do
-      @c_code_phrase.code_list.should == ['431']
+      expect(@c_code_phrase.code_list).to eq(['431'])
     end
   end
 end

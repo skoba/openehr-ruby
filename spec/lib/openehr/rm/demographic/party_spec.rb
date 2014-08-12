@@ -42,11 +42,11 @@ describe Party do
   end
 
   it 'should be an instance of Party' do
-    @party.should be_an_instance_of Party
+    expect(@party).to be_an_instance_of Party
   end
 
   it 'uid should be assigned properly' do
-    @party.uid.value.should == '01'
+    expect(@party.uid.value).to eq('01')
   end
 
   it 'should raise ArgumentError with nil uid' do
@@ -56,7 +56,7 @@ describe Party do
   end
 
   it 'identities should be assigned properly' do
-    @party.identities.size.should be_equal 2
+    expect(@party.identities.size).to be_equal 2
   end
 
   it 'should raise ArgumentError when nil identities are assigned' do
@@ -70,11 +70,11 @@ describe Party do
   end
 
   it 'type should be alias of name' do
-    @party.type.value.should == 'PARTY'
+    expect(@party.type.value).to eq('PARTY')
   end
 
   it 'contacts should be assigned properly' do
-    @party.contacts.size.should be_equal 3
+    expect(@party.contacts.size).to be_equal 3
   end
 
   it 'should raise ArgumentError with empty contacts' do
@@ -88,7 +88,7 @@ describe Party do
     @party.relationships.each do |rel|
       target_ids << rel.target.id.value
     end
-    target_ids.should == %w{03 04 05 06}.to_set
+    expect(target_ids).to eq(%w{03 04 05 06}.to_set)
   end
 
   it 'should not raise ArgumentError with nil relationships' do
@@ -113,7 +113,7 @@ describe Party do
   end
 
   it 'reverse relationship should be assigned properly' do
-    @party.reverse_relationships.size.should be_equal 5
+    expect(@party.reverse_relationships.size).to be_equal 5
   end
 
   it 'reverse_relationships should not be empty' do
@@ -125,7 +125,7 @@ describe Party do
   it 'should validate reverse_relationships'
 
   it 'details should be assigned properly' do
-    @party.details.archetype_node_id.should == 'at0005'
+    expect(@party.details.archetype_node_id).to eq('at0005')
   end
 end
 

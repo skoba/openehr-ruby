@@ -10,15 +10,15 @@ describe ADLParser do
     end
 
     it 'is an instance of ArchetypeOntology' do
-      @ontology.should be_an_instance_of ArchetypeOntology
+      expect(@ontology).to be_an_instance_of ArchetypeOntology
     end
 
     it 's primary language is en' do
-      @ontology.primary_language.should == 'en'
+      expect(@ontology.primary_language).to eq('en')
     end
 
     it 's languages available are en' do
-      @ontology.languages_available.should == ['en']
+      expect(@ontology.languages_available).to eq(['en'])
     end
 
     context 'en terms' do
@@ -27,15 +27,15 @@ describe ADLParser do
       end
 
       it 's text is some text' do
-        @archetype_term.items['text'].should == 'some text'
+        expect(@archetype_term.items['text']).to eq('some text')
       end
 
       it 's description is some description' do
-        @archetype_term.items['description'].should == 'some description'
+        expect(@archetype_term.items['description']).to eq('some description')
       end
 
       it 's commen is some comment' do
-        @archetype_term.items['comment'].should == 'some comment'
+        expect(@archetype_term.items['comment']).to eq('some comment')
       end
     end
   end

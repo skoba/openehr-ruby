@@ -8,10 +8,10 @@ describe DataValue do
   end
 
   it 'should be an instance of DataValue' do
-    @data_value.should be_an_instance_of DataValue
+    expect(@data_value).to be_an_instance_of DataValue
   end
 
   it 's value should be stub' do
-    @data_value.value.should == 'ANY'
+    expect(@data_value.value).to eq('ANY')
   end
 end

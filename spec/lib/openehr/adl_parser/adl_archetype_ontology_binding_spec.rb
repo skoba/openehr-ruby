@@ -10,14 +10,14 @@ describe ADLParser do
     end
 
     it 'is an instance of ArchetypeOntology' do
-      @ontology.should be_an_instance_of ArchetypeOntology
+      expect(@ontology).to be_an_instance_of ArchetypeOntology
     end
 
     it 's terminolgies available are SNOMED-CT' do
-      @ontology.terminologies_available.should == ['SNOMED-CT']
+      expect(@ontology.terminologies_available).to eq(['SNOMED-CT'])
     end
     it 'has SNOMED-CT coding' do
-      @ontology.should have_terminology 'SNOMED-CT'
+      expect(@ontology).to have_terminology 'SNOMED-CT'
     end
 
     context 'term definitions, language en, code at0000' do
@@ -27,15 +27,15 @@ describe ADLParser do
       end
 
       it 's code is at0000' do
-        @term_def.code.should == 'at0000'
+        expect(@term_def.code).to eq('at0000')
       end
 
       it 's item text is test' do
-        @term_def.items['text'].should == 'test'
+        expect(@term_def.items['text']).to eq('test')
       end
 
       it 's item description is test' do
-        @term_def.items['description'].should == 'test'
+        expect(@term_def.items['description']).to eq('test')
       end
     end
 
@@ -46,15 +46,15 @@ describe ADLParser do
       end
 
       it 's code is at0001' do
-        @const_def.code.should == 'ac0001'
+        expect(@const_def.code).to eq('ac0001')
       end
 
       it 's items text is test constraint' do
-        @const_def.items['text'].should == 'test constraint' 
+        expect(@const_def.items['text']).to eq('test constraint') 
       end
 
       it 's items description is *' do
-        @const_def.items['description'].should == '*'
+        expect(@const_def.items['description']).to eq('*')
       end
     end
 
@@ -64,11 +64,11 @@ describe ADLParser do
       end
 
       it 'key is SNOMED-CT' do
-        @term_bindings.keys.should == ['SNOMED-CT']
+        expect(@term_bindings.keys).to eq(['SNOMED-CT'])
       end
 
       it 's code is at0002' do
-        @term_bindings['SNOMED-CT'].keys.should == ['at0002']
+        expect(@term_bindings['SNOMED-CT'].keys).to eq(['at0002'])
       end
 
       context 'SNOMED-CT terminology, code is at0002' do
@@ -78,20 +78,21 @@ describe ADLParser do
         end
 
         it 'terminology id is SNOMED-CT' do
-          @term[0].terminology_id.value.should == 'SNOMED-CT'
+          expect(@term[0].terminology_id.value).to eq('SNOMED-CT')
         end
 
         it 'code_string is 123456' do
-          @term[0].code_string.should == '123456'
+          expect(@term[0].code_string).to eq('123456')
         end
       end
     end
 
     context 'constraint bindings' do
       it 'terminology SNOMED-CT, constraint code is ac0001' do
-        @ontology.constraint_binding(:terminology => 'SNOMED-CT',
-                                     :code => 'ac0001').value.should ==
+        expect(@ontology.constraint_binding(:terminology => 'SNOMED-CT',
+                                     :code => 'ac0001').value).to eq(
           'http://openEHR.org/testconstraintbinding'
+        )
       end
     end
   end

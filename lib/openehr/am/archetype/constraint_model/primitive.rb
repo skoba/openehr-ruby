@@ -243,11 +243,11 @@ module OpenEHR
               @millisecond_validity = millisecond_validity
             end
 
-            protected
             def validity_is_range?
               return !@range.nil?
             end
 
+            protected
             def valid_pattern?(pattern)
               if /^([Hh?X]{2})(:([Mm?X]{2})(:([Ss?X]{2}))?)?$/ =~ pattern
                 true

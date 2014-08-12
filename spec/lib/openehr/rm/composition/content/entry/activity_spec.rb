@@ -20,42 +20,42 @@ describe Activity do
   end
 
   it 'should be an instance of Activity' do
-    @activity.should be_an_instance_of Activity
+    expect(@activity).to be_an_instance_of Activity
   end
 
   it 'description should be assigned properly' do
-    @activity.description.archetype_node_id.should == 'at0002'
+    expect(@activity.description.archetype_node_id).to eq('at0002')
   end
 
   it 'should raise ArgumentError with nil description' do
-    lambda {
+    expect {
       @activity.description = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'timing should be assigned properly' do
-    @activity.timing.value.should == '2009-11-18T19:35:11'
+    expect(@activity.timing.value).to eq('2009-11-18T19:35:11')
   end
 
   it 'should raise ArgumentError with nil timing' do
-    lambda {
+    expect {
       @activity.timing = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'action_archetype_id should be assigned properly' do
-    @activity.action_archetype_id.should == '/at.+/'
+    expect(@activity.action_archetype_id).to eq('/at.+/')
   end
 
   it 'should raise ArgumentError with nil action_archetype_id' do
-    lambda {
+    expect {
       @activity.action_archetype_id = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty action_archetype_id' do
-    lambda {
+    expect {
       @activity.action_archetype_id = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

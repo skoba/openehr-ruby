@@ -10,7 +10,7 @@ describe ADLParser do
     end
 
     it 'is a instance of Archetype' do
-      @archetype.should be_an_instance_of Archetype
+      expect(@archetype).to be_an_instance_of Archetype
     end
 
     context 'interval_attr1 node' do
@@ -20,11 +20,11 @@ describe ADLParser do
 
      
       it 's path is /iterval_attr[at0001]' do
-        @node.path.should == '/interval_attr[at0001]'
+        expect(@node.path).to eq('/interval_attr[at0001]')
       end
 
       it 's rm type dis INTERVAL<QUANTITY>' do
-        @node.rm_type_name.should == 'INTERVAL<QUANTITY>'
+        expect(@node.rm_type_name).to eq('INTERVAL<QUANTITY>')
       end
 
       context 'attributes' do
@@ -38,7 +38,7 @@ describe ADLParser do
           end
 
           it 'path is /interval_attr[at0001]/lower' do
-            @attribute.path.should == '/interval_attr[at0001]/lower'
+            expect(@attribute.path).to eq('/interval_attr[at0001]/lower')
           end
 
           context 'lower node' do
@@ -47,7 +47,7 @@ describe ADLParser do
             end
 
             it 'rm type name is QUANTITY' do
-              @lower.rm_type_name.should == 'QUANTITY'
+              expect(@lower.rm_type_name).to eq('QUANTITY')
             end
 
             context 'lower attributes' do
@@ -61,15 +61,15 @@ describe ADLParser do
                 end
 
                 it 's path is /interval_attr[at0001]/lower/property' do
-                  @property.path.should == '/interval_attr[at0001]/lower/property'
+                  expect(@property.path).to eq('/interval_attr[at0001]/lower/property')
                 end
 
                 it 's rm attribute name is property' do
-                  @property.rm_attribute_name.should == 'property'
+                  expect(@property.rm_attribute_name).to eq('property')
                 end
 
                 it 'is temprature' do
-                  @property.children[0].list.should == ['temperature']
+                  expect(@property.children[0].list).to eq(['temperature'])
                 end
               end
 
@@ -79,11 +79,11 @@ describe ADLParser do
                 end
 
                 it 's rm_attribute_name is unit' do
-                  @unit.rm_attribute_name.should == 'unit'
+                  expect(@unit.rm_attribute_name).to eq('unit')
                 end
 
                 it 'matches C' do
-                  @unit.children[0].list.should == ['C']
+                  expect(@unit.children[0].list).to eq(['C'])
                 end
               end
 
@@ -93,19 +93,19 @@ describe ADLParser do
                 end
 
                 it 's rm_attribute_name is magnitude' do
-                  @magnitude.rm_attribute_name.should == 'magnitude'
+                  expect(@magnitude.rm_attribute_name).to eq('magnitude')
                 end
 
                 it 's lower is 37.0' do
-                  @magnitude.children[0].range.lower.should == 37.0
+                  expect(@magnitude.children[0].range.lower).to eq(37.0)
                 end
 
                 it 'is lower included' do
-                  @magnitude.children[0].range.should be_lower_included
+                  expect(@magnitude.children[0].range).to be_lower_included
                 end
 
                 it 'is upper unbounded' do
-                  @magnitude.children[0].range.should be_upper_unbounded
+                  expect(@magnitude.children[0].range).to be_upper_unbounded
                 end
               end
             end
@@ -118,7 +118,7 @@ describe ADLParser do
           end
           
           it 'path is /interval_attr[at0001]/lower' do
-            @attribute.path.should == '/interval_attr[at0001]/upper'
+            expect(@attribute.path).to eq('/interval_attr[at0001]/upper')
           end
 
           context 'upper node' do
@@ -127,7 +127,7 @@ describe ADLParser do
             end
 
             it 'rm type name is QUANTITY' do
-              @upper.rm_type_name.should == 'QUANTITY'
+              expect(@upper.rm_type_name).to eq('QUANTITY')
             end
 
             context 'upper attributes' do
@@ -141,15 +141,15 @@ describe ADLParser do
                 end
 
                 it 's path is /interval_attr[at0001]/upper/property' do
-                  @property.path.should == '/interval_attr[at0001]/upper/property'
+                  expect(@property.path).to eq('/interval_attr[at0001]/upper/property')
                 end
 
                 it 's rm attribute name is property' do
-                  @property.rm_attribute_name.should == 'property'
+                  expect(@property.rm_attribute_name).to eq('property')
                 end
 
                 it 'matches [temperature]' do
-                  @property.children[0].list.should == ['temperature']
+                  expect(@property.children[0].list).to eq(['temperature'])
                 end
               end
 
@@ -159,11 +159,11 @@ describe ADLParser do
                 end
 
                 it 's rm_attribute_name is unit' do
-                  @unit.rm_attribute_name.should == 'unit'
+                  expect(@unit.rm_attribute_name).to eq('unit')
                 end
 
                 it 's matches C' do
-                  @unit.children[0].list.should == ['C']
+                  expect(@unit.children[0].list).to eq(['C'])
                 end
               end
 
@@ -173,19 +173,19 @@ describe ADLParser do
                 end
 
                 it 's rm_attribute_name is magnitude' do
-                  @magnitude.rm_attribute_name.should == 'magnitude'
+                  expect(@magnitude.rm_attribute_name).to eq('magnitude')
                 end
 
                 it 's magnitude lower is 39.0' do
-                  @magnitude.children[0].range.lower.should == 39.0
+                  expect(@magnitude.children[0].range.lower).to eq(39.0)
                 end
 
                 it 's magnitude lower included' do
-                  @magnitude.children[0].range.should be_lower_included
+                  expect(@magnitude.children[0].range).to be_lower_included
                 end
 
                 it 's upper unbounded' do
-                  @magnitude.children[0].range.should be_upper_unbounded
+                  expect(@magnitude.children[0].range).to be_upper_unbounded
                 end
               end
             end
@@ -197,16 +197,16 @@ describe ADLParser do
           end
 
           it 's path is /interval_attr[at0001]/lower_included' do
-            @attribute.path.should == '/interval_attr[at0001]/lower_included'
+            expect(@attribute.path).to eq('/interval_attr[at0001]/lower_included')
           end
 
           context 'lower_included node' do
             before(:all) do
-              @lower_included = @attribute.children[0]
+              @lower_included = @attribute.children[0].item
             end
 
             it 'matches true valid' do
-              @lower_included.should be_true_valid
+              expect(@lower_included).to be_true_valid
             end
           end
         end
@@ -217,16 +217,16 @@ describe ADLParser do
           end
 
           it 's path is /interval_attr[at0001]/upper_included' do
-            @attribute.path.should == '/interval_attr[at0001]/upper_included'
+            expect(@attribute.path).to eq('/interval_attr[at0001]/upper_included')
           end
 
           context 'upper_include node' do
             before(:all) do
-              @upper_included = @attribute.children[0]
+              @upper_included = @attribute.children[0].item
             end
 
             it 'matches true valid' do
-              @upper_included.should be_true_valid
+              expect(@upper_included).to be_true_valid
             end
           end
         end
@@ -239,19 +239,19 @@ describe ADLParser do
       end
 
       it 'is an instance of ArchetypeInternalRef' do
-        @node.should be_an_instance_of ArchetypeInternalRef
+        expect(@node).to be_an_instance_of ArchetypeInternalRef
       end
 
       it 's rm type name is INTERVAL<QUANTITY>' do
-        @node.rm_type_name.should == 'INTERVAL<QUANTITY>'
+        expect(@node.rm_type_name).to eq('INTERVAL<QUANTITY>')
       end
 
       it 's target path is /interval_attr[at0001]' do
-        @node.target_path.should == '/interval_attr[at0001]'
+        expect(@node.target_path).to eq('/interval_attr[at0001]')
       end
 
       it 's path is /interval_attr2' do
-        @node.path.should == '/interval_attr2'
+        expect(@node.path).to eq('/interval_attr2')
       end
     end
   end

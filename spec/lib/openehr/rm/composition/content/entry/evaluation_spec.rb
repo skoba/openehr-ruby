@@ -22,16 +22,16 @@ describe Evaluation do
   end
 
   it 'should be an instance of Evaluation' do
-    @evaluation.should be_an_instance_of Evaluation
+    expect(@evaluation).to be_an_instance_of Evaluation
   end
 
   it 'data should be properly assigned' do
-    @evaluation.data.archetype_node_id.should == 'at0002'
+    expect(@evaluation.data.archetype_node_id).to eq('at0002')
   end
 
   it 'should raise ArgumentError when nil assigned to data' do
-    lambda {
+    expect {
       @evaluation.data = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end

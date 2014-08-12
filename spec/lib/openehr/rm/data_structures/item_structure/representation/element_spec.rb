@@ -11,11 +11,11 @@ describe Element do
   end
 
   it 'should be an instance of Element' do
-    @element.should be_an_instance_of Element
+    expect(@element).to be_an_instance_of Element
   end
 
   it 'value should be assigned as test' do
-    @element.value.value.should == 'test'
+    expect(@element.value.value).to eq('test')
   end
 
   it 'nullflavor should be assigned'

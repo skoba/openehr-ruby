@@ -15,22 +15,22 @@ describe Participation do
   end
 
   it 'should be an instance of Participation' do
-    @participation.should be_an_instance_of Participation
+    expect(@participation).to be_an_instance_of Participation
   end
 
   it 'should assign performer properly' do
-    @participation.performer.name.should == 'GEHIRN'
+    expect(@participation.performer.name).to eq('GEHIRN')
   end
 
   it 'should assign function properly' do
-    @participation.function.value.should == 'committer'
+    expect(@participation.function.value).to eq('committer')
   end
 
   it 'should assign mode properly' do
-    @participation.mode.value.should == 'present'
+    expect(@participation.mode.value).to eq('present')
   end
 
   it 'should assign time properly' do
-    @participation.time.lower.value.should == '2009-10-03T20:33:05'
+    expect(@participation.time.lower.value).to eq('2009-10-03T20:33:05')
   end
 end

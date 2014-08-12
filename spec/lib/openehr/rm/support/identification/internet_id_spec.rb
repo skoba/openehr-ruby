@@ -7,6 +7,6 @@ describe InternetID do
   end
 
   it 'should be an instance of IsoOID' do
-    @internet_id.should be_an_instance_of InternetID
+    expect(@internet_id).to be_an_instance_of InternetID
   end
 end

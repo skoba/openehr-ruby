@@ -17,11 +17,11 @@ describe StateMachine do
   end
 
   it 'is an instance of StateMachine' do
-    @state_machine.should be_an_instance_of StateMachine
+    expect(@state_machine).to be_an_instance_of StateMachine
   end
 
   it 'states size is 3' do
-    @state_machine.states.size.should be 3
+    expect(@state_machine.states.size).to be 3
   end
 
   it 'raise error if states are nil' do

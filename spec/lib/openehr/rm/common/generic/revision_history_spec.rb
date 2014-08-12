@@ -16,15 +16,15 @@ describe RevisionHistory do
   end
 
   it 'should be an instance of RevisionHistory' do
-    @revision_history.should be_an_instance_of RevisionHistory
+    expect(@revision_history).to be_an_instance_of RevisionHistory
   end
 
   it 'items size should return size 128' do
-    @revision_history.items.size.should be_equal 128
+    expect(@revision_history.items.size).to be_equal 128
   end
 
   it 'should return the most recent version string' do
-    @revision_history.most_recent_version.should == 'ABCD::EFGH::1'
+    expect(@revision_history.most_recent_version).to eq('ABCD::EFGH::1')
   end
 
   it 'should return the most recent commited version time string' do

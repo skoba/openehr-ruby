@@ -11,14 +11,14 @@ describe ADLParser do
     end
 
     it 'description is not null' do
-      @description.should_not be_nil
+      expect(@description).not_to be_nil
     end
 
     it 'lifecycle state is AuthorDraft' do
-      @description.lifecycle_state.should == 'AuthorDraft'
+      expect(@description.lifecycle_state).to eq('AuthorDraft')
     end
     it 'resource package uri is www.aihw.org.au/data_sets/diabetic_archetypes.html' do
-      @description.resource_package_uri.should == 'www.aihw.org.au/data_sets/diabetic_archetypes.html'
+      expect(@description.resource_package_uri).to eq('www.aihw.org.au/data_sets/diabetic_archetypes.html')
     end
 
     context 'original author' do
@@ -27,19 +27,19 @@ describe ADLParser do
       end
 
       it 'name is Sam Heard' do
-        @original_author["name"].should == 'Sam Heard'
+        expect(@original_author["name"]).to eq('Sam Heard')
       end
 
       it 'organisation is Ocean Informatics' do
-        @original_author["organisation"].should == 'Ocean Informatics'
+        expect(@original_author["organisation"]).to eq('Ocean Informatics')
       end
 
       it 'date is 23/04/2006' do
-        @original_author["date"].should == '23/04/2006'
+        expect(@original_author["date"]).to eq('23/04/2006')
       end
 
       it 'email is sam.heard@oceaninformatics.biz' do
-        @original_author["email"].should == 'sam.heard@oceaninformatics.biz'
+        expect(@original_author["email"]).to eq('sam.heard@oceaninformatics.biz')
       end
     end
 
@@ -49,11 +49,11 @@ describe ADLParser do
       end
 
       it 'details is not nil' do
-        @details.should_not be_nil
+        expect(@details).not_to be_nil
       end
 
       it 'details size is 1' do
-        @details.size.should be 1
+        expect(@details.size).to be 1
       end
 
       context 'item' do
@@ -62,43 +62,43 @@ describe ADLParser do
         end
 
         it 'is not nil' do
-          @item.should_not be_nil
+          expect(@item).not_to be_nil
         end
 
         it 'language is en' do
-          @item.language.code_string.should == 'en'
+          expect(@item.language.code_string).to eq('en')
         end
 
         it 'terminolopgy id is ISO_639-1' do
-          @item.language.terminology_id.value.should == 'ISO_639-1'
+          expect(@item.language.terminology_id.value).to eq('ISO_639-1')
         end
 
         it 'purpose is For recording...' do
-          @item.purpose.should == "For recording a problem, condition " +
-            "or issue that has ongoing significance to the person's health."
+          expect(@item.purpose).to eq("For recording a problem, condition " +
+            "or issue that has ongoing significance to the person's health.")
         end
 
         it 'use is Used for recording any....' do
-          @item.use.should == "Used for recording any problem, " + 
+          expect(@item.use).to eq("Used for recording any problem, " + 
             "present or past - so is used for recording past " +
             "history as well as current problems. Used with changed " +
             "'Subject of care' for recording problems of relatives " +
-            "and so for family history."
+            "and so for family history.")
         end
 
         it 'misuse is Use specialisations for ...' do
-          @item.misuse.should == "Use specialisations for medical " +
+          expect(@item.misuse).to eq("Use specialisations for medical " +
             "diagnoses, 'openEHR-EHR-EVALUATION.problem-diagnosis' and " +
             "histological diagnoses 'openEHR-EHR-EVALUATION.problem-" +
-            "diagnosis-histological'"
+            "diagnosis-histological'")
         end
 
         it 'copyright is copyright (c) 2004 The openEHR Foundation' do
-          @item.copyright.should == 'copyright (c) 2004 The openEHR Foundation'
+          expect(@item.copyright).to eq('copyright (c) 2004 The openEHR Foundation')
         end
 
         it 'keywords are issue and condition' do
-          @item.keywords.should == ['issue', 'condition']
+          expect(@item.keywords).to eq(['issue', 'condition'])
         end
 
         context 'original resource uri' do
@@ -107,12 +107,13 @@ describe ADLParser do
           end
 
           it 'ligne guide is http://guidelines.are.us/wherever/fr' do
-            @original_resource_uri['ligne guide'].should ==
+            expect(@original_resource_uri['ligne guide']).to eq(
               'http://guidelines.are.us/wherever/fr'
+            )
           end
 
           it 'medline is http://some%20medline%20ref' do
-            @original_resource_uri['medline'].should == 'http://some%20medline%20ref'
+            expect(@original_resource_uri['medline']).to eq('http://some%20medline%20ref')
           end
         end
       end
@@ -124,15 +125,15 @@ describe ADLParser do
       end
 
       it 'other contrubutor(s) are not nil' do
-        @other_contributors.should_not be_nil
+        expect(@other_contributors).not_to be_nil
       end
 
       it 'other contributor(s) is one' do
-        @other_contributors.size.should be 1
+        expect(@other_contributors.size).to be 1
       end
 
       it 'other_contributor(s) is Ian McNicoll, MD' do
-        @other_contributors[0].should == 'Ian McNicoll, MD'
+        expect(@other_contributors[0]).to eq('Ian McNicoll, MD')
       end
     end
 
@@ -142,11 +143,11 @@ describe ADLParser do
       end
 
       it 'other 1 is details 1' do
-        @other_details['other 1'].should == 'details 1'
+        expect(@other_details['other 1']).to eq('details 1')
       end
 
       it 'other 2 is detals 2' do
-        @other_details['other 2'].should == 'details 2'
+        expect(@other_details['other 2']).to eq('details 2')
       end
     end
   end

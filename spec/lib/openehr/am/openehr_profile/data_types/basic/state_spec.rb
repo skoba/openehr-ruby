@@ -9,11 +9,11 @@ describe State do
   end
 
   it 'is an instance of State' do
-    @state.should be_an_instance_of State
+    expect(@state).to be_an_instance_of State
   end
 
   it 'name is PROPOSED' do
-    @state.name.should == 'PROPOSED'
+    expect(@state.name).to eq('PROPOSED')
   end
 
   it 'raise error name is empty' do

@@ -15,15 +15,15 @@ describe CDate do
   end
 
   it 'should be an instance of CDate' do
-    @c_date.should be_an_instance_of CDate
+    expect(@c_date).to be_an_instance_of CDate
   end
 
   it 'range should be assigned properly' do
-    @c_date.range.upper.month.should be_equal 12
+    expect(@c_date.range.upper.month).to be_equal 12
   end
 
   it 'validity_is_range should be true if range is assigned' do
-    @c_date.should be_validity_is_range
+    expect(@c_date).to be_validity_is_range
   end
 
   it 'raise ArgumentError unless range xor pattern' do
@@ -36,7 +36,7 @@ describe CDate do
     end
 
     it 'pattern should be yyyy-mm-dd' do
-      @c_date.pattern.should == 'yyyy-mm-dd'
+      expect(@c_date.pattern).to eq('yyyy-mm-dd')
     end
   end
 
@@ -46,7 +46,7 @@ describe CDate do
     end
 
     it 'head of list is 2011-11-28' do
-      @c_date.list[0].value.should == '2011-11-28'
+      expect(@c_date.list[0].value).to eq('2011-11-28')
     end
   end
 end

@@ -20,7 +20,7 @@ describe ADLParser do
       end
 
       it 'is an instance of CDvOrdinal' do
-        @at.should be_an_instance_of CDvOrdinal
+        expect(@at).to be_an_instance_of CDvOrdinal
       end
 
       context '1st item' do
@@ -29,19 +29,19 @@ describe ADLParser do
         end
 
         it 'value is 0' do
-          @item.value.should be 0
+          expect(@item.value).to be 0
         end
 
         it 'symbol value is local::at0003.0]' do
-          @item.symbol.value.should == '[local::at0003.0]'
+          expect(@item.symbol.value).to eq('[local::at0003.0]')
         end
 
         it 'defining code terminology is local' do
-          @item.symbol.defining_code.terminology_id.value.should == 'local'
+          expect(@item.symbol.defining_code.terminology_id.value).to eq('local')
         end
 
         it 'defining code string is at0003.0' do
-          @item.symbol.defining_code.code_string.should == 'at0003.0'
+          expect(@item.symbol.defining_code.code_string).to eq('at0003.0')
         end
       end
 
@@ -51,11 +51,11 @@ describe ADLParser do
         end
 
         it 'value is 1' do
-          @item.value.should be 1
+          expect(@item.value).to be 1
         end
 
         it 'symbol value is local::at0003.1' do
-          @item.symbol.value.should == '[local::at0003.1]'
+          expect(@item.symbol.value).to eq('[local::at0003.1]')
         end
       end
 
@@ -65,11 +65,11 @@ describe ADLParser do
         end
 
         it 'value is 2' do
-          @item.value.should be 2
+          expect(@item.value).to be 2
         end
 
         it 'symbol value is local::at0003.2' do
-          @item.symbol.value.should == '[local::at0003.2]'
+          expect(@item.symbol.value).to eq('[local::at0003.2]')
         end
       end
 
@@ -79,11 +79,11 @@ describe ADLParser do
         end
 
         it 'value is 3' do
-          @item.value.should be 3
+          expect(@item.value).to be 3
         end
 
         it 'symbol value is local::at0003.3' do
-          @item.symbol.value.should == '[local::at0003.3]'
+          expect(@item.symbol.value).to eq('[local::at0003.3]')
         end
       end
 
@@ -93,11 +93,11 @@ describe ADLParser do
         end
 
         it 'value is 4' do
-          @item.value.should be 4
+          expect(@item.value).to be 4
         end
 
         it 'symbol value is local::at0003.4' do
-          @item.symbol.value.should == '[local::at0003.4]'
+          expect(@item.symbol.value).to eq('[local::at0003.4]')
         end
       end
 
@@ -107,7 +107,7 @@ describe ADLParser do
         end
 
         it 'item is nil' do
-          @item.should be_nil
+          expect(@item).to be_nil
         end
       end
     end
@@ -118,7 +118,7 @@ describe ADLParser do
       end
 
       it 'is an instance of CDvOrdinal' do
-        @at.should be_an_instance_of CDvOrdinal
+        expect(@at).to be_an_instance_of CDvOrdinal
       end
 
       context '1st item' do
@@ -127,19 +127,19 @@ describe ADLParser do
         end
 
         it 'value is 0' do
-          @item.value.should be 0
+          expect(@item.value).to be 0
         end
 
         it 'symbol value is local::at0003.0]' do
-          @item.symbol.value.should == '[local::at0003.0]'
+          expect(@item.symbol.value).to eq('[local::at0003.0]')
         end
 
         it 'defining code terminology is local' do
-          @item.symbol.defining_code.terminology_id.value.should == 'local'
+          expect(@item.symbol.defining_code.terminology_id.value).to eq('local')
         end
 
         it 'defining code string is at0003.0' do
-          @item.symbol.defining_code.code_string.should == 'at0003.0'
+          expect(@item.symbol.defining_code.code_string).to eq('at0003.0')
         end
       end
 
@@ -149,11 +149,11 @@ describe ADLParser do
         end
 
         it 'value is 1' do
-          @item.value.should be 1
+          expect(@item.value).to be 1
         end
 
         it 'symbol value is local::at0003.1' do
-          @item.symbol.value.should == '[local::at0003.1]'
+          expect(@item.symbol.value).to eq('[local::at0003.1]')
         end
       end
 
@@ -163,11 +163,11 @@ describe ADLParser do
         end
 
         it 'value is 2' do
-          @item.value.should be 2
+          expect(@item.value).to be 2
         end
 
         it 'symbol value is local::at0003.2' do
-          @item.symbol.value.should == '[local::at0003.2]'
+          expect(@item.symbol.value).to eq('[local::at0003.2]')
         end
       end
 
@@ -177,11 +177,11 @@ describe ADLParser do
         end
 
         it 'value is 3' do
-          @item.value.should be 3
+          expect(@item.value).to be 3
         end
 
         it 'symbol value is local::at0003.3' do
-          @item.symbol.value.should == '[local::at0003.3]'
+          expect(@item.symbol.value).to eq('[local::at0003.3]')
         end
       end
 
@@ -191,11 +191,11 @@ describe ADLParser do
         end
 
         it 'value is 3' do
-          @item.value.should be 4
+          expect(@item.value).to be 4
         end
 
         it 'symbol value is local::at0003.4' do
-          @item.symbol.value.should == '[local::at0003.4]'
+          expect(@item.symbol.value).to eq('[local::at0003.4]')
         end
       end
 
@@ -205,16 +205,16 @@ describe ADLParser do
         end
 
         it 'item is nil' do
-          @item.should be_nil
+          expect(@item).to be_nil
         end
       end
 
       it 'has assumed value' do
-        @at.should have_assumed_value
+        expect(@at).to have_assumed_value
       end
 
       it 'assumed_value is 0' do
-        @at.assumed_value.should be 0
+        expect(@at.assumed_value).to be 0
       end
     end
 
@@ -224,7 +224,7 @@ describe ADLParser do
       end
 
       it 'is any allowed' do
-        @at.should be_any_allowed
+        expect(@at).to be_any_allowed
       end
     end
   end

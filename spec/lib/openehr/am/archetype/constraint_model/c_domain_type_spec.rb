@@ -12,7 +12,7 @@ describe CDomainType do
   end
 
   it 'should be an instance of CDomainType' do
-    @c_domain_type.should be_an_instance_of CDomainType
+    expect(@c_domain_type).to be_an_instance_of CDomainType
   end
 
   it 'standard_equivalent should raise NotImplementedError' do

@@ -12,6 +12,6 @@ describe CReferenceObject do
   end
 
   it 'should be an instance of CReferenceObject' do
-    @c_reference_object.should be_an_instance_of CReferenceObject
+    expect(@c_reference_object).to be_an_instance_of CReferenceObject
   end
 end

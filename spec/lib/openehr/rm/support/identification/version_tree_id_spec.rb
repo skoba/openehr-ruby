@@ -7,55 +7,55 @@ describe VersionTreeID do
   end
 
   it 'should be an instance of VersionTreeID' do
-    @version_tree_id.should be_an_instance_of VersionTreeID
+    expect(@version_tree_id).to be_an_instance_of VersionTreeID
   end
 
   it 'value should be 1.2.3' do
-    @version_tree_id.value.should == '1.2.3'
+    expect(@version_tree_id.value).to eq('1.2.3')
   end
 
   it 'trunk_version should 1' do
-    @version_tree_id.trunk_version.should == '1'
+    expect(@version_tree_id.trunk_version).to eq('1')
   end
 
   it 'branch_number should 2' do
-    @version_tree_id.branch_number.should == '2'
+    expect(@version_tree_id.branch_number).to eq('2')
   end
 
   it 'branch_version should 3' do
-    @version_tree_id.branch_version.should == '3'
+    expect(@version_tree_id.branch_version).to eq('3')
   end
 
   it 'is_first? should be true' do
-    @version_tree_id.is_first?.should be_true
+    expect(@version_tree_id.is_first?).to be_truthy
   end
 
   it 'is_branch? should be true' do
-    @version_tree_id.is_branch?.should be_true
+    expect(@version_tree_id.is_branch?).to be_truthy
   end
 
   it 'should raise ArgumentError with nil trunk version' do
-    lambda {
+    expect {
       @version_tree_id.trunk_version = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with 0 trunk version' do
-    lambda {
+    expect {
       @version_tree_id.trunk_version = 0
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with 0 branch number' do
-    lambda {
+    expect {
       @version_tree_id.branch_number = 0
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with 0 branch version' do
-    lambda {
+    expect {
       @version_tree_id.branch_version = 0
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   describe 'partial version tree id' do
@@ -65,15 +65,15 @@ describe VersionTreeID do
       end
 
       it 'value should be 4.5' do
-        @version_tree_id.value.should == '4.5'
+        expect(@version_tree_id.value).to eq('4.5')
       end
 
       it 'should be nil branch version' do
-        @version_tree_id.branch_version.should be_nil
+        expect(@version_tree_id.branch_version).to be_nil
       end
 
       it 'is_first? should not be true' do
-        @version_tree_id.is_first?.should_not be_true
+        expect(@version_tree_id.is_first?).not_to be_truthy
       end
     end
 
@@ -83,21 +83,21 @@ describe VersionTreeID do
       end
 
       it 'value should be 6' do
-        @version_tree_id.value.should == '6'
+        expect(@version_tree_id.value).to eq('6')
       end
 
       it 'should be nil branch number' do
-        @version_tree_id.branch_number.should be_nil
+        expect(@version_tree_id.branch_number).to be_nil
       end
 
       it 'is_branch should not be true' do
-        @version_tree_id.is_branch?.should_not be_true
+        expect(@version_tree_id.is_branch?).not_to be_truthy
       end
 
       it 'should raise ArgumentError if assinged branch version' do
-        lambda {
+        expect {
           @version_tree_id.branch_version = '7'
-        }.should raise_error ArgumentError
+        }.to raise_error ArgumentError
       end
     end
   end

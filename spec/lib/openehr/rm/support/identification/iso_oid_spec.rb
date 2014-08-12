@@ -7,6 +7,6 @@ describe IsoOID do
   end
 
   it 'should be an instance of IsoOID' do
-    @iso_oid.should be_an_instance_of IsoOID
+    expect(@iso_oid).to be_an_instance_of IsoOID
   end
 end

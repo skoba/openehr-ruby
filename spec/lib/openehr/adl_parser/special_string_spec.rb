@@ -10,11 +10,11 @@ describe ADLParser do
     end
 
     it '1st node string is some\"thing' do
-      @attr[0].children[0].list[0].should == 'some\"thing'
+      expect(@attr[0].children[0].list[0]).to eq('some\"thing')
     end
 
     it '2nd node string is any\\thing' do
-      @attr[1].children[0].list[0].should == "any\\thing"
+      expect(@attr[1].children[0].list[0]).to eq("any\\thing")
     end
   end
 end

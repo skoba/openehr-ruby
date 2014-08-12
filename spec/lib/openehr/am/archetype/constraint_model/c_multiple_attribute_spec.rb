@@ -14,10 +14,10 @@ describe CMultipleAttribute do
   end
 
   it 'should be an instance of CMulitipleAttribute' do
-    @c_multiple_attribute.should be_an_instance_of CMultipleAttribute
+    expect(@c_multiple_attribute).to be_an_instance_of CMultipleAttribute
   end
 
   it 'cardinality should be assigned properly' do
-    @c_multiple_attribute.cardinality.should be_ordered
+    expect(@c_multiple_attribute.cardinality).to be_ordered
   end
 end

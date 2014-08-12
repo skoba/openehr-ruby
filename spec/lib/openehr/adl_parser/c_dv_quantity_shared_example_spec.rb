@@ -11,22 +11,22 @@ shared_examples 'c_dv_quantity' do
     let(:c_dv_quantity) {archetype.definition.attributes[0].children[0].attributes[0].children[0].attributes[0].children[0]}
 
     it 'is an instance of CDvQuantity' do
-      c_dv_quantity.should be_an_instance_of CDvQuantity
+      expect(c_dv_quantity).to be_an_instance_of CDvQuantity
     end
 
     context 'property' do
       let (:property) { c_dv_quantity.property}
 
       it 'property should not be nil' do
-        property.should_not be_nil
+        expect(property).not_to be_nil
       end
 
       it 'property terminology id should openehr' do
-        property.terminology_id.name.should == 'openehr'
+        expect(property.terminology_id.name).to eq('openehr')
       end
 
       it 'property code_string is 128' do
-        property.code_string.should == '128'
+        expect(property.code_string).to eq('128')
       end
     end
 
@@ -34,33 +34,33 @@ shared_examples 'c_dv_quantity' do
       let(:list) { c_dv_quantity.list }
 
       it 'size is 2' do
-        list.size.should be 2
+        expect(list.size).to be 2
       end
 
       context 'first item' do
         let(:first) { list[0] }
 
         it 'first is an isntance of CQuantityItem' do
-          first.should be_an_instance_of CQuantityItem
+          expect(first).to be_an_instance_of CQuantityItem
         end
         it 'units is yr' do
-          first.units.should == 'yr'
+          expect(first.units).to eq('yr')
         end
 
         it 'magnitude lower is 0.0' do
-          first.magnitude.lower.should == 0.0
+          expect(first.magnitude.lower).to eq(0.0)
         end
 
         it 'magnitude upper is 200.0' do
-          first.magnitude.upper.should == 200.0
+          expect(first.magnitude.upper).to eq(200.0)
         end
 
         it 'precision upper is 2' do
-          first.precision.upper.should be 2
+          expect(first.precision.upper).to be 2
         end
 
         it 'precision lower is 2, too' do
-          first.precision.lower.should be 2
+          expect(first.precision.lower).to be 2
         end
       end
 
@@ -68,27 +68,27 @@ shared_examples 'c_dv_quantity' do
         let(:second) { list[1] }
 
         it 'is an instance of CQuantityItem' do
-          second.should be_an_instance_of CQuantityItem
+          expect(second).to be_an_instance_of CQuantityItem
         end
 
         it 'unit is mth' do
-          second.units.should == 'mth'
+          expect(second.units).to eq('mth')
         end
 
         it 'magnitude lower is 1.0' do
-          second.magnitude.lower.should == 1.0
+          expect(second.magnitude.lower).to eq(1.0)
         end
 
         it 'magnitude upper is 36.0' do
-          second.magnitude.upper.should == 36.0
+          expect(second.magnitude.upper).to eq(36.0)
         end
 
         it 'precision upper is 2' do
-          second.precision.upper.should == 2
+          expect(second.precision.upper).to eq(2)
         end
 
         it 'precision lower is 2' do
-          second.precision.lower.should == 2
+          expect(second.precision.lower).to eq(2)
         end
       end
 
@@ -96,19 +96,19 @@ shared_examples 'c_dv_quantity' do
         let(:assumed_value) { c_dv_quantity.assumed_value }
 
         it 'is an instance of CQuantityItem' do
-          assumed_value.should be_an_instance_of DvQuantity
+          expect(assumed_value).to be_an_instance_of DvQuantity
         end
 
         it 'units is yr' do
-          assumed_value.units.should == 'yr'
+          expect(assumed_value.units).to eq('yr')
         end
 
         it 'magnitude is 8.0' do
-          assumed_value.magnitude.should == 8.0
+          expect(assumed_value.magnitude).to eq(8.0)
         end
 
         it 'precision is 2' do
-          assumed_value.precision.should be 2
+          expect(assumed_value.precision).to be 2
         end
       end
     end

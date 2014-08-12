@@ -7,23 +7,23 @@ describe UID do
   end
 
   it 'should be an instance of UID' do
-    @uid.should be_an_instance_of UID
+    expect(@uid).to be_an_instance_of UID
   end
 
   it 's value should be 1001' do
-    @uid.value.should == '1001'
+    expect(@uid.value).to eq('1001')
   end
 
   it 'should raise ArgumentError with nil value' do
-    lambda {
+    expect {
       @uid.value = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'should raise ArgumentError with empty value' do
-    lambda {
+    expect {
       @uid.value = ''
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 end
   

@@ -9,6 +9,6 @@ describe ContentItem do
   end
 
   it 'should be an instance of ContentItem' do
-    @content_item.should be_an_instance_of ContentItem
+    expect(@content_item).to be_an_instance_of ContentItem
   end
 end

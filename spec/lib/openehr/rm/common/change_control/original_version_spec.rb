@@ -37,24 +37,24 @@ describe OriginalVersion do
   end
 
   it 'should be an isntance of OriginalVersion' do
-    @original_version.should be_an_instance_of OriginalVersion
+    expect(@original_version).to be_an_instance_of OriginalVersion
   end
 
   it 'attestation size should be 12' do
-    @original_version.attestations.size.should == 12
+    expect(@original_version.attestations.size).to eq(12)
   end
 
   it 'other_version_input_uids size should be 5' do
-    @original_version.other_input_version_uids.size.should == 5
+    expect(@original_version.other_input_version_uids.size).to eq(5)
   end
 
   it 'is_merged? should be true when other_input_version_uids is nil' do
-    @original_version.is_merged?.should be_true
+    expect(@original_version.is_merged?).to be_truthy
   end
 
   it 'is_merged? should not be true when other_input_version_uids is not nil' do
     @original_version.other_input_version_uids = nil
-    @original_version.is_merged?.should be_false
+    expect(@original_version.is_merged?).to be_falsey
   end
 
   it 'should raise ArgumentError when attestations is empty' do

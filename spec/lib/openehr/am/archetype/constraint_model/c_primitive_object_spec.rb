@@ -1,13 +1,8 @@
-require File.dirname(__FILE__) + '/../../../../../spec_helper'
-include OpenEHR::AM::Archetype::ConstraintModel
-include OpenEHR::AM::Archetype::ConstraintModel::Primitive
-include OpenEHR::AssumedLibraryTypes
-
-describe CPrimitiveObject do
+describe OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject do
   before(:each) do
-    interval = Interval.new(:lower => 0, :upper => 1)
-    item = double(CPrimitive, :node_id => 'at0001')
-    @c_primitive_object = CPrimitiveObject.new(:path => 'event/test',
+    interval = OpenEHR::AssumedLibraryTypes::Interval.new(:lower => 0, :upper => 1)
+    item = double(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CPrimitive, :node_id => 'at0001')
+    @c_primitive_object = OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(:path => 'event/test',
                                                :rm_type_name => 'DV_TEXT',
                                                :node_id => 'ac0001',
                                                :occurrences => interval,
@@ -15,19 +10,19 @@ describe CPrimitiveObject do
   end
 
   it 'should be an instance of CPrimitiveObject' do
-    @c_primitive_object.should be_an_instance_of CPrimitiveObject
+    expect(@c_primitive_object).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject
   end
 
   it 'item should be assigned properly' do
-    @c_primitive_object.item.node_id.should == 'at0001'
+    expect(@c_primitive_object.item.node_id).to eq('at0001')
   end
 
   it 'should allowed any' do
-    @c_primitive_object.should_not be_any_allowed
+    expect(@c_primitive_object).not_to be_any_allowed
   end
 
   it 'should not any allowed' do
     @c_primitive_object.item = nil
-    @c_primitive_object.should be_any_allowed
+    expect(@c_primitive_object).to be_any_allowed
   end
 end

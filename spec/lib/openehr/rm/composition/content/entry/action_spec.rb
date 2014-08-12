@@ -30,40 +30,40 @@ describe Action do
   end
 
   it 'should be an instance of Action' do
-    @action.should be_an_instance_of Action
+    expect(@action).to be_an_instance_of Action
   end
 
   it 'time should be assigned properly' do
-    @action.time.value.should == '2009-11-18T20:17:18'
+    expect(@action.time.value).to eq('2009-11-18T20:17:18')
   end
 
   it 'should raise ArgumentError with nil assigned to time' do
-    lambda {
+    expect {
       @action.time = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'description should assigned properly' do
-    @action.description.archetype_node_id.should == 'at0002'
+    expect(@action.description.archetype_node_id).to eq('at0002')
   end
 
   it 'should raise ArgumentError with nil description' do
-    lambda {
+    expect {
       @action.description = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'ism_transition should be assigned properly' do
-    @action.ism_transition.current_state.value.should == 'planned'
+    expect(@action.ism_transition.current_state.value).to eq('planned')
   end
 
   it 'should raise ArgumentError with nil ism_transition' do
-    lambda {
+    expect {
       @action.ism_transition = nil
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'instruction_details should be assigned properly' do
-    @action.instruction_details.activity_id.should == 'at0003'
+    expect(@action.instruction_details.activity_id).to eq('at0003')
   end
 end

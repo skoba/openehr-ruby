@@ -10,12 +10,12 @@ describe DataStructure do
   end
 
   it 'should be an instance of DataStructure' do
-    @data_structure.should be_an_instance_of DataStructure
+    expect(@data_structure).to be_an_instance_of DataStructure
   end
 
   it 'should raise NotImplementedError' do
-    lambda {
+    expect {
       @data_structure.as_hierarchy
-    }.should raise_error NotImplementedError
+    }.to raise_error NotImplementedError
   end
 end

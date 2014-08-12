@@ -17,20 +17,21 @@ describe DvOrdinal do
   end
 
   it 'should be an instance of DvOrdinal' do
-    @dv_ordinal.should be_an_instance_of DvOrdinal
+    expect(@dv_ordinal).to be_an_instance_of DvOrdinal
   end
 
   it 's value should be equal 1' do
-    @dv_ordinal.value.should be_equal 1
+    expect(@dv_ordinal.value).to be_equal 1
   end
 
   it 's symbol should be + code string' do
-    @dv_ordinal.symbol.code_string.should == '+'
+    expect(@dv_ordinal.symbol.code_string).to eq('+')
   end
 
   it 's symbol defining_code should be urine:prot' do
-    @dv_ordinal.symbol.defining_code.terminology_id.value.should ==
+    expect(@dv_ordinal.symbol.defining_code.terminology_id.value).to eq(
       'urine:prot'
+    )
   end
 
   it 'should be strictry comperable to other DvOrdinal' do
@@ -39,11 +40,11 @@ describe DvOrdinal do
     symbol = double(DvCodedText, :defining_code => code_phrase)
     dv_ordinal = DvOrdinal.new(:value => 2,
                                :symbol => symbol)
-    @dv_ordinal.is_strictly_comparable_to?(dv_ordinal).should be_true
+    expect(@dv_ordinal.is_strictly_comparable_to?(dv_ordinal)).to be_truthy
   end
 
   it 's limit.value should be limits' do
-    @dv_ordinal.limits.meaning.value.should == 'limits'
+    expect(@dv_ordinal.limits.meaning.value).to eq('limits')
   end
 
   it 'should raise error when limits.value is not limitted' do
@@ -56,11 +57,11 @@ describe DvOrdinal do
 
   it 'should be comparable' do
     dv_ordinal = double(DvOrdinal, :value => 2)
-    @dv_ordinal.should < dv_ordinal
+    expect(@dv_ordinal).to be < dv_ordinal
   end
 
   it 'is_strictly comparable should be false with other instance' do
-    @dv_ordinal.is_strictly_comparable_to?('dummy').should be_false
+    expect(@dv_ordinal.is_strictly_comparable_to?('dummy')).to be_falsey
   end
 
   it 'is strictly comparable should be false with other terminology' do
@@ -69,6 +70,6 @@ describe DvOrdinal do
     symbol = double(DvCodedText, :defining_code => code_phrase)
     dv_ordinal = DvOrdinal.new(:value => 3,
                                :symbol => symbol)
-    @dv_ordinal.is_strictly_comparable_to?(dv_ordinal).should be_false
+    expect(@dv_ordinal.is_strictly_comparable_to?(dv_ordinal)).to be_falsey
   end
 end

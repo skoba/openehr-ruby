@@ -13,22 +13,22 @@ describe 'CDvQuantity empty' do
   end
 
   it 'is an instance of CDvQuantity' do
-    @c_dv_quantity.should be_an_instance_of CDvQuantity
+    expect(@c_dv_quantity).to be_an_instance_of CDvQuantity
   end
 
   it 'list is nil' do
-    @c_dv_quantity.list.should be_nil
+    expect(@c_dv_quantity.list).to be_nil
   end
 
   it 'property is nil' do
-    @c_dv_quantity.property.should be_nil
+    expect(@c_dv_quantity.property).to be_nil
   end
 
   it 'assumed value is nil' do
-    @c_dv_quantity.assumed_value.should be_nil
+    expect(@c_dv_quantity.assumed_value).to be_nil
   end
 
   it 'is any allowed' do
-    @c_dv_quantity.should be_any_allowed
+    expect(@c_dv_quantity).to be_any_allowed
   end
 end

@@ -9,11 +9,11 @@ describe Base do
     end
 
     it 'creates an instance' do
-      @bp.should be_an_instance_of Base
+      expect(@bp).to be_an_instance_of Base
     end
 
     it 'returns filename' do
-      @bp.filename.should match /openEHR-EHR-SECTION.summary.v1.adl$/
+      expect(@bp.filename).to match /openEHR-EHR-SECTION.summary.v1.adl$/
     end
   end
 end

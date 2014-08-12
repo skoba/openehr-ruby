@@ -13,19 +13,19 @@ describe DvEncapsulated do
   end
 
   it 's value should be test' do
-    @dv_encapsulated.value.should == 'test'
+    expect(@dv_encapsulated.value).to eq('test')
   end
 
   it 's size should be 4' do
-    @dv_encapsulated.size.should be_equal 4
+    expect(@dv_encapsulated.size).to be_equal 4
   end
 
   it 's charset should be utf-8' do
-    @dv_encapsulated.charset.code_string.should == 'UTF-8'
+    expect(@dv_encapsulated.charset.code_string).to eq('UTF-8')
   end
 
   it 's langage should be ja' do
-    @dv_encapsulated.language.code_string.should == 'ja'
+    expect(@dv_encapsulated.language.code_string).to eq('ja')
   end
 
   it 'should raise ArgumentError when language is invalid' do

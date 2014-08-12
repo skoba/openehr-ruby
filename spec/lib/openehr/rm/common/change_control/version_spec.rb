@@ -27,52 +27,52 @@ describe Version do
 
 
   it 'should be an instance of Version' do
-    @version.should be_an_instance_of Version
+    expect(@version).to be_an_instance_of Version
   end
 
   it 'uid value should be ABCD::EFG::1' do
-    @version.uid.value.should == 'ABCD::EFG::2'
+    expect(@version.uid.value).to eq('ABCD::EFG::2')
   end
 
   it 'commit_audit.committer.should be UNKNOWN' do
-    @version.commit_audit.committer.should == 'UNKNOWN'
+    expect(@version.commit_audit.committer).to eq('UNKNOWN')
   end
 
   it 'lifecycle_state should be 532' do
-    @version.lifecycle_state.defining_code.code_string.should == '532'
+    expect(@version.lifecycle_state.defining_code.code_string).to eq('532')
   end
 
   it 'contribution namespece should be local' do
-    @version.contribution.namespace.should == 'local'
+    expect(@version.contribution.namespace).to eq('local')
   end
 
   it 'contribution type should be CONTRIBUTION' do
     contribution = @version.contribution
     contribution.type = 'PARTY'
-    lambda {
+    expect {
       @version.contribution = contribution
-    }.should raise_error ArgumentError
+    }.to raise_error ArgumentError
   end
 
   it 'signature should be 4760271533c2866579dde347ad28dd79e4aad933' do
-    @version.signature.should == '4760271533c2866579dde347ad28dd79e4aad933'
+    expect(@version.signature).to eq('4760271533c2866579dde347ad28dd79e4aad933')
   end
 
   it 'should not be a branch' do
-    @version.is_branch?.should_not be true
+    expect(@version.is_branch?).not_to be true
   end
 
   it 'should be a branch' do
     @version.uid.value = 'ABCD::EFG::1.2.3'
-    @version.is_branch?.should be true
+    expect(@version.is_branch?).to be true
   end
 
   it 'data should be data' do
-    @version.data.should == 'data'
+    expect(@version.data).to eq('data')
   end
 
   it 'owner_id value should be ABCD::EFG::2' do
-    @version.owner_id.value.should == 'ABCD::EFG::2'
+    expect(@version.owner_id.value).to eq('ABCD::EFG::2')
   end
 
   it 'canonical form is not well determined' do

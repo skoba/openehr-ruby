@@ -19,23 +19,23 @@ describe CDvOrdinal do
   end
 
   it 'is an instance of CDvOrdinal' do
-    @c_dv_ordinal.should be_an_instance_of CDvOrdinal
+    expect(@c_dv_ordinal).to be_an_instance_of CDvOrdinal
   end
 
   it 'inherits DvDomain class, path is value/ordinal' do
-    @c_dv_ordinal.path.should == 'value/ordinal'
+    expect(@c_dv_ordinal.path).to eq('value/ordinal')
   end
 
   it '1st of list valie is 1' do
-    @c_dv_ordinal.list[0].value.should == 1
+    expect(@c_dv_ordinal.list[0].value).to eq(1)
   end
 
   it 'symbol code string is AML' do
-    @c_dv_ordinal.list[0].symbol.code_string.should == 'AML'
+    expect(@c_dv_ordinal.list[0].symbol.code_string).to eq('AML')
   end
 
   it 'list is empty then any_allowed is true' do
     @c_dv_ordinal.list = nil
-    @c_dv_ordinal.should be_any_allowed
+    expect(@c_dv_ordinal).to be_any_allowed
   end
 end

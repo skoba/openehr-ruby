@@ -21,37 +21,39 @@ describe ResourceDescription do
   end
 
   it 'should be an instance of ResourceDescription' do
-    @resource_description.should be_an_instance_of ResourceDescription
+    expect(@resource_description).to be_an_instance_of ResourceDescription
   end
 
   it 'original author should be Shinji KOBAYASHI' do
-    @resource_description.original_author.keys[0].should ==
+    expect(@resource_description.original_author.keys[0]).to eq(
       'Shinji KOBAYASHI'
+    )
   end
 
   it 'other_contributors should be Akimichi TATSUKAWA' do
-    @resource_description.other_contributors[0].should == 
+    expect(@resource_description.other_contributors[0]).to eq( 
       'Akimichi TATSUKAWA'
+    )
   end
 
   it 'lifecycle_state should be initial' do
-    @resource_description.lifecycle_state.should == 'initial'
+    expect(@resource_description.lifecycle_state).to eq('initial')
   end
 
   it 'details key should be case' do
-    @resource_description.details.keys[0].should == 'case'
+    expect(@resource_description.details.keys[0]).to eq('case')
   end
 
   it 'other_details value should be charset, UTF-8' do
-    @resource_description.other_details.should == {'charset' => 'UTF-8'}
+    expect(@resource_description.other_details).to eq({'charset' => 'UTF-8'})
   end
 
   it 'resource package uri should be http://openehr.jp/' do
-    @resource_description.resource_package_uri.should == 'http://openehr.jp/'
+    expect(@resource_description.resource_package_uri).to eq('http://openehr.jp/')
   end
 
   it 'parent_resource current_revision should be 0.0.3' do
-    @resource_description.parent_resource.current_revision.should == '0.0.3'
+    expect(@resource_description.parent_resource.current_revision).to eq('0.0.3')
   end
 
   it 'should raise ArgumentError with nil original author' do

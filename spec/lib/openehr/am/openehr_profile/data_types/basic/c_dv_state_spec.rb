@@ -21,11 +21,11 @@ describe CDvState do
   end
 
   it 'is an instance of StateMachine' do
-    @c_dv_state.should be_an_instance_of CDvState
+    expect(@c_dv_state).to be_an_instance_of CDvState
   end
 
   it 'states size should be 3' do
-    @c_dv_state.value.states.size.should be 3
+    expect(@c_dv_state.value.states.size).to be 3
   end
 
   it 'raise error if value is nil' do

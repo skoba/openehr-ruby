@@ -15,15 +15,15 @@ describe NonTerminalState do
   end
 
   it 'is an instance of NonTerminalState' do
-    @non_terminal_state.should be_an_instance_of NonTerminalState
+    expect(@non_terminal_state).to be_an_instance_of NonTerminalState
   end
 
   it 'name is IN_EXECUTION' do
-    @non_terminal_state.name.should == 'IN_EXECUTION'
+    expect(@non_terminal_state.name).to eq('IN_EXECUTION')
   end
 
   it 'size of transitions is 2' do
-    @non_terminal_state.transitions.size.should == 1
+    expect(@non_terminal_state.transitions.size).to eq(1)
   end
 
   it 'raise error if traisitions is empty' do

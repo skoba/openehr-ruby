@@ -7,43 +7,43 @@ describe ISO8601Duration do
   end
 
   it 'should be an instance of ISO8601Duration' do
-    @iso8601duration.should be_an_instance_of ISO8601Duration
+    expect(@iso8601duration).to be_an_instance_of ISO8601Duration
   end
 
   it 'years should be 1' do
-    @iso8601duration.years.should be_equal 1
+    expect(@iso8601duration.years).to be_equal 1
   end
 
   it 'months should be 2' do
-    @iso8601duration.months.should be_equal 2
+    expect(@iso8601duration.months).to be_equal 2
   end
 
   it 'weeks should be 3' do
-    @iso8601duration.weeks.should be_equal 3
+    expect(@iso8601duration.weeks).to be_equal 3
   end
 
   it 'days should be 4' do
-    @iso8601duration.days.should be_equal 4
+    expect(@iso8601duration.days).to be_equal 4
   end
 
   it 'hours should be 5' do
-    @iso8601duration.hours.should be_equal 5
+    expect(@iso8601duration.hours).to be_equal 5
   end
 
   it 'minutes should be 6' do
-    @iso8601duration.minutes.should be_equal 6
+    expect(@iso8601duration.minutes).to be_equal 6
   end
 
   it 'seconds should be 7' do
-    @iso8601duration.seconds.should be_equal 7
+    expect(@iso8601duration.seconds).to be_equal 7
   end
 
   it 'fractional_seconds should be .8' do
-    @iso8601duration.fractional_second.should == 0.8
+    expect(@iso8601duration.fractional_second).to eq(0.8)
   end
 
   it 'should be equal P1Y2M3W4DT5H6M7.8S as string' do
-    @iso8601duration.as_string.should == 'P1Y2M3W4DT5H6M7.8S'
+    expect(@iso8601duration.as_string).to eq('P1Y2M3W4DT5H6M7.8S')
   end
 
   it 'should not raise ArgumentError with 0 yaers' do
@@ -149,10 +149,10 @@ describe ISO8601Duration do
   end
   
   it 'to_seconds should return 38898367.8' do
-    @iso8601duration.to_seconds.should == 38898367.8
+    expect(@iso8601duration.to_seconds).to eq(38898367.8)
   end
   
   it 'should be comparable' do
-    ISO8601Duration.new('P1Y2M3W4DT5H6M7.8S').should > ISO8601Duration.new('P1Y2M3W4DT5H6M7.7S')
+    expect(ISO8601Duration.new('P1Y2M3W4DT5H6M7.8S')).to be > ISO8601Duration.new('P1Y2M3W4DT5H6M7.7S')
   end
 end
