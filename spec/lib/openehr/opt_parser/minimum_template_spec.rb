@@ -7,6 +7,6 @@ describe 'minimum_template' do
   end
 
   it 'template_id is minimum template' do
-    expect(opt.template_id).to eq 'minimum template'
+    expect(opt.template_id.value).to eq 'minimum template'
   end
 end
