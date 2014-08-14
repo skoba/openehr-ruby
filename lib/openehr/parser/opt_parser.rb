@@ -28,7 +28,7 @@ module OpenEHR
         @opt.remove_namespaces!
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition)
+        OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition, ontology: ontology)
       end
 
       private
@@ -68,6 +68,9 @@ module OpenEHR
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node.id, path: root_node.path, occurrences: root_occurrences, archetype_id: root_archetype_id, attributes: attributes(@opt.xpath(DEFINITION_PATH+'/attributes'), root_node))
       end
 
+      def ontology
+      end
+      
       def children(children_xml, node)
         children_xml.map do |child|
           send child.attributes['type'].text.downcase, child, node
@@ -230,6 +233,7 @@ module OpenEHR
       def string(attr_xml)
         attr_xml.text
       end
+
       def empty_then_nil(val)
         if val.empty?
           return nil
