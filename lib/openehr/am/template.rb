@@ -2,15 +2,20 @@ module OpenEHR
   module AM
     module Template
       class OperationalTemplate
-        attr_reader :concept, :language, :description, :template_id, :definition, :ontology
+        attr_reader :uid, :concept, :language, :description, :template_id, :definition, :ontology
 
         def initialize(args = {})
+          self.uid = args[:uid]
           self.concept = args[:concept]
           self.template_id = args[:template_id]
           self.language = args[:language]
           self.description = args[:description]
           self.definition = args[:definition]
           self.ontology = args[:ontology]
+        end
+
+        def uid=(uid)
+          @uid = uid
         end
 
         def concept=(concept)

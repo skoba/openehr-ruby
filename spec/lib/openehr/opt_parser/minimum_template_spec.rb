@@ -9,4 +9,8 @@ describe 'minimum_template' do
   it 'template_id is minimum template' do
     expect(opt.template_id.value).to eq 'minimum template'
   end
+
+  it 'template uid is assigned' do
+    expect(opt.uid.value).to eq '199f6890-5c06-4cb2-92de-422848ffe3a8'
+  end
 end

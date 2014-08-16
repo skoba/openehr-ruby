@@ -4,8 +4,9 @@ module OpenEHR
   module Parser
     class OPTParser < ::OpenEHR::Parser::Base
       TEMPLATE_LANGUAGE_CODE_PATH = '/template/language/code_string'
-      TEMPLATE_LANGUAGE_TERM_ID_PATH = '/template/language/terminology_id/value'
+      TEMPLATE_LANGUAGE_TERM_ID_PATH = '/template/language/terminology_id/value'      
       TEMPLATE_ID_PATH = '/template/template_id/value'
+      UID_PATH = '/template/uid/value'
       CONCEPT_PATH = '/template/concept'
       DESC_ORIGINAL_AUTHOR_PATH = '/template/description/original_author'
       DESC_LIFECYCLE_STATE_PATH = '/template/description/lifecycle_state'
@@ -26,9 +27,10 @@ module OpenEHR
       def parse
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         @opt.remove_namespaces!
+        uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(concept: concept, language: language, description: description, template_id: template_id, definition: definition, ontology: ontology)
+        OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: definition, ontology: ontology)
       end
 
       private
