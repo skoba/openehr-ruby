@@ -28,7 +28,7 @@ module OpenEHR
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         @opt.remove_namespaces!
         uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
-        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
+        terminology_id = OpenEHR::RM::Support::Identification::TeqrminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
         OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: definition, ontology: ontology)
       end
@@ -71,8 +71,19 @@ module OpenEHR
       end
 
       def ontology
+
       end
-      
+
+      def term_definitions
+        term_definitions = @opt.xpath '//term_definitions'
+        term_definitions.map do |term|
+          code = term.attributes['code'].value
+          text = term.at('//items[@id="text"').text
+          description = term.at('//items[@id="description"').text
+          OpenEHR::ArchetypeItem.new(code: code, text: text, description: description)
+        end
+      end
+
       def children(children_xml, node)
         children_xml.map do |child|
           send child.attributes['type'].text.downcase, child, node
