@@ -9,8 +9,10 @@ module OpenEHR
         let(:details) { double('details', :size => 3, :nil? => false, :empty? => false) }
         let(:description) { OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: 'Shinji KOBAYASHI', lifecycle_state: 'Testing', details: details) }
         let(:template_id) { OpenEHR::RM::Support::Identification::TemplateID.new(value: '1234567890') }
-        let(:definition) { double(OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot, node_id: 'at0001') }
-        let(:opt) { OpenEHR::AM::Template::OperationalTemplate.new(concept: 'Sample', language: language, description: description, template_id: template_id, definition: definition) }
+         let(:definition) { double(OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot, node_id: 'at0001') }
+         let(:archetype_terminology) { double(OpenEHR::AM::Archetype::Ontology::ArchetypeTerminology(concept: 'minimum_template'))}
+        let(:component_terminologies) { Hash['openEHR-EHR-sample.v1' => archetype_terminology] }
+        let(:opt) { OpenEHR::AM::Template::OperationalTemplate.new(concept: 'Sample', language: language, description: description, template_id: template_id, definition: definition, component_terminologies: component_terminologies) }
 
         it 'should be an instance of OperationalTemplate' do
           expect(opt).to be_an_instance_of OpenEHR::AM::Template::OperationalTemplate
@@ -42,6 +44,10 @@ module OpenEHR
 
         it 'definition root node is at0001' do
           expect(opt.definition.node_id).to eq 'at0001'
+        end
+
+        it 'component terminologies has key' do
+          expect(opt.component_terminogies).to have_key 'openEHR-EHR-sample.v1'
         end
       end
     end

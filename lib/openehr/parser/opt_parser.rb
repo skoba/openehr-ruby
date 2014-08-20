@@ -30,7 +30,7 @@ module OpenEHR
         uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: definition, ontology: ontology)
+        OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: definition, component_terminologies: component_terminologies)
       end
 
       private
@@ -71,6 +71,10 @@ module OpenEHR
       end
 
       def ontology
+
+      end
+
+      def component_terminologies
 
       end
 
