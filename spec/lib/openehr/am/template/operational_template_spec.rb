@@ -10,7 +10,7 @@ module OpenEHR
         let(:description) { OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: 'Shinji KOBAYASHI', lifecycle_state: 'Testing', details: details) }
         let(:template_id) { OpenEHR::RM::Support::Identification::TemplateID.new(value: '1234567890') }
          let(:definition) { double(OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot, node_id: 'at0001') }
-         let(:archetype_terminology) { double(OpenEHR::AM::Archetype::Ontology::ArchetypeTerminology(concept: 'minimum_template'))}
+         let(:archetype_terminology) { double(OpenEHR::AM::Archetype::Terminology::ArchetypeTerminology, concept: 'minimum_template')}
         let(:component_terminologies) { Hash['openEHR-EHR-sample.v1' => archetype_terminology] }
         let(:opt) { OpenEHR::AM::Template::OperationalTemplate.new(concept: 'Sample', language: language, description: description, template_id: template_id, definition: definition, component_terminologies: component_terminologies) }
 
@@ -47,7 +47,7 @@ module OpenEHR
         end
 
         it 'component terminologies has key' do
-          expect(opt.component_terminogies).to have_key 'openEHR-EHR-sample.v1'
+          expect(opt.component_terminologies).to have_key 'openEHR-EHR-sample.v1'
         end
       end
     end

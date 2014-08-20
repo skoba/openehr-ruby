@@ -1,6 +1,7 @@
 module OpenEHR
   module AM
     module Archetype
+# Ontology module was renamed to Terminology at spec 1.1.0.
       module Ontology
         class ArchetypeOntology
           attr_accessor :specialisation_depth, :primary_language

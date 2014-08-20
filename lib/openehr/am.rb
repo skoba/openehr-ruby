@@ -3,7 +3,10 @@ require_relative 'am/archetype'
 require_relative 'am/archetype/assertion'
 require_relative 'am/archetype/constraint_model'
 require_relative 'am/archetype/constraint_model/primitive'
+# Archetype ontology module was renamed to terminology module
+require_relative 'am/archetype/terminology'
 require_relative 'am/archetype/ontology'
+
 
 #openEHR Archetype Profile
 require_relative 'am/openehr_profile/data_types/basic'
