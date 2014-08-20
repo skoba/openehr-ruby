@@ -34,8 +34,6 @@ describe 'minimum_template' do
 
   context 'ontology' do
     it 'root terminology is a hash of archetype and terminologies' do
-      
-      pending
       expect(opt.component_terminologies).to have_key 'openEHR-EHR-COMPOSITION.minimum.v1'
     
     end

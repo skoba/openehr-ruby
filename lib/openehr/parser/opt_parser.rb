@@ -30,7 +30,8 @@ module OpenEHR
         uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
         language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
-        OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: definition, component_terminologies: component_terminologies)
+        defs = definition
+        OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: defs, component_terminologies: @component_terminologies)
       end
 
       private
@@ -67,24 +68,23 @@ module OpenEHR
         root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
         root_archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(@opt, DEFINITION_PATH+'/archetype_id/value'))
         root_node.path = "/[#{root_archetype_id.value}]"
+        component_terminologies(root_archetype_id, @opt.xpath(DEFINITION_PATH))
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node.id, path: root_node.path, occurrences: root_occurrences, archetype_id: root_archetype_id, attributes: attributes(@opt.xpath(DEFINITION_PATH+'/attributes'), root_node))
       end
 
-      def ontology
-
+      def component_terminologies(archetype_id, nodes)
+        @component_terminologies ||= Hash.new
+        @component_terminologies[archetype_id.value] =
+          term_definitions(nodes)
       end
 
-      def component_terminologies
-
-      end
-
-      def term_definitions
-        term_definitions = @opt.xpath '//term_definitions'
+      def term_definitions(nodes)
+        term_definitions = nodes.xpath 'term_definitions'
         term_definitions.map do |term|
           code = term.attributes['code'].value
-          text = term.at('//items[@id="text"').text
-          description = term.at('//items[@id="description"').text
-          OpenEHR::ArchetypeItem.new(code: code, text: text, description: description)
+          text = term.at('items[@id="text"]').text
+          description = term.at('items[@id="description"]').text
+          OpenEHR::AM::Archetype::Terminology::ArchetypeTerm.new(code: code, text: text, description: description)
         end
       end
 
