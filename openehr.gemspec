@@ -34,7 +34,9 @@ Gem::Specification.new do |gem|
 #  gem.add_dependency('activerecord')
 
   gem.add_development_dependency('rspec')
-#  gem.add_development_dependency('cucumber', '~> 1.2.0')
+  gem.add_development_dependency('rspec-expectations')
+  gem.add_development_dependency('rspec-collection_matchers')
+#  gem.add_development_dependenracy('cucumber', '~> 1.2.0')
 #  gem.add_development_dependency('guard')
 #  gem.add_development_dependency('guard-rspec')
 #  gem.add_development_dependency('guard-cucumber')

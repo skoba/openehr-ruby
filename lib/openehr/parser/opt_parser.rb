@@ -84,7 +84,7 @@ module OpenEHR
           code = term.attributes['code'].value
           text = term.at('items[@id="text"]').text
           description = term.at('items[@id="description"]').text
-          OpenEHR::AM::Archetype::Terminology::ArchetypeTerm.new(code: code, text: text, description: description)
+          OpenEHR::AM::Archetype::Terminology::ArchetypeTerm.new(code: code, items: {'text' => text, 'description' => description})
         end
       end
 
@@ -105,6 +105,7 @@ module OpenEHR
         else
           node.path += "/[#{archetype_id.value}]"
         end
+        component_terminologies(archetype_id, xml)
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, attributes: attributes(xml.xpath('./attributes'), node))
       end
 
