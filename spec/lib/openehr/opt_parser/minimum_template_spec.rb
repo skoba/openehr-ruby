@@ -38,8 +38,8 @@ describe 'minimum_template' do
         expect(opt.component_terminologies).to have_key 'openEHR-EHR-COMPOSITION.minimum.v1'
       end
 
-      context 'term_definitions' do
-        let(:term_definitions) { opt.component_terminologies['openEHR-EHR-COMPOSITION.minimum.v1']}
+      context 'minimum term_definitions' do
+        let(:term_definitions) { opt.component_terminologies['openEHR-EHR-COMPOSITION.minimum.v1'].term_definitions['ja']}
 
         it 'archetype have 3 items' do
           expect(term_definitions).to have(3).items
@@ -79,7 +79,13 @@ describe 'minimum_template' do
         end
       end
 
-      context ''
+      context 'problem diagnosis term_definitions' do
+        let(:term_definitions) {opt.component_terminologies['openEHR-EHR-EVALUATION.problem_diagnosis.v1'].term_definitions['ja']}
+
+        it 'has 25 items' do
+          expect(term_definitions).to have(27).items
+        end
+      end      
     end
   end
 end

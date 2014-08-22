@@ -1,3 +1,3 @@
 module OpenEHR
-  VERSION = "1.2.16"
+  VERSION = "1.2.99"
 end

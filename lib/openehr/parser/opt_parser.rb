@@ -3,20 +3,30 @@ require 'nokogiri'
 module OpenEHR
   module Parser
     class OPTParser < ::OpenEHR::Parser::Base
-      TEMPLATE_LANGUAGE_CODE_PATH = '/template/language/code_string'
-      TEMPLATE_LANGUAGE_TERM_ID_PATH = '/template/language/terminology_id/value'      
+      TEMPLATE_LANGUAGE_CODE_PATH =
+        '/template/language/code_string'
+      TEMPLATE_LANGUAGE_TERM_ID_PATH =
+        '/template/language/terminology_id/value'      
       TEMPLATE_ID_PATH = '/template/template_id/value'
       UID_PATH = '/template/uid/value'
       CONCEPT_PATH = '/template/concept'
-      DESC_ORIGINAL_AUTHOR_PATH = '/template/description/original_author'
-      DESC_LIFECYCLE_STATE_PATH = '/template/description/lifecycle_state'
-      DESC_DETAILS_LANGUAGE_TERM_ID_PATH = '/template/description/details/language/terminology_id/value'
-      DESC_DETAILS_LANGUAGE_CODE_PATH = '/template/description/details/language/code_string'
-      DESC_DETAILS_PURPOSE_PATH = '/template/description/details/purpose'
-      DESC_DETAILS_KEYWORDS_PATH = '/template/description/details/keywords'
+      DESC_ORIGINAL_AUTHOR_PATH =
+        '/template/description/original_author'
+      DESC_LIFECYCLE_STATE_PATH =
+        '/template/description/lifecycle_state'
+      DESC_DETAILS_LANGUAGE_TERM_ID_PATH =
+        '/template/description/details/language/terminology_id/value'
+      DESC_DETAILS_LANGUAGE_CODE_PATH =
+        '/template/description/details/language/code_string'
+      DESC_DETAILS_PURPOSE_PATH =
+        '/template/description/details/purpose'
+      DESC_DETAILS_KEYWORDS_PATH =
+        '/template/description/details/keywords'
       DESC_DETAILS_USE_PATH = '/template/description/details/use'
-      DESC_DETAILS_MISUSE_PATH = '/template/description/details/misuse'
-      DESC_DETAILS_COPYRIGHT_PATH = '/template/description/details/copyright'
+      DESC_DETAILS_MISUSE_PATH =
+        '/template/description/details/misuse'
+      DESC_DETAILS_COPYRIGHT_PATH =
+        '/template/description/details/copyright'
       DEFINITION_PATH = '/template/definition'
       OCCURRENCE_PATH = '/occurrences'
       
@@ -28,8 +38,6 @@ module OpenEHR
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         @opt.remove_namespaces!
         uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
-        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH))
-        language = OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: terminology_id)
         defs = definition
         OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: defs, component_terminologies: @component_terminologies)
       end
@@ -37,11 +45,15 @@ module OpenEHR
       private
 
       def template_id
-        OpenEHR::RM::Support::Identification::TemplateID.new(value: text_on_path(@opt, TEMPLATE_ID_PATH))
+        @template_id ||= OpenEHR::RM::Support::Identification::TemplateID.new(value: text_on_path(@opt, TEMPLATE_ID_PATH))
       end
 
       def concept
         text_on_path(@opt, CONCEPT_PATH)
+      end
+
+      def language
+        @language ||= OpenEHR::RM::DataTypes::Text::CodePhrase.new(code_string: text_on_path(@opt, TEMPLATE_LANGUAGE_CODE_PATH), terminology_id: OpenEHR::RM::Support::Identification::TerminologyID.new(value: text_on_path(@opt,TEMPLATE_LANGUAGE_TERM_ID_PATH)))
       end
 
       def description
@@ -75,17 +87,28 @@ module OpenEHR
       def component_terminologies(archetype_id, nodes)
         @component_terminologies ||= Hash.new
         @component_terminologies[archetype_id.value] =
-          term_definitions(nodes)
+          archetype_terminology(nodes)
+      end
+
+      def archetype_terminology(nodes)
+        td = term_definitions(nodes)
+        concept_code = td[language.code_string][0]
+        OpenEHR::AM::Archetype::Terminology::
+          ArchetypeTerminology.new(
+                concept_code: concept_code,
+                original_language: language,
+                term_definitions: td)
       end
 
       def term_definitions(nodes)
         term_definitions = nodes.xpath 'term_definitions'
-        term_definitions.map do |term|
+        term_items = term_definitions.map do |term|
           code = term.attributes['code'].value
           text = term.at('items[@id="text"]').text
           description = term.at('items[@id="description"]').text
           OpenEHR::AM::Archetype::Terminology::ArchetypeTerm.new(code: code, items: {'text' => text, 'description' => description})
         end
+        { language.code_string => term_items }
       end
 
       def children(children_xml, node)
