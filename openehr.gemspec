@@ -27,7 +27,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency('builder')
   gem.add_dependency('i18n')
   gem.add_dependency('treetop')
-  gem.add_dependency('polyglot')
   gem.add_dependency('rdoc')
   gem.add_dependency('nokogiri')
 #  gem.add_dependency('sqlite3')

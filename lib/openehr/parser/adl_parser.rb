@@ -1,13 +1,13 @@
 require 'treetop'
-require 'polyglot'
+#require 'polyglot'
 
 require_relative '../parser'
-#require_relative './adl_grammar'
+require_relative './adl_grammar'
 
 module OpenEHR
   module Parser
     class ADLParser < ::OpenEHR::Parser::Base
-      Treetop.load('adl_grammar.tt')
+#      Treetop.load(File.join(File.dirname(__FILE__), 'adl_grammar.tt'))
 
       def initialize(filename)
         super
@@ -24,10 +24,8 @@ module OpenEHR
       end
 
       def parsed_data
-        filestream = File.open(@filename, 'r:bom|utf-8')
-        content = filestream.read
-p content
-        @parsed_data ||= adl_grammar_parser.parse(content)
+        filestream = File.open(@filename, 'rb:bom|utf-8')
+        @parsed_data ||= adl_grammar_parser.parse(filestream.read)
         filestream.close
         unless @parsed_data
           puts adl_grammar_parser.failure_reason
