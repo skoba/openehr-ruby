@@ -2,12 +2,12 @@ require 'treetop'
 #require 'polyglot'
 
 require_relative '../parser'
-require_relative './adl_grammar'
+#require_relative './adl_grammar'
 
 module OpenEHR
   module Parser
     class ADLParser < ::OpenEHR::Parser::Base
-#      Treetop.load(File.join(File.dirname(__FILE__), 'adl_grammar.tt'))
+      Treetop.load(File.join(File.dirname(__FILE__), 'adl_grammar.tt'))
 
       def initialize(filename)
         super
