@@ -14,7 +14,6 @@ end
 guard 'spork', :rspec_env => { 'RAILS_ENV' => 'test' } do
   watch('Gemfile.lock')
   watch('spec/spec_helper.rb') { :rspec }
-  watch(%r{features/support/}) { :cucumber }
 end
 
 notification :libnotify, :timeout => 5, :transient => true, :append => false

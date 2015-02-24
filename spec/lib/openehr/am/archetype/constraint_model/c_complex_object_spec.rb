@@ -31,17 +31,17 @@ describe CComplexObject do
     end
 
     it 'has attribytes when has_attrubite? is true' do
-      expect(@c_complex_object).to have_attributes
+      expect(@c_complex_object.has_attributes?).to be_truthy
     end
 
     it 'does not have attributes when attributes is nil' do
       @c_complex_object.attributes = nil
-      expect(@c_complex_object).not_to have_attributes
+      expect(@c_complex_object.has_attributes?).not_to be_truthy
     end
 
     it 'does not have attributes when attributes are empty' do
       @c_complex_object.attributes = []
-      expect(@c_complex_object).not_to have_attributes
+      expect(@c_complex_object.has_attributes?).not_to be_truthy
     end
   end
   
