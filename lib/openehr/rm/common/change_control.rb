@@ -118,7 +118,7 @@ module OpenEHR
             self.item = args[:item]
             super(:uid => @item.uid,
                   :preceding_version_uid => @item.preceding_version_uid,
-                  :data => @item.data, :commit_audit=> args[:commit_audit],
+                  :data => @item.data,
                   :commit_audit => args[:commit_audit],
                   :contribution => args[:contribution],
                   :lifecycle_state => @item.lifecycle_state,

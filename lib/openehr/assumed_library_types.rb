@@ -30,7 +30,7 @@ module OpenEHR
       end
 
       def lower_included=(lower_included)
-        if (lower == nil) && (lower_included != nil)
+        if (lower.nil?) && (!lower_included.nil?)
           raise ArgumentError, "lower is not set"
         end
         lower_included = true if !lower.nil? && lower_included.nil?
