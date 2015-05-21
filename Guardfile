@@ -1,4 +1,4 @@
-guard 'rspec' do
+guard 'rspec', cmd: 'bundle exec rspec' do
   watch(%r{^spec/.+_spec\.rb})
   watch(%r{^lib/(.+)\.rb})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb') { "spec" }
@@ -14,7 +14,7 @@ end
 guard 'spork', :rspec_env => { 'RAILS_ENV' => 'test' } do
   watch('Gemfile.lock')
   watch('spec/spec_helper.rb') { :rspec }
-  watch(%r{features/support/}) { :cucumber }
+#  watch(%r{features/support/}) { :cucumber }
 end
 
 notification :libnotify, :timeout => 5, :transient => true, :append => false
