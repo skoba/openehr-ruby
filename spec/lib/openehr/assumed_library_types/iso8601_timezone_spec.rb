@@ -54,4 +54,10 @@ describe ISO8601Timezone do
       expect(@iso8601timezone.is_gmt?).to be_truthy
     end
   end
+
+  describe 'pacific ocean countries' do
+    it 'should not rase error' do
+      expect {ISO8601Timezone.new('+1400')}.not_to raise_error
+    end
+  end
 end
