@@ -9,7 +9,7 @@ describe NonTerminalState do
     proposed_state = State.new(:name => 'PROPOSED')
     complete_state = TerminalState.new(:name => 'COMPLETED')
     finish = Transition.new(:event => 'finish', :next_state => complete_state)
-    transitions = Set[finish]
+    transitions = Set[proposed_state, finish]
     @non_terminal_state = NonTerminalState.new(:name => 'IN_EXECUTION',
                                                :transitions => transitions)
   end
@@ -23,14 +23,14 @@ describe NonTerminalState do
   end
 
   it 'size of transitions is 2' do
-    expect(@non_terminal_state.transitions.size).to eq(1)
+    expect(@non_terminal_state.transitions.size).to eq(2)
   end
 
   it 'raise error if traisitions is empty' do
-    expect {@non_terminal_state.transitions = Set.new}.to raise_error
+    expect {@non_terminal_state.transitions = Set.new}.to raise_error ArgumentError
   end
 
   it 'raise error if transitions is nil' do
-    expect {@non_terminal_state.transitions = nil}.to raise_error
+    expect {@non_terminal_state.transitions = nil}.to raise_error ArgumentError
   end
 end

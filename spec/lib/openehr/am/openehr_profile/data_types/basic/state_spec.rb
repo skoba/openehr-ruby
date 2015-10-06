@@ -17,10 +17,10 @@ describe State do
   end
 
   it 'raise error name is empty' do
-    expect {@state.name = ''}.to raise_error
+    expect {@state.name = ''}.to raise_error ArgumentError
   end
 
   it 'raise error name is nil' do
-    expect {@state.name = nil}.to raise_error
+    expect {@state.name = nil}.to raise_error ArgumentError
   end
 end

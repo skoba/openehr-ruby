@@ -30,6 +30,6 @@ describe OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot do
   end
 
   it 'raise ArgumentError if archtype_id is nil' do
-    expect {c_archetype_root.archetype_id = nil}.to raise_error
+    expect {c_archetype_root.archetype_id = nil}.to raise_error ArgumentError
   end
 end

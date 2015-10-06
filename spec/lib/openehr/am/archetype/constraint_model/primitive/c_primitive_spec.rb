@@ -36,6 +36,6 @@ describe CPrimitive do
   end
 
   it 'type should not empty' do
-    expect {@c_primitive.type = ''}.to raise_error
+    expect {@c_primitive.type = ''}.to raise_error ArgumentError
   end
 end

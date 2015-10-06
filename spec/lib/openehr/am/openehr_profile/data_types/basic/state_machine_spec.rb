@@ -25,10 +25,10 @@ describe StateMachine do
   end
 
   it 'raise error if states are nil' do
-    expect {@state_machine.states = nil}.to raise_error
+    expect {@state_machine.states = nil}.to raise_error ArgumentError
   end
 
   it 'raise error if states is empty' do
-    expect {@state_machine.states = Set.new}.to raise_error
+    expect {@state_machine.states = Set.new}.to raise_error ArgumentError
   end
 end

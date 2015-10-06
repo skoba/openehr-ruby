@@ -33,11 +33,11 @@ describe Transition do
   end
 
   it 'raise error if event is nil' do
-    expect {@transition.event = nil}.to raise_error
+    expect {@transition.event = nil}.to raise_error ArgumentError
   end
 
   it 'raise error if event is empty' do
-    expect {@transition.event = ''}.to raise_error
+    expect {@transition.event = ''}.to raise_error ArgumentError
   end
 
   it 'does not raise error if guard is nil' do
@@ -45,7 +45,7 @@ describe Transition do
   end
 
   it 'raise error if action is empty' do
-    expect {@transition.guard = ''}.to raise_error
+    expect {@transition.guard = ''}.to raise_error ArgumentError
   end
 
   it 'does not raise error if action is nil' do
@@ -53,10 +53,10 @@ describe Transition do
   end
 
   it 'raise error if action is empty' do
-    expect {@transition.action = ''}.to raise_error
+    expect {@transition.action = ''}.to raise_error ArgumentError
   end
 
   it 'raise error if next_state is nil' do
-    expect {@transition.next_state = nil}.to raise_error
+    expect {@transition.next_state = nil}.to raise_error ArgumentError
   end
 end

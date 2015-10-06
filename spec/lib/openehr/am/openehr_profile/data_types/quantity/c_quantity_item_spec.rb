@@ -26,11 +26,11 @@ describe CQuantityItem do
   end
 
   it 'units is not nil' do
-    expect {@c_quantity_item.units = nil}.to raise_error
+    expect {@c_quantity_item.units = nil}.to raise_error ArgumentError
   end
 
   it 'units is not be empty' do
-    expect {@c_quantity_item.units = ''}.to raise_error
+    expect {@c_quantity_item.units = ''}.to raise_error ArgumentError
   end
 
   it 'is not precision unconstrained' do

@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
+include OpenEHR::AssumedLibraryTypes
 include OpenEHR::AM::Archetype
 include OpenEHR::AM::Archetype::ConstraintModel::Primitive
 include OpenEHR::RM::DataTypes::Quantity::DateTime
@@ -27,7 +28,7 @@ describe CDate do
   end
 
   it 'raise ArgumentError unless range xor pattern' do
-    expect { @c_date.range = nil }.to raise_exception
+    expect { @c_date.range = nil }.to raise_exception ArgumentError
   end
 
   describe 'pattern attribute' do

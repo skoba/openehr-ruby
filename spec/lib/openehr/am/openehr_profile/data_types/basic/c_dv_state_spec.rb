@@ -29,6 +29,6 @@ describe CDvState do
   end
 
   it 'raise error if value is nil' do
-    expect {@c_dv_state.value = nil}.to raise_error
+    expect {@c_dv_state.value = nil}.to raise_error ArgumentError
   end
 end
