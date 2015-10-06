@@ -2133,6 +2133,11 @@ module OpenEHR
             [term_code.value]
           end
         }
+      / SYM_LIST_CONTINUE {
+          def value
+            []
+          end
+        }
       end
 
       rule uri_value

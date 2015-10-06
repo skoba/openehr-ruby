@@ -1,0 +1,91 @@
+archetype (adl_version=1.4)
+    CEN-EN13606-COMPOSITION.Consulta.v2
+
+concept
+    [at0000]
+
+language
+    original_language = <[ISO_639-1::pt-br]>
+
+description
+    original_author = <
+        ["date"] = <"20101005">
+		["email"] = <"prontuario@saude.mg.gov.br">
+		["name"] = <"SES/PRODEMGE">
+    >
+    lifecycle_state = <"Draft">
+    details = <
+        ["pt-br"] = <
+            language = <[ISO_639-1::pt-br]>
+        >
+    >
+
+definition
+    COMPOSITION[at0000] occurrences matches {1..1} matches {  -- Consulta		
+        name matches {
+            SIMPLE_TEXT[at0002] occurrences matches {1..1} matches {  -- Consulta
+                originalText matches {/.*/}
+            }
+        }
+        content existence matches {0..1} cardinality matches {0..29; unordered; unique} matches {
+            allow_archetype ENTRY[at0001] occurrences matches {0..*} matches {
+                include
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Alergias.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Alimentacao.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.AlturaEstatura.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.AntecedentesObstetricos.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.AntecedentesOdontologicos.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.AtividadesCotidianas.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.AvaliacaoFuncional.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.CircunferenciaCintura.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.ClassificacaoRiscoSaudeBucal.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Deficiencias.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.EstratificacaoRisco.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.ExameClinicoOdontologico.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.ExamesComplementares.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.GestacaoAtual.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.GigantesGeriatria.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.ImpressaoDiagnostica.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Imunobiologicos.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.IndiceMassaCorporal.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Medicamentos.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.OrtesesProteses.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Parto.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Peso.v2/}
+					archetype_id/value matches {/CEN-EN13606-ENTRY.PreNatal.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.PressaoArterial.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.ProcedimentoRealizado.v2/}
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.Puerperio.v2/}					
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.TesteOrelhinha.v2/}				
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.TratamentoOdontologicoCompletado.v2/}	
+                    archetype_id/value matches {/CEN-EN13606-ENTRY.UltimaConsultaOdontologica.v2/}
+            }
+        }
+    }
+
+ontology
+    terminologies_available = <...>
+    term_definitions = <
+        ["pt-br"] = <
+            items = <
+                ["at0000"] = <
+                    text = <"Consulta">
+                    description = <"Consulta">
+                >
+                ["at0001"] = <
+                    text = <"Archetype slot">
+                    description = <"This is a ENTRY slot">
+                >				
+                ["at0002"] = <
+                    text = <"Consulta">
+                    description = <"This is a SIMPLE_TEXT object">
+                >
+            >
+        >
+    >
+    constraint_definitions = <
+    >
+    term_binding = <
+    >
+    constraint_binding = <
+    >

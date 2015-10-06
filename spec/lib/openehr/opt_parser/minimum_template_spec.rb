@@ -30,6 +30,10 @@ describe 'minimum_template' do
     it 'root path is /[openEHR-EHR-COMPOSITION.minimum.v1]' do
       expect(opt.definition.path).to eq '/[openEHR-EHR-COMPOSITION.minimum.v1]'
     end
+
+    # describe 'path collection' do
+    #   expect(opt.get_paths).to eq []
+    # end
   end
 
   describe 'component_terminologies' do
@@ -85,7 +89,7 @@ describe 'minimum_template' do
         it 'has 25 items' do
           expect(term_definitions).to have(27).items
         end
-      end      
+      end
     end
   end
 end

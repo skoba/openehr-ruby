@@ -66,7 +66,7 @@ describe Party do
   end
 
   it 'should raise ArgumentError when identities are empty' do
-    expect {@party.identities = Set.new}.to raise_error
+    expect {@party.identities = Set.new}.to raise_error ArgumentError
   end
 
   it 'type should be alias of name' do

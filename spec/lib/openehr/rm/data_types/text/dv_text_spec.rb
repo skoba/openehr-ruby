@@ -58,7 +58,7 @@ describe DvText do
   end
 
   it 'raise error if mappings are empty' do
-    expect {@dv_text.mappings = Array.new}.to raise_error
+    expect {@dv_text.mappings = Array.new}.to raise_error ArgumentError
   end
 
   it 'does not raise error if mappings are nil' do
