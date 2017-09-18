@@ -59,6 +59,10 @@ module OpenEHR
         parsed_data.adl_version
       end
 
+      def uid
+        OpenEHR::RM::Support::Identification::HierObjectID.new(value: parsed_data.uid) if parsed_data.uid
+      end
+
       def concept
         parsed_data.concept
       end
@@ -78,6 +82,7 @@ module OpenEHR
       def archetype
         OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
                                   :adl_version => adl_version,
+                                  :uid => uid,            
                                   :concept => concept,
                                   :original_language => original_language,
                                   :translations => translations,

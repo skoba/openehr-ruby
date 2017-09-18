@@ -24,7 +24,7 @@ describe ADLParser do
       end
     end
 
-    context 'translations' do
+    describe 'translations' do
       before(:all) do
         @translations = @archetype.translations
       end
@@ -83,7 +83,7 @@ describe ADLParser do
         end
       end
 
-      context 'Russian translation' do
+      describe 'Russian translation' do
         before(:all) do
           @ru = @translations['ru']
         end

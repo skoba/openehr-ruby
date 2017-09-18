@@ -184,6 +184,14 @@ module OpenEHR
 
         it { is_expected.to be_an_instance_of DataTypes::URI::DvEhrUri }
       end
+
+      describe SECTIONFactory do
+        subject { Factory.create('SECTION',
+                                 archetype_node_id: 'at0001',
+                                 name: Factory.create('DV_TEXT', value: 'Physical Examination'))}
+
+        it { is_expected.to be_an_instance_of Composition::Content::Navigation::Section }
+      end
     end
   end
 end

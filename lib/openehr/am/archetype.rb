@@ -100,6 +100,12 @@ module OpenEHR
           return archetype
         end
 
+        def to_rm
+          ::OpenEHR::RM::Factory.create(definition.rm_type_name,
+                                        archetype_node_id: definition.archetype_node_id,
+                                        name: definition
+                                        )
+        end
       end # end of Archetype
       # original file:
       # ref_imple_eiffel/components/adl_parser/src/interface/adl_definition.e

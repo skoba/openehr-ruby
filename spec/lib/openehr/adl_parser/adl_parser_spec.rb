@@ -6,7 +6,7 @@ describe OpenEHR::Parser::ADLParser do
     @adl_dir = File.dirname(__FILE__) + '/adl14/'
   end
 
-  context 'openEHR-EHR-SECTION-summary.v1.adl' do
+  describe 'openEHR-EHR-SECTION-summary.v1.adl' do
     before(:all) do
       @ap = OpenEHR::Parser::ADLParser.new(@adl_dir + 'openEHR-EHR-SECTION.summary.v1.adl')
     end
@@ -15,7 +15,7 @@ describe OpenEHR::Parser::ADLParser do
       expect(@ap).to be_an_instance_of OpenEHR::Parser::ADLParser
     end
 
-    context 'openEHR-EHR-SECTION.summary.v1 parse' do
+    describe 'openEHR-EHR-SECTION.summary.v1 parse' do
       context 'ADL parser generates archetype from ADL' do
         before(:all) do
           @archetype = @ap.parse
@@ -59,7 +59,7 @@ describe OpenEHR::Parser::ADLParser do
 
             it 'organisation is Ocean Informatics' do
               expect(@original_author['organisation']).to eq('Ocean Informatics')
-            end
+p            end
 
             it 'date is 9/01/2007' do
               expect(@original_author['date']).to eq('9/01/2007')

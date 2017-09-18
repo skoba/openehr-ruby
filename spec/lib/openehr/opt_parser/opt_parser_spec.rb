@@ -43,7 +43,7 @@ module OpenEHR
           expect(opt.definition.archetype_id.value).to eq 'openEHR-EHR-COMPOSITION.referral.v1'
         end
 
-        context 'root cardinality is mandatory' do
+        describe 'root cardinality is mandatory' do
           it 'lower limit is 1' do
             expect(opt.definition.occurrences.lower).to eq 1
           end
@@ -74,7 +74,7 @@ module OpenEHR
           expect(opt.definition.attributes.size).to eq 3
         end
 
-        context 'category attribute' do
+        describe 'category attribute' do
           let(:category) {opt.definition.attributes[0]}
 
           it 'rm attribute name is category' do

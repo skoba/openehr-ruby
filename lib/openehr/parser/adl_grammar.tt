@@ -25,6 +25,10 @@ module OpenEHR
             arch_identification.adl_version
           end
 
+          def uid
+            arch_identification.uid
+          end
+
 	  def concept
 	    arch_concept.value
 	  end
@@ -61,6 +65,10 @@ module OpenEHR
 	    head.value[:adl_version]
 	  end
 
+          def uid
+            head.value[:uid]
+          end
+
           def is_controlled?
             head.value[:is_controlled?]
           end
@@ -89,11 +97,10 @@ module OpenEHR
       end
 
       rule arch_meta_data_items
-        item:arch_meta_data_item other_item:(';' arch_meta_data_item)* {
+        item:arch_meta_data_item other_items:(';' white_space arch_meta_data_item)* {
           def value
 	    v = item.value
-            other_item.elements.map {|i| i.arch_meta_data_item.value}
-            v
+            other_items.elements.map {|m| m.arch_meta_data_item.value }.inject(v, :update)
 	  end
         }
       end
@@ -104,9 +111,14 @@ module OpenEHR
             {:adl_version => ver.value}
           end
         }
+      / SYM_UID SYM_EQ uid:V_HIER_OBJECT space {
+          def value
+            { :uid => uid.value }
+          end
+        }
       / SYM_IS_CONTROLED space {
           def value
-	    {:is_controled? => true} # if elements[0]
+	    { :is_controled? => true } # If elements[0]
           end
         }
       end
@@ -2880,6 +2892,10 @@ module OpenEHR
         [a-zA-Z0-9]
       end
 
+      rule HEXADECIMAL
+        [a-fA-F0-9]
+      end
+
       rule IDCHAR
         [a-zA-Z0-9_]
       end
@@ -3144,6 +3160,10 @@ module OpenEHR
         [Aa] [Dd] [Ll] '_' [Vv] [Ee] [Rr] [Ss] [Ii] [Oo] [Nn] space
       end
 
+      rule SYM_UID
+        [Uu] [Ii] [Dd] space
+      end
+
       rule SYM_IS_CONTROLLED
         [Cc] [Oo] [Nn] [Tt] [Rr] [Oo] [Ll] [Ll] [Ee] [Dd] space
       end
@@ -3207,6 +3227,14 @@ module OpenEHR
           end
         }
       end
+
+      rule V_HIER_OBJECT
+        HEXADECIMAL 8..8 '-' (HEXADECIMAL 4..4 '-') 3..3 HEXADECIMAL 12..12 {
+          def value
+            text_value
+          end
+        }
+      end   
 
       rule V_URI
         [a-z]+ '://' [^<>|\\{}^~"\[\] ]* { 
@@ -3353,7 +3381,7 @@ module OpenEHR
           end
         }
       end
-
+                                                             
       rule V_CHAR
         [^\\\n\"] {
           def value

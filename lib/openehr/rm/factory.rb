@@ -182,5 +182,11 @@ module OpenEHR
         Composition::Content::Entry::Observation.new(*param)
       end
     end
+
+    class SECTIONFactory
+      def self.create(*param)
+        Composition::Content::Navigation::Section.new(*param)
+      end
+    end
   end
 end
