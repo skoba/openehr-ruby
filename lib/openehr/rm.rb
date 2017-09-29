@@ -44,4 +44,4 @@ require_relative 'rm/integration'
 
 
 require_relative 'rm/factory'
-
+require_relative 'rm/builder'

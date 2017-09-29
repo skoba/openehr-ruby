@@ -7,9 +7,9 @@ A Ruby implementation of the openEHR specifications
 
 = Requirements
 
-* Supports CRuby 2.1.10, 2.2.5, 2.3.1 or equivalents.
-* Developed with CRuby 2.3.1 on FreeBSD and Linux.
-* Ruby 2.0 or earlier are no longer supported.
+* Supports CRuby 2.2.8, 2.3.5, 2.4.2 or equivalents.
+* Developed with CRuby 2.4.1 on FreeBSD and Linux.
+* Ruby 2.1 or earlier are no longer supported.
 
 =Description
 

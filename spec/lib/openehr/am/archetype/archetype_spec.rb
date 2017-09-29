@@ -1,5 +1,5 @@
 require 'set'
-require File.dirname(__FILE__) + '/../../adl_parser/parser_spec_helper'
+require_relative File.dirname(__FILE__) + '/../../adl_parser/parser_spec_helper'
 describe OpenEHR::AM::Archetype::Archetype do
   let(:archetype) { adl14_archetype('openEHR-EHR-CLUSTER.anatomical_location.v1.adl') }
 
@@ -37,7 +37,7 @@ describe OpenEHR::AM::Archetype::Archetype do
   end
 
   it 'definition should be assigned properly' do
-    expect(archetype.definition.rm_type_name).to eq('CLUSTER')
+    expect(archetype.definition).not_to be_nil
   end
 
   it 'should raise ArgumentError when definition is nil' do
@@ -71,6 +71,4 @@ describe OpenEHR::AM::Archetype::Archetype do
   it 'concept name should be extracted from ontology' do
     expect(archetype.concept_name('en')).to eq('Anatomical location')
   end
-
-  context 'to_rm'
 end

@@ -25,7 +25,7 @@ module OpenEHR
 
       def parsed_data
         filestream = File.open(@filename, 'rb:bom|utf-8')
-        @parsed_data ||= adl_grammar_parser.parse(filestream.read)
+        @parsed_data ||= adl_grammar_parser.parse(filestream.read.scrub)
         filestream.close
         unless @parsed_data
           puts adl_grammar_parser.failure_reason
