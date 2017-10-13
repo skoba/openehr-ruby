@@ -36,8 +36,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('rspec-expectations')
   gem.add_development_dependency('rspec-collection_matchers')
 #  gem.add_development_dependenracy('cucumber', '~> 1.2.0')
- gem.add_development_dependency('guard')
- gem.add_development_dependency('guard-rspec')
+  gem.add_development_dependency('guard')
+  gem.add_development_dependency('guard-rspec')
 #  gem.add_development_dependency('guard-cucumber')
   # gem.add_development_dependency('spork')#, '> 1.0rc')
 #  gem.add_development_dependency('guard-spork')
@@ -48,5 +48,6 @@ Gem::Specification.new do |gem|
 #  gem.add_development_dependency('rb-inotify')#, '~>0.8.8')
   gem.add_development_dependency('rubocop')
   gem.add_development_dependency('meowcop')
+  gem.add_development_dependency('better_errors')
 end
 

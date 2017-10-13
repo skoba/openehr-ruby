@@ -27,6 +27,8 @@ module OpenEHR
         '/template/description/details/misuse'
       DESC_DETAILS_COPYRIGHT_PATH =
         '/template/description/details/copyright'
+      DESC_OTHER_DETAILS_PATH =
+        '/template/description/other_details'
       DEFINITION_PATH = '/template/definition'
       OCCURRENCE_PATH = '/occurrences'
       
@@ -59,7 +61,7 @@ module OpenEHR
       def description
         original_author = text_on_path(@opt, DESC_ORIGINAL_AUTHOR_PATH)
         lifecycle_state = text_on_path(@opt, DESC_LIFECYCLE_STATE_PATH)
-        OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: original_author, lifecycle_state: lifecycle_state, details: [description_details])
+        OpenEHR::RM::Common::Resource::ResourceDescription.new(original_author: original_author, lifecycle_state: lifecycle_state, details: [description_details], other_details: description_other_details)
       end
 
       def description_details
@@ -71,6 +73,13 @@ module OpenEHR
         misuse = empty_then_nil text_on_path(@opt, DESC_DETAILS_MISUSE_PATH)
         copyright = empty_then_nil text_on_path(@opt, DESC_DETAILS_COPYRIGHT_PATH)
         OpenEHR::RM::Common::Resource::ResourceDescriptionItem.new(language: language, purpose: purpose, keywords: keywords, use: use, misuse: misuse, copyright: copyright)
+      end
+
+      def description_other_details
+        @opt.xpath(DESC_OTHER_DETAILS_PATH).inject({}) do |hash, detail|
+          hash[detail.attributes['id'].value] = detail.text
+          hash
+        end
       end
 
       def definition
@@ -111,12 +120,6 @@ module OpenEHR
         { language.code_string => term_items }
       end
 
-      def children(children_xml, node)
-        children_xml.map do |child|
-          send child.attributes['type'].text.downcase, child, node
-        end
-      end
-
       def c_archetype_root(xml, node = Node.new)
         rm_type_name = text_on_path(xml, './rm_type_name') 
         id = text_on_path(xml, './node_id')
@@ -145,6 +148,12 @@ module OpenEHR
       def attributes(attributes_xml, node)
         attributes_xml.map do |attr|
           send attr.attributes['type'].text.downcase, attr, node
+        end
+      end
+
+      def children(children_xml, node)
+        children_xml.map do |child|
+            send child.attributes['type'].text.downcase, child, node
         end
       end
 

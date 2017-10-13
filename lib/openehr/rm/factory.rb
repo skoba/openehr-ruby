@@ -3,9 +3,40 @@ require 'active_support/inflector'
 module OpenEHR
   module RM
     class Factory
-      def self.create(type, *param)
-        type = type.downcase.camelize if type.include? '_'
-        class_eval("#{type}Factory").create(*param)
+      def initialize(cobject)
+        @cobject = cobject
+      end
+
+      class << self
+        def create(type, *param)
+          type = type.downcase.camelize if type.include? '_'
+          class_eval("#{type}Factory").create(*param)
+        end
+      end
+
+      def build
+        Factory.create(type, params)
+      end
+
+      private
+      def type
+        @cobject.rm_type_name
+      end
+
+      def name
+        OpenEHR::RM::DataTypes::Text::DvText.new(value: ' ')
+      end
+
+      def params
+        @cobject.attributes.inject({}) do |hash, attribute|
+          if attribute.children
+            hash[attribute.rm_attribute_name.to_sym] =
+              attribute.children.map { |child| Factory.new(child).build }
+          end
+          hash
+        end.merge(
+        { archetype_node_id: @cobject.node_id,
+          occurrences: @cobject.occurrences })
       end
     end
 
@@ -186,6 +217,12 @@ module OpenEHR
     class SECTIONFactory
       def self.create(*param)
         Composition::Content::Navigation::Section.new(*param)
+      end
+    end
+
+    class CLUSTERFactory
+      def self.create(*param)
+        DataStructures::ItemStructure::Representation::Cluster.new(*param)
       end
     end
   end

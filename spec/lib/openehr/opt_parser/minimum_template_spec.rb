@@ -2,6 +2,21 @@ describe 'minimum_template' do
   let(:optparser) { OpenEHR::Parser::OPTParser.new(File.join(File.dirname(__FILE__), '/minimum_template.opt'))}
   let(:opt) {optparser.parse}
 
+  MANDATORY =
+    OpenEHR::AssumedLibraryTypes::Interval.new(lower: 1,
+                                               upper: 1,
+                                               lower_included: true,
+                                               upper_included: true,
+                                               upper_unbounded: false,
+                                               lower_unbounded: false)
+  OPTIONAL =
+    OpenEHR::AssumedLibraryTypes::Interval.new(lower: 0,
+                                               upper: 1,
+                                               lower_included: true,
+                                               upper_included: true,
+                                               upper_unbounded: false,
+                                               lower_unbounded: false)
+  
   it 'concept is minimum template' do
     expect(opt.concept).to eq 'minimum template'
   end
@@ -18,7 +33,46 @@ describe 'minimum_template' do
     expect(opt.language.code_string).to eq 'ja'
   end
 
-  context 'definiition' do
+  describe 'description' do
+    let(:description) { opt.description }
+
+    specify 'original author' do
+      expect(description.original_author).
+        to eq 'Not Specified'
+    end
+
+    specify 'lifecycle state' do
+      expect(description.lifecycle_state).
+        to eq 'Initial'
+    end
+
+    context 'other_details' do
+      let(:other_details) { description.other_details }
+
+      specify 'MetaDataset:Sampleset' do
+        expect(other_details['MetaDataSet:Sample Set ']).
+          to eq 'Template metadata sample set '
+      end
+
+      specify 'empty data' do
+        empty_details = ['Acknowledgements',
+                         'Business Process Level',
+                         'Care setting',
+                         'Client group',
+                         'Clinical Record Element',
+                         'Copyright', 'Issues',
+                         'Owner',
+                         'Sign off',
+                         'Speciality',
+                         'User roles']
+        empty_details.each do |d|
+          expect(other_details[d]).to eq ''
+        end
+      end
+    end
+  end
+
+  describe 'definiition' do
     it 'definition root is COMPOSITION' do
       expect(opt.definition.rm_type_name).to eq 'COMPOSITION'
     end
@@ -31,9 +85,136 @@ describe 'minimum_template' do
       expect(opt.definition.path).to eq '/[openEHR-EHR-COMPOSITION.minimum.v1]'
     end
 
-    # describe 'path collection' do
-    #   expect(opt.get_paths).to eq []
-    # end
+    specify 'occurrence is 1..1' do
+      expect(opt.definition.occurrences).to eq MANDATORY
+    end
+
+    describe 'attributes' do
+      let(:attributes) { opt.definition.attributes }
+      
+      specify 'attributes size is 3' do
+        expect(attributes.size).to eq 3
+      end
+      describe '1st attribute' do
+        let(:category) { attributes[0] }
+
+        specify 'type' do
+          expect(category).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute
+        end
+
+        specify 'rm_attribute_name is category' do
+          expect(category.rm_attribute_name).to eq 'category'
+        end
+
+        specify 'existence is 1..1' do
+          expect(category.existence).to eq MANDATORY
+        end
+
+        describe 'children' do
+          specify 'only one child' do
+            expect(category.children.size).to eq 1
+          end
+
+          describe 'child' do
+            let(:child) { category.children[0] }
+
+            specify 'rm_type_name is DV_CODED_TEXT' do
+              expect(child.rm_type_name).to eq 'DV_CODED_TEXT'
+            end
+
+            specify 'occurrences is 1..1' do
+              expect(child.occurrences).to eq MANDATORY
+            end
+
+            describe 'attribute defining code' do
+              let(:type) { child.attributes[0] }
+
+              specify 'type' do
+                expect(type).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute
+              end
+
+            end
+          end
+        end
+      end
+
+
+      describe '2nd attribute' do
+        let(:context) { attributes[1] }
+
+        specify 'class' do
+          expect(context).
+            to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute
+        end
+
+        specify 'name' do
+          expect(context.rm_attribute_name).
+            to eq 'context'
+        end
+
+        specify 'context' do
+          expect(context.existence).to eq OPTIONAL
+        end
+
+        context 'children' do
+          specify 'size' do
+            expect(context.children.size).to eq 1
+          end
+
+          let(:child2_1) { context.children[0] }
+
+          specify 'class' do
+            expect(child2_1).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CComplexObject
+          end
+
+          specify 'rm_type_name' do
+            expect(child2_1.rm_type_name).
+              to eq 'EVENT_CONTEXT'
+          end
+
+          specify 'occurrence' do
+            expect(child2_1.occurrences).
+              to eq MANDATORY
+          end
+
+          example 'node_id taken over form the parent' do
+            expect(child2_1.node_id).to eq 'at0000'
+          end
+
+          context 'attributes' do
+            specify 'size' do
+              expect(child2_1.attributes.size).to eq 1
+            end
+
+            let(:other_context) { child2_1.attributes[0] }
+
+            specify 'class' do
+              expect(other_context).
+                to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute
+            end
+
+            specify 'rm_attribute_name' do
+              expect(other_context.rm_attribute_name).
+                to eq 'other_context'
+            end
+
+            specify 'existence' do
+              expect(other_context.existence).to eq OPTIONAL
+            end
+
+            context 'children' do
+              specify 'size' do
+                expect(other_context.children.size).to eq 1
+              end
+
+              let(:child) { other_context.child[0] }
+
+              
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'component_terminologies' do

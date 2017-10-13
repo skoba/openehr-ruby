@@ -1,5 +1,5 @@
-require  File.dirname(__FILE__) + '/../../../spec_helper'
-
+require_relative  File.dirname(__FILE__) + '/../../../spec_helper'
+require_relative File.dirname(__FILE__) + '/../adl_parser/parser_spec_helper'
 module OpenEHR
   module RM
     describe Factory do

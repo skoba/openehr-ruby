@@ -42,6 +42,5 @@ require_relative 'rm/demographic'
 #Integration Information Model
 require_relative 'rm/integration'
 
-
+#factory and builder
 require_relative 'rm/factory'
-require_relative 'rm/builder'
