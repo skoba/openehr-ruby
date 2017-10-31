@@ -24,7 +24,7 @@
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
-guard :rspec, cmd: "bundle exec rspec" do
+ guard :rspec, cmd: "bundle exec rspec", all_after_pass: true do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
 
@@ -39,4 +39,9 @@ guard :rspec, cmd: "bundle exec rspec" do
   # Ruby files
   ruby = dsl.ruby
   dsl.watch_spec_files_for(ruby.lib_files)
+
+  # parser
+  watch('lib/openehr/parser.rb') { rspec.spec_dir }
+  watch('lib/openehr/parser/adl_grammar.tt') { rspec.spec_dir }
+  watch(%r{lib/openehr/.+\.rb'}) { rspec.spec_dir }
 end

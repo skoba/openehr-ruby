@@ -574,7 +574,7 @@ module OpenEHR
               path = node.path + id.value
             elsif node.id
               path = node.path + "[#{node.id}]/" + id.value
-            elsif
+            else
               path = node.path + '/' + id.value
             end
             OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(
@@ -590,7 +590,7 @@ module OpenEHR
               path = node.path + id.value
             elsif node.id
               path = node.path + "[#{node.id}]/" + id.value
-            elsif
+            else
               path = node.path + '/' + id.value
             end
             OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(

@@ -1,3 +1,5 @@
+AllCops:
+  CacheRootDirectory: /tmp/cache
 inherit_gem:
   meowcop:
     - config/rubocop.yml

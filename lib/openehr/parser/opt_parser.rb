@@ -83,14 +83,7 @@ module OpenEHR
       end
 
       def definition
-        root_rm_type = text_on_path(@opt, DEFINITION_PATH + '/rm_type_name')
-        root_node = Node.new
-        root_node.id = text_on_path(@opt, DEFINITION_PATH + '/node_id')
-        root_occurrences = occurrences(@opt.xpath(DEFINITION_PATH + OCCURRENCE_PATH))
-        root_archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(@opt, DEFINITION_PATH+'/archetype_id/value'))
-        root_node.path = "/[#{root_archetype_id.value}]"
-        component_terminologies(root_archetype_id, @opt.xpath(DEFINITION_PATH))
-        OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: root_rm_type, node_id: root_node.id, path: root_node.path, occurrences: root_occurrences, archetype_id: root_archetype_id, attributes: attributes(@opt.xpath(DEFINITION_PATH+'/attributes'), root_node))
+        c_archetype_root @opt.xpath(DEFINITION_PATH)
       end
 
       def component_terminologies(archetype_id, nodes)
@@ -127,9 +120,9 @@ module OpenEHR
         occurrences = occurrences(xml.xpath('./occurrences'))
         archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(xml, './archetype_id/value'))
         if node.root? or node.id.nil?
-          node.path = "/[#{archetype_id.value}]"
-        else
-          node.path += "/[#{archetype_id.value}]"
+          node.path = "/"
+        # else
+        #   node.path += "/"  #"/[#{archetype_id.value}]"
         end
         component_terminologies(archetype_id, xml)
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, attributes: attributes(xml.xpath('./attributes'), node))
@@ -140,61 +133,51 @@ module OpenEHR
         node_id = xml.xpath('./node_id').text
         unless node_id.nil? or node_id.empty?
           node.id = node_id
-          node.path += "[#{node_id}]"
+          node.path = "#{node.path}[#{node.id}]"
         end
         OpenEHR::AM::Archetype::ConstraintModel::CComplexObject.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences(xml.xpath('./occurrences')), attributes: attributes(xml.xpath('./attributes'), node))
       end
 
       def attributes(attributes_xml, node)
         attributes_xml.map do |attr|
-          send attr.attributes['type'].text.downcase, attr, node
+          rm_attribute_name = attr.at('rm_attribute_name').text
+          if node.root?
+            path = "/#{rm_attribute_name}"
+          # elsif node.id
+          #   path = "#{node.path}[#{node.id}]/#{rm_attribute_name}"
+          else
+            path = "#{node.path}/#{rm_attribute_name}"
+          end
+          child_node = Node.new(node)
+          child_node.path = path
+          child_node.id = node.id
+          send attr.attributes['type'].text.downcase, attr, child_node
         end
       end
 
       def children(children_xml, node)
         children_xml.map do |child|
-            send child.attributes['type'].text.downcase, child, node
+          send child.attributes['type'].text.downcase, child, node
         end
       end
 
       def c_single_attribute(attr_xml, node)
         rm_attribute_name = attr_xml.at('rm_attribute_name').text
         existence = occurrences(attr_xml.at('existence'))
-        if node.root?
-          path = "/#{rm_attribute_name}"
-        elsif node.id
-          path = "#{node.path}[#{node.id}]/#{rm_attribute_name}"
-        else
-          path = "#{node.path}/#{rm_attribute_name}"
-        end
-        child_node = Node.new(node)
-        child_node.path = node.path
-        child_node.id = node.id
-        OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: path, children: children(attr_xml.xpath('./children'), child_node))
+        OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: node.path, children: children(attr_xml.xpath('./children'), node))
       end
 
       def c_multiple_attribute(attr_xml, node)
         rm_attribute_name = attr_xml.at('rm_attribute_name').text
         existence = occurrences(attr_xml.at('existence'))
-        if node.root?
-          path = "/#{rm_attribute_name}"
-        elsif node.id
-          path = "#{node.path}[#{node.id}]/#{rm_attribute_name}"
-        else
-          path = "#{node.path}/#{rm_attribute_name}"
-        end
-        child_node = Node.new(node)
-        child_node.path = node.path
-        child_node.id = node.id
-        OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: path, children: children(attr_xml.xpath('./children'), child_node))
+        OpenEHR::AM::Archetype::ConstraintModel::CMultipleAttribute.new(rm_attribute_name: rm_attribute_name, existence: existence, path: node.path, cardinality: cardinality(attr_xml), children: children(attr_xml.xpath('./children'), node))
       end
 
       def c_code_phrase(attr_xml, node)
         terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('terminology_id/value').text.strip)
-        path = node.path
         code_list = attr_xml.xpath('code_list').text.strip
         occurrences = occurrences(attr_xml.at('occurrences'))
-        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(terminology_id: terminology_id, code_list: [code_list], path: path, occurrences: occurrences, rm_type_name: 'CodePhrase')
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(terminology_id: terminology_id, code_list: [code_list], path: node.path, occurrences: occurrences, rm_type_name: 'CodePhrase')
       end
 
       def archetype_slot(attr_xml,node)
@@ -218,6 +201,13 @@ module OpenEHR
         upper_included = to_bool(occurrence_xml.at('upper_included'))
         OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
       end
+
+      def cardinality(xml)
+        order = to_bool(xml.at('is_ordered').text)
+        unique = to_bool(xml.at('is_unique').text)
+        interval = occurrences(xml)
+        OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(is_ordered: order, is_unique: unique, interval: interval)
+      end        
 
       def constraint_ref(attr_xml, node)
         rm_type_name = attr_xml.at('rm_type_name').text
@@ -257,12 +247,19 @@ module OpenEHR
       def c_primitive_object(attr_xml, node)
         rm_type_name = attr_xml.at('rm_type_name').text
         occurrences = occurrences(attr_xml.at('occurrences'))
-        OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(rm_type_name: rm_type_name, occurrences: occurrences, node_id: node.id)
+        item = send attr_xml.at('item')['type'].downcase, attr_xml.at('item')
+        OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(rm_type_name: rm_type_name, occurrences: occurrences, node_id: node.id, item: item)
       end
-      
+
       def c_string(attr_xml)
-        pattern = attr_xml.at('pattern').text
-        OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(pattern: pattern)
+        if attr_xml.at('pattern')
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(pattern: attr_xml.at('pattern').text)
+        else
+          list = attr_xml.xpath('.//list').map do |str|
+            str.text
+          end
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CString.new(list: list)
+        end
       end
 
       def c_dv_quantity(attr_xml, node)
@@ -278,6 +275,21 @@ module OpenEHR
           OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(magnitude: magnitude, precision: precision, units: units)
         end
         OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity.new(rm_type_name: rm_type_name, occurrences: occurrences, list: list, property: property)
+      end
+
+      def c_date(xml)
+
+      end
+
+      def c_date_time(xml)
+        
+      end
+
+      def c_integer(xml)
+
+      end
+
+      def c_boolean(xml)
       end
 
       def string(attr_xml)
