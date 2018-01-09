@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.require_path  = "lib"
 
-  gem.add_runtime_dependency('rake')
+  gem.add_dependency('rake')
   gem.add_dependency('xml-simple')
   gem.add_dependency('activesupport')
   gem.add_dependency('locale')
