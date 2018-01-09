@@ -7,9 +7,9 @@ A Ruby implementation of the openEHR specifications
 
 = Requirements
 
-* Supports CRuby 2.2.8, 2.3.5, 2.4.2 or equivalents.
-* Developed with CRuby 2.4.1 on FreeBSD and Linux.
-* Ruby 2.1 or earlier are no longer supported.
+* Supports CRuby 2.3.6, 2.4.3, 2.5.0  or equivalents.
+* Developed with CRuby 2.5.0 on FreeBSD and Linux.
+* Ruby 2.2 or earlier are no longer supported.
 
 =Description
 
@@ -66,7 +66,7 @@ All Rights Reserved.
 
 This product is released under Apache 2.0 license
 
-   Copyright [2012-2014] openEHR Ruby implementation project.
+   Copyright [2012-2018] openEHR Ruby implementation project.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
