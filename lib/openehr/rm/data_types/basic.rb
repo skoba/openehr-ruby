@@ -31,9 +31,13 @@ module OpenEHR
 
           def value=(value)
             raise ArgumentError, "value must not be nil" if value.nil?
-            if value == true or /TRUE/i =~ value
+            if value == true
               @value = true
-            else
+            elsif  value == false
+              @value = false
+            elsif /TRUE/i =~ value
+              @value = true
+            elsif /FALSE/i =~ value
               @value = false
             end
           end
