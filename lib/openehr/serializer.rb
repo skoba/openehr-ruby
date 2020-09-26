@@ -14,6 +14,10 @@ module OpenEHR
       def serialize
         return self.merge
       end
+
+      private
+      def merge
+      end
     end
 
     class ADLSerializer < BaseSerializer
@@ -248,6 +252,18 @@ module OpenEHR
           ontology + '</archetype>'
         return archetype
       end
+    end
+
+    class OPTSerializer < BaseSerializer
+      def initialize(opt, format:)
+        
+      end
+
+      def header
+        name
+      end
+
+      
     end
   end
 end
