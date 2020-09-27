@@ -105,7 +105,7 @@ describe 'minimum_template' do
 
       describe '1st attribute' do
         let(:category) { attributes[0] }
-p
+
         specify 'type' do
           expect(category).to be_an_instance_of OpenEHR::AM::Archetype::ConstraintModel::CSingleAttribute
         end

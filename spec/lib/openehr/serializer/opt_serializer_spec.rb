@@ -1,3 +1,4 @@
+# coding: utf-8
 include OpenEHR::Serializer
 OPT_FILE = File.join(File.dirname(__FILE__), '../opt_parser/minimum_template.opt')
 
@@ -13,11 +14,16 @@ describe OPTSerializer do
   it { is_expected.to be_an_instance_of OPTSerializer }
 
   context 'JSON format' do
-    describe 
-    xit 'shows header information by JSON' do
-      expect(opt.header).to eq OPT_HEADER
-    end
+    describe 'header' do
+      it 's name should be　Problem/Diagnosis' do
+        expect(opt.name).to eq 'minimum'
+      end
 
+      xit 'shows header information by JSON' do
+        expect(opt.header).to eq OPT_HEADER
+      end
+    end
+    
     it 'shows context information by JSON'
 
     it 'shows content infromation by JSON'
@@ -27,7 +33,7 @@ end
 OPT_HEADER =<<END
     "name": {
         "_type": "DV_TEXT",
-        "value": "Health summary"
+        "value": "Problem/Diagnosis"
     },
     "archetype_details": {
         "_type": "ARCHETYPED",

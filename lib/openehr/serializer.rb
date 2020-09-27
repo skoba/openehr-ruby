@@ -256,14 +256,18 @@ module OpenEHR
 
     class OPTSerializer < BaseSerializer
       def initialize(opt, format:)
-        
+        @opt = OpenEHR::Parser::OPTParser.new(opt).parse
+      end
+
+      def name
+        @opt.definition.archetype_id.concept_name
       end
 
       def header
-        name
+
       end
 
-      
+
     end
   end
 end
