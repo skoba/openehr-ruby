@@ -309,9 +309,9 @@ module OpenEHR
       end
 
       def to_bool(str)
-        if str =~ /true/i
+        if /true/i =~ str
           return true
-        elsif str =~ /false/i
+        elsif /false/i =~ str
           return false
         end
         return nil
