@@ -3,6 +3,10 @@ require_relative File.dirname(__FILE__) + '/../adl_parser/parser_spec_helper'
 module OpenEHR
   module RM
     describe Factory do
+      describe CompositionFactory do
+        
+      end
+
       describe DvBooleanFactory do
         subject { Factory.create('DvBoolean', value: true) }
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Basic::DvBoolean }
