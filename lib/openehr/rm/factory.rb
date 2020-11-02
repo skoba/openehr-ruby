@@ -208,21 +208,27 @@ module OpenEHR
       end
     end
 
-    class OBSERVATIONFactory
+    class ObservationFactory
       def self.create(*param)
         Composition::Content::Entry::Observation.new(*param)
       end
     end
 
-    class SECTIONFactory
+    class SectionFactory
       def self.create(*param)
         Composition::Content::Navigation::Section.new(*param)
       end
     end
 
-    class CLUSTERFactory
+    class ClucterFactory
       def self.create(*param)
         DataStructures::ItemStructure::Representation::Cluster.new(*param)
+      end
+    end
+
+    class CompositionFactory
+      def self.create(*param)
+        Composiiton.new(*param)
       end
     end
   end
