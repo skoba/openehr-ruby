@@ -95,7 +95,7 @@ module OpenEHR
           attr_reader :archetype_id, :rm_version
           attr_accessor :template_id
 
-          def initialize(args = { })
+          def initialize(**args)
             self.archetype_id = args[:archetype_id]
             self.rm_version = args[:rm_version]
             self.template_id = args[:template_id]

@@ -4,12 +4,8 @@ require_relative File.dirname(__FILE__) + '/../adl_parser/parser_spec_helper'
 module OpenEHR
   module RM
     describe Factory do
-      describe CompositionFactory do
-        
-      end
-
       describe DvBooleanFactory do
-        subject { Factory.create('DvBoolean', value: true) }
+        subject { Factory.create('DV_BOOLEAN', {value: true}) }
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Basic::DvBoolean }
       end
 
@@ -26,14 +22,8 @@ module OpenEHR
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Basic::DvIdentifier }
       end
 
-      describe DvTextFactory do
-        subject { Factory.create("DvText", value: 'text') }
-
-        it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Text::DvText }
-      end
-
       context "DV_TEXT mapped to camelized RM type" do
-        subject { Factory.create('DV_TEXT', value:'text') }
+        subject { Factory.create('DV_TEXT', value: 'text') }
 
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Text::DvText }
       end
@@ -103,13 +93,13 @@ module OpenEHR
       end
 
       describe DvQuantityFactory do
-        subject { Factory.create("DvQuantity", magnitude: 10, units: 'mg') }
+        subject { Factory.create('DV_QUANTITY', magnitude: 10, units: 'mg') }
 
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Quantity::DvQuantity }
       end
 
       describe DvCountFactory do
-        subject { Factory.create("DV_COUNT", magnitude: 3) }
+        subject { Factory.create('DV_COUNT', magnitude: 3) }
 
         it { is_expected.to be_an_instance_of DataTypes::Quantity::DvCount }
       end
@@ -173,7 +163,7 @@ module OpenEHR
       end
 
       describe DvParsableFactory do
-        subject { Factory.create('DvParsable', value: 'test', formalism: 'plain/text') }
+        subject { Factory.create('DV_PARSABLE', value: 'test', formalism: 'plain/text') }
 
         it { is_expected.to be_an_instance_of DataTypes::Encapsulated::DvParsable }
       end
@@ -199,8 +189,10 @@ module OpenEHR
       end
 
       describe CompositionFactory do
-        let(:params) { JSON.parse(COMPOSITION_JSON) }
-        subject { Factory.create('Composition',params: params )}
+        let(:composition) { CompositionFactory.create_from_json(COMPOSITION_JSON )}
+        subject { composition }
+
+        it { is_expected.to be_an_instance_of ::OpenEHR::RM::Composition::Composition }
       end
     end
   end
@@ -250,7 +242,7 @@ COMPOSITION_JSON=<<END
                 "_type": "TERMINOLOGY_ID",
                 "value": "openehr"
             },
-            "code_string": 433
+            "code_string": "433"
         }
     },
     "composer": {
@@ -284,7 +276,7 @@ COMPOSITION_JSON=<<END
                     "value": "9091",
                     "scheme": "Wako Hospital"
                 },
-                "namespace": "Wako hospital",
+                "namespace": "local",
                 "type": "PARTY"
             },
             "name": "Wako Hospital"

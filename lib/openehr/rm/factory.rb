@@ -8,10 +8,26 @@ module OpenEHR
       end
 
       class << self
-        def create(type, *param)
-          type = type.downcase.camelize if type.include? '_'
-          class_eval("#{type}Factory").create(*param)
+        def create(type, **param)
+          if type.include? '_'
+            type = type.downcase.camelize
+          else
+            type = type.capitalize
+          end
+          class_eval("#{type}Factory").create(params(param))
         end
+
+        def params(param)
+          param.each_with_object({}) do |item, parameters|
+            key = item.shift
+            value = item.shift
+            if value.instance_of? Hash
+              parameters[key] = Factory.create(value[:_type], value)
+            else
+              parameters[key] = value
+            end
+          end
+        end          
       end
 
       def build
@@ -220,16 +236,75 @@ module OpenEHR
       end
     end
 
-    class ClucterFactory
-      def self.create(*param)
-        DataStructures::ItemStructure::Representation::Cluster.new(*param)
+    class ClusterFactory
+      def self.create(param)
+        DataStructures::ItemStructure::Representation::Cluster.new(param)
       end
     end
 
-    class CompositionFactory
-      def self.create(*param)
-        Composiiton.new(*param)
+    class ArchetypedFactory
+      def self.create(param)
+        OpenEHR::RM::Common::Archetyped::Archetyped.new(param)
+      end
+    end
+
+    class ArchetypeIdFactory
+      def self.create(param)
+        OpenEHR::RM::Support::Identification::ArchetypeID.new(param)
+      end
+    end
+
+    class TemplateIdFactory
+      def self.create(param)
+        OpenEHR::RM::Support::Identification::TemplateID.new(param)
+      end
+    end
+
+    class TerminologyIdFactory
+      def self.create(param)
+        OpenEHR::RM::Support::Identification::TerminologyID.new(param)
+      end
+    end
+
+    class GenericIdFactory
+      def self.create(param)
+        OpenEHR::RM::Support::Identification::GenericID.new(param)
+      end
+    end
+
+    class PartyRefFactory
+      def self.create(param)
+        OpenEHR::RM::Support::Identification::PartyRef.new(param)
+      end
+    end
+
+    class PartyIdentifiedFactory
+      def self.create(param)
+        OpenEHR::RM::Common::Generic::PartyIdentified.new(param)
+      end
+    end
+
+    class EventContextFactory
+      def self.create(param)
+        OpenEHR::RM::Composition::EventContext.new(param)
+      end
+    end
+
+    class TermMappingFactory
+      def self.create(param)
+        OpenEHR::RM::DataTypes::Text::TermMapping.new(param)
+      end
+    end
+
+    class CompositionFactory < Factory
+      class << self
+        def create_from_json(json)
+          hash = JSON.parse(json, {max_nesting: false, symbolize_names: true})
+          OpenEHR::RM::Composition::Composition.new(params(hash))
+        end
       end
     end
   end
 end
+
+
