@@ -5,7 +5,7 @@ module OpenEHR
   module RM
     describe Factory do
       describe DvBooleanFactory do
-        subject { Factory.create('DV_BOOLEAN', {value: true}) }
+        subject { Factory.create('DV_BOOLEAN', value: true) }
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Basic::DvBoolean }
       end
 
@@ -189,7 +189,7 @@ module OpenEHR
       end
 
       describe CompositionFactory do
-        let(:composition) { CompositionFactory.create_from_json(COMPOSITION_JSON )}
+        let(:composition) { CompositionFactory.create_from_json(COMPOSITION_JSON)}
         subject { composition }
 
         it { is_expected.to be_an_instance_of ::OpenEHR::RM::Composition::Composition }

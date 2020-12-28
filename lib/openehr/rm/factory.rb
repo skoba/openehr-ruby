@@ -22,7 +22,7 @@ module OpenEHR
             key = item.shift
             value = item.shift
             if value.instance_of? Hash
-              parameters[key] = Factory.create(value[:_type], value)
+              parameters[key] = Factory.create(value[:_type], **value)
             else
               parameters[key] = value
             end
@@ -171,68 +171,68 @@ module OpenEHR
     end
     
     class DvDateFactory
-      def self.create(*param)
-        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(*param)
+      def self.create(param)
+        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(param)
       end
     end
 
     class DvTimeFactory
-      def self.create(*param)
-        DataTypes::Quantity::DateTime::DvTime.new(*param)
+      def self.create(param)
+        DataTypes::Quantity::DateTime::DvTime.new(param)
       end
     end
 
     class DvDateTimeFactory
-      def self.create(*param)
-        DataTypes::Quantity::DateTime::DvDateTime.new(*param)
+      def self.create(param)
+        DataTypes::Quantity::DateTime::DvDateTime.new(param)
       end
     end
 
     class DvDurationFactory
-      def self.create(*param)
-        DataTypes::Quantity::DateTime::DvDuration.new(*param)
+      def self.create(param)
+        DataTypes::Quantity::DateTime::DvDuration.new(param)
       end
     end
 
     class DvEncapsulatedFactory
-      def self.create(*param)
-        DataTypes::Encapsulated::DvEncapsulated.new(*param)
+      def self.create(param)
+        DataTypes::Encapsulated::DvEncapsulated.new(param)
       end
     end
 
     class DvMultimediaFactory
-      def self.create(*param)
-        DataTypes::Encapsulated::DvMultimedia.new(*param)
+      def self.create(param)
+        DataTypes::Encapsulated::DvMultimedia.new(param)
       end
     end
 
     class DvParsableFactory
-      def self.create(*param)
-        DataTypes::Encapsulated::DvParsable.new(*param)
+      def self.create(param)
+        DataTypes::Encapsulated::DvParsable.new(param)
       end
     end
 
     class DvUriFactory
-      def self.create(*param)
-        DataTypes::URI::DvUri.new(*param)
+      def self.create(param)
+        DataTypes::URI::DvUri.new(param)
       end
     end
 
     class DvEhrUriFactory
-      def self.create(*param)
-        DataTypes::URI::DvEhrUri.new(*param)
+      def self.create(param)
+        DataTypes::URI::DvEhrUri.new(param)
       end
     end
 
     class ObservationFactory
-      def self.create(*param)
-        Composition::Content::Entry::Observation.new(*param)
+      def self.create(param)
+        Composition::Content::Entry::Observation.new(param)
       end
     end
 
     class SectionFactory
-      def self.create(*param)
-        Composition::Content::Navigation::Section.new(*param)
+      def self.create(param)
+        Composition::Content::Navigation::Section.new(param)
       end
     end
 
@@ -244,7 +244,7 @@ module OpenEHR
 
     class ArchetypedFactory
       def self.create(param)
-        OpenEHR::RM::Common::Archetyped::Archetyped.new(param)
+        OpenEHR::RM::Common::Archetyped::Archetyped.new(**param)
       end
     end
 
@@ -299,7 +299,7 @@ module OpenEHR
     class CompositionFactory < Factory
       class << self
         def create_from_json(json)
-          hash = JSON.parse(json, {max_nesting: false, symbolize_names: true})
+          hash = JSON.parse(json, max_nesting: false, symbolize_names: true)
           OpenEHR::RM::Composition::Composition.new(params(hash))
         end
       end
