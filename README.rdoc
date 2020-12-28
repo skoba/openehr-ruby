@@ -7,9 +7,9 @@ A Ruby implementation of the openEHR specifications
 
 = Requirements
 
-* Supports CRuby 2.3.6, 2.4.3, 2.5.0  or equivalents.
-* Developed with CRuby 2.5.0 on FreeBSD and Linux.
-* Ruby 2.2 or earlier are no longer supported.
+* Supports CRuby 2.5.0  or later.
+* Developed with CRuby 3.0.0 on FreeBSD and Linux.
+* Ruby 2.4 or earlier are no longer supported.
 
 =Description
 
@@ -34,7 +34,7 @@ This package excludes:
 * Terminology service(moved to openehr-terminology package)
 * Rails plugin(moved to openehr-rails package
 
-Almost all classes passed the test constructed by RSpec2. These spec
+Almost all classes passed the test constructed by RSpec23 These spec
 files are under /spec.
 
 Some specifications are not well determined yet, such as rm/security
@@ -66,7 +66,7 @@ All Rights Reserved.
 
 This product is released under Apache 2.0 license
 
-   Copyright [2012-2018] openEHR Ruby implementation project.
+   Copyright [2012-2020] openEHR Ruby implementation project.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
