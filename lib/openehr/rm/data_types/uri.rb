@@ -24,7 +24,6 @@ module URI
       true
     end
   end
-  @@schemes['EHR'] = EHR
 end
 
 module OpenEHR
