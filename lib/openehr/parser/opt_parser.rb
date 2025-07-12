@@ -39,9 +39,24 @@ module OpenEHR
       def parse
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         @opt.remove_namespaces!
+        
         uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
         defs = definition
-        OpenEHR::AM::Template::OperationalTemplate.new(uid: uid, concept: concept, language: language, description: description, template_id: template_id, definition: defs, component_terminologies: @component_terminologies)
+        
+        # Create operational template with archetype-compatible parameters
+        OpenEHR::AM::Template::OperationalTemplate.new(
+          uid: uid,
+          concept: concept,
+          original_language: language,
+          description: description,
+          template_id: template_id,
+          archetype_id: template_id,  # Use template_id as archetype_id for compatibility
+          definition: defs,
+          ontology: create_template_ontology,
+          component_terminologies: @component_terminologies || {},
+          terminology_extracts: @component_terminologies || {},
+          adl_version: "1.4"
+        )
       end
 
       private
@@ -90,6 +105,30 @@ module OpenEHR
         @component_terminologies ||= Hash.new
         @component_terminologies[archetype_id.value] =
           archetype_terminology(nodes)
+      end
+
+      def create_template_ontology
+        # Create a basic ontology for the template using the main concept
+        concept_code = 'at0000'
+        original_lang = language
+        
+        term_definitions = {
+          original_lang.code_string => [
+            OpenEHR::AM::Archetype::Terminology::ArchetypeTerm.new(
+              code: concept_code,
+              items: {
+                'text' => concept || 'Template',
+                'description' => 'Operational template'
+              }
+            )
+          ]
+        }
+        
+        OpenEHR::AM::Archetype::Terminology::ArchetypeTerminology.new(
+          concept_code: concept_code,
+          original_language: original_lang,
+          term_definitions: term_definitions
+        )
       end
 
       def archetype_terminology(nodes)

@@ -54,5 +54,21 @@ puts "  Path: #{template2.definition.path}"
 puts "  Archetype ID: #{template2.definition.archetype_id.value}"
 puts "  Attributes: #{template2.definition.attributes.size}"
 
+# Test openEHR specification compliance
+puts "\n\n3. Testing openEHR Specification Compliance:"
+puts "Template inheritance from Archetype: #{template.is_a?(OpenEHR::AM::Archetype::Archetype)}"
+puts "Has archetype_id: #{template.respond_to?(:archetype_id)}"
+puts "Has original_language: #{template.respond_to?(:original_language)}"
+puts "Has ontology: #{template.respond_to?(:ontology)}"
+puts "Has terminology_extracts: #{template.respond_to?(:terminology_extracts)}"
+puts "Is valid operational template: #{template.is_valid_operational_template?}"
+puts "Archetype ID matches template ID: #{template.archetype_id == template.template_id}"
+puts "Referenced archetype IDs: #{template.referenced_archetype_ids.size} archetypes"
+
+# Test backward compatibility
+puts "\n4. Backward Compatibility:"
+puts "Language method works: #{template.language.code_string == template.original_language.code_string}"
+puts "Concept access: #{template.concept}"
+
 puts "\nDemo completed successfully!"
-puts "OPT parser can successfully create Template instances from .opt files."
+puts "OPT parser creates openEHR specification-compliant Template instances from .opt files."
