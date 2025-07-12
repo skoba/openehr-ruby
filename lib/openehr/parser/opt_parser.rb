@@ -174,10 +174,23 @@ module OpenEHR
       end
 
       def c_code_phrase(attr_xml, node)
-        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('terminology_id/value').text.strip)
-        code_list = attr_xml.xpath('code_list').text.strip
-        occurrences = occurrences(attr_xml.at('occurrences'))
-        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(terminology_id: terminology_id, code_list: [code_list], path: node.path, occurrences: occurrences, rm_type_name: 'CodePhrase')
+        terminology_id_node = attr_xml.at('terminology_id/value')
+        terminology_id = terminology_id_node ? OpenEHR::RM::Support::Identification::TerminologyID.new(value: terminology_id_node.text.strip) : nil
+        
+        code_list_nodes = attr_xml.xpath('code_list')
+        code_list = code_list_nodes.map { |code_node| code_node.text.strip }
+        code_list = [code_list.first] if code_list.size == 1 && code_list.first.empty?
+        
+        occurrences_node = attr_xml.at('occurrences')
+        occurrences_obj = occurrences_node ? occurrences(occurrences_node) : nil
+        
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+          terminology_id: terminology_id, 
+          code_list: code_list, 
+          path: node.path, 
+          occurrences: occurrences_obj, 
+          rm_type_name: 'CODE_PHRASE'
+        )
       end
 
       def archetype_slot(attr_xml,node)
@@ -193,20 +206,57 @@ module OpenEHR
       end
 
       def occurrences(occurrence_xml)
+        return nil if occurrence_xml.nil?
+        
         lower_node = occurrence_xml.at('lower')
         upper_node = occurrence_xml.at('upper')
-        lower = lower_node.text.to_i if lower_node
-        upper = upper_node.text.to_i if upper_node
-        lower_included = to_bool(occurrence_xml.at('lower_included'))
-        upper_included = to_bool(occurrence_xml.at('upper_included'))
-        OpenEHR::AssumedLibraryTypes::Interval.new(lower: lower, upper: upper, lower_included: lower_included, upper_included: upper_included)
+        lower_included_node = occurrence_xml.at('lower_included')
+        upper_included_node = occurrence_xml.at('upper_included')
+        lower_unbounded_node = occurrence_xml.at('lower_unbounded')
+        upper_unbounded_node = occurrence_xml.at('upper_unbounded')
+        
+        lower = lower_node ? lower_node.text.to_i : nil
+        upper = upper_node ? upper_node.text.to_i : nil
+        lower_included = lower_included_node ? to_bool(lower_included_node.text) : (lower.nil? ? nil : true)
+        upper_included = upper_included_node ? to_bool(upper_included_node.text) : (upper.nil? ? nil : true)
+        lower_unbounded = lower_unbounded_node ? to_bool(lower_unbounded_node.text) : false
+        upper_unbounded = upper_unbounded_node ? to_bool(upper_unbounded_node.text) : false
+        
+        # Handle unbounded intervals properly
+        if upper_unbounded || upper.nil?
+          upper = nil
+          upper_included = nil
+        end
+        
+        if lower_unbounded || lower.nil?
+          lower = nil
+          lower_included = nil
+        end
+        
+        OpenEHR::AssumedLibraryTypes::Interval.new(
+          lower: lower, 
+          upper: upper, 
+          lower_included: lower_included, 
+          upper_included: upper_included
+        )
       end
 
       def cardinality(xml)
-        order = to_bool(xml.at('is_ordered').text)
-        unique = to_bool(xml.at('is_unique').text)
-        interval = occurrences(xml)
-        OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(is_ordered: order, is_unique: unique, interval: interval)
+        return nil if xml.nil?
+        
+        order_node = xml.at('is_ordered')
+        unique_node = xml.at('is_unique')
+        interval_node = xml.at('interval')
+        
+        order = order_node ? to_bool(order_node.text) : false
+        unique = unique_node ? to_bool(unique_node.text) : false
+        interval = interval_node ? occurrences(interval_node) : nil
+        
+        OpenEHR::AM::Archetype::ConstraintModel::Cardinality.new(
+          is_ordered: order, 
+          is_unique: unique, 
+          interval: interval
+        )
       end        
 
       def constraint_ref(attr_xml, node)
@@ -278,18 +328,56 @@ module OpenEHR
       end
 
       def c_date(xml)
-
+        pattern = xml.at('pattern')
+        range = xml.at('range')
+        if pattern
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new(pattern: pattern.text)
+        elsif range
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new(range: occurrences(range))
+        else
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDate.new
+        end
       end
 
       def c_date_time(xml)
-        
+        pattern = xml.at('pattern')
+        range = xml.at('range')
+        if pattern
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new(pattern: pattern.text)
+        elsif range
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new(range: occurrences(range))
+        else
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDateTime.new
+        end
       end
 
       def c_integer(xml)
-
+        range = xml.at('range')
+        list = xml.xpath('list')
+        if range
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(range: occurrences(range))
+        elsif !list.empty?
+          list_values = list.map { |item| item.text.to_i }
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(list: list_values)
+        else
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new
+        end
       end
 
       def c_boolean(xml)
+        true_valid = xml.at('true_valid')
+        false_valid = xml.at('false_valid')
+        assumed_value = xml.at('assumed_value')
+        
+        true_valid_value = true_valid ? to_bool(true_valid.text) : nil
+        false_valid_value = false_valid ? to_bool(false_valid.text) : nil
+        assumed_value_value = assumed_value ? to_bool(assumed_value.text) : nil
+        
+        OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(
+          true_valid: true_valid_value, 
+          false_valid: false_valid_value, 
+          assumed_value: assumed_value_value
+        )
       end
 
       def string(attr_xml)
@@ -309,12 +397,11 @@ module OpenEHR
       end
 
       def to_bool(str)
-        if /true/i =~ str
-          return true
-        elsif /false/i =~ str
-          return false
-        end
-        return nil
+        return nil if str.nil?
+        str = str.text if str.respond_to?(:text)
+        return true if /true/i =~ str.to_s
+        return false if /false/i =~ str.to_s
+        nil
       end
     end
   end
