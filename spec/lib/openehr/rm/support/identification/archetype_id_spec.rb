@@ -54,6 +54,28 @@ describe ArchetypeID do
     }.to raise_error ArgumentError
   end
 
+  context 'with a v0 (draft) version' do
+    before(:each) do
+      @archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-CLUSTER.exam.v0')
+    end
+
+    it 'should be accepted' do
+      expect(@archetype_id).to be_an_instance_of ArchetypeID
+    end
+
+    it 's version_id should be v0' do
+      expect(@archetype_id.version_id).to eq('v0')
+    end
+
+    it 's concept_name should be exam' do
+      expect(@archetype_id.concept_name).to eq('exam')
+    end
+
+    it 's value should round-trip' do
+      expect(@archetype_id.value).to eq('openEHR-EHR-CLUSTER.exam.v0')
+    end
+  end
+
   it 'should raise ArgumentError with nil concept name' do
     expect {
       @archetype_id.concept_name = nil

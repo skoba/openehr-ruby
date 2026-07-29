@@ -354,9 +354,7 @@ module OpenEHR
       def c_dv_quantity(attr_xml, node)
         rm_type_name = attr_xml.at('rm_type_name').text
         occurrences = occurrences(attr_xml.at('occurrences'))
-        property_terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: attr_xml.at('property/terminology_id/value').text)
-        property_code_string = attr_xml.at('property/code_string').text
-        property = OpenEHR::RM::DataTypes::Text::CodePhrase.new(terminology_id: property_terminology_id, code_string: property_code_string)
+        property = property_code_phrase(attr_xml.at('property'))
         list = attr_xml.xpath('.//list').map do |element|
           units = element.at('units').text if element.at('units')
           magnitude = occurrences(element.at('magnitude')) if element.at('magnitude')
@@ -364,6 +362,27 @@ module OpenEHR
           OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CQuantityItem.new(magnitude: magnitude, precision: precision, units: units)
         end
         OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity.new(rm_type_name: rm_type_name, occurrences: occurrences, list: list, property: property)
+      end
+
+      # The <property> element is optional in real templates; return nil rather
+      # than dereferencing missing terminology/code nodes.
+      def property_code_phrase(property_xml)
+        return nil if property_xml.nil?
+        terminology_node = property_xml.at('terminology_id/value')
+        code_node = property_xml.at('code_string')
+        return nil if terminology_node.nil? || code_node.nil?
+        terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: terminology_node.text)
+        OpenEHR::RM::DataTypes::Text::CodePhrase.new(terminology_id: terminology_id, code_string: code_node.text)
+      end
+
+      def c_dv_ordinal(attr_xml, node)
+        rm_type_name = attr_xml.at('rm_type_name').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        list = attr_xml.xpath('list').map do |element|
+          value_node = element.at('value')
+          value_node && !value_node.text.empty? ? value_node.text.to_i : nil
+        end.compact
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new(rm_type_name: rm_type_name, occurrences: occurrences, list: list)
       end
 
       def c_date(xml)
@@ -400,6 +419,33 @@ module OpenEHR
           OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new(list: list_values)
         else
           OpenEHR::AM::Archetype::ConstraintModel::Primitive::CInteger.new
+        end
+      end
+
+      def c_real(xml)
+        range = xml.at('range')
+        list = xml.xpath('list')
+        if range
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new(range: occurrences(range))
+        elsif !list.empty?
+          list_values = list.map { |item| item.text.to_f }
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new(list: list_values)
+        else
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal.new
+        end
+      end
+
+      def c_duration(xml)
+        pattern = xml.at('pattern')
+        list = xml.xpath('list')
+        if pattern
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(pattern: pattern.text)
+        elsif !list.empty?
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(list: list.map(&:text))
+        else
+          # ISO8601 duration ranges (e.g. PT24H) are not coerced into a numeric
+          # Interval; keep a bare CDuration so parsing never fails on them.
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new
         end
       end
 

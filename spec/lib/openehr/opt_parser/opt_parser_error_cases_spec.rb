@@ -287,10 +287,12 @@ module OpenEHR
               xml = double('xml')
               node = Node.new
               
+              property_xml = double('property')
               allow(xml).to receive(:at).with('rm_type_name').and_return(double(text: 'DV_QUANTITY'))
               allow(xml).to receive(:at).with('occurrences').and_return(double('occurrences'))
-              allow(xml).to receive(:at).with('property/terminology_id/value').and_return(double(text: 'openehr'))
-              allow(xml).to receive(:at).with('property/code_string').and_return(double(text: '382'))
+              allow(xml).to receive(:at).with('property').and_return(property_xml)
+              allow(property_xml).to receive(:at).with('terminology_id/value').and_return(double(text: 'openehr'))
+              allow(property_xml).to receive(:at).with('code_string').and_return(double(text: '382'))
               allow(xml).to receive(:xpath).with('.//list').and_return([])
               allow(parser).to receive(:occurrences).and_return(double('interval'))
               

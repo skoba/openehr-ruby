@@ -137,6 +137,31 @@ module OpenEHR
         end
       end
 
+      describe 'parsing a full template that uses the new constraint types' do
+        let(:opt_file) { File.join(File.dirname(__FILE__), './new_constraints_template.opt') }
+
+        # Flattens every constraint object reachable through the AOM tree so a
+        # spec can assert which constraint kinds the parser actually produced.
+        def collect(object, acc = [])
+          acc << object
+          object.attributes.each { |a| collect(a, acc) } if object.respond_to?(:attributes) && object.attributes
+          object.children.each { |c| collect(c, acc) } if object.respond_to?(:children) && object.children
+          collect(object.item, acc) if object.respond_to?(:item) && object.item
+          acc
+        end
+
+        it 'parses without raising' do
+          expect { OPTParser.new(opt_file).parse }.not_to raise_error
+        end
+
+        it 'builds CReal, CDuration and CDvOrdinal constraints from the template' do
+          classes = collect(OPTParser.new(opt_file).parse.definition).map(&:class)
+          expect(classes).to include(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CReal)
+          expect(classes).to include(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration)
+          expect(classes).to include(OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal)
+        end
+      end
+
       describe '#c_dv_quantity without a property' do
         let(:node) do
           fragment(<<~XML)

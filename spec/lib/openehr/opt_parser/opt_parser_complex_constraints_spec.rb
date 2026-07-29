@@ -212,8 +212,9 @@ module OpenEHR
             
             allow(xml).to receive(:at).with('rm_type_name').and_return(rm_type_node)
             allow(xml).to receive(:at).with('occurrences').and_return(occurrences_xml)
-            allow(xml).to receive(:at).with('property/terminology_id/value').and_return(property_term_id)
-            allow(xml).to receive(:at).with('property/code_string').and_return(property_code)
+            allow(xml).to receive(:at).with('property').and_return(property_xml)
+            allow(property_xml).to receive(:at).with('terminology_id/value').and_return(property_term_id)
+            allow(property_xml).to receive(:at).with('code_string').and_return(property_code)
             allow(xml).to receive(:xpath).with('.//list').and_return([list_item1, list_item2])
             
             allow(list_item1).to receive(:at).with('units').and_return(units1)

@@ -68,7 +68,7 @@ module OpenEHR
           end
 
           def value=(value)
-            if /([a-zA-Z]\w+)-([a-zA-Z]\w+)-([a-zA-Z]\w+)\.([a-zA-Z]\w+)(-([a-zA-Z]\w+))?\.(v[1-9]\d*)/ =~ value
+            if /([a-zA-Z]\w+)-([a-zA-Z]\w+)-([a-zA-Z]\w+)\.([a-zA-Z]\w+)(-([a-zA-Z]\w+))?\.(v\d+)/ =~ value
               self.rm_originator = $1
               self.rm_name = $2
               self.rm_entity = $3
