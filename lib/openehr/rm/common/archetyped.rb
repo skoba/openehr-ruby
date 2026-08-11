@@ -13,31 +13,138 @@ module OpenEHR
           MULTIPART_ID_DELIMITER = "::"
         end
 
+        # Raised by Pathable#item_at_path when a path predicate matches
+        # more than one child (e.g. a node_id shared by siblings with
+        # different names).
+        class PathNotUniqueError < StandardError; end
+
         class Pathable
           attr_accessor :parent
+
+          # Declares which of this class's attributes are exposed to
+          # path navigation, e.g. `path_attribute :data, :state`.
+          # Declarations accumulate down the inheritance chain.
+          def self.path_attribute(*attr_names)
+            @path_attributes ||= []
+            @path_attributes.concat(attr_names.map(&:to_sym))
+          end
+
+          def self.path_attributes
+            own = @path_attributes || []
+            self == Pathable ? own : superclass.path_attributes + own
+          end
 
           def initialize(args = { })
             self.parent = args[:parent]
           end
 
+          # The one-level-deep path-navigable children of this node, as
+          # {attribute_name_string => value}. Attributes whose value is
+          # nil are omitted; a value may itself be an Array (e.g. a
+          # CLUSTER's items).
+          def path_children
+            self.class.path_attributes.each_with_object({}) do |attr, hash|
+              value = send(attr)
+              hash[attr.to_s] = value unless value.nil?
+            end
+          end
+
           def item_at_path(path)
-            raise NotImplementedError, "item_at_path must be implemented"
+            matches = items_at_path(path)
+            case matches.size
+            when 0 then nil
+            when 1 then matches.first
+            else raise PathNotUniqueError, "path #{path} matches #{matches.size} items"
+            end
           end
 
           def items_at_path(path)
-            raise NotImplementedError, "items_at_path must be implemented"
+            path = self.class.normalize_path(path)
+            return [self] if path.root?
+
+            segment, rest = path.descend
+            children = path_children[segment.attribute]
+            return [] if children.nil?
+
+            matched = self.class.select_by_predicate(Array(children), segment)
+            return matched if rest.root?
+
+            matched.flat_map do |child|
+              child.is_a?(Pathable) ? child.items_at_path(rest) : []
+            end
           end
 
           def path_exists?(path)
-            raise NotImplementedError, "path_exists? must be implemented"
+            !items_at_path(path).empty?
           end
 
           def path_of_item(item)
-            raise NotImplementedError, "path_of_item must be implemented"
+            find_path_to(item, OpenEHR::Path.new([]))
           end
 
           def path_unique?(path)
-            raise NotImplementedError, "path_unique? must be implemented"
+            items_at_path(path).size == 1
+          end
+
+          def self.normalize_path(path)
+            path.is_a?(OpenEHR::Path) ? path : OpenEHR::Path.parse(path)
+          end
+
+          # Filters children matched by a path segment's predicate: a
+          # node_id predicate keeps only children whose
+          # archetype_node_id matches (non-Locatable children never
+          # match a node_id predicate); a name predicate further
+          # narrows to the child whose name.value matches.
+          def self.select_by_predicate(children, segment)
+            return children unless segment.predicate?
+
+            matched = children.select do |child|
+              child.respond_to?(:archetype_node_id) &&
+                child.archetype_node_id == segment.archetype_node_id
+            end
+            return matched if segment.name.nil?
+
+            matched.select do |child|
+              child.respond_to?(:name) && child.name.respond_to?(:value) &&
+                child.name.value == segment.name
+            end
+          end
+
+          private
+
+          def find_path_to(target, prefix)
+            return prefix.to_s if equal?(target)
+
+            self.class.path_attributes.each do |attr|
+              value = send(attr)
+              next if value.nil?
+
+              siblings = Array(value)
+              siblings.each do |child|
+                child_prefix = prefix + segment_for(attr, child, siblings)
+                if child.equal?(target)
+                  return child_prefix.to_s
+                elsif child.is_a?(Pathable)
+                  found = child.send(:find_path_to, target, child_prefix)
+                  return found if found
+                end
+              end
+            end
+            nil
+          end
+
+          def segment_for(attribute, child, siblings)
+            node_id = child.respond_to?(:archetype_node_id) ? child.archetype_node_id : nil
+            return OpenEHR::Path::Segment.new(attribute.to_s) if node_id.nil?
+
+            sharing_node_id = siblings.count do |sibling|
+              sibling.respond_to?(:archetype_node_id) && sibling.archetype_node_id == node_id
+            end
+            if sharing_node_id > 1 && child.respond_to?(:name) && child.name.respond_to?(:value)
+              OpenEHR::Path::Segment.new(attribute.to_s, archetype_node_id: node_id, name: child.name.value)
+            else
+              OpenEHR::Path::Segment.new(attribute.to_s, archetype_node_id: node_id)
+            end
           end
         end
 

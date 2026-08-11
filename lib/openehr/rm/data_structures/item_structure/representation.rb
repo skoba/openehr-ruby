@@ -22,6 +22,7 @@ module OpenEHR
 
             attr_accessor :value
             attr_reader :null_flavor
+            path_attribute :value, :null_flavour
             def initialize(args = {})
               super(args)
               self.value = args[:value]
@@ -46,6 +47,7 @@ module OpenEHR
 
           class Cluster < Item
             attr_reader :items
+            path_attribute :items
 
             def initialize(args = {})
               super(args)
@@ -56,6 +58,7 @@ module OpenEHR
               if !items.nil? and items.empty?
                 raise ArgumentError, 'items should not empty'
               end
+              items&.each { |item| item.parent = self if item.respond_to?(:parent=) }
               @items = items
             end
           end

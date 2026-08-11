@@ -120,6 +120,7 @@ module OpenEHR
       class EHRStatus < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :subject
         attr_accessor :is_modifiable, :is_queryable, :other_details
+        path_attribute :other_details
 
         def initialize(args = { })
           super(args)

@@ -54,6 +54,7 @@ module OpenEHR
 
           class AdminEntry < Entry
             attr_reader :data
+            path_attribute :data
 
             def initialize(args = { })
               super(args)
@@ -67,6 +68,7 @@ module OpenEHR
           end
           class CareEntry < Entry
             attr_accessor :protocol, :guideline_id
+            path_attribute :protocol
 
             def initialize(args = { })
               super(args)
@@ -78,6 +80,7 @@ module OpenEHR
           class Observation < CareEntry
             attr_reader :data
             attr_accessor :state
+            path_attribute :data, :state
 
             def initialize(args = { })
               super(args)
@@ -93,6 +96,7 @@ module OpenEHR
 
           class Evaluation < CareEntry
             attr_reader :data
+            path_attribute :data
 
             def initialize(args = { })
               super(args)
@@ -108,6 +112,7 @@ module OpenEHR
           class Instruction < CareEntry
             attr_reader :narrative, :activities
             attr_accessor :expiry_time, :wf_definition
+            path_attribute :activities
 
             def initialize(args = { })
               super(args)
@@ -134,6 +139,7 @@ module OpenEHR
 
           class Activity < OpenEHR::RM::Common::Archetyped::Locatable
             attr_reader :description, :timing, :action_archetype_id
+            path_attribute :description
 
             def initialize(args = { })
               super(args)
@@ -167,7 +173,8 @@ module OpenEHR
           class Action < CareEntry
             attr_reader :time, :description, :ism_transition
             attr_accessor :instruction_details
-            
+            path_attribute :description, :ism_transition, :instruction_details
+
             def initialize(args = { })
               super(args)
               self.description = args[:description]
@@ -201,6 +208,7 @@ module OpenEHR
           class InstructionDetails < OpenEHR::RM::Common::Archetyped::Pathable
             attr_reader :instruction_id, :activity_id
             attr_accessor :wf_details
+            path_attribute :wf_details
 
             def initialize(args = { })
               super(args)

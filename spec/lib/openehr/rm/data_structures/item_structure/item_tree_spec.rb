@@ -45,4 +45,29 @@ describe ItemTree do
   it 'should returns ItemTree as Cluster' do
     expect(@item_tree.as_hierarchy.name.value).to eq('item tree')
   end
+
+  describe 'real path support (element_at_path/has_element_path? delegate to item_at_path/path_exists?)' do
+    it 'accepts a full path equivalent to the bare node id' do
+      expect(@item_tree.element_at_path('/items[at0003]').name.value).to eq('two')
+    end
+
+    it 'has_element_path? accepts a full path too' do
+      expect(@item_tree.has_element_path?('/items[at0002]')).to be_truthy
+    end
+
+    it 'resolves a path nested inside a Cluster (unlike the old top-level-only comparison)' do
+      inner = Element.new(:name => DvText.new(:value => 'inner'), :archetype_node_id => 'at0010')
+      cluster = Cluster.new(:name => DvText.new(:value => 'cluster'),
+                            :archetype_node_id => 'at0009',
+                            :items => [inner])
+      nested_tree = ItemTree.new(:name => DvText.new(:value => 'nested tree'),
+                                 :archetype_node_id => 'at0001',
+                                 :items => [cluster])
+      expect(nested_tree.element_at_path('/items[at0009]/items[at0010]')).to equal(inner)
+    end
+
+    it 'still warns but works for the legacy bare node id form' do
+      expect { @item_tree.element_at_path('at0003') }.not_to raise_error
+    end
+  end
 end

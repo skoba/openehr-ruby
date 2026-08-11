@@ -18,6 +18,7 @@ module OpenEHR
         class History < OpenEHR::RM::DataStructures::DataStructure
           attr_reader :origin, :events
           attr_accessor :duration, :period, :summary
+          path_attribute :events, :summary
 
           def initialize(args = { })
             super(args)
@@ -37,6 +38,7 @@ module OpenEHR
             if !events.nil? and events.empty?
               raise ArgumentError, 'events should not be empty'
             end
+            events&.each { |event| event.parent = self if event.respond_to?(:parent=) }
             @events = events
           end
 
@@ -48,6 +50,7 @@ module OpenEHR
         class Event < OpenEHR::RM::Common::Archetyped::Locatable
           attr_reader :data, :time
           attr_accessor :state
+          path_attribute :data, :state
 
           def initialize(args = { })
             super(args)

@@ -10,7 +10,8 @@ module OpenEHR
       module Content
         module Navigation
           class Section < ::OpenEHR::RM::Composition::Content::ContentItem
-            attr_reader :items 
+            attr_reader :items
+            path_attribute :items
 
             def initialize(args = { })
               super(args)

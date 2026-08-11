@@ -23,4 +23,12 @@ describe Cluster do
       @cluster.items = []
     }.to raise_error ArgumentError
   end
+
+  it 'auto-wires each item.parent to self' do
+    element = Element.new(:archetype_node_id => 'at0002', :name => DvText.new(:value => 'element'))
+    cluster = Cluster.new(:archetype_node_id => 'at0001',
+                          :name => DvText.new(:value => 'cluster'),
+                          :items => [element])
+    expect(element.parent).to equal(cluster)
+  end
 end

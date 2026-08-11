@@ -10,33 +10,49 @@ describe Pathable do
     expect(@pathable).to be_an_instance_of Pathable
   end
 
-  it 'item_at_path should raise NotImplementedError' do
-    expect {
-      @pathable.item_at_path('/')
-    }.to raise_error NotImplementedError
-  end
+  describe 'path_attribute DSL' do
+    class PathableTestBase < Pathable
+      attr_accessor :data, :state
+      path_attribute :data, :state
+    end
 
-  it 'items_at_path should raise NotImplementedError' do
-    expect {
-      @pathable.items_at_path('/')
-    }.to raise_error NotImplementedError
-  end
+    class PathableTestChild < PathableTestBase
+      attr_accessor :items
+      path_attribute :items
+    end
 
-  it 'path_exists? should raise NotImplementedError' do
-    expect {
-      @pathable.path_exists?('/')
-    }.to raise_error NotImplementedError
-  end
+    it 'a class with no path_attribute declarations has none' do
+      expect(Pathable.path_attributes).to eq([])
+    end
 
-  it 'path_of_item should raise NotImplementedError' do
-    expect {
-      @pathable.path_of_item('/')
-    }.to raise_error NotImplementedError
-  end
+    it 'a class collects its own path_attribute declarations' do
+      expect(PathableTestBase.path_attributes).to contain_exactly(:data, :state)
+    end
 
-  it 'path_unique? should raise NotImplementedError' do
-    expect {
-      @pathable.path_unique?('/')
-    }.to raise_error NotImplementedError
+    it 'a subclass inherits its ancestors declarations plus its own' do
+      expect(PathableTestChild.path_attributes).to contain_exactly(:data, :state, :items)
+    end
+
+    describe '#path_children' do
+      it 'maps each declared attribute name to its current value' do
+        node = PathableTestBase.new
+        node.data = 'the-data'
+        node.state = 'the-state'
+        expect(node.path_children).to eq('data' => 'the-data', 'state' => 'the-state')
+      end
+
+      it 'omits attributes whose value is nil' do
+        node = PathableTestBase.new
+        node.data = 'the-data'
+        expect(node.path_children).to eq('data' => 'the-data')
+      end
+
+      it 'includes inherited declarations too' do
+        node = PathableTestChild.new
+        node.data = 'd'
+        node.items = %w[a b]
+        expect(node.path_children).to eq('data' => 'd', 'items' => %w[a b])
+      end
+    end
   end
 end

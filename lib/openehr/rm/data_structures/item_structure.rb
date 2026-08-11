@@ -17,6 +17,7 @@ module OpenEHR
 
         class ItemSingle < ItemStructure
           attr_reader :item
+          path_attribute :item
 
           def initialize(args = {})
             super(args)
@@ -35,6 +36,7 @@ module OpenEHR
 
         class ItemList < ItemStructure
           attr_accessor :items
+          path_attribute :items
 
           def initialize(args = {})
             super(args)
@@ -74,6 +76,7 @@ module OpenEHR
 
         class ItemTable < ItemStructure
           attr_accessor :rows
+          path_attribute :rows
 
           def initialize(args = {})
             super(args)
@@ -187,6 +190,7 @@ module OpenEHR
 
         class ItemTree < ItemStructure
           attr_accessor :items
+          path_attribute :items
 
           def initialize(args ={ })
             super(args)
@@ -194,24 +198,30 @@ module OpenEHR
           end
 
           def has_element_path?(path)
-            paths = [ ]
-            @items.each do |item|
-              paths << item.archetype_node_id
-            end
-            return paths.include? path
+            path_exists?(normalize_element_path(path))
           end
 
           def element_at_path(path)
-            @items.each do |item|
-              return item if item.archetype_node_id == path
-            end
-            return nil
+            item_at_path(normalize_element_path(path))
           end
 
           def as_hierarchy
             return Cluster.new(:name => @name,
                                :archetype_node_id => @archetype_node_id,
                                :items => @items)
+          end
+
+          private
+
+          # Legacy callers pass a bare node id (e.g. 'at0002') rather
+          # than a real path; normalize that into /items[at0002] so it
+          # keeps working, via the real Pathable machinery.
+          def normalize_element_path(path)
+            return path if path.is_a?(OpenEHR::Path) || path.start_with?('/')
+
+            warn "[DEPRECATED] ItemTree#element_at_path/has_element_path? with a bare node id " \
+                 "(#{path.inspect}) is deprecated; use a full path like \"/items[#{path}]\" instead"
+            "/items[#{path}]"
           end
         end
       end # of ItemStructure

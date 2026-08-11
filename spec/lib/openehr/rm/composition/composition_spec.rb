@@ -89,4 +89,17 @@ describe Composition do
   it 'context should be assigned properly' do
     expect(@composition.context.location).to eq('lab1')
   end
+
+  it 'auto-wires each content item.parent to self' do
+    section = double('Section', :archetype_node_id => 'at0009')
+    allow(section).to receive(:parent=)
+    composition = Composition.new(:archetype_node_id => 'at0001',
+                                  :name => DvText.new(:value => 'composition test'),
+                                  :language => double(CodePhrase, :code_string => 'ja'),
+                                  :category => double(DvCodedText, :value => 'event'),
+                                  :territory => double(CodePhrase, :code_string => 'jpn'),
+                                  :composer => double(PartyProxy, :external_ref => double(PartyRef, :type => 'ROLE')),
+                                  :content => [section])
+    expect(section).to have_received(:parent=).with(composition)
+  end
 end

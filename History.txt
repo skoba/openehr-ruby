@@ -1,4 +1,40 @@
-=== 1.3.1 (in progress)
+=== 1.4.0 (in progress)
+openEHR path navigation: implemented item_at_path, items_at_path,
+path_exists?, path_of_item and path_unique? on PATHABLE (previously all
+five raised NotImplementedError with no overrides anywhere in the gem).
+
+* New OpenEHR::Path (lib/openehr/path.rb): a standalone parser for the
+  openEHR archetype path syntax (e.g.
+  /content[at0001]/data[at0002]/events[at0006]/data[at0003]/items[at0004,
+  'Systolic']/value), supporting at-code and archetype-id node_id
+  predicates and name-disambiguation predicates. Deliberately rejects
+  relative paths, "//" wildcards, and numeric index predicates
+  (InvalidPathError).
+* Pathable gained a `path_attribute` declaration DSL and `path_children`,
+  used to implement the five navigation methods generically via a
+  child-enumeration protocol rather than per-class path logic.
+  Declared across Composition, Section, Entry/CareEntry/AdminEntry/
+  Observation/Evaluation/Instruction/Activity/Action/InstructionDetails,
+  GenericEntry, History/Event, ItemTree/ItemList/ItemSingle/ItemTable,
+  Cluster/Element, EHRStatus, and Folder.
+* item_at_path raises the new PathNotUniqueError when a path predicate
+  matches more than one sibling (e.g. a shared node_id needing a name
+  predicate to disambiguate) - BREAKING: Pathable's five methods no
+  longer raise NotImplementedError; any code catching that is affected.
+* ItemTree#element_at_path / #has_element_path? now delegate to the real
+  path machinery, so nested paths through CLUSTERs resolve correctly
+  (previously only a top-level, non-recursive node_id comparison). The
+  legacy bare-node-id calling form (e.g. element_at_path('at0002')) still
+  works via a deprecated compatibility shim that normalizes it to
+  /items[at0002].
+* ItemTable#as_hierarchy already fixed in 1.3.1 (see below) to build a
+  Cluster from all rows rather than just the first.
+* History#events=, Composition#content=, and Cluster#items= now
+  auto-wire each child's #parent to the containing object, fixing
+  Event#offset (which relies on @parent.origin) for objects built the
+  normal way instead of requiring callers to wire parent manually.
+
+=== 1.3.1
 Infrastructure: added GitHub Actions CI (Ruby 3.1-3.4), removed the dead
 Travis config and RSpec 1 spec.opts, set required_ruby_version >= 3.1,
 moved the load-time charset_extract.rb script out of lib/ into a rake

@@ -1,4 +1,5 @@
 require_relative 'openehr/version'
+require_relative 'openehr/path'
 require_relative 'openehr/assumed_library_types'
 
 #Reference model

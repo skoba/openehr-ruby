@@ -9,6 +9,7 @@ module OpenEHR
     module Integration
       class GenericEntry < OpenEHR::RM::Composition::Content::ContentItem
         attr_reader :data
+        path_attribute :data
 
         def initialize(args = { })
           super(args)

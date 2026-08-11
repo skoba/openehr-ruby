@@ -64,4 +64,19 @@ describe History do
   it 'summary should be properly assigned' do
     expect(@history.summary.archetype_node_id).to eq('at0003')
   end
+
+  it 'auto-wires each event.parent to self, so Event#offset works without manual wiring' do
+    origin = DvDateTime.new(:value => '2009-11-11T10:20:40')
+    event = Event.new(:archetype_node_id => 'at0002',
+                      :name => DvText.new(:value => 'event'),
+                      :time => DvDateTime.new(:value => '2009-11-12T10:19:33'),
+                      :data => double(ItemStructure, :archetype_node_id => 'at0004'))
+    history = OpenEHR::RM::DataStructures::History::History.new(
+                      :archetype_node_id => 'at0001',
+                      :name => DvText.new(:value => 'history test'),
+                      :origin => origin,
+                      :events => [event])
+    expect(event.parent).to equal(history)
+    expect(event.offset.value).to eq('P0Y0M0W0DT23H58M53S')
+  end
 end

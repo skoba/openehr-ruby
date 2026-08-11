@@ -9,7 +9,9 @@ module OpenEHR
     module Composition
       class Composition < OpenEHR::RM::Common::Archetyped::Locatable
         attr_reader :language, :category, :territory, :composer
-        attr_accessor :content, :context
+        attr_accessor :context
+        attr_reader :content
+        path_attribute :content, :context
 
         def initialize(args = { })
           super(args)
@@ -47,6 +49,11 @@ module OpenEHR
             raise ArgumentError, 'composer is mandatory'
           end
           @composer = composer
+        end
+
+        def content=(content)
+          content.each { |item| item.parent = self if item.respond_to?(:parent=) } if content.respond_to?(:each)
+          @content = content
         end
 
         def is_persistent?

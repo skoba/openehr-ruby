@@ -11,6 +11,7 @@ module OpenEHR
         class Folder < OpenEHR::RM::Common::Archetyped::Locatable
           attr_accessor :items
           attr_reader :folders
+          path_attribute :folders, :items
 
           def initialize(args = { })
             super(args)
