@@ -339,7 +339,7 @@ module OpenEHR
       rule c_complex_object_body
         c_any '' {
           def value(node)
-            Hash[:attributes => [c_any.value(node)]]
+            Hash[:attributes => nil]
           end
         }
       / c_attributes '' {

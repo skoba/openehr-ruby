@@ -1,3 +1,105 @@
+=== 1.7.0 (in progress)
+Serializers: ADLSerializer can now emit a full cADL definition section
+instead of hanging.
+
+* ADLSerializer#definition previously infinite-looped on any archetype
+  whose definition had attributes (`while attributes` never advanced -
+  every real archetype beyond the most trivial `matches {*}` case would
+  hang forever). Replaced with a recursive cADL emitter covering
+  C_COMPLEX_OBJECT, C_SINGLE_ATTRIBUTE/C_MULTIPLE_ATTRIBUTE (with
+  existence/cardinality, only emitted when non-default), all eight
+  C_PRIMITIVE types (boolean/integer/real/string/date/time/date_time/
+  duration - pattern, list and range forms, plus assumed_value),
+  C_CODE_PHRASE, C_DV_ORDINAL, CONSTRAINT_REF and ARCHETYPE_SLOT
+  (rendering its include/exclude assertions verbatim via their
+  string_expression). C_DV_QUANTITY (dADL block syntax) and C_DV_STATE
+  are not yet supported and raise ArgumentError rather than emit
+  incorrect output. Verified via round-trip tests (parse -> serialize ->
+  re-parse -> same archetype_id/physical_paths) against real archetypes,
+  including ones using slots and ADL 1.4's short at0.N specialisation
+  node-id form.
+* Fixed a real, previously-undiscovered bug hit while building the
+  above: the ADL grammar represented a bare "matches {*}" (any_allowed)
+  C_COMPLEX_OBJECT by synthesizing a fake CAttribute named "ANY" into
+  its attributes array, instead of leaving attributes empty - so
+  CComplexObject#any_allowed? (and therefore #valid_value? and
+  #default_value, added in 1.6.0) incorrectly returned false for every
+  `matches {*}` node parsed from real ADL, which is an extremely common
+  pattern (e.g. plain "DV_TEXT matches {*}"). Fixed at the source: the
+  grammar now leaves attributes unset for this case.
+* Fixed two more copy/paste bugs while rewriting the serializers:
+  ADLSerializer#description checked item.other_details but then
+  iterated item.original_resource_uri; both ADLSerializer#ontology and
+  XMLSerializer#ontology assumed each language's term definitions were
+  an Array of ArchetypeTerm and called item.code, but
+  ArchetypeOntology#term_definitions is actually a Hash of {code =>
+  ArchetypeTerm} (per term_definition/term_codes' own lookups) - so
+  both crashed with NoMethodError on any archetype ontology with more
+  than one term, which the two serializers' own tests never exercised
+  since their sample fixture only used a single term either way.
+* XMLSerializer#definition rewritten the same way, recursing into the
+  full constraint tree (previously only rm_type_name/occurrence/node_id
+  for the root, nothing else) with an xsi:type discriminator on each
+  <children> element for the concrete AOM node class.
+* Both ADLSerializer#ontology and XMLSerializer#ontology now also emit
+  languages_available, terminologies_available and term_bindings
+  (constraint_definitions/constraint_bindings remain unhandled - no real
+  archetype in this gem's corpus exercises them, so there was nothing to
+  verify serialization against; documented gap for future work).
+* New OpenEHR::Serializer::RMJSONSerializer: canonical JSON for an RM
+  instance graph via a generic reflection walker (every instance
+  variable except PATHABLE's @parent back-reference, "_type" from
+  OpenEHR::RM.type_name_of), rather than a hand-written serializer per
+  RM class. Since the walker has no RM-specific logic, it also
+  serializes AOM constraint trees (CComplexObject, CAttribute, ...)
+  correctly as-is; exposed under that alias as
+  OpenEHR::Serializer::JSONSerializer rather than duplicating it.
+* OPTParser gained the C_TIME and ARCHETYPE_INTERNAL_REF (use_node)
+  handlers it was missing - either constraint in a real .opt previously
+  crashed parsing with a bare NoMethodError, since both are dispatched
+  dynamically by XML type name. C_DV_STATE (state machine) constraints
+  now raise a clear, documented NotImplementedError instead of that same
+  crash; no .opt fixture in this gem's corpus uses one, so its actual
+  XML shape is unverified and guessing at it risked silently building
+  the wrong StateMachine.
+* Fixed OPTParser#c_dv_ordinal building its list as bare Integers,
+  discarding each option's coded symbol entirely - CDvOrdinal#valid_value?
+  (1.6.0) needs both the value and the symbol to match, so every
+  OPT-sourced C_DV_ORDINAL constraint failed to validate any value
+  against it. Also fixed CDvOrdinal#valid_value? itself: it called
+  symbol.code_string directly, but DV_ORDINAL.symbol is spec'd as
+  DV_CODED_TEXT, which only exposes a code via defining_code.code_string
+  - the bug was masked by every existing test using a double that
+    stubbed code_string directly rather than a real DvCodedText.
+* Fixed OPTParser#c_duration silently dropping range constraints
+  (deliberately, per a since-removed comment - ISO8601 duration bounds
+  like PT24H aren't plain numbers, so the existing numeric-Interval
+  helper didn't apply). Range bounds are now wrapped as DV_DURATION,
+  matching what CDuration#valid_value? already expects.
+* Fixed OperationalTemplate#ontology using a fabricated single-term
+  placeholder ("at0000: Template") instead of the real ontology data,
+  which was already being captured correctly per-archetype in
+  component_terminologies during parsing - the root archetype's own
+  entry was simply never looked up and used.
+* OPTSerializer#header/#context/#content implemented (previously one
+  empty method and two bodyless pending specs). The previous #header
+  spec (removed) expected a simulated RM COMPOSITION instance -
+  name/archetype_details/territory/composer - that didn't match its own
+  test fixture at all (it even named a different archetype_id and
+  template_id) and appears to have been aspirational rather than
+  ever-passing; an operational template carries constraints, not
+  instance data, so #header is template-level metadata (concept, root
+  archetype_id, template_id, language) instead. #context/#content
+  serialize the root archetype's context/content constraint subtrees as
+  JSON via the new JSONSerializer.
+* Removed dead code: the never-required lib/openehr/writer.rb, the
+  never-required lib/openehr/parser/validator.rb (superseded by
+  ArchetypeValidator, 1.6.0) and lib/openehr/parser/xml_parser.rb (a
+  typo'd XMLPaser stub, commented out and unused - a real XML archetype
+  parser is future work), and the top-level Publisher/Writer classes in
+  serializer.rb (referenced by nothing). serializer.rb is now split into
+  serializer/{base,adl_serializer,xml_serializer,opt_serializer}.rb.
+
 === 1.6.0 (in progress)
 Archetype Model validation: constraint nodes can now check values and
 their own specialisation conformance instead of raising

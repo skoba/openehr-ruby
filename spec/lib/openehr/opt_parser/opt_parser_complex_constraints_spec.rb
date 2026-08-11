@@ -290,6 +290,94 @@ module OpenEHR
             expect(result.code_list).to eq(['at0001'])
           end
         end
+
+        context 'c_time parsing (a C_PRIMITIVE_OBJECT item, dispatched the same way as c_date/c_date_time)' do
+          it 'parses a pattern-constrained C_TIME' do
+            xml = double('xml')
+            pattern_node = double('pattern', text: 'hh:mm:ss')
+            allow(xml).to receive(:at).with('pattern').and_return(pattern_node)
+            allow(xml).to receive(:at).with('range').and_return(nil)
+
+            result = parser.send(:c_time, xml)
+            expect(result).to be_a(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime)
+            expect(result.pattern).to eq('hh:mm:ss')
+          end
+
+          it 'parses a range-constrained C_TIME' do
+            xml = double('xml')
+            range_xml = double('range')
+            allow(xml).to receive(:at).with('pattern').and_return(nil)
+            allow(xml).to receive(:at).with('range').and_return(range_xml)
+            allow(parser).to receive(:occurrences).with(range_xml).and_return(double('interval'))
+
+            result = parser.send(:c_time, xml)
+            expect(result).to be_a(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime)
+          end
+
+          it 'parses an unconstrained C_TIME' do
+            xml = double('xml')
+            allow(xml).to receive(:at).with('pattern').and_return(nil)
+            allow(xml).to receive(:at).with('range').and_return(nil)
+
+            result = parser.send(:c_time, xml)
+            expect(result).to be_a(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime)
+          end
+
+          it 'is reachable via c_primitive_object dispatch, not a NoMethodError crash' do
+            attr_xml = double('attr_xml')
+            item_xml = double('item_xml')
+            occurrences_xml = double('occurrences')
+            rm_type_node = double('rm_type', text: 'DV_TIME')
+            pattern_node = double('pattern', text: 'hh:mm:ss')
+
+            allow(attr_xml).to receive(:at).with('rm_type_name').and_return(rm_type_node)
+            allow(attr_xml).to receive(:at).with('occurrences').and_return(occurrences_xml)
+            allow(attr_xml).to receive(:at).with('item').and_return(item_xml)
+            allow(item_xml).to receive(:[]).with('type').and_return('C_TIME')
+            allow(item_xml).to receive(:at).with('pattern').and_return(pattern_node)
+            allow(item_xml).to receive(:at).with('range').and_return(nil)
+            allow(parser).to receive(:occurrences).with(occurrences_xml).and_return(double('interval'))
+
+            result = parser.send(:c_primitive_object, attr_xml, Node.new)
+            expect(result.item).to be_a(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime)
+          end
+        end
+
+        context 'archetype_internal_ref parsing (use_node)' do
+          it 'parses rm_type_name and target_path' do
+            xml = double('xml')
+            node = Node.new
+            rm_type_node = double('rm_type', text: 'ELEMENT')
+            target_path_node = double('target_path', text: '/items[at0004]')
+            occurrences_xml = double('occurrences')
+
+            allow(xml).to receive(:at).with('rm_type_name').and_return(rm_type_node)
+            allow(xml).to receive(:at).with('target_path').and_return(target_path_node)
+            allow(xml).to receive(:at).with('occurrences').and_return(occurrences_xml)
+            allow(parser).to receive(:occurrences).with(occurrences_xml).and_return(double('interval'))
+
+            result = parser.send(:archetype_internal_ref, xml, node)
+            expect(result).to be_a(OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef)
+            expect(result.rm_type_name).to eq('ELEMENT')
+            expect(result.target_path).to eq('/items[at0004]')
+          end
+
+          it 'is reachable via the children dispatch table, not a NoMethodError crash' do
+            child_xml = double('child_xml')
+            rm_type_node = double('rm_type', text: 'ELEMENT')
+            target_path_node = double('target_path', text: '/items[at0004]')
+            occurrences_xml = double('occurrences')
+
+            allow(child_xml).to receive(:attributes).and_return({'type' => double('type_attr', text: 'ARCHETYPE_INTERNAL_REF')})
+            allow(child_xml).to receive(:at).with('rm_type_name').and_return(rm_type_node)
+            allow(child_xml).to receive(:at).with('target_path').and_return(target_path_node)
+            allow(child_xml).to receive(:at).with('occurrences').and_return(occurrences_xml)
+            allow(parser).to receive(:occurrences).with(occurrences_xml).and_return(double('interval'))
+
+            result = parser.send(:children, [child_xml], Node.new)
+            expect(result.first).to be_a(OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef)
+          end
+        end
       end
     end
   end

@@ -10,7 +10,7 @@ def sample_archetype
   archetype_term = ArchetypeTerm.new(:code => 'at0000',
                                      :items => {'text' => 'simple test',
                                        'description' => 'simple test for serializer'})
-  term_definitions = {'ja' => [archetype_term]}
+  term_definitions = {'ja' => {'at0000' => archetype_term}}
   ontology =
     ArchetypeOntology.new(:specialisation_depth => 0,
                           :term_definitions => term_definitions)

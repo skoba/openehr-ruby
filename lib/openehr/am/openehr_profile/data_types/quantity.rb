@@ -46,8 +46,22 @@ module OpenEHR
               return false unless value.respond_to?(:value) && value.respond_to?(:symbol)
 
               list.any? do |item|
-                item.value == value.value && item.symbol.code_string == value.symbol.code_string
+                item.value == value.value && symbol_code(item.symbol) == symbol_code(value.symbol)
               end
+            end
+
+            private
+
+            # DV_ORDINAL.symbol is spec'd as DV_CODED_TEXT, which only
+            # exposes a code via defining_code.code_string (DvCodedText
+            # itself has no code_string of its own) - but also accept a
+            # bare CODE_PHRASE-like symbol (direct code_string) since
+            # that's simpler and sufficient for many callers.
+            def symbol_code(symbol)
+              return symbol.code_string if symbol.respond_to?(:code_string)
+              return symbol.defining_code.code_string if symbol.respond_to?(:defining_code)
+
+              nil
             end
           end
 

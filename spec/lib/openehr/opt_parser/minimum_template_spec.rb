@@ -468,7 +468,20 @@ describe 'minimum_template' do
           expect(content.existence).to eq OPTIONAL
         end
 
-        specify 'cardinality'
+        context 'cardinality' do
+          specify 'is ordered' do
+            expect(content.cardinality).to be_ordered
+          end
+
+          specify 'is not unique' do
+            expect(content.cardinality).not_to be_unique
+          end
+
+          specify 'interval' do
+            expect(content.cardinality.interval.lower).to eq 1
+            expect(content.cardinality.interval).to be_upper_unbounded
+          end
+        end
 
         context 'children' do
           specify 'size' do

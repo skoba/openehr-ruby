@@ -52,7 +52,7 @@ module OpenEHR
           template_id: template_id,
           archetype_id: template_id,  # Use template_id as archetype_id for compatibility
           definition: defs,
-          ontology: create_template_ontology,
+          ontology: (@component_terminologies || {})[defs.archetype_id.value] || create_template_ontology,
           component_terminologies: @component_terminologies || {},
           terminology_extracts: @component_terminologies || {},
           adl_version: "1.4"
@@ -318,6 +318,21 @@ module OpenEHR
         )
       end        
 
+      def archetype_internal_ref(attr_xml, node)
+        rm_type_name = attr_xml.at('rm_type_name').text
+        target_path = attr_xml.at('target_path').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        OpenEHR::AM::Archetype::ConstraintModel::ArchetypeInternalRef.new(rm_type_name: rm_type_name, occurrences: occurrences, target_path: target_path)
+      end
+
+      # No .opt fixture in this gem's corpus uses a C_DV_STATE (state
+      # machine) constraint, so its actual OPT XML shape is unverified;
+      # raising a clear, documented error here is safer than guessing
+      # at element names and risking a silently wrong StateMachine.
+      def c_dv_state(_attr_xml, _node)
+        raise NotImplementedError, 'OPTParser does not yet support C_DV_STATE (state machine) constraints'
+      end
+
       def constraint_ref(attr_xml, node)
         rm_type_name = attr_xml.at('rm_type_name').text
         reference = attr_xml.at('reference').text
@@ -398,11 +413,23 @@ module OpenEHR
       def c_dv_ordinal(attr_xml, node)
         rm_type_name = attr_xml.at('rm_type_name').text
         occurrences = occurrences(attr_xml.at('occurrences'))
-        list = attr_xml.xpath('list').map do |element|
-          value_node = element.at('value')
-          value_node && !value_node.text.empty? ? value_node.text.to_i : nil
-        end.compact
+        list = attr_xml.xpath('list').map { |element| dv_ordinal_item(element) }.compact
         OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvOrdinal.new(rm_type_name: rm_type_name, occurrences: occurrences, list: list)
+      end
+
+      # DV_ORDINAL.symbol is spec'd as DV_CODED_TEXT; the OPT XML only
+      # carries a defining_code (terminology_id + code_string), so the
+      # DvCodedText's own value is set to that same code_string (there
+      # is no separate display text in this element).
+      def dv_ordinal_item(element)
+        value_node = element.at('value')
+        return nil unless value_node && !value_node.text.empty?
+
+        code_phrase = property_code_phrase(element.at('symbol/defining_code'))
+        return nil if code_phrase.nil?
+
+        symbol = OpenEHR::RM::DataTypes::Text::DvCodedText.new(value: code_phrase.code_string, defining_code: code_phrase)
+        OpenEHR::RM::DataTypes::Quantity::DvOrdinal.new(value: value_node.text.to_i, symbol: symbol)
       end
 
       def c_date(xml)
@@ -457,15 +484,55 @@ module OpenEHR
 
       def c_duration(xml)
         pattern = xml.at('pattern')
+        range_xml = xml.at('range')
         list = xml.xpath('list')
         if pattern
           OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(pattern: pattern.text)
+        elsif range_xml
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(range: duration_range(range_xml))
         elsif !list.empty?
           OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new(list: list.map(&:text))
         else
-          # ISO8601 duration ranges (e.g. PT24H) are not coerced into a numeric
-          # Interval; keep a bare CDuration so parsing never fails on them.
           OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration.new
+        end
+      end
+
+      # A C_DURATION range's bounds are ISO8601 duration strings (e.g.
+      # PT24H), not plain numbers, so occurrences() (built for numeric
+      # Interval bounds) doesn't apply here; wrap each bound as a
+      # DV_DURATION instead, matching what CDuration#valid_value?
+      # already expects its range bounds to be.
+      def duration_range(range_xml)
+        lower = duration_bound(range_xml.at('lower'), range_xml.at('lower_unbounded'))
+        upper = duration_bound(range_xml.at('upper'), range_xml.at('upper_unbounded'))
+        return nil if lower.nil? && upper.nil?
+
+        OpenEHR::AssumedLibraryTypes::Interval.new(
+          lower: lower, upper: upper,
+          lower_included: lower.nil? ? nil : bool_node(range_xml.at('lower_included'), true),
+          upper_included: upper.nil? ? nil : bool_node(range_xml.at('upper_included'), true))
+      end
+
+      def duration_bound(value_node, unbounded_node)
+        return nil if bool_node(unbounded_node, false)
+        return nil if value_node.nil? || value_node.text.empty?
+
+        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDuration.new(value: value_node.text)
+      end
+
+      def bool_node(node, default)
+        node ? to_bool(node.text) : default
+      end
+
+      def c_time(xml)
+        pattern = xml.at('pattern')
+        range = xml.at('range')
+        if pattern
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new(pattern: pattern.text)
+        elsif range
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new(range: occurrences(range))
+        else
+          OpenEHR::AM::Archetype::ConstraintModel::Primitive::CTime.new
         end
       end
 

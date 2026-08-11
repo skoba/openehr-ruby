@@ -4,6 +4,7 @@ include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
 require 'openehr/rm/data_types/quantity'
 include ::OpenEHR::RM::DataTypes::Quantity
 include ::OpenEHR::RM::DataTypes::Text
+include ::OpenEHR::RM::Support::Identification
 include OpenEHR::AssumedLibraryTypes
 
 describe CDvOrdinal do
@@ -62,6 +63,13 @@ describe CDvOrdinal do
       @c_dv_ordinal.list = nil
       symbol = double(DvCodedText, :code_string => 'ANYTHING')
       value = DvOrdinal.new(:value => 42, :symbol => symbol)
+      expect(@c_dv_ordinal.valid_value?(value)).to be true
+    end
+
+    it 'works against a real DvCodedText symbol, not just a double stubbing code_string directly' do
+      defining_code = CodePhrase.new(:terminology_id => TerminologyID.new(:value => 'local'), :code_string => 'AML')
+      real_symbol = DvCodedText.new(:value => 'AML', :defining_code => defining_code)
+      value = DvOrdinal.new(:value => 1, :symbol => real_symbol)
       expect(@c_dv_ordinal.valid_value?(value)).to be true
     end
   end

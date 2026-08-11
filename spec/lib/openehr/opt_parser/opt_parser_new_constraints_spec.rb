@@ -78,6 +78,26 @@ module OpenEHR
           expect(result).to be_a(OpenEHR::AM::Archetype::ConstraintModel::Primitive::CDuration)
         end
 
+        it 'keeps the range bounds, wrapped as DV_DURATION so valid_value? can compare durations' do
+          node = fragment(<<~XML)
+            <item xsi:type="C_DURATION">
+              <range>
+                <lower_included>true</lower_included>
+                <upper_included>true</upper_included>
+                <lower_unbounded>false</lower_unbounded>
+                <upper_unbounded>false</upper_unbounded>
+                <lower>PT1H</lower>
+                <upper>PT24H</upper>
+              </range>
+            </item>
+          XML
+          result = parser.send(:c_duration, node)
+          expect(result.range.lower.value).to eq 'PT1H'
+          expect(result.range.upper.value).to eq 'PT24H'
+          expect(result.valid_value?('PT12H')).to be true
+          expect(result.valid_value?('P2D')).to be false
+        end
+
         it 'keeps the pattern when present' do
           node = fragment('<item xsi:type="C_DURATION"><pattern>PnYnMnW</pattern></item>')
           result = parser.send(:c_duration, node)
@@ -131,9 +151,10 @@ module OpenEHR
           expect(result.rm_type_name).to eq 'DV_ORDINAL'
         end
 
-        it 'collects the ordinal values' do
+        it 'collects the ordinal values, each with its coded symbol (not bare integers - DV_ORDINAL.symbol is a DV_CODED_TEXT, needed by CDvOrdinal#valid_value?)' do
           result = parser.send(:c_dv_ordinal, node, Node.new)
-          expect(result.list).to eq [1, 2]
+          expect(result.list.map(&:value)).to eq [1, 2]
+          expect(result.list.map { |o| o.symbol.defining_code.code_string }).to eq ['at0115', 'at0116']
         end
       end
 
