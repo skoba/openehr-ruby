@@ -158,6 +158,59 @@ module OpenEHR
         end
       end
 
+      describe '#c_dv_scale' do
+        let(:node) do
+          fragment(<<~XML)
+            <children xsi:type="C_DV_SCALE">
+              <rm_type_name>DV_SCALE</rm_type_name>
+              <occurrences>
+                <lower_included>true</lower_included>
+                <upper_included>true</upper_included>
+                <lower_unbounded>false</lower_unbounded>
+                <upper_unbounded>false</upper_unbounded>
+                <lower>1</lower>
+                <upper>1</upper>
+              </occurrences>
+              <node_id />
+              <list>
+                <value>0.5</value>
+                <symbol>
+                  <defining_code>
+                    <terminology_id><value>local</value></terminology_id>
+                    <code_string>at0115</code_string>
+                  </defining_code>
+                </symbol>
+              </list>
+              <list>
+                <value>1.0</value>
+                <symbol>
+                  <defining_code>
+                    <terminology_id><value>local</value></terminology_id>
+                    <code_string>at0116</code_string>
+                  </defining_code>
+                </symbol>
+              </list>
+            </children>
+          XML
+        end
+
+        it 'returns a CDvScale' do
+          result = parser.send(:c_dv_scale, node, Node.new)
+          expect(result).to be_a(OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvScale)
+        end
+
+        it 'carries the rm_type_name so downstream extraction works' do
+          result = parser.send(:c_dv_scale, node, Node.new)
+          expect(result.rm_type_name).to eq 'DV_SCALE'
+        end
+
+        it 'collects the scale values as Real numbers, each with its coded symbol' do
+          result = parser.send(:c_dv_scale, node, Node.new)
+          expect(result.list.map(&:value)).to eq [0.5, 1.0]
+          expect(result.list.map { |o| o.symbol.defining_code.code_string }).to eq ['at0115', 'at0116']
+        end
+      end
+
       describe 'parsing a full template that uses the new constraint types' do
         let(:opt_file) { File.join(File.dirname(__FILE__), './new_constraints_template.opt') }
 

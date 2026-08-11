@@ -14,10 +14,10 @@ A Ruby implementation of the openEHR specifications
 =Description
 
 This is a stable release of Ruby openEHR implementation project.
-This release is based on openEHR specification release 1.0.2.
-We implemented almost of the specifications of the openEHR.
-The work is still in progress to implement related tools, such as
-archetype validator or serializer. Formerly, we named this package
+This release targets openEHR specification release 1.0.2 as its
+baseline, with a growing set of RM 1.1.0 / BASE 1.2.0 deltas layered on
+top (see "RM 1.0.2 vs RM 1.1.0 semantics" below for exactly which
+classes/attributes are 1.1.0-only). Formerly, we named this package
 as open_ehr, but changed to openehr from release 1.1.0. 1.0.x versions
 are obsoleted.
 
@@ -25,11 +25,12 @@ The intention is to have a sample EHR to deploy quickly with Ruby on Rails for d
 
 This package includes:
 * ADL 1.4 parser
-* AM/RM packages based on the openEHR specification 1.0.2
+* AM/RM packages based on the openEHR specification 1.0.2, plus RM 1.1.0 deltas
+* ADL/XML/JSON serializers and an ADL archetype validator
 
 This package excludes:
-* ADL serializer(in progress)
-* ADL validator(in progress)
+* An XML archetype parser (in progress)
+* AQL (in progress)
 * Data store/retrieve would be separate to the other project.
 * Terminology service(moved to openehr-terminology package)
 * Rails plugin(moved to openehr-rails package
@@ -42,6 +43,34 @@ and so on. We have therefore postponed implementations of these classes.
 
 Terminology and Demographic servers will be implemented in other
 projects.
+
+=RM 1.0.2 vs RM 1.1.0 semantics
+
+This gem's baseline is openEHR RM 1.0.2, with the following RM 1.1.0 /
+BASE 1.2.0 deltas incorporated so far. Everything not listed here keeps
+its 1.0.2 meaning; anything listed only exists, or only behaves this
+way, from RM 1.1.0 onward.
+
+  Class / attribute                          RM version  Notes
+  ------------------------------------------  ----------  ---------------------------------------------
+  DV_SCALE (new class)                       1.1.0       Like DV_ORDINAL, but Real-valued (SPECRM-19)
+  DV_QUANTITY.units_system                   1.1.0       Optional; identifies a non-UCUM units system
+  DV_QUANTITY.units_display_name             1.1.0       Optional displayable form of units (SPECRM-65)
+  CODE_PHRASE.preferred_term                 1.1.0       Optional preferred term for code_string
+  DV_PARAGRAPH                               deprecated  Deprecated since RM 1.0.4; still legal, warns
+  DV_DURATION negative values ("-P10D")      1.1.0       Consistently supported (SPECRM-96)
+  EHR.folders                                1.1.0       List<OBJECT_REF>; directory = folders.item(1)
+  FOLDER.details                             1.1.0       Optional ITEM_STRUCTURE meta-data
+  FEEDER_AUDIT_DETAILS.other_details         1.1.0       Optional ITEM_STRUCTURE meta-data (SPECRM-74)
+  ACTIVITY.timing                            1.1.0       Now optional (was mandatory pre-1.1.0)
+  ISM_TRANSITION.reason                      1.1.0       Optional List<DV_TEXT>
+  COMPOSITION.category = "episodic"          1.1.0       A terminology value, not a code change (SPECRM-89);
+                                                          already supported via the pluggable
+                                                          OpenEHR::TerminologyService seam
+
+Not yet incorporated from RM 1.1.0 / BASE 1.2.0: ITEM_TAG (still in a
+development branch, not yet in a released RM version) and the finer
+points of DV_DURATION arithmetic beyond negation/unary minus.
 
 =Main codebase authors
 * Shinji Kobayashi and Akimichi Tatsukawa of http://openehr.jp

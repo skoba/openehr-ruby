@@ -57,4 +57,15 @@ describe FeederAuditDetails do
       @feeder_audit_details.system_id = ''
     }.to raise_error ArgumentError
   end
+
+  # RM 1.1.0 (SPECRM-74): other_details is optional custom meta-data.
+  it 'other_details defaults to nil' do
+    expect(@feeder_audit_details.other_details).to be_nil
+  end
+
+  it 'accepts an other_details ITEM_STRUCTURE' do
+    other_details = double('ItemStructure')
+    @feeder_audit_details.other_details = other_details
+    expect(@feeder_audit_details.other_details).to equal(other_details)
+  end
 end

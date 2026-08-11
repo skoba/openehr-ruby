@@ -59,10 +59,15 @@ module OpenEHR
 
         class CodePhrase
           attr_reader :terminology_id, :code_string
+          # RM 1.1.0: optional preferred term for code_string, typically
+          # used in integration mappings that need both a (non-preferred)
+          # actual term and a preferred term.
+          attr_accessor :preferred_term
 
           def initialize(args = {})
             self.code_string = args[:code_string]
             self.terminology_id = args[:terminology_id]
+            self.preferred_term = args[:preferred_term]
           end
 
           def terminology_id=(terminology_id)
@@ -152,6 +157,9 @@ module OpenEHR
           attr_reader :items
 
           def initialize(args ={})
+            warn '[DEPRECATED] DvParagraph (DV_PARAGRAPH) is deprecated as of RM 1.0.4; ' \
+                 'use DvText/DvCodedText with markdown or newlines instead. ' \
+                 'It remains legal for legacy data.'
             self.items = args[:items]
           end
 

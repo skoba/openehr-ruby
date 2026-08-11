@@ -9,7 +9,8 @@ module OpenEHR
     module EHR
       class EHR
         attr_reader :system_id, :ehr_id, :time_created, :contributions,
-                    :ehr_access, :ehr_status, :compositions, :directory
+                    :ehr_access, :ehr_status, :compositions, :directory,
+                    :folders
 
         def initialize(args = { })
           self.system_id = args[:system_id]
@@ -20,6 +21,7 @@ module OpenEHR
           self.ehr_status = args[:ehr_status]
           self.compositions = args[:compositions]
           self.directory = args[:directory]
+          self.folders = args[:folders]
         end
 
         def system_id=(system_id)
@@ -88,6 +90,22 @@ module OpenEHR
             raise ArgumentError, 'invalid directory'
           end
           @directory = directory
+        end
+
+        # RM 1.1.0 (SPECRM-55): additional Folder hierarchies for this
+        # EHR. When set, directory is kept pointing at folders.item(1)
+        # (the Directory_in_folders invariant), for backward
+        # compatibility with pre-1.1.0 systems that only had directory.
+        def folders=(folders)
+          unless folders.nil?
+            folders.each do |f|
+              if f.type != 'VERSIONED_FOLDER'
+                raise ArgumentError, 'folder type should be VERSIONED_FOLDER'
+              end
+            end
+            @directory = folders.first
+          end
+          @folders = folders
         end
       end
 

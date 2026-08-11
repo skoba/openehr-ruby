@@ -224,6 +224,7 @@ module OpenEHR
               self.minutes = iso8601_duration.minutes
               self.seconds = iso8601_duration.seconds
               self.fractional_second = iso8601_duration.fractional_second
+              self.negative = iso8601_duration.negative?
             end
 
             def magnitude
@@ -244,7 +245,14 @@ module OpenEHR
               seconds += @seconds if @seconds
               seconds += @fractional_second if @fractional_second
               seconds += minutes * SECONDS_IN_MINUTE if minutes
-              return seconds
+              negative? ? -seconds : seconds
+            end
+
+            # DV_AMOUNT.negative alias "-": a new DvDuration with the
+            # sign flipped, leaving self untouched.
+            def -@
+              text = value.start_with?('-') ? value[1..-1] : "-#{value}"
+              DvDuration.new(:value => text)
             end
           end
         end # of DateTime

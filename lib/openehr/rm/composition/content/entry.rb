@@ -155,10 +155,10 @@ module OpenEHR
               @description = description
             end
 
+            # RM 1.1.0: optional - may be omitted when timing is instead
+            # represented structurally in description, or is unavailable
+            # (e.g. imported legacy data).
             def timing=(timing)
-              if timing.nil?
-                raise ArgumentError, 'timing is mandatory'
-              end
               @timing = timing
             end
 
@@ -235,12 +235,17 @@ module OpenEHR
           class IsmTransition < OpenEHR::RM::Common::Archetyped::Pathable
             attr_reader :current_state, :transition
             attr_accessor :careflow_step
+            # RM 1.1.0: optional list of one or more reasons for this
+            # careflow step having been taken (e.g. useful in medication
+            # management, where several reasons may apply).
+            attr_accessor :reason
 
             def initialize(args = { })
               super(args)
               self.current_state = args[:current_state]
               self.transition = args[:transition]
               self.careflow_step = args[:careflow_step]
+              self.reason = args[:reason]
             end
 
             def current_state=(current_state)

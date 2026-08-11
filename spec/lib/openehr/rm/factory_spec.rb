@@ -80,6 +80,12 @@ module OpenEHR
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Quantity::DvOrdinal }
       end
 
+      describe DvScaleFactory do
+        subject { Factory.create('DV_SCALE', value: 0.5, symbol: double()) }
+
+        it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Quantity::DvScale }
+      end
+
       describe DvQuantifiedFactory do
         subject { Factory.create('DV_QUANTIFIED', magnitude: 1) }
 

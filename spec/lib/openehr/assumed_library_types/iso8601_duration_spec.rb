@@ -179,4 +179,41 @@ describe ISO8601Duration do
       }.to raise_error ArgumentError
     end
   end
+
+  # RM 1.1.0 (SPECRM-96): "consistently support negative durations" - a
+  # leading '-' before 'P' means "prior to [an unstated origin point]",
+  # e.g. adjusted age for a premature newborn. Component setters
+  # (years=, days=, ...) still reject negative magnitudes - the sign
+  # applies to the duration as a whole, not each component - so it's
+  # tracked separately.
+  describe 'negative durations' do
+    it 'parses a negative duration without raising' do
+      expect { ISO8601Duration.new('-P10D') }.not_to raise_error
+    end
+
+    it 'is negative? true for a negative duration' do
+      expect(ISO8601Duration.new('-P10D')).to be_negative
+    end
+
+    it 'is negative? false for a positive duration' do
+      expect(ISO8601Duration.new('P10D')).not_to be_negative
+    end
+
+    it 'keeps component magnitudes non-negative even when the duration is negative' do
+      duration = ISO8601Duration.new('-P10D')
+      expect(duration.days).to eq(10)
+    end
+
+    it 'negates to_seconds' do
+      expect(ISO8601Duration.new('-P1D').to_seconds).to eq(-86400.0)
+    end
+
+    it 'round-trips as_string with the leading minus' do
+      expect(ISO8601Duration.new('-P3M').as_string).to eq('-P3M')
+    end
+
+    it 'a negative duration compares as less than the same positive duration' do
+      expect(ISO8601Duration.new('-P1D')).to be < ISO8601Duration.new('P1D')
+    end
+  end
 end

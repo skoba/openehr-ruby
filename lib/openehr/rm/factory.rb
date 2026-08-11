@@ -122,6 +122,12 @@ module OpenEHR
       end
     end
 
+    class DvScaleFactory
+      def self.create(*param)
+        OpenEHR::RM::DataTypes::Quantity::DvScale.new(*param)
+      end
+    end
+
     class DvQuantifiedFactory
       def self.create(*param)
         DataTypes::Quantity::DvQuantified.new(*param)

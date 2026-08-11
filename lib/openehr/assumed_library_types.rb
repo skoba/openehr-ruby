@@ -618,6 +618,19 @@ module OpenEHR
       include TimeDefinitions
       attr_reader :years, :months, :weeks, :days
       attr_reader :hours, :minutes, :seconds, :fractional_second
+      # RM 1.1.0 (SPECRM-96): a leading '-' before 'P' negates the whole
+      # duration (e.g. "-P10D", 10 days before an unstated origin point).
+      # Components stay non-negative magnitudes - the sign applies to
+      # the duration as a whole, not each field - so it's tracked here.
+      attr_reader :negative
+
+      def negative=(negative)
+        @negative = negative ? true : false
+      end
+
+      def negative?
+        @negative == true
+      end
 
       def years=(years)
         unless years.nil? || years >= 0
@@ -676,7 +689,7 @@ module OpenEHR
       end
 
       def as_string
-        str = 'P'
+        str = negative? ? '-P' : 'P'
         unless @years.nil?
           str += @years.to_s + 'Y'
         end
@@ -710,17 +723,22 @@ module OpenEHR
           nilthenzero(@months)*TimeDefinitions::DAYS_IN_MONTH +
           nilthenzero(@weeks)*TimeDefinitions::DAYS_IN_WEEK + 
           nilthenzero(@days)
-        seconds_with_fractional = (((days*TimeDefinitions::HOURS_IN_DAY + nilthenzero(@hours))*TimeDefinitions::MINUTES_IN_HOUR)+nilthenzero(@minutes))*TimeDefinitions::SECONDS_IN_MINUTE + 
+        seconds_with_fractional = (((days*TimeDefinitions::HOURS_IN_DAY + nilthenzero(@hours))*TimeDefinitions::MINUTES_IN_HOUR)+nilthenzero(@minutes))*TimeDefinitions::SECONDS_IN_MINUTE +
           nilthenzero(@seconds) +
           @fractional_second.to_f
-        return seconds_with_fractional
+        return negative? ? -seconds_with_fractional : seconds_with_fractional
       end
     end
 
     class ISO8601Duration
       include ISO8601DurationModule, Comparable
       def initialize(str)
-        md = /^P((\d+)[Yy])?((\d+)[Mm])?((\d+)[Ww])?((\d+)[dD])?(T((\d+)[Hh])?((\d+)[Mm])?((\d+)(\.\d+)?[Ss])?)?$/.match(str)
+        # A leading '-' negates the whole duration (RM 1.1.0, SPECRM-96);
+        # stripped before the main match so the existing capture group
+        # numbering below doesn't need to shift.
+        self.negative = str.start_with?('-')
+        duration_str = negative? ? str[1..-1] : str
+        md = /^P((\d+)[Yy])?((\d+)[Mm])?((\d+)[Ww])?((\d+)[dD])?(T((\d+)[Hh])?((\d+)[Mm])?((\d+)(\.\d+)?[Ss])?)?$/.match(duration_str)
         if md.nil?
           raise ArgumentError, 'invalid ISO8601 duration format'
         end

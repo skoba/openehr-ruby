@@ -20,4 +20,19 @@ describe CodePhrase do
   it 's terminology_id.name should be openehr' do
     expect(@code_phrase.terminology_id.name).to eq('openehr')
   end
+
+  # RM 1.1.0: preferred_term is an optional String carrying the
+  # preferred term for code_string - typical use is integration
+  # mappings where both a non-preferred actual term and a preferred
+  # term are needed.
+  it 'preferred_term defaults to nil' do
+    expect(@code_phrase.preferred_term).to be_nil
+  end
+
+  it 'accepts a preferred_term' do
+    terminology_id = TerminologyID.new(:value => 'openehr')
+    code_phrase = CodePhrase.new(:code_string => '535', :terminology_id => terminology_id,
+                                 :preferred_term => 'Blood pressure')
+    expect(code_phrase.preferred_term).to eq('Blood pressure')
+  end
 end

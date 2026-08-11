@@ -75,4 +75,42 @@ describe DvQuantity do
       @dv_quantity.precision = -2
     }.to raise_error ArgumentError
   end
+
+  # RM 1.1.0 (SPECRM-65): units are UCUM by default, but may instead come
+  # from another units system (identified by units_system), with
+  # units_display_name available when the code alone isn't directly
+  # displayable (e.g. UCUM 'Cel' vs display '°C').
+  describe 'RM 1.1.0 units_system/units_display_name' do
+    it 'defaults both to nil (UCUM assumed, no separate display form)' do
+      expect(@dv_quantity.units_system).to be_nil
+      expect(@dv_quantity.units_display_name).to be_nil
+    end
+
+    it 'accepts a units_system' do
+      dv_quantity = DvQuantity.new(:magnitude => 37, :units => 'Cel', :units_system => 'http://hl7.org/fhir/ucum-units')
+      expect(dv_quantity.units_system).to eq('http://hl7.org/fhir/ucum-units')
+    end
+
+    it 'accepts a units_display_name' do
+      dv_quantity = DvQuantity.new(:magnitude => 37, :units => 'Cel', :units_display_name => '°C')
+      expect(dv_quantity.units_display_name).to eq('°C')
+    end
+
+    it 'is strictly comparable to another quantity with the same units and units_system' do
+      a = DvQuantity.new(:magnitude => 1, :units => 'Cel', :units_system => 'http://hl7.org/fhir/ucum-units')
+      b = DvQuantity.new(:magnitude => 2, :units => 'Cel', :units_system => 'http://hl7.org/fhir/ucum-units')
+      expect(a.is_strictly_comparable_to?(b)).to be_truthy
+    end
+
+    it 'is not strictly comparable to a quantity with the same units but a different units_system' do
+      a = DvQuantity.new(:magnitude => 1, :units => 'Cel', :units_system => 'http://hl7.org/fhir/ucum-units')
+      b = DvQuantity.new(:magnitude => 2, :units => 'Cel', :units_system => 'http://example.org/other-units')
+      expect(a.is_strictly_comparable_to?(b)).to be_falsey
+    end
+
+    it 'is still strictly comparable to a same-units quantity when neither has a units_system (UCUM default)' do
+      dv_quantity5 = DvQuantity.new(:magnitude => 5, :units => 'mg')
+      expect(@dv_quantity.is_strictly_comparable_to?(dv_quantity5)).to be_truthy
+    end
+  end
 end

@@ -143,6 +143,40 @@ module OpenEHR
           end
         end
 
+        # RM 1.1.0 (SPECRM-19): like DV_ORDINAL, but for scales/scores
+        # whose points are Real-valued rather than Integer-valued (e.g.
+        # the Borg CR10 breathlessness scale, which includes 0.5).
+        class DvScale < DvOrdered
+          attr_reader :value, :symbol
+
+          def initialize(args = {})
+            super(args)
+            self.symbol = args[:symbol]
+          end
+
+          def value=(value)
+            raise ArgumentError, 'value should not be nil' if value.nil?
+            raise ArgumentError, 'value should be a Real (Numeric)' unless value.is_a?(Numeric)
+            @value = value
+          end
+
+          def symbol=(symbol)
+            raise ArgumentError, 'symbol should not be nil' if symbol.nil?
+            @symbol = symbol
+          end
+
+          def <=>(other)
+            @value <=> other.value
+          end
+
+          def is_strictly_comparable_to?(others)
+            return false unless super(others)
+
+            others.symbol.defining_code.terminology_id.value ==
+              @symbol.defining_code.terminology_id.value
+          end
+        end
+
         class DvAbsoluteQuantity < DvQuantified
           attr_accessor :accuracy
 
@@ -239,11 +273,18 @@ module OpenEHR
 
         class DvQuantity < DvAmount
           attr_reader :units, :precision
+          # RM 1.1.0 (SPECRM-65): units is UCUM by default; units_system
+          # names another units system when units isn't UCUM, and
+          # units_display_name gives a displayable form when the units
+          # code itself isn't one (e.g. UCUM 'Cel' vs '°C'). Both optional.
+          attr_accessor :units_system, :units_display_name
 
           def initialize(args = {})
             super(args)
             self.units = args[:units]
             self.precision = args[:precision]
+            self.units_system = args[:units_system]
+            self.units_display_name = args[:units_display_name]
           end
 
           def units=(units)
@@ -259,14 +300,9 @@ module OpenEHR
           end
 
           def is_strictly_comparable_to?(others)
-            unless super(others)
-              return false
-            end
-            if others.units == @units
-              return true
-            else
-              return false
-            end
+            return false unless super(others)
+
+            others.units == @units && others.units_system == @units_system
           end
 
           def is_integral?

@@ -65,6 +65,40 @@ module OpenEHR
             end
           end
 
+          # RM 1.1.0: the AOM constraint for DV_SCALE, mirroring
+          # CDvOrdinal (an enumeration of allowed value/symbol pairs)
+          # except DV_SCALE.value is Real rather than Integer.
+          class CDvScale < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
+            attr_accessor :list
+
+            def initialize(args = { })
+              super
+              self.list = args[:list]
+            end
+
+            def any_allowed?
+              @list.nil?
+            end
+
+            def valid_value?(value)
+              return true if any_allowed?
+              return false unless value.respond_to?(:value) && value.respond_to?(:symbol)
+
+              list.any? do |item|
+                item.value == value.value && symbol_code(item.symbol) == symbol_code(value.symbol)
+              end
+            end
+
+            private
+
+            def symbol_code(symbol)
+              return symbol.code_string if symbol.respond_to?(:code_string)
+              return symbol.defining_code.code_string if symbol.respond_to?(:defining_code)
+
+              nil
+            end
+          end
+
           class CQuantityItem
             attr_accessor :magnitude, :precision
             attr_reader :units

@@ -136,4 +136,33 @@ describe EHR do
       @ehr.directory = double(ObjectRef, :type => 'INVALID_FOLDER')
     }.to raise_error ArgumentError
   end
+
+  # RM 1.1.0 (SPECRM-55): folders holds any number of additional Folder
+  # hierarchies; directory is kept as a reference to folders.item(1), for
+  # backward compatibility with pre-1.1.0 systems that only had directory.
+  describe 'RM 1.1.0 folders' do
+    it 'defaults to nil' do
+      expect(@ehr.folders).to be_nil
+    end
+
+    it 'accepts a list of VERSIONED_FOLDER references' do
+      f1 = double(ObjectRef, :type => 'VERSIONED_FOLDER')
+      f2 = double(ObjectRef, :type => 'VERSIONED_FOLDER')
+      @ehr.folders = [f1, f2]
+      expect(@ehr.folders).to eq([f1, f2])
+    end
+
+    it 'raises ArgumentError for a non-VERSIONED_FOLDER entry' do
+      expect {
+        @ehr.folders = [double(ObjectRef, :type => 'INVALID_FOLDER')]
+      }.to raise_error ArgumentError
+    end
+
+    it 'keeps directory pointing at the first member of folders (Directory_in_folders invariant)' do
+      f1 = double(ObjectRef, :type => 'VERSIONED_FOLDER')
+      f2 = double(ObjectRef, :type => 'VERSIONED_FOLDER')
+      @ehr.folders = [f1, f2]
+      expect(@ehr.directory).to equal(f1)
+    end
+  end
 end

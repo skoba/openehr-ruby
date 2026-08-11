@@ -37,10 +37,13 @@ describe Activity do
     expect(@activity.timing.value).to eq('2009-11-18T19:35:11')
   end
 
-  it 'should raise ArgumentError with nil timing' do
+  # RM 1.1.0 (SPECRM-89 amendment set): timing is optional - it may be
+  # omitted when timing is instead represented structurally in
+  # description, or is unavailable (e.g. imported legacy data).
+  it 'should not raise ArgumentError with nil timing' do
     expect {
       @activity.timing = nil
-    }.to raise_error ArgumentError
+    }.not_to raise_error
   end
 
   it 'action_archetype_id should be assigned properly' do

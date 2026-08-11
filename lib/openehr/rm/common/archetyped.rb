@@ -266,6 +266,8 @@ module OpenEHR
         class FeederAuditDetails
           attr_reader :system_id
           attr_accessor :provider, :location, :time, :subject, :version_id
+          # RM 1.1.0 (SPECRM-74): optional custom meta-data, ITEM_STRUCTURE.
+          attr_accessor :other_details
 
           def initialize(args = { })
             self.system_id = args[:system_id]
@@ -274,6 +276,7 @@ module OpenEHR
             self.time = args[:time]
             self.subject = args[:subject]
             self.version_id = args[:version_id]
+            self.other_details = args[:other_details]
           end
 
           def system_id=(system_id)

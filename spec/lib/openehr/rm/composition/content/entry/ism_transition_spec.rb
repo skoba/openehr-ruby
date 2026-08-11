@@ -75,4 +75,19 @@ describe IsmTransition do
   it 'careflow_step should be assigned properly' do
     expect(@ism_transition.careflow_step.value).to eq('completed')
   end
+
+  # RM 1.1.0: reason is an optional list of one or more reasons for this
+  # careflow step having been taken (e.g. useful in medication management).
+  describe 'RM 1.1.0 reason' do
+    it 'defaults to nil' do
+      expect(@ism_transition.reason).to be_nil
+    end
+
+    it 'accepts a list of DV_TEXT reasons' do
+      reason1 = double(DvText, :value => 'patient request')
+      reason2 = double(DvText, :value => 'dose adjustment')
+      @ism_transition.reason = [reason1, reason2]
+      expect(@ism_transition.reason).to eq([reason1, reason2])
+    end
+  end
 end

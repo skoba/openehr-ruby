@@ -432,6 +432,26 @@ module OpenEHR
         OpenEHR::RM::DataTypes::Quantity::DvOrdinal.new(value: value_node.text.to_i, symbol: symbol)
       end
 
+      def c_dv_scale(attr_xml, node)
+        rm_type_name = attr_xml.at('rm_type_name').text
+        occurrences = occurrences(attr_xml.at('occurrences'))
+        list = attr_xml.xpath('list').map { |element| dv_scale_item(element) }.compact
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvScale.new(rm_type_name: rm_type_name, occurrences: occurrences, list: list)
+      end
+
+      # Same XML shape as C_DV_ORDINAL's list items, but DV_SCALE.value
+      # is Real rather than Integer.
+      def dv_scale_item(element)
+        value_node = element.at('value')
+        return nil unless value_node && !value_node.text.empty?
+
+        code_phrase = property_code_phrase(element.at('symbol/defining_code'))
+        return nil if code_phrase.nil?
+
+        symbol = OpenEHR::RM::DataTypes::Text::DvCodedText.new(value: code_phrase.code_string, defining_code: code_phrase)
+        OpenEHR::RM::DataTypes::Quantity::DvScale.new(value: value_node.text.to_f, symbol: symbol)
+      end
+
       def c_date(xml)
         pattern = xml.at('pattern')
         range = xml.at('range')

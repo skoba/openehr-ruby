@@ -11,12 +11,15 @@ module OpenEHR
         class Folder < OpenEHR::RM::Common::Archetyped::Locatable
           attr_accessor :items
           attr_reader :folders
-          path_attribute :folders, :items
+          # details: ITEM_STRUCTURE [0..1], "Archetypable meta-data for FOLDER".
+          attr_accessor :details
+          path_attribute :folders, :items, :details
 
           def initialize(args = { })
             super(args)
             self.folders = args[:folders]
             self.items = args[:items]
+            self.details = args[:details]
           end
 
           def folders=(folders)
