@@ -43,9 +43,21 @@ describe DvOrdered do
   end
 
   it 'should be normal in range' do
-    normal_range = double(DvInterval, :has => true)
+    normal_range = double(DvInterval, :has? => true)
     @dv_ordered.normal_range = normal_range
     expect(@dv_ordered.is_normal?).to be_truthy
+  end
+
+  it 'should be normal with a real normal_range Interval containing the value' do
+    dv_ordered = DvOrdered.new(:normal_range => OpenEHR::AssumedLibraryTypes::Interval.new(:lower => 0, :upper => 10))
+    dv_ordered.instance_variable_set(:@value, 5)
+    expect(dv_ordered.is_normal?).to be_truthy
+  end
+
+  it 'should not be normal with a real normal_range Interval not containing the value' do
+    dv_ordered = DvOrdered.new(:normal_range => OpenEHR::AssumedLibraryTypes::Interval.new(:lower => 0, :upper => 10))
+    dv_ordered.instance_variable_set(:@value, 20)
+    expect(dv_ordered.is_normal?).to be_falsey
   end
 
   it 'is_strictly_comparable_to should be true for DvOrdered' do

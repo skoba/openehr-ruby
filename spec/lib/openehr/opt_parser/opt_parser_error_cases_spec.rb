@@ -72,7 +72,7 @@ module OpenEHR
                     <lower_unbounded>false</lower_unbounded>
                     <upper_unbounded>false</upper_unbounded>
                   </occurrences>
-                  <archetype_id><value>test.v1</value></archetype_id>
+                  <archetype_id><value>openEHR-EHR-OBSERVATION.test.v1</value></archetype_id>
                   <attributes type="C_SINGLE_ATTRIBUTE">
                     <rm_attribute_name>category</rm_attribute_name>
                     <existence>
@@ -135,7 +135,7 @@ module OpenEHR
                     <lower_unbounded>false</lower_unbounded>
                     <upper_unbounded>false</upper_unbounded>
                   </occurrences>
-                  <archetype_id><value>test.v1</value></archetype_id>
+                  <archetype_id><value>openEHR-EHR-OBSERVATION.test.v1</value></archetype_id>
                   <attributes type="C_SINGLE_ATTRIBUTE">
                     <rm_attribute_name>category</rm_attribute_name>
                     <existence>
@@ -178,7 +178,8 @@ module OpenEHR
             it 'should handle missing nodes in description_other_details' do
               xml = double('xml')
               allow(xml).to receive(:xpath).and_return([])
-              
+              parser.instance_variable_set(:@opt, xml)
+
               result = parser.send(:description_other_details)
               expect(result).to eq({})
             end

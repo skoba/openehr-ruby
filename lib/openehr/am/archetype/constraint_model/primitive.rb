@@ -126,8 +126,11 @@ module OpenEHR
             end
 
             private
+            # C_INTEGER may be fully unconstrained (neither list nor range,
+            # i.e. any_allowed); only having both set simultaneously is a
+            # genuine contradiction.
             def consistency(list, range)
-              if list.nil? == range.nil?
+              if !list.nil? && !range.nil?
                 raise ArgumentError, 'consistency invalid'
               end
             end

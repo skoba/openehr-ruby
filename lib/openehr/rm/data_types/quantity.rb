@@ -24,7 +24,7 @@ module OpenEHR
             if @normal_range.nil? and @normal_status.nil?
               return false
             elsif !@normal_range.nil?
-              return @normal_range.has(@value)
+              return @normal_range.has?(@value)
             elsif !@normal_status.nil?
               return @normal_status.code_string == 'N'
             end
@@ -207,9 +207,10 @@ module OpenEHR
             return result
           end
 
-          def -(other)            
-            other.magnitude = - other.magnitude
-            self+(other)
+          def -(other)
+            negated = other.dup
+            negated.magnitude = -other.magnitude
+            self + negated
           end
 
           def set_accuracy(accuracy, accuracy_percent)
@@ -268,7 +269,12 @@ module OpenEHR
         end
 
         class DvCount < DvAmount
-
+          def magnitude=(magnitude)
+            unless magnitude.is_a?(Integer)
+              raise ArgumentError, 'magnitude should be an Integer'
+            end
+            super
+          end
         end
 
         class ReferenceRange

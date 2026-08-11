@@ -10,4 +10,11 @@ end
 
 RuboCop::RakeTask.new
 
+namespace :charset do
+  desc 'Regenerate lib/openehr/rm/data_types/charset.lst from a local IANA character-sets file (see tasks/support/charset_extract.rb)'
+  task :extract do
+    ruby 'tasks/support/charset_extract.rb'
+  end
+end
+
 task :default => :spec

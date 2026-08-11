@@ -18,10 +18,12 @@ describe CInteger do
     expect(@c_integer.type).to eq('Integer')
   end
 
-  it 'should raise ArgumentError if both range and list are nil' do
+  it 'should allow both range and list to be nil (unconstrained/any_allowed)' do
     expect {
       @c_integer.list = nil
-    }.to raise_error ArgumentError
+    }.not_to raise_error
+    expect(@c_integer.list).to be_nil
+    expect(@c_integer.range).to be_nil
   end
 
   describe 'list method' do

@@ -155,4 +155,28 @@ describe ISO8601Duration do
   it 'should be comparable' do
     expect(ISO8601Duration.new('P1Y2M3W4DT5H6M7.8S')).to be > ISO8601Duration.new('P1Y2M3W4DT5H6M7.7S')
   end
+
+  describe 'multi-digit and partial components' do
+    it 'should parse P10D with days 10' do
+      expect(ISO8601Duration.new('P10D').days).to eq(10)
+    end
+
+    it 'should leave absent components nil, not zero' do
+      duration = ISO8601Duration.new('P1Y')
+      expect(duration.months).to be_nil
+      expect(duration.weeks).to be_nil
+      expect(duration.days).to be_nil
+      expect(duration.hours).to be_nil
+    end
+
+    it 'should round-trip P1Y as P1Y' do
+      expect(ISO8601Duration.new('P1Y').as_string).to eq('P1Y')
+    end
+
+    it 'should raise ArgumentError for a malformed duration string' do
+      expect {
+        ISO8601Duration.new('not-a-duration')
+      }.to raise_error ArgumentError
+    end
+  end
 end

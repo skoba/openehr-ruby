@@ -441,6 +441,8 @@ module OpenEHR
               return false
             end
           end
+          # A timezone is optional in ISO 8601; its absence does not make an
+          # otherwise-valid time invalid.
           unless tz.nil?
             timezone = Timezone.new(tz)
             if timezone.hour < 0 or timezone.hour >= HOURS_IN_DAY
@@ -449,10 +451,8 @@ module OpenEHR
             if timezone.minute < 0 or timezone.minute >= MINUTES_IN_HOUR
               return false
             end
-            return true
-          else
-            return false
           end
+          return true
         end
       end
     end # end of ISO8601_TIME
@@ -691,17 +691,21 @@ module OpenEHR
     class ISO8601Duration
       include ISO8601DurationModule, Comparable
       def initialize(str)
-        /^P((\d+)[Yy])?((\d+)[Mm])?((\d+)[Ww])?((\d)[dD])?(T((\d+)[Hh])?((\d+)[Mm])?((\d+)(\.\d+)?[Ss])?)?$/ =~ str
-        self.years = $2.to_i
-        self.months = $4.to_i
-        self.weeks = $6.to_i
-        self.days = $8.to_i
-        self.hours = $11.to_i
-        self.minutes = $13.to_i
-        self.seconds = $15.to_i
-        unless $16.nil?
-          self.fractional_second = $16.to_f
+        md = /^P((\d+)[Yy])?((\d+)[Mm])?((\d+)[Ww])?((\d+)[dD])?(T((\d+)[Hh])?((\d+)[Mm])?((\d+)(\.\d+)?[Ss])?)?$/.match(str)
+        if md.nil?
+          raise ArgumentError, 'invalid ISO8601 duration format'
         end
+        # Absent components stay nil rather than being coerced to 0, so
+        # as_string can round-trip a partially-specified duration and
+        # "unset" is distinguishable from "explicitly zero".
+        self.years = md[2] && md[2].to_i
+        self.months = md[4] && md[4].to_i
+        self.weeks = md[6] && md[6].to_i
+        self.days = md[8] && md[8].to_i
+        self.hours = md[11] && md[11].to_i
+        self.minutes = md[13] && md[13].to_i
+        self.seconds = md[15] && md[15].to_i
+        self.fractional_second = md[16] && md[16].to_f
       end
 
       def <=>(other)

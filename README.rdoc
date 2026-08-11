@@ -1,4 +1,4 @@
-{<img src="https://travis-ci.org/skoba/openehr-ruby.png?branch=master" alt="Build Status" />}[https://travis-ci.org/skoba/openehr-ruby]
+{<img src="https://github.com/skoba/openehr-ruby/actions/workflows/ci.yml/badge.svg" alt="CI" />}[https://github.com/skoba/openehr-ruby/actions/workflows/ci.yml]
 =Synopsis
 
 A Ruby implementation of the openEHR specifications
@@ -7,9 +7,9 @@ A Ruby implementation of the openEHR specifications
 
 = Requirements
 
-* Supports CRuby 2.5.0  or later.
-* Developed with CRuby 3.0.0 on FreeBSD and Linux.
-* Ruby 2.4 or earlier are no longer supported.
+* Supports CRuby 3.1 or later.
+* Developed with CRuby 3.4 on Linux; CI covers 3.1-3.4.
+* Ruby 3.0 or earlier are no longer supported.
 
 =Description
 

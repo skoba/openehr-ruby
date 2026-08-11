@@ -46,8 +46,8 @@ describe ADLParser do
           expect(@at.list[0].days).to eq(1)
         end
 
-        it 'months is 0' do
-          expect(@at.list[0].months).to be 0
+        it 'months is unset' do
+          expect(@at.list[0].months).to be_nil
         end
 
         it 'does not have assumed_value' do
@@ -190,8 +190,8 @@ describe ADLParser do
           expect(@at.range.lower.minutes).to be 10
         end
 
-        it 'lower range months are 0' do
-          expect(@at.range.lower.months).to be 0
+        it 'lower range months are unset' do
+          expect(@at.range.lower.months).to be_nil
         end
 
         it 'is upper included' do
@@ -368,8 +368,8 @@ describe ADLParser do
           expect(@at.list[0].days).to eq(1)
         end
 
-        it 'months is 0' do
-          expect(@at.list[0].months).to be 0
+        it 'months is unset' do
+          expect(@at.list[0].months).to be_nil
         end
 
         it 'assumed value is P1d' do
@@ -476,8 +476,8 @@ describe ADLParser do
           expect(@at.range.lower.minutes).to be 10
         end
 
-        it 'lower range months are 0' do
-          expect(@at.range.lower.months).to be 0
+        it 'lower range months are unset' do
+          expect(@at.range.lower.months).to be_nil
         end
 
         it 'is upper included' do

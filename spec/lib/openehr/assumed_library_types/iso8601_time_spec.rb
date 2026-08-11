@@ -230,5 +230,9 @@ describe ISO8601Time do
     it 'should not valid with invalid minute in timezone' do
       expect(ISO8601Time).not_to be_valid_iso8601_time '21:24:30.05TAABZ'
     end
+
+    it 'should be valid without a timezone' do
+      expect(ISO8601Time).to be_valid_iso8601_time '21:24:30.05'
+    end
   end
 end

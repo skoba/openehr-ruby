@@ -39,6 +39,12 @@ describe DvAmount do
     expect(dv_amount_1.magnitude).to eq(-1)
   end
 
+  it 'should not mutate the operand passed to -' do
+    operand = DvAmount.new(:magnitude => 3)
+    @dv_amount - operand
+    expect(operand.magnitude).to eq(3)
+  end
+
   it 'should be type mismatch' do
     expect {
       @dv_amount + 1

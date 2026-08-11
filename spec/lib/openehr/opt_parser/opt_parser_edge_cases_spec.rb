@@ -244,7 +244,7 @@ module OpenEHR
               result = parser.send(:occurrences, xml)
               expect(result.lower).to eq(0)
               expect(result.upper).to be_nil
-              expect(result.upper_included).to be_nil
+              expect(result.upper_included?).to be_nil
             end
           end
         end

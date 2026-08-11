@@ -92,7 +92,7 @@ module OpenEHR
             allow(xml).to receive(:at).with('string_expression').and_return(string_expr_node)
             allow(xml).to receive(:at).with('expression').and_return(expression_xml)
             allow(expression_xml).to receive(:attributes).and_return({'type' => double(text: 'EXPR_BINARY_OPERATOR')})
-            allow(parser).to receive(:expr_binary_operator).with(expression_xml).and_return(double('binary_op'))
+            allow(parser).to receive(:expr_binary_operator).with(expression_xml).and_return(double('binary_op', type: 'Boolean'))
 
             result = parser.send(:assertions, xml, node)
             expect(result).to be_an(Array)
@@ -109,7 +109,7 @@ module OpenEHR
             allow(xml).to receive(:at).with('string_expression').and_return(nil)
             allow(xml).to receive(:at).with('expression').and_return(expression_xml)
             allow(expression_xml).to receive(:attributes).and_return({'type' => double(text: 'EXPR_LEAF')})
-            allow(parser).to receive(:expr_leaf).with(expression_xml).and_return(double('leaf'))
+            allow(parser).to receive(:expr_leaf).with(expression_xml).and_return(double('leaf', type: 'Boolean'))
 
             result = parser.send(:assertions, xml, node)
             expect(result).to be_an(Array)

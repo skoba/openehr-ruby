@@ -1,3 +1,15 @@
+=== 1.3.1 (in progress)
+Fixed latent runtime bugs found by a full spec-vs-implementation audit:
+OperationalTemplate constructor validation order (template_id/description
+now validated correctly instead of raising on the inherited concept check),
+OPTParser handling of missing/blank template_id, uid, occurrences and
+cardinality data, and C_INTEGER allowing a fully unconstrained
+(any_allowed) construction per AOM 1.4. Added GitHub Actions CI, removed
+the dead Travis config and RSpec 1 spec.opts, set required_ruby_version.
+
+=== 1.3.0
+Update dependencies and release version 1.3.0
+
 === 1.2.99999
 Fixed #25. added SYM_LIST_CONTINUE to term_code_list_value
 Preparing 1.3

@@ -40,7 +40,7 @@ module OpenEHR
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))
         @opt.remove_namespaces!
         
-        uid = OpenEHR::RM::Support::Identification::UIDBasedID.new(value: text_on_path(@opt, UID_PATH))
+        uid = build_uid
         defs = definition
         
         # Create operational template with archetype-compatible parameters
@@ -61,8 +61,20 @@ module OpenEHR
 
       private
 
+      # template_id is mandatory for an operational template (enforced by
+      # OperationalTemplate itself); a missing/blank <template_id> element
+      # must therefore resolve to nil rather than an invalid TemplateID.
       def template_id
-        @template_id ||= OpenEHR::RM::Support::Identification::TemplateID.new(value: text_on_path(@opt, TEMPLATE_ID_PATH))
+        return @template_id if @template_id
+        value = text_on_path(@opt, TEMPLATE_ID_PATH)
+        @template_id = value.nil? || value.empty? ? nil : OpenEHR::RM::Support::Identification::TemplateID.new(value: value)
+      end
+
+      # uid is optional on an operational template; a missing/blank <uid>
+      # element must resolve to nil rather than an invalid UIDBasedID.
+      def build_uid
+        value = text_on_path(@opt, UID_PATH)
+        value.nil? || value.empty? ? nil : OpenEHR::RM::Support::Identification::UIDBasedID.new(value: value)
       end
 
       def concept
@@ -260,7 +272,12 @@ module OpenEHR
         upper_included = upper_included_node ? to_bool(upper_included_node.text) : (upper.nil? ? nil : true)
         lower_unbounded = lower_unbounded_node ? to_bool(lower_unbounded_node.text) : false
         upper_unbounded = upper_unbounded_node ? to_bool(upper_unbounded_node.text) : false
-        
+
+        # An occurrences element with none of its children present carries no
+        # constraint at all; Interval requires at least one bound, so treat
+        # this as "no occurrences data" rather than raising.
+        return nil if lower.nil? && upper.nil? && !lower_unbounded && !upper_unbounded
+
         # Handle unbounded intervals properly
         if upper_unbounded || upper.nil?
           upper = nil
@@ -282,11 +299,14 @@ module OpenEHR
 
       def cardinality(xml)
         return nil if xml.nil?
-        
+
         order_node = xml.at('is_ordered')
         unique_node = xml.at('is_unique')
         interval_node = xml.at('interval')
-        
+
+        # No cardinality sub-elements at all means no cardinality data.
+        return nil if order_node.nil? && unique_node.nil? && interval_node.nil?
+
         order = order_node ? to_bool(order_node.text) : false
         unique = unique_node ? to_bool(unique_node.text) : false
         interval = interval_node ? occurrences(interval_node) : nil

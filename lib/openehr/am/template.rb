@@ -11,13 +11,19 @@ module OpenEHR
         attr_reader :component_terminologies, :terminology_extracts, :template_id
 
         def initialize(args = {})
+          # template_id must be validated before delegating to Archetype#initialize:
+          # OPERATIONAL_TEMPLATE identifies itself by template_id, and archetype_id
+          # is derived from it below, so an absent template_id must fail with a
+          # template-specific message rather than falling through to Archetype's
+          # own (unrelated) mandatory-field checks.
+          self.template_id = args[:template_id]
+
           # Initialize parent archetype with template-specific archetype_id
           template_args = args.dup
           template_args[:archetype_id] = args[:template_id] if args[:template_id] && !args[:archetype_id]
-          
+
           super(template_args)
-          
-          self.template_id = args[:template_id]
+
           self.component_terminologies = args[:component_terminologies] || {}
           self.terminology_extracts = args[:terminology_extracts] || {}
         end
@@ -29,6 +35,22 @@ module OpenEHR
           @template_id = template_id
           # Update archetype_id to match template_id for consistency
           @archetype_id = template_id if template_id
+        end
+
+        # An operational template's concept is commonly derived from its
+        # archetype_id (see #concept below) rather than supplied explicitly,
+        # so unlike Archetype#concept= it must not require a value up front.
+        def concept=(concept)
+          @concept = concept
+        end
+
+        # AuthoredResource#description has no mandatory check, but an
+        # operational template always carries its own resource description.
+        def description=(description)
+          if description.nil?
+            raise ArgumentError, 'description is mandatory'
+          end
+          @description = description
         end
 
         def component_terminologies=(component_terminologies)

@@ -17,8 +17,8 @@ Gem::Specification.new do |gem|
   ]
   gem.files         = `git ls-files -- lib/*`.split("\n")
   gem.files        += %w[README.rdoc]
-  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.require_path  = "lib"
+  gem.required_ruby_version = '>= 3.1'
 
   gem.add_dependency('rake')
   gem.add_dependency('xml-simple')
@@ -29,23 +29,14 @@ Gem::Specification.new do |gem|
   gem.add_dependency('treetop')
   gem.add_dependency('rdoc')
   gem.add_dependency('nokogiri')
-#  gem.add_dependency('sqlite3')
-#  gem.add_dependency('activerecord')
 
   gem.add_development_dependency('rspec')
   gem.add_development_dependency('rspec-expectations')
   gem.add_development_dependency('rspec-collection_matchers')
-#  gem.add_development_dependenracy('cucumber', '~> 1.2.0')
   gem.add_development_dependency('guard')
   gem.add_development_dependency('guard-rspec')
-#  gem.add_development_dependency('guard-cucumber')
-  # gem.add_development_dependency('spork')#, '> 1.0rc')
-#  gem.add_development_dependency('guard-spork')
-  gem.add_development_dependency('simplecov') 
-#  gem.add_development_dependency('listen','0.6.0')
- # gem.add_development_dependency('rb-kqueue')
+  gem.add_development_dependency('simplecov')
   gem.add_development_dependency('libnotify')
-#  gem.add_development_dependency('rb-inotify')#, '~>0.8.8')
   gem.add_development_dependency('rubocop')
   gem.add_development_dependency('meowcop')
   gem.add_development_dependency('better_errors')
