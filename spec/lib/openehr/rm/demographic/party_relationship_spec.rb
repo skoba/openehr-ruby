@@ -58,12 +58,17 @@ describe PartyRelationship do
     }.to raise_error ArgumentError
   end
 
-  it 'should raise ArgumentError when source is not matched with source' do
-    invalid_id = ObjectID.new(:value => '10')
-    invalid_source = double(PartyRef, :id => invalid_id)
+  it 'should accept a source whose id differs from the relationship''s own uid' do
+    # PARTY_RELATIONSHIP.source references the *owning PARTY's* id, which
+    # is unrelated to the relationship object's own uid; requiring them
+    # to match (as an earlier version of this method did) is not a spec
+    # invariant.
+    other_id = ObjectID.new(:value => '10')
+    other_source = double(PartyRef, :id => other_id, :type => 'source')
     expect {
-      @party_relationship.source = invalid_source
-    }.to raise_error ArgumentError
+      @party_relationship.source = other_source
+    }.not_to raise_error
+    expect(@party_relationship.source).to equal(other_source)
   end
 
   it 'target should be assined properly' do

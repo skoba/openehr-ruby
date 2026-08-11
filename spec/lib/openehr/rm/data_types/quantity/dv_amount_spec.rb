@@ -108,4 +108,35 @@ describe DvAmount do
       @dv_amount.set_accuracy(1.01, false)
     }.to raise_error ArgumentError
   end
+
+  describe '.valid_percentage' do
+    it 'is true within 0..100' do
+      expect(DvAmount.valid_percentage(0)).to be true
+      expect(DvAmount.valid_percentage(50)).to be true
+      expect(DvAmount.valid_percentage(100)).to be true
+    end
+
+    it 'is false outside 0..100' do
+      expect(DvAmount.valid_percentage(-0.01)).to be false
+      expect(DvAmount.valid_percentage(100.1)).to be false
+    end
+  end
+
+  describe 'unary minus (-@)' do
+    it 'returns a new DvAmount with negated magnitude' do
+      negated = -@dv_amount
+      expect(negated.magnitude).to eq(-2)
+    end
+
+    it 'does not mutate the receiver' do
+      -@dv_amount
+      expect(@dv_amount.magnitude).to eq(2)
+    end
+
+    it 'preserves accuracy' do
+      negated = -@dv_amount
+      expect(negated.accuracy).to eq(100)
+      expect(negated.accuracy_is_percent?).to be true
+    end
+  end
 end

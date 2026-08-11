@@ -8,7 +8,8 @@ describe Composition do
   before(:each) do
     name = DvText.new(:value => 'composition test')
     language = double(CodePhrase, :code_string => 'ja')
-    category = double(DvCodedText, :value => 'event')
+    category_code = double(CodePhrase, :code_string => '433')
+    category = double(DvCodedText, :value => 'event', :defining_code => category_code)
     territory = double(CodePhrase, :code_string => 'jpn')
     external_ref = double(PartyRef, :type =>  'ROLE')
     composer = double(PartyProxy, :external_ref => external_ref)
@@ -32,7 +33,22 @@ describe Composition do
     expect(@composition.language.code_string).to eq('ja')
   end
 
-  it 'should validate language with Termonology service'
+  it 'should validate language with Terminology service' do
+    strict_provider = Class.new do
+      def valid_code?(terminology_id, code)
+        terminology_id == 'ISO_639-1' && code == 'ja'
+      end
+    end.new
+    OpenEHR::TerminologyService.provider = strict_provider
+    expect {
+      @composition.language = double(CodePhrase, :code_string => 'not-a-real-language')
+    }.to raise_error ArgumentError
+    expect {
+      @composition.language = double(CodePhrase, :code_string => 'ja')
+    }.not_to raise_error
+  ensure
+    OpenEHR::TerminologyService.provider = nil
+  end
 
   it 'should raise ArgumentError with nil language' do
     expect {
@@ -44,7 +60,23 @@ describe Composition do
     expect(@composition.category.value).to eq('event')
   end
 
-  it 'should validate category with Terminology service'
+  it 'should validate category with Terminology service' do
+    strict_provider = Class.new do
+      def has_code_for_group?(group_id, code)
+        group_id == 'composition category' && code == '433'
+      end
+    end.new
+    OpenEHR::TerminologyService.provider = strict_provider
+    invalid_code = double(CodePhrase, :code_string => '999')
+    expect {
+      @composition.category = double(DvCodedText, :value => 'event', :defining_code => invalid_code)
+    }.to raise_error ArgumentError
+    expect {
+      @composition.category = double(DvCodedText, :value => 'event', :defining_code => double(CodePhrase, :code_string => '433'))
+    }.not_to raise_error
+  ensure
+    OpenEHR::TerminologyService.provider = nil
+  end
 
   it 'should raise ArgumentError with nil category' do
     expect {
@@ -77,7 +109,7 @@ describe Composition do
   end
 
   it 'is_persistent? should be true when category is persistent' do
-    category = double(DvCodedText, :value => 'persistent')
+    category = double(DvCodedText, :value => 'persistent', :defining_code => double(CodePhrase, :code_string => '431'))
     @composition.category = category
     expect(@composition.is_persistent?).to be_truthy
   end
@@ -96,7 +128,7 @@ describe Composition do
     composition = Composition.new(:archetype_node_id => 'at0001',
                                   :name => DvText.new(:value => 'composition test'),
                                   :language => double(CodePhrase, :code_string => 'ja'),
-                                  :category => double(DvCodedText, :value => 'event'),
+                                  :category => double(DvCodedText, :value => 'event', :defining_code => double(CodePhrase, :code_string => '433')),
                                   :territory => double(CodePhrase, :code_string => 'jpn'),
                                   :composer => double(PartyProxy, :external_ref => double(PartyRef, :type => 'ROLE')),
                                   :content => [section])

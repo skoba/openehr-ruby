@@ -43,8 +43,8 @@ describe 'path navigation over a real Composition tree' do
                           :items => [@observation])
     @composition = Composition.new(:archetype_node_id => 'at0008',
                                    :name => DvText.new(:value => 'Encounter'),
-                                   :language => double('language'),
-                                   :category => double('category'),
+                                   :language => double('language', :code_string => 'en'),
+                                   :category => double('category', :defining_code => double('code', :code_string => '433')),
                                    :territory => double('territory'),
                                    :composer => double('composer'),
                                    :content => [section])

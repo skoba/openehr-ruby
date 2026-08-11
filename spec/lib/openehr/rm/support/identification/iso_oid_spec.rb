@@ -9,4 +9,10 @@ describe IsoOID do
   it 'should be an instance of IsoOID' do
     expect(@iso_oid).to be_an_instance_of IsoOID
   end
+
+  it 'should raise ArgumentError with a malformed OID' do
+    expect {
+      IsoOID.new(:value => 'not.an.oid')
+    }.to raise_error ArgumentError
+  end
 end

@@ -188,6 +188,312 @@ module OpenEHR
         it { is_expected.to be_an_instance_of Composition::Content::Navigation::Section }
       end
 
+      describe TermMappingFactory do
+        subject { Factory.create('TERM_MAPPING', target: double(), match: '=') }
+        it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Text::TermMapping }
+      end
+
+      describe ElementFactory do
+        subject {
+          Factory.create('ELEMENT', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'Systolic'),
+                         value: Factory.create('DV_QUANTITY', magnitude: 120, units: 'mm[Hg]'))
+        }
+        it { is_expected.to be_an_instance_of DataStructures::ItemStructure::Representation::Element }
+      end
+
+      describe ItemTreeFactory do
+        subject {
+          Factory.create('ITEM_TREE', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'tree'))
+        }
+        it { is_expected.to be_an_instance_of DataStructures::ItemStructure::ItemTree }
+      end
+
+      describe ItemListFactory do
+        subject {
+          Factory.create('ITEM_LIST', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'list'))
+        }
+        it { is_expected.to be_an_instance_of DataStructures::ItemStructure::ItemList }
+      end
+
+      describe ItemSingleFactory do
+        subject {
+          Factory.create('ITEM_SINGLE', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'single'),
+                         item: double())
+        }
+        it { is_expected.to be_an_instance_of DataStructures::ItemStructure::ItemSingle }
+      end
+
+      describe ItemTableFactory do
+        subject {
+          Factory.create('ITEM_TABLE', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'table'))
+        }
+        it { is_expected.to be_an_instance_of DataStructures::ItemStructure::ItemTable }
+      end
+
+      describe HistoryFactory do
+        subject {
+          Factory.create('HISTORY', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'history'),
+                         origin: Factory.create('DV_DATE_TIME', value: '2020-01-01T00:00:00'))
+        }
+        it { is_expected.to be_an_instance_of DataStructures::History::History }
+      end
+
+      describe EventFactory do
+        subject {
+          Factory.create('EVENT', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'event'),
+                         time: Factory.create('DV_DATE_TIME', value: '2020-01-01T00:00:00'),
+                         data: double())
+        }
+        it { is_expected.to be_an_instance_of DataStructures::History::Event }
+      end
+
+      describe PointEventFactory do
+        subject {
+          Factory.create('POINT_EVENT', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'point event'),
+                         time: Factory.create('DV_DATE_TIME', value: '2020-01-01T00:00:00'),
+                         data: double())
+        }
+        it { is_expected.to be_an_instance_of DataStructures::History::PointEvent }
+      end
+
+      describe IntervalEventFactory do
+        subject {
+          Factory.create('INTERVAL_EVENT', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'interval event'),
+                         time: Factory.create('DV_DATE_TIME', value: '2020-01-01T00:00:00'),
+                         data: double(), width: Factory.create('DV_DURATION', value: 'PT1H'),
+                         math_function: double())
+        }
+        it { is_expected.to be_an_instance_of DataStructures::History::IntervalEvent }
+      end
+
+      describe ClusterFactory do
+        subject {
+          Factory.create('CLUSTER', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'cluster'))
+        }
+        it { is_expected.to be_an_instance_of DataStructures::ItemStructure::Representation::Cluster }
+      end
+
+      describe EvaluationFactory do
+        subject {
+          Factory.create('EVALUATION', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'evaluation'),
+                         language: double(code_string: 'en'), encoding: double(code_string: 'UTF-8'),
+                         subject: double(), data: double())
+        }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::Evaluation }
+      end
+
+      describe InstructionFactory do
+        subject {
+          Factory.create('INSTRUCTION', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'instruction'),
+                         language: double(code_string: 'en'), encoding: double(code_string: 'UTF-8'),
+                         subject: double(), narrative: double())
+        }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::Instruction }
+      end
+
+      describe ActionFactory do
+        subject {
+          Factory.create('ACTION', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'action'),
+                         language: double(code_string: 'en'), encoding: double(code_string: 'UTF-8'),
+                         subject: double(), time: double(), description: double(),
+                         ism_transition: double(current_state: double, transition: double))
+        }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::Action }
+      end
+
+      describe ActivityFactory do
+        subject {
+          Factory.create('ACTIVITY', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'activity'),
+                         description: double(), timing: double(), action_archetype_id: 'at0002')
+        }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::Activity }
+      end
+
+      describe AdminEntryFactory do
+        subject {
+          Factory.create('ADMIN_ENTRY', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'admin entry'),
+                         language: double(code_string: 'en'), encoding: double(code_string: 'UTF-8'),
+                         subject: double(), data: double())
+        }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::AdminEntry }
+      end
+
+      describe InstructionDetailsFactory do
+        subject { Factory.create('INSTRUCTION_DETAILS', instruction_id: double(), activity_id: 'at0002') }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::InstructionDetails }
+      end
+
+      describe IsmTransitionFactory do
+        subject {
+          Factory.create('ISM_TRANSITION',
+                         current_state: double(defining_code: double(code_string: '245')),
+                         transition: double(defining_code: double(code_string: '523')))
+        }
+        it { is_expected.to be_an_instance_of Composition::Content::Entry::IsmTransition }
+      end
+
+      describe GenericEntryFactory do
+        subject {
+          Factory.create('GENERIC_ENTRY', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'generic entry'), data: double())
+        }
+        it { is_expected.to be_an_instance_of Integration::GenericEntry }
+      end
+
+      describe PartySelfFactory do
+        subject { Factory.create('PARTY_SELF', external_ref: double()) }
+        it { is_expected.to be_an_instance_of Common::Generic::PartySelf }
+      end
+
+      describe PartyRelatedFactory do
+        subject { Factory.create('PARTY_RELATED', name: 'related', relationship: double()) }
+        it { is_expected.to be_an_instance_of Common::Generic::PartyRelated }
+      end
+
+      describe ParticipationFactory do
+        subject {
+          Factory.create('PARTICIPATION', performer: double(), function: double(), mode: double())
+        }
+        it { is_expected.to be_an_instance_of Common::Generic::Participation }
+      end
+
+      describe LinkFactory do
+        subject { Factory.create('LINK', meaning: double(), target: double(), type: double()) }
+        it { is_expected.to be_an_instance_of Common::Archetyped::Link }
+      end
+
+      describe FeederAuditFactory do
+        subject { Factory.create('FEEDER_AUDIT', originating_system_audit: double()) }
+        it { is_expected.to be_an_instance_of Common::Archetyped::FeederAudit }
+      end
+
+      describe AuditDetailsFactory do
+        subject {
+          Factory.create('AUDIT_DETAILS', system_id: 'sys', committer: double(),
+                         time_committed: double(), change_type: double(), description: double())
+        }
+        it { is_expected.to be_an_instance_of Common::Generic::AuditDetails }
+      end
+
+      describe AttestationFactory do
+        subject {
+          Factory.create('ATTESTATION', system_id: 'sys', committer: double(),
+                         time_committed: double(), change_type: double(),
+                         reason: 'reason', proof: 'proof', is_pending: false)
+        }
+        it { is_expected.to be_an_instance_of Common::Generic::Attestation }
+      end
+
+      describe ObjectRefFactory do
+        subject { Factory.create('OBJECT_REF', namespace: 'local', type: 'PARTY', id: double()) }
+        it { is_expected.to be_an_instance_of Support::Identification::ObjectRef }
+      end
+
+      describe LocatableRefFactory do
+        subject { Factory.create('LOCATABLE_REF', namespace: 'local', type: 'COMPOSITION', id: double()) }
+        it { is_expected.to be_an_instance_of Support::Identification::LocatableRef }
+      end
+
+      describe ObjectVersionIdFactory do
+        subject { Factory.create('OBJECT_VERSION_ID', value: 'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::sys::2') }
+        it { is_expected.to be_an_instance_of Support::Identification::ObjectVersionID }
+      end
+
+      describe HierObjectIdFactory do
+        subject { Factory.create('HIER_OBJECT_ID', value: 'ehr::localhost/3030') }
+        it { is_expected.to be_an_instance_of Support::Identification::HierObjectID }
+      end
+
+      describe UidBasedIdFactory do
+        subject { Factory.create('UID_BASED_ID', value: 'ehr::localhost/3030') }
+        it { is_expected.to be_an_instance_of Support::Identification::UIDBasedID }
+      end
+
+      describe AccessGroupRefFactory do
+        subject { Factory.create('ACCESS_GROUP_REF', namespace: 'local', type: 'ACCESS_GROUP', id: double()) }
+        it { is_expected.to be_an_instance_of Support::Identification::AccessGroupRef }
+      end
+
+      describe PersonFactory do
+        subject {
+          Factory.create('PERSON', archetype_node_id: 'at0001', name: Factory.create('DV_TEXT', value: 'person'),
+                         uid: double(), identities: [double()])
+        }
+        it { is_expected.to be_an_instance_of Demographic::Person }
+      end
+
+      describe OrganisationFactory do
+        subject {
+          Factory.create('ORGANISATION', archetype_node_id: 'at0001', name: Factory.create('DV_TEXT', value: 'org'),
+                         uid: double(), identities: [double()])
+        }
+        it { is_expected.to be_an_instance_of Demographic::Organisation }
+      end
+
+      describe RoleFactory do
+        subject {
+          Factory.create('ROLE', archetype_node_id: 'at0001', name: Factory.create('DV_TEXT', value: 'role'),
+                         uid: double(), identities: [double()], performer: double())
+        }
+        it { is_expected.to be_an_instance_of Demographic::Role }
+      end
+
+      describe PartyIdentityFactory do
+        subject {
+          Factory.create('PARTY_IDENTITY', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'name'), details: double())
+        }
+        it { is_expected.to be_an_instance_of Demographic::PartyIdentity }
+      end
+
+      describe ContactFactory do
+        subject {
+          Factory.create('CONTACT', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'contact'), addresses: [double()])
+        }
+        it { is_expected.to be_an_instance_of Demographic::Contact }
+      end
+
+      describe AddressFactory do
+        subject {
+          Factory.create('ADDRESS', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'address'), details: double())
+        }
+        it { is_expected.to be_an_instance_of Demographic::Address }
+      end
+
+      describe CapabilityFactory do
+        subject {
+          Factory.create('CAPABILITY', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'capability'), credentials: double())
+        }
+        it { is_expected.to be_an_instance_of Demographic::Capability }
+      end
+
+      describe PartyRelationshipFactory do
+        subject {
+          Factory.create('PARTY_RELATIONSHIP', archetype_node_id: 'at0001',
+                         name: Factory.create('DV_TEXT', value: 'relationship'),
+                         uid: double(), source: double(), target: double())
+        }
+        it { is_expected.to be_an_instance_of Demographic::PartyRelationship }
+      end
+
       describe CompositionFactory do
         let(:composition) { CompositionFactory.create_from_json(COMPOSITION_JSON)}
         subject { composition }

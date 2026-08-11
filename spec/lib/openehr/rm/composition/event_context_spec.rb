@@ -44,7 +44,23 @@ describe EventContext do
     }.to raise_error ArgumentError
   end
 
-  it 'should vaildate setting code with Terminology service'
+  it 'should vaildate setting code with Terminology service' do
+    strict_provider = Class.new do
+      def has_code_for_group?(group_id, code)
+        group_id == 'event context setting' && code == '225'
+      end
+    end.new
+    OpenEHR::TerminologyService.provider = strict_provider
+    invalid_setting = double(DvCodedText, :defining_code => double(CodePhrase, :code_string => '999'))
+    expect {
+      @event_context.setting = invalid_setting
+    }.to raise_error ArgumentError
+    expect {
+      @event_context.setting = @event_context.setting
+    }.not_to raise_error
+  ensure
+    OpenEHR::TerminologyService.provider = nil
+  end
 
   it 'end_time should be assigned properly' do
     expect(@event_context.end_time.value).to eq('2010-10-14T09:00:00')

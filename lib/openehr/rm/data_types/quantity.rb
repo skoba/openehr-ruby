@@ -213,9 +213,15 @@ module OpenEHR
             self + negated
           end
 
+          def -@
+            negated = self.dup
+            negated.magnitude = -magnitude
+            negated
+          end
+
           def set_accuracy(accuracy, accuracy_percent)
             if accuracy_percent
-              raise ArgumentError, 'accuracy invalid' if accuracy < 0.0 || accuracy > 100.0
+              raise ArgumentError, 'accuracy invalid' unless self.class.valid_percentage(accuracy)
             else
               raise ArgumentError, 'accuracy invaild' if accuracy < 0.0 || accuracy > 1.0
             end
@@ -224,6 +230,10 @@ module OpenEHR
 
           def accuracy_is_percent?
             return @accuracy_percent
+          end
+
+          def self.valid_percentage(number)
+            number >= 0.0 && number <= 100.0
           end
         end
 

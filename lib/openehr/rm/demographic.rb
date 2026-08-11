@@ -248,7 +248,7 @@ module OpenEHR
         end
 
         def source=(source)
-          if source.nil? or source.id.value != @uid.value
+          if source.nil?
             raise ArgumentError, 'source is invalid'
           end
           @source = source
@@ -256,7 +256,7 @@ module OpenEHR
 
         def target=(target)
           if target.nil?
-            raise ArgumentError, 'taraget is invalid'
+            raise ArgumentError, 'target is invalid'
           end
           @target = target
         end

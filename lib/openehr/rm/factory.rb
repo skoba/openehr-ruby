@@ -80,12 +80,6 @@ module OpenEHR
       end
     end
 
-    class TermMappingFactory
-      def self.create(*param)
-        OpenEHR::RM::DataTypes::Text::TermMapping.new(*param)
-      end
-    end
-
     class CodePhraseFactory
       def self.create(*param)
         OpenEHR::RM::DataTypes::Text::CodePhrase.new(*param)
@@ -293,6 +287,234 @@ module OpenEHR
     class TermMappingFactory
       def self.create(param)
         OpenEHR::RM::DataTypes::Text::TermMapping.new(param)
+      end
+    end
+
+    class ElementFactory
+      def self.create(param)
+        DataStructures::ItemStructure::Representation::Element.new(param)
+      end
+    end
+
+    class ItemTreeFactory
+      def self.create(param)
+        DataStructures::ItemStructure::ItemTree.new(param)
+      end
+    end
+
+    class ItemListFactory
+      def self.create(param)
+        DataStructures::ItemStructure::ItemList.new(param)
+      end
+    end
+
+    class ItemSingleFactory
+      def self.create(param)
+        DataStructures::ItemStructure::ItemSingle.new(param)
+      end
+    end
+
+    class ItemTableFactory
+      def self.create(param)
+        DataStructures::ItemStructure::ItemTable.new(param)
+      end
+    end
+
+    class HistoryFactory
+      def self.create(param)
+        DataStructures::History::History.new(param)
+      end
+    end
+
+    class EventFactory
+      def self.create(param)
+        DataStructures::History::Event.new(param)
+      end
+    end
+
+    class PointEventFactory
+      def self.create(param)
+        DataStructures::History::PointEvent.new(param)
+      end
+    end
+
+    class IntervalEventFactory
+      def self.create(param)
+        DataStructures::History::IntervalEvent.new(param)
+      end
+    end
+
+    class EvaluationFactory
+      def self.create(param)
+        Composition::Content::Entry::Evaluation.new(param)
+      end
+    end
+
+    class InstructionFactory
+      def self.create(param)
+        Composition::Content::Entry::Instruction.new(param)
+      end
+    end
+
+    class ActionFactory
+      def self.create(param)
+        Composition::Content::Entry::Action.new(param)
+      end
+    end
+
+    class ActivityFactory
+      def self.create(param)
+        Composition::Content::Entry::Activity.new(param)
+      end
+    end
+
+    class AdminEntryFactory
+      def self.create(param)
+        Composition::Content::Entry::AdminEntry.new(param)
+      end
+    end
+
+    class InstructionDetailsFactory
+      def self.create(param)
+        Composition::Content::Entry::InstructionDetails.new(param)
+      end
+    end
+
+    class IsmTransitionFactory
+      def self.create(param)
+        Composition::Content::Entry::IsmTransition.new(param)
+      end
+    end
+
+    class GenericEntryFactory
+      def self.create(param)
+        Integration::GenericEntry.new(param)
+      end
+    end
+
+    class PartySelfFactory
+      def self.create(param)
+        Common::Generic::PartySelf.new(param)
+      end
+    end
+
+    class PartyRelatedFactory
+      def self.create(param)
+        Common::Generic::PartyRelated.new(param)
+      end
+    end
+
+    class ParticipationFactory
+      def self.create(param)
+        Common::Generic::Participation.new(param)
+      end
+    end
+
+    class LinkFactory
+      def self.create(param)
+        Common::Archetyped::Link.new(param)
+      end
+    end
+
+    class FeederAuditFactory
+      def self.create(param)
+        Common::Archetyped::FeederAudit.new(param)
+      end
+    end
+
+    class AuditDetailsFactory
+      def self.create(param)
+        Common::Generic::AuditDetails.new(param)
+      end
+    end
+
+    class AttestationFactory
+      def self.create(param)
+        Common::Generic::Attestation.new(param)
+      end
+    end
+
+    class ObjectRefFactory
+      def self.create(param)
+        Support::Identification::ObjectRef.new(param)
+      end
+    end
+
+    class LocatableRefFactory
+      def self.create(param)
+        Support::Identification::LocatableRef.new(param)
+      end
+    end
+
+    class ObjectVersionIdFactory
+      def self.create(param)
+        Support::Identification::ObjectVersionID.new(param)
+      end
+    end
+
+    class HierObjectIdFactory
+      def self.create(param)
+        Support::Identification::HierObjectID.new(param)
+      end
+    end
+
+    class UidBasedIdFactory
+      def self.create(param)
+        Support::Identification::UIDBasedID.new(param)
+      end
+    end
+
+    class AccessGroupRefFactory
+      def self.create(param)
+        Support::Identification::AccessGroupRef.new(param)
+      end
+    end
+
+    class PersonFactory
+      def self.create(param)
+        Demographic::Person.new(param)
+      end
+    end
+
+    class OrganisationFactory
+      def self.create(param)
+        Demographic::Organisation.new(param)
+      end
+    end
+
+    class RoleFactory
+      def self.create(param)
+        Demographic::Role.new(param)
+      end
+    end
+
+    class PartyIdentityFactory
+      def self.create(param)
+        Demographic::PartyIdentity.new(param)
+      end
+    end
+
+    class ContactFactory
+      def self.create(param)
+        Demographic::Contact.new(param)
+      end
+    end
+
+    class AddressFactory
+      def self.create(param)
+        Demographic::Address.new(param)
+      end
+    end
+
+    class CapabilityFactory
+      def self.create(param)
+        Demographic::Capability.new(param)
+      end
+    end
+
+    class PartyRelationshipFactory
+      def self.create(param)
+        Demographic::PartyRelationship.new(param)
       end
     end
 

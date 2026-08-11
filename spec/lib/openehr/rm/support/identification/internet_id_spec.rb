@@ -9,4 +9,10 @@ describe InternetID do
   it 'should be an instance of IsoOID' do
     expect(@internet_id).to be_an_instance_of InternetID
   end
+
+  it 'should raise ArgumentError with a malformed domain name' do
+    expect {
+      InternetID.new(:value => 'not a domain!')
+    }.to raise_error ArgumentError
+  end
 end

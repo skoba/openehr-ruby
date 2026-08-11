@@ -27,12 +27,18 @@ module OpenEHR
           if language.nil?
             raise ArgumentError, 'language is mandatory'
           end
+          unless OpenEHR::TerminologyService.valid_code?('ISO_639-1', language.code_string)
+            raise ArgumentError, 'language code is invalid'
+          end
           @language = language
         end
 
         def category=(category)
           if category.nil?
             raise ArgumentError, 'category is mandatory'
+          end
+          unless OpenEHR::TerminologyService.has_code_for_group?('composition category', category.defining_code.code_string)
+            raise ArgumentError, 'category code is invalid'
           end
           @category = category
         end
@@ -86,6 +92,9 @@ module OpenEHR
         def setting=(setting)
           if setting.nil?
             raise ArgumentError, 'setting is mandatory'
+          end
+          unless OpenEHR::TerminologyService.has_code_for_group?('event context setting', setting.defining_code.code_string)
+            raise ArgumentError, 'setting code is invalid'
           end
           @setting = setting
         end

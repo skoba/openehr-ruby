@@ -247,12 +247,18 @@ module OpenEHR
               if current_state.nil?
                 raise ArgumentError, 'current_state is mandatory'
               end
+              unless OpenEHR::TerminologyService.has_code_for_group?('ism transition current state', current_state.defining_code.code_string)
+                raise ArgumentError, 'current_state code is invalid'
+              end
               @current_state = current_state
             end
 
             def transition=(transition)
               if transition.nil?
                 raise ArgumentError, 'transition is mandatory'
+              end
+              unless OpenEHR::TerminologyService.has_code_for_group?('ism transition careflow transition', transition.defining_code.code_string)
+                raise ArgumentError, 'transition code is invalid'
               end
               @transition = transition
             end

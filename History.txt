@@ -1,3 +1,49 @@
+=== 1.5.0 (in progress)
+RM 1.0.2 behavioral completeness and Factory coverage.
+
+* New OpenEHR::TerminologyService seam: RM classes that must validate
+  codes against a terminology (COMPOSITION.language/category,
+  EVENT_CONTEXT.setting, ISM_TRANSITION.current_state/transition) now
+  call through it instead of skipping validation entirely. The default
+  provider is fully permissive (this gem carries no terminology data -
+  that lives in the separate openehr-terminology gem); plug in
+  OpenEHR::TerminologyService.provider = my_adapter for real validation.
+* DV_AMOUNT gained the spec's valid_percentage(number) class function
+  and unary minus (-@, a non-mutating negated copy).
+* Identification hardening: UUID, InternetID (RFC 1034 domain form) and
+  IsoOID (ISO/IEC 8824 OID form) now validate their value's format
+  instead of accepting any non-empty string; ArchetypeID's parsing
+  regexes are now fully anchored (previously matched a valid id embedded
+  anywhere in a longer garbage string) and no longer truncate the
+  specialisation part of domain_concept to a single character (a bug an
+  assertion-less test had been silently masking).
+* MeasurementService implements is_valid_units_string?/units_equivalent?
+  as a minimal UCUM-lite syntactic checker (allowed-character and
+  balanced-bracket check, not a full UCUM parser or conversion table -
+  documented as such).
+* PartyRelationship#source= no longer requires the source PARTY_REF's id
+  to equal the relationship's own uid (not a spec invariant - the
+  relationship's uid identifies the relationship object itself, not the
+  owning party) - BREAKING: a source with a different id is now valid
+  instead of raising.
+* Factory: fixed TermMappingFactory being defined twice (the second
+  definition silently shadowed the first). Added factories for Element,
+  ItemTree/ItemList/ItemSingle/ItemTable, History/Event/PointEvent/
+  IntervalEvent, the remaining Entry subtypes (Evaluation, Instruction,
+  Action, Activity, AdminEntry, InstructionDetails, IsmTransition),
+  GenericEntry, common/generic types (PartySelf, PartyRelated,
+  Participation, Link, FeederAudit, AuditDetails, Attestation),
+  identification types (ObjectRef, LocatableRef, ObjectVersionID,
+  HierObjectID, UIDBasedID, AccessGroupRef), and demographic types
+  (Person, Organisation, Role, PartyIdentity, Contact, Address,
+  Capability, PartyRelationship) - previously only a handful of RM types
+  (mostly data types plus Observation/Section/Cluster) could be built
+  through Factory.create, so e.g. an archetype-driven build of a CLUSTER
+  containing ELEMENTs was impossible. EHR/EHR_ACCESS/EHR_STATUS/
+  VERSIONED_* factories are deliberately not included yet: those RM
+  classes have their own pre-existing duck-typed #type checks that need
+  fixing first (a separate piece of work).
+
 === 1.4.0 (in progress)
 openEHR path navigation: implemented item_at_path, items_at_path,
 path_exists?, path_of_item and path_unique? on PATHABLE (previously all

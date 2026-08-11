@@ -68,7 +68,7 @@ module OpenEHR
           end
 
           def value=(value)
-            if /([a-zA-Z]\w+)-([a-zA-Z]\w+)-([a-zA-Z]\w+)\.([a-zA-Z]\w+)(-([a-zA-Z]\w+))?\.(v\d+)/ =~ value
+            if /\A([a-zA-Z]\w+)-([a-zA-Z]\w+)-([a-zA-Z]\w+)\.([a-zA-Z]\w+)(-([a-zA-Z]\w+))?\.(v\d+)\z/ =~ value
               self.rm_originator = $1
               self.rm_name = $2
               self.rm_entity = $3
@@ -108,7 +108,7 @@ module OpenEHR
             if domain_concept.nil? or domain_concept.empty?
               raise ArgumentError, "domain concept not valid"
             end
-            if /([a-zA-Z]\w+)(-([a-zA-Z]\w))?/ =~ domain_concept
+            if /\A([a-zA-Z]\w+)(-([a-zA-Z]\w+))?\z/ =~ domain_concept
               self.concept_name = $1
               self.specialisation = $3
             else
@@ -399,16 +399,41 @@ module OpenEHR
         end
 
         class UUID < UID
+          FORMAT = /\A[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\z/
 
+          def value=(value)
+            unless value.is_a?(String) && value =~ FORMAT
+              raise ArgumentError, 'invalid UUID form'
+            end
+            super
+          end
         end
 
-        class InternetID <UID
-          
+        class InternetID < UID
+          # RFC 1034 domain-name form: dot-separated labels, each
+          # alphanumeric (with internal hyphens allowed).
+          FORMAT = /\A[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+\z/
+
+          def value=(value)
+            unless value.is_a?(String) && value =~ FORMAT
+              raise ArgumentError, 'invalid internet id form'
+            end
+            super
+          end
         end
 
-        class IsoOID <UID
+        class IsoOID < UID
+          # ISO/IEC 8824 OID form: a dot-separated sequence of
+          # non-negative integers, e.g. "1.2.840.113619.2.1".
+          FORMAT = /\A\d+(\.\d+)+\z/
 
-        end        
+          def value=(value)
+            unless value.is_a?(String) && value =~ FORMAT
+              raise ArgumentError, 'invalid ISO OID form'
+            end
+            super
+          end
+        end
       end # of Identification
     end # of Support
   end # of RM

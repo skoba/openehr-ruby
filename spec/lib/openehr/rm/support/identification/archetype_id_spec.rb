@@ -54,6 +54,12 @@ describe ArchetypeID do
     }.to raise_error ArgumentError
   end
 
+  it 'should raise ArgumentError when a valid id is embedded in surrounding garbage (regex must be anchored)' do
+    expect {
+      ArchetypeID.new(:value => 'garbage openEHR-EHR-SECTION.physical_examination.v2 garbage')
+    }.to raise_error ArgumentError
+  end
+
   context 'with a v0 (draft) version' do
     before(:each) do
       @archetype_id = ArchetypeID.new(:value => 'openEHR-EHR-CLUSTER.exam.v0')
@@ -152,7 +158,7 @@ describe ArchetypeID do
     end
 
     it 'specialisation should be naturopathy' do
-      @archetype_id.specialisation === 'naturopathy'
+      expect(@archetype_id.specialisation).to eq('naturopathy')
     end
 
     it 'should raise ArgumentError empty domain concept' do
