@@ -145,7 +145,7 @@ module OpenEHR
 
           module CDateModule
             attr_accessor :timezone_validity, :day_validity, :range, :list
-            attr_reader :month_validity, :day_validity, :range, :pattern
+            attr_reader :month_validity, :pattern
 
             def month_validity=(month_validity)
               if (month_validity == ValidityKind::OPTIONAL &&
@@ -289,9 +289,9 @@ module OpenEHR
               self.millisecond_validity = args[:millisecond_validity]
               self.second_validity = args[:second_validity]
               self.minute_validity = args[:minute_validity]
-              self.hour_validity = args[:hour_vaildity]
+              self.hour_validity = args[:hour_validity]
               self.day_validity = args[:day_validity]
-              self.month_validity = args[:day_validity]
+              self.month_validity = args[:month_validity]
             end
 
             def hour_validity=(hour_validity)

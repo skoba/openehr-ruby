@@ -85,4 +85,14 @@ describe EventContext do
   it 'other_context should be assigned properly' do
     expect(@event_context.other_context.archetype_node_id).to eq('at0002')
   end
+
+  it 'health_care_facility should be nil by default (optional)' do
+    expect(@event_context.health_care_facility).to be_nil
+  end
+
+  it 'health_care_facility should be assigned properly' do
+    facility = double(OpenEHR::RM::Common::Generic::PartyIdentified, :name => 'Test Hospital')
+    @event_context.health_care_facility = facility
+    expect(@event_context.health_care_facility.name).to eq('Test Hospital')
+  end
 end

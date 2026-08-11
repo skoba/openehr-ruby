@@ -56,7 +56,7 @@ module OpenEHR
 
       class EventContext < OpenEHR::RM::Common::Archetyped::Pathable
         attr_reader :start_time, :setting, :participations, :location
-        attr_accessor :end_time, :other_context
+        attr_accessor :end_time, :other_context, :health_care_facility
 
         def initialize(args = { })
           super(args)
@@ -66,6 +66,7 @@ module OpenEHR
           self.participations = args[:participations]
           self.location = args[:location]
           self.other_context = args[:other_context]
+          self.health_care_facility = args[:health_care_facility]
         end
 
         def start_time=(start_time)

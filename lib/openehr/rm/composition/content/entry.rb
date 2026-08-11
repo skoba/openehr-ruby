@@ -48,7 +48,7 @@ module OpenEHR
             end
 
             def subject_is_self?
-              return @subject.instance_of? PartySelf
+              return @subject.instance_of? OpenEHR::RM::Common::Generic::PartySelf
             end
           end
 

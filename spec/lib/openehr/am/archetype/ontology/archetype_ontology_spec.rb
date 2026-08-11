@@ -49,6 +49,22 @@ describe ArchetypeOntology do
     expect(@archetype_ontology.term_codes).to eq(['at0000','at0001'])
   end
 
+  it 'term_codes should return the union of codes across all languages, not just the last one' do
+    first_lang_terms = {
+      'at0000' => ArchetypeTerm.new(:code => 'at0000', :items => {'text' => 'concept'}),
+      'at0001' => ArchetypeTerm.new(:code => 'at0001', :items => {'text' => 'bp'})
+    }
+    second_lang_terms = {
+      'at0002' => ArchetypeTerm.new(:code => 'at0002', :items => {'text' => 'concept-ja'})
+    }
+    term_definitions = {'en' => first_lang_terms, 'ja' => second_lang_terms}
+    ontology = ArchetypeOntology.new(:primary_language => 'en',
+                                     :languages_available => ['en', 'ja'],
+                                     :term_definitions => term_definitions,
+                                     :specialisation_depth => 0)
+    expect(ontology.term_codes.sort).to eq(['at0000', 'at0001', 'at0002'])
+  end
+
   it 'constraint_definitions should be assigned properly' do
     expect(@archetype_ontology.constraint_definition(:lang => 'ja', :code => 'ac0003').items['text']).
       to eq('test')

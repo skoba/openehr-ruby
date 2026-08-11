@@ -165,20 +165,23 @@ module OpenEHR
           end
 
           def element_at_named_cell(row_key, column_key)
-            i,j=0,0
+            column_index = 0
             @rows[0].items.each do |c|
               break if c.name.value == column_key
-              i+=1
+              column_index += 1
             end
+            row_index = 0
             @rows.each do |row|
               break if row.name.value == row_key
-              j+=1
-            end            
-            return element_at_cell_ij(i,j)
+              row_index += 1
+            end
+            return element_at_cell_ij(row_index + 1, column_index + 1)
           end
 
           def as_hierarchy
-            return @rows[0]
+            return Cluster.new(:name => @name,
+                               :archetype_node_id => @archetype_node_id,
+                               :items => @rows)
           end
         end
 

@@ -58,4 +58,20 @@ describe ObjectVersionID do
     @object_version_id.version_tree_id.value = '2.3.4'
     expect(@object_version_id.is_branch?).to be_truthy
   end
+
+  it 'root should equal the objectid part' do
+    expect(@object_version_id.root.value).to eq(
+      'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC'
+    )
+  end
+
+  it 'extension should be the creating_system_id::version_tree_id part' do
+    expect(@object_version_id.extension).to eq(
+      '87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2'
+    )
+  end
+
+  it 'should have an extension' do
+    expect(@object_version_id).to have_extension
+  end
 end

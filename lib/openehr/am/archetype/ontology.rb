@@ -77,8 +77,8 @@ module OpenEHR
 
           protected
           def code_set(definitions)
-            codes = definitions.values.inject([]) do |codes, item|
-              item.keys
+            codes = definitions.values.inject([]) do |accumulated, item|
+              accumulated + item.keys.to_a
             end
             codes.uniq
           end

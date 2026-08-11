@@ -39,9 +39,11 @@ module OpenEHR
 
           private
 
+          CHARSET_LIST_PATH = File.expand_path('charset.lst', __dir__)
+
           def charset_valid?(charset)
             result = false
-            open('lib/openehr/rm/data_types/charset.lst') do |file|
+            File.open(CHARSET_LIST_PATH) do |file|
               while line = file.gets
                 if charset == line.chomp
                   result = true
@@ -57,7 +59,8 @@ module OpenEHR
         class DvMultimedia < DvEncapsulated
           attr_reader :media_type
           attr_accessor :uri, :data, :compression_algorithm,
-          :integrity_check, :integrity_check_algorithm, :alternate_text
+          :integrity_check, :integrity_check_algorithm, :alternate_text,
+          :thumbnail
 
           def initialize(args = {})
             super(args)
@@ -68,13 +71,30 @@ module OpenEHR
             self.integrity_check = args[:integrity_check]
             self.integrity_check_algorithm = args[:integrity_check_algorithm]
             self.alternate_text = args[:alternate_text]
+            self.thumbnail = args[:thumbnail]
           end
 
           def media_type=(media_type)
-            if media_type.code_string.nil?
+            if media_type.nil? || media_type.code_string.nil?
               raise ArgumentError, 'media_type should not be nil'
             end
             @media_type = media_type
+          end
+
+          def is_external?
+            !@uri.nil?
+          end
+
+          def is_inline?
+            !@data.nil?
+          end
+
+          def is_compressed?
+            !@compression_algorithm.nil?
+          end
+
+          def has_integrity_check?
+            !@integrity_check_algorithm.nil?
           end
         end
 

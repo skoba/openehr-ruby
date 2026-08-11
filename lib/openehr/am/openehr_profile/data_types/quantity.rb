@@ -53,6 +53,7 @@ module OpenEHR
             end
 
             def precision_unconstrained?
+              return true if @precision.nil?
               if @precision.upper == -1 && @precision.lower == -1
                 return true
               else

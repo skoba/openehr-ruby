@@ -69,11 +69,62 @@ describe DvMultimedia do
     expect(@dv_multimedia.alternate_text).to eq('test')
   end
 
-  it 'has_integrity_check should be true'
+  it 'has_integrity_check should be true' do
+    expect(@dv_multimedia.has_integrity_check?).to be_truthy
+  end
 
-  it 'is compressed should be true'
+  it 'has_integrity_check should be false without an integrity_check_algorithm' do
+    dv_multimedia = DvMultimedia.new(:value => '<xml/>',
+                                     :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                                     :data => Array['1234'])
+    expect(dv_multimedia.has_integrity_check?).to be_falsey
+  end
 
-  it 'is_external should be true'
+  it 'is compressed should be true' do
+    expect(@dv_multimedia.is_compressed?).to be_truthy
+  end
 
-  it 'is_internal should be false'
+  it 'is_compressed should be false without a compression_algorithm' do
+    dv_multimedia = DvMultimedia.new(:value => '<xml/>',
+                                     :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                                     :data => Array['1234'])
+    expect(dv_multimedia.is_compressed?).to be_falsey
+  end
+
+  it 'is_external should be true' do
+    expect(@dv_multimedia.is_external?).to be_truthy
+  end
+
+  it 'is_external should be false without a uri' do
+    dv_multimedia = DvMultimedia.new(:value => '<xml/>',
+                                     :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                                     :data => Array['1234'])
+    expect(dv_multimedia.is_external?).to be_falsey
+  end
+
+  it 'is_inline should be true when data is present' do
+    dv_multimedia = DvMultimedia.new(:value => '<xml/>',
+                                     :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                                     :data => Array['1234'])
+    expect(dv_multimedia.is_inline?).to be_truthy
+  end
+
+  it 'is_inline should be false without data' do
+    dv_multimedia = DvMultimedia.new(:value => '<xml/>',
+                                     :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                                     :uri => double(DvUri, :value => 'http://openehr.jp/'))
+    expect(dv_multimedia.is_inline?).to be_falsey
+  end
+
+  it 'should accept a thumbnail' do
+    thumbnail = double(DvMultimedia)
+    @dv_multimedia.thumbnail = thumbnail
+    expect(@dv_multimedia.thumbnail).to eq(thumbnail)
+  end
+
+  it 'should raise ArgumentError when media_type itself is nil' do
+    expect {
+      DvMultimedia.new(:value => '<xml/>', :media_type => nil)
+    }.to raise_error(ArgumentError)
+  end
 end

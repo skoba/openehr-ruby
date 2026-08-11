@@ -133,7 +133,20 @@ describe ItemTable do
   end
 
   it 'should be two element at named cell by row column' do
-    @item_table.element_at_named_cell('cluster', 'three').name.value == 'three'
+    expect(@item_table.element_at_named_cell('cluster', 'three').name.value).to eq('three')
+  end
+
+  it 'should select the correct row (not just the correct column) by row key' do
+    # Column position is identified by name within row 0; the same
+    # position is then read off whichever row matches row_key.
+    row1 = row(%w{a b})
+    row2 = row(%w{c d})
+    rows = [cluster_builder('row1', row1), cluster_builder('row2', row2)]
+    item_table = ItemTable.new(:name => DvText.new(:value => 'table'),
+                               :archetype_node_id => 'test',
+                               :rows => rows)
+    expect(item_table.element_at_named_cell('row2', 'b').name.value).to eq('d')
+    expect(item_table.element_at_named_cell('row1', 'a').name.value).to eq('a')
   end
 
   it 'should return nil when rows are nil' do
@@ -141,7 +154,9 @@ describe ItemTable do
     expect(@item_table.row_count).to be_equal 0
   end
 
-  it 'should be first row as hierachy' do
-    expect(@item_table.as_hierarchy.name.value).to eq('cluster')
+  it 'as_hierarchy should be a Cluster of all rows' do
+    hierarchy = @item_table.as_hierarchy
+    expect(hierarchy.name.value).to eq('item table')
+    expect(hierarchy.items).to eq(@item_table.rows)
   end
 end

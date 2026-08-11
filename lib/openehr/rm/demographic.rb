@@ -2,6 +2,7 @@
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_5_76d0249_1118674798473_6021_0Report.html
 # Ticket refs #45
 require_relative 'common/archetyped'
+require_relative 'common/change_control'
 
 module OpenEHR
   module RM
@@ -261,7 +262,7 @@ module OpenEHR
         end
       end
 
-      class VersionedParty < OpenEHR::RM::Common::Archetyped::Locatable
+      class VersionedParty < OpenEHR::RM::Common::ChangeControl::VersionedObject
 
       end
     end # of Demographic

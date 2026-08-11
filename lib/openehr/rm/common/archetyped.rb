@@ -79,7 +79,7 @@ module OpenEHR
 
           def concept
             if self.is_archetype_root?
-              return DvText.new(:value => 
+              return OpenEHR::RM::DataTypes::Text::DvText.new(:value =>
                                 @archetype_details.archetype_id.concept_name)
             else
               raise ArgumentError, 'this is not root'

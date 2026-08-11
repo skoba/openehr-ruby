@@ -224,9 +224,9 @@ module OpenEHR
             return item.nil?
           end
 
-          %w(assumed_value assumed_value= has_assumed_value? default_value 
-            any_allowed?, valid_value?).each do |m| 
-            define_method(m) do |*args| 
+          %w(assumed_value assumed_value= has_assumed_value? default_value
+            valid_value?).each do |m|
+            define_method(m) do |*args|
               self.item.send(m, *args) if !self.item.nil?
             end
           end

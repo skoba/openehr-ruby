@@ -116,9 +116,9 @@ module OpenEHR
             { :uid => uid.value }
           end
         }
-      / SYM_IS_CONTROLED space {
+      / SYM_IS_CONTROLLED space {
           def value
-	    { :is_controled? => true } # If elements[0]
+	    { :is_controlled? => true } # If elements[0]
           end
         }
       end
@@ -386,10 +386,10 @@ module OpenEHR
         }
       / V_C_DOMAIN_TYPE '' {
           def value(node = nil)
-            p elemetns
+            raise OpenEHR::Parser::ParseError,
+              "generic C_DOMAIN_TYPE constraints (e.g. C_DV_STATE) are not yet supported by the ADL parser: #{text_value}"
           end
         }
-#     / ERR_V_C_DOMAIN_TYPE
       end
 
       rule archetype_internal_ref
@@ -1726,7 +1726,7 @@ module OpenEHR
         }
       / integer_value '' {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
               :type => 'Integer',
               :item => integer_value.value,
               :reference_type => 'CONSTANT')
@@ -1734,7 +1734,7 @@ module OpenEHR
         }
       / real_value '' {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
               :type => 'Real',
               :item => real_value.value,
               :reference_type => 'CONSTANT')
@@ -1742,7 +1742,7 @@ module OpenEHR
         }
       / absolute_path space {
           def value
-            OpenEHR::AM::Archetype::ConstraintModel::ExprLeaf.new(
+            OpenEHR::AM::Archetype::Assertion::ExprLeaf.new(
               :type => 'String',
               :item => absolute_path.value,
               :reference_type => 'CONSTANT')
@@ -3002,6 +3002,10 @@ module OpenEHR
 
       rule SYM_EQ
         '=' white_space
+      end
+
+      rule SYM_NE
+        '!=' white_space
       end
 
       rule SYM_GE

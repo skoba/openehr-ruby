@@ -119,15 +119,29 @@ describe VersionedObject do
     expect(@versioned_object.latest_version.uid.value).to eq('MNO::PQR::3')
   end
 
-  it 'latest_trunk_version should return ABC::DEF::1' do
+  it 'latest_trunk_version should return the most recently committed non-branch version, not just trunk_version 1' do
+    # version1/2/3 all have distinct trunk_version (1/2/3, none are
+    # branches); the latest by commit time is version3 (MNO::PQR::3).
     expect(@versioned_object.latest_trunk_version.uid.value).to eq(
-      'ABC::DEF::1'
+      'MNO::PQR::3'
     )
   end
 
-  it 'trunk_lifecycle_state should return 532' do
+  it 'latest_trunk_version should exclude branch versions even when committed later' do
+    branch_uid = ObjectVersionID.new(:value => 'BRA::NCH::1.1.1')
+    time_committed_branch = DvDateTime.new(:value => '2099-01-01T00:00:00')
+    audit_details_branch = double(AuditDetails, :time_committed => time_committed_branch)
+    branch_version = double(Version, :commit_audit => audit_details_branch,
+                             :uid => branch_uid)
+    @versioned_object.all_versions << branch_version
+    expect(@versioned_object.latest_trunk_version.uid.value).to eq(
+      'MNO::PQR::3'
+    )
+  end
+
+  it 'trunk_lifecycle_state should return the lifecycle_state of the latest trunk version (523)' do
     expect(@versioned_object.trunk_lifecycle_state.defining_code.
-      code_string).to eq('532')
+      code_string).to eq('523')
   end
 
   it 'revision_history items are 3' do
@@ -238,6 +252,12 @@ describe VersionedObject do
   it 'should raise ArgumentError when all_versions are nil' do
     expect {
       @versioned_object.all_versions = nil
+    }.to raise_error ArgumentError
+  end
+
+  it 'should raise ArgumentError when all_versions is empty' do
+    expect {
+      @versioned_object.all_versions = []
     }.to raise_error ArgumentError
   end
 

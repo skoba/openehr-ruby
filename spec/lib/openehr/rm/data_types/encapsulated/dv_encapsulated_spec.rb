@@ -39,4 +39,16 @@ describe DvEncapsulated do
     expect {@dv_encapsulated.charset = wrong_charset}.
       to raise_error(ArgumentError)
   end
+
+  it 'should validate the charset regardless of the current working directory' do
+    charset = double(CodePhrase, :code_string => 'UTF-8')
+    language = double(CodePhrase, :code_string => 'ja')
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        expect {
+          DvEncapsulated.new(:value => 'test', :charset => charset, :language => language)
+        }.not_to raise_error
+      end
+    end
+  end
 end

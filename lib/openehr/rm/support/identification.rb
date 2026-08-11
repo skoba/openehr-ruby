@@ -249,6 +249,8 @@ module OpenEHR
               self.objectid = UID.new(:value => $1)
               self.creating_system_id = UID.new(:value => $2)
               self.version_tree_id = VersionTreeID.new(:value => $3)
+              @root = @oid
+              @extension = @creating_system_id.value + '::' + @version_tree_id.value
             else
               raise ArgumentError, 'invalid format'
             end
@@ -297,12 +299,14 @@ module OpenEHR
           end
 
           def path=(path)
-            raise ArgumentError if path.nil? or path.empty?
+            raise ArgumentError if !path.nil? and path.empty?
             @path = path
           end
 
           def as_uri
-            'ehr://' + @id.value + '/' + @path
+            uri = 'ehr://' + @id.value
+            uri += '/' + @path unless @path.nil?
+            uri
           end
         end
 

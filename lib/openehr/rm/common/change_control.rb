@@ -99,7 +99,7 @@ module OpenEHR
           end
 
           def owner_id
-            return HierObjectID.new(:value => @uid.value)
+            return OpenEHR::RM::Support::Identification::HierObjectID.new(:value => @uid.value)
           end
 
           def is_branch?
@@ -187,7 +187,7 @@ module OpenEHR
           end
 
           def all_versions=(all_versions)
-            if all_versions.nil? || all_versions.size < 0
+            if all_versions.nil? || all_versions.empty?
               raise ArgumentError, 'version count invalid'
             end
             @all_versions = all_versions
@@ -251,12 +251,7 @@ module OpenEHR
           end
 
           def latest_trunk_version
-            trunk_versions = [ ]
-            @all_versions.each do |ver|
-              if ver.uid.version_tree_id.trunk_version == '1'
-                trunk_versions << ver
-              end
-            end
+            trunk_versions = @all_versions.reject { |ver| ver.uid.is_branch? }
             sorted_trunk_version = trunk_versions.sort do |a,b|
               a.commit_audit.time_committed <=> b.commit_audit.time_committed
             end

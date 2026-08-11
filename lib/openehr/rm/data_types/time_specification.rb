@@ -17,16 +17,17 @@ module OpenEHR
             @value = value
           end
           
-          def calender_alignment
-            raise NotImlementedError, "calender_alignment must be implemented"
+          def calendar_alignment
+            raise NotImplementedError, "calendar_alignment must be implemented"
           end
+          alias calender_alignment calendar_alignment
 
           def event_alignment
-            raise NotImlementedError, "event_alignment must be implemented"
+            raise NotImplementedError, "event_alignment must be implemented"
           end
 
           def institution_specified
-            raise NotImlementedError, "institution_specified must be implemented"
+            raise NotImplementedError, "institution_specified must be implemented"
           end
         end
 

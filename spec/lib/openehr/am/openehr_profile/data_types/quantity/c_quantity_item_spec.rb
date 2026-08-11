@@ -45,4 +45,14 @@ describe CQuantityItem do
       expect(@c_quantity_item).to be_precision_unconstrained
     end
   end
+
+  context 'precision is absent' do
+    before(:each) do
+      @c_quantity_item.precision = nil
+    end
+
+    it 'precision unconstrained is true, not a NoMethodError' do
+      expect(@c_quantity_item).to be_precision_unconstrained
+    end
+  end
 end

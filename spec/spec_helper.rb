@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'tempfile'
+require 'tmpdir'
 #require 'spork'
 require 'simplecov'
 require 'rspec'

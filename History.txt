@@ -1,11 +1,80 @@
 === 1.3.1 (in progress)
-Fixed latent runtime bugs found by a full spec-vs-implementation audit:
-OperationalTemplate constructor validation order (template_id/description
-now validated correctly instead of raising on the inherited concept check),
-OPTParser handling of missing/blank template_id, uid, occurrences and
-cardinality data, and C_INTEGER allowing a fully unconstrained
-(any_allowed) construction per AOM 1.4. Added GitHub Actions CI, removed
-the dead Travis config and RSpec 1 spec.opts, set required_ruby_version.
+Infrastructure: added GitHub Actions CI (Ruby 3.1-3.4), removed the dead
+Travis config and RSpec 1 spec.opts, set required_ruby_version >= 3.1,
+moved the load-time charset_extract.rb script out of lib/ into a rake
+task, updated History.txt/README.
+
+Fixed a pre-existing red baseline (35 failing examples, none introduced
+by this release) plus latent runtime bugs found by a full
+spec-vs-implementation audit, each driven by a failing spec first:
+* OperationalTemplate constructor validation order - template_id and
+  description are now validated with their own mandatory checks instead
+  of raising on the inherited Archetype#concept= check first; concept
+  is derived from archetype_id when not given explicitly.
+* OPTParser: missing/blank template_id and uid resolve to nil instead of
+  raising; #occurrences and #cardinality return nil instead of raising
+  when their XML carries no data at all.
+* C_INTEGER allows a fully unconstrained (any_allowed) construction with
+  neither range nor list set, per AOM 1.4 (only having both set is a
+  contradiction) - BREAKING: CInteger.new with neither range nor list no
+  longer raises.
+* ISO8601Duration parses multi-digit day counts (e.g. "P10D"); absent
+  components stay nil instead of being coerced to 0, so as_string can
+  round-trip a partially-specified duration - BREAKING: absent duration
+  components now read as nil instead of 0.
+* ISO8601Time.valid_iso8601_time? no longer rejects timezone-less times.
+* DvOrdered#is_normal? calls Interval#has? (was #has, undefined).
+* DvAmount#- no longer mutates its right-hand operand.
+* DvCount enforces an Integer magnitude.
+* time_specification.rb: fixed the misspelled NotImlementedError
+  constant (was a NameError on every call); added a spec file (none
+  existed).
+* Fixed three unresolved-constant NameErrors masked by cross-spec-file
+  namespace pollution: Locatable#concept (DvText), Version#owner_id
+  (HierObjectID), Entry#subject_is_self? (PartySelf).
+* Element#null_flavor= no longer calls a nonexistent ActiveRecord-style
+  Terminology.find; validates against the openEHR null flavours code set
+  locally. Added #null_flavour alias.
+* DvEncapsulated's charset.lst lookup uses an absolute path instead of a
+  cwd-relative one (broke for installed gems).
+* DvMultimedia gained is_external?, is_inline?, is_compressed?,
+  has_integrity_check?, and a thumbnail attribute; media_type= no longer
+  raises NoMethodError when media_type itself is nil.
+* VersionedObject#latest_trunk_version now selects the most recently
+  committed non-branch version instead of only ever considering
+  trunk_version "1" - BREAKING: return value changes when multiple
+  non-branch versions exist. #all_versions= now rejects an empty array,
+  not just nil.
+* ItemTable#element_at_named_cell no longer has its row/column indices
+  transposed and off-by-one; #as_hierarchy returns a Cluster of all rows
+  instead of just the first row - BREAKING: as_hierarchy's return shape
+  changes.
+* CPrimitiveObject no longer defines a garbage method literally named
+  "any_allowed?," from a stray comma in a %w list.
+* CDateTime constructor: fixed :hour_vaildity typo and month_validity
+  being fed from :day_validity instead of :month_validity.
+* ArchetypeOntology#code_set no longer discards its accumulator each
+  iteration (term_codes/constraint_codes now return the union across all
+  languages, not just the last one).
+* CQuantityItem#precision_unconstrained? no longer raises when precision
+  is absent.
+* ADL grammar: fixed three crash bugs (misspelled SYM_IS_CONTROLED,
+  missing SYM_NE rule for "!=" assertions, a debug-print typo in the
+  generic C_DOMAIN_TYPE/C_DV_STATE fallback) and a wrong namespace
+  (ConstraintModel::ExprLeaf instead of Assertion::ExprLeaf) that broke
+  every arithmetic assertion comparison (=, !=, <, >, <=, >=) whenever
+  the leaf was an integer, real, or path constant.
+* ObjectVersionID#value= now populates root/extension (root = the
+  object id part) so #root, #extension and #has_extension? work.
+* LocatableRef.path is optional again, matching the spec's 0..1
+  cardinality; #as_uri omits the path segment when absent.
+* EVENT_CONTEXT gained the optional health_care_facility attribute.
+* VersionedParty now extends VersionedObject instead of Locatable,
+  matching VERSIONED_OBJECT<PARTY> - BREAKING: constructor signature
+  changes to VersionedObject's (uid/owner_id/time_created/all_versions).
+* PartyIdentified's identifiers attribute is now plural (a
+  List<DV_IDENTIFIER>, matching spec); #identifier/#identifier= remain
+  as deprecated aliases.
 
 === 1.3.0
 Update dependencies and release version 1.3.0

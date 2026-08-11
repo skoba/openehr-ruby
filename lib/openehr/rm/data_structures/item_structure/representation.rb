@@ -16,6 +16,10 @@ module OpenEHR
           end
 
           class Element < Item
+            # openEHR "Null flavours" code set (terminology_id "openehr"):
+            # 271 no information, 272 masked, 273 not applicable, 253 unknown.
+            NULL_FLAVOUR_CODES = %w[271 272 273 253].freeze
+
             attr_accessor :value
             attr_reader :null_flavor
             def initialize(args = {})
@@ -25,18 +29,15 @@ module OpenEHR
             end
 
             def null_flavor=(null_flavor)
-              sr = nil
-              if !null_flavor.nil? and
-                  null_flavor.defining_code.terminology_id.name == 'openehr'
-                sr = Terminology.find(:first,                                  
-                                      :conditions => "code = '#{null_flavor.defining_code.code_string}'")
-              end
-              if null_flavor.nil? or (!sr.nil? and sr.group == 'null flavours')
-                @null_flavor = null_flavor
-              else
+              if !null_flavor.nil? &&
+                  !(null_flavor.defining_code.terminology_id.name == 'openehr' &&
+                    NULL_FLAVOUR_CODES.include?(null_flavor.defining_code.code_string))
                 raise ArgumentError, 'null_flavor is invalid'
               end
+              @null_flavor = null_flavor
             end
+            alias null_flavour null_flavor
+            alias null_flavour= null_flavor=
 
             def is_null?
               return @value.nil?

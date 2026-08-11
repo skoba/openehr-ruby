@@ -15,7 +15,7 @@ describe CDateTime do
                     :range => range,
                     :month_validity => ValidityKind::MANDATORY,
                     :day_validity => ValidityKind::MANDATORY,
-                    :hour_vaildity => ValidityKind::MANDATORY,
+                    :hour_validity => ValidityKind::MANDATORY,
                     :minute_validity => ValidityKind::MANDATORY,
                     :second_validity => ValidityKind::OPTIONAL,
                     :millisecond_validity => ValidityKind::DISALLOWED,
@@ -121,6 +121,17 @@ describe CDateTime do
     it 'pattern is yyyy-mm-dd hh:mm:ss' do
       expect(@c_date_timep.pattern).to eq('yyyy-mm-dd hh:mm:ss')
     end
+  end
+
+  it 'month_validity should be assigned from :month_validity, independently of :day_validity' do
+    c_date_time = CDateTime.new(:month_validity => ValidityKind::MANDATORY,
+                                :day_validity => ValidityKind::OPTIONAL,
+                                :hour_validity => ValidityKind::OPTIONAL,
+                                :minute_validity => ValidityKind::OPTIONAL,
+                                :second_validity => ValidityKind::OPTIONAL,
+                                :millisecond_validity => ValidityKind::OPTIONAL)
+    expect(c_date_time.month_validity).to eq(ValidityKind::MANDATORY)
+    expect(c_date_time.day_validity).to eq(ValidityKind::OPTIONAL)
   end
 
   describe 'list constraint' do
