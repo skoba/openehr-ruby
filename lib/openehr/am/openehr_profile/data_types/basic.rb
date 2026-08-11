@@ -18,6 +18,34 @@ module OpenEHR
               raise ArgumentError, 'value is mandatory' if value.nil?
               @value = value
             end
+
+            def valid_value?(rm_value)
+              return false if rm_value.nil?
+
+              state = matching_state(rm_value)
+              return false if state.nil?
+              return true unless rm_value.respond_to?(:is_terminal?)
+
+              rm_value.is_terminal? == state.is_a?(TerminalState)
+            end
+
+            private
+
+            def matching_state(rm_value)
+              return nil unless rm_value.respond_to?(:value)
+
+              code = state_code(rm_value.value)
+              return nil if code.nil?
+
+              value.states.find { |s| s.name == code }
+            end
+
+            def state_code(raw)
+              return raw if raw.is_a?(String)
+              return raw.code_string if raw.respond_to?(:code_string)
+
+              nil
+            end
           end
 
           class StateMachine

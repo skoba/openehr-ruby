@@ -31,4 +31,35 @@ describe CCodePhrase do
   it 'occurrences upper is 1' do
     expect(@c_code_phrase.occurrences.upper).to be 1
   end
+
+  describe '#valid_value?' do
+    it 'is true for a CODE_PHRASE with a matching terminology and code in the list' do
+      value = CodePhrase.new(:terminology_id => TerminologyID.new(:value => 'ICD10'),
+                             :code_string => 'C92')
+      expect(@c_code_phrase.valid_value?(value)).to be true
+    end
+
+    it 'is false when the code is not in the list' do
+      value = CodePhrase.new(:terminology_id => TerminologyID.new(:value => 'ICD10'),
+                             :code_string => 'Z00')
+      expect(@c_code_phrase.valid_value?(value)).to be false
+    end
+
+    it 'is false when the terminology differs' do
+      value = CodePhrase.new(:terminology_id => TerminologyID.new(:value => 'SNOMED-CT'),
+                             :code_string => 'C92')
+      expect(@c_code_phrase.valid_value?(value)).to be false
+    end
+
+    it 'accepts a bare code string too' do
+      expect(@c_code_phrase.valid_value?('C92')).to be true
+      expect(@c_code_phrase.valid_value?('Z00')).to be false
+    end
+
+    it 'is true for anything when any_allowed' do
+      unconstrained = CCodePhrase.new(:path => 'value/text', :occurrences => Interval.new(:upper => 1),
+                                      :rm_type_name => 'CodePhrase')
+      expect(unconstrained.valid_value?('anything')).to be true
+    end
+  end
 end

@@ -144,4 +144,29 @@ describe CDateTime do
       expect(@c_date_timel.list[0].value).to eq('2010-01-25T01:23:45.1')
     end
   end
+
+  describe '#valid_value?' do
+    it 'is true for a value within range' do
+      expect(@c_date_time.valid_value?(DvDateTime.new(:value => '2000-06-15T12:00:00'))).to be true
+    end
+
+    it 'is false for a value outside range' do
+      expect(@c_date_time.valid_value?(DvDateTime.new(:value => '2030-06-15T12:00:00'))).to be false
+    end
+
+    it 'accepts an ISO8601 date-time string too' do
+      expect(@c_date_time.valid_value?('2000-06-15T12:00:00')).to be true
+    end
+
+    it 'is true for any date-time when unconstrained' do
+      c_date_time = CDateTime.new
+      expect(c_date_time.valid_value?('1900-01-01T00:00:00')).to be true
+    end
+
+    it 'enforces hour_validity MANDATORY' do
+      c_date_time = CDateTime.new(:hour_validity => ValidityKind::MANDATORY)
+      expect(c_date_time.valid_value?('2020-06-15T12')).to be true
+      expect(c_date_time.valid_value?('2020-06-15')).to be false
+    end
+  end
 end

@@ -141,5 +141,44 @@ describe Interval do
       Interval.new
     }.to raise_error ArgumentError
   end
+
+  describe '#subset_of?' do
+    it 'is true when self is entirely within other' do
+      expect(Interval.new(:lower => 2, :upper => 5).subset_of?(@interval)).to be true
+    end
+
+    it 'is true when self equals other' do
+      expect(@interval.subset_of?(Interval.new(:lower => 1, :upper => 10))).to be true
+    end
+
+    it 'is false when self extends below other' do
+      expect(Interval.new(:lower => 0, :upper => 5).subset_of?(@interval)).to be false
+    end
+
+    it 'is false when self extends above other' do
+      expect(Interval.new(:lower => 2, :upper => 11).subset_of?(@interval)).to be false
+    end
+
+    it 'is true when other is unbounded above and self is bounded' do
+      upper_unbounded = Interval.new(:lower => 0, :upper => nil)
+      expect(@interval.subset_of?(upper_unbounded)).to be true
+    end
+
+    it 'is false when self is unbounded above but other is bounded' do
+      upper_unbounded = Interval.new(:lower => 1, :upper => nil)
+      expect(upper_unbounded.subset_of?(@interval)).to be false
+    end
+
+    it 'considers inclusivity at a shared boundary' do
+      exclusive_lower = Interval.new(:lower => 1, :upper => 10, :lower_included => false)
+      inclusive_lower = Interval.new(:lower => 1, :upper => 10, :lower_included => true)
+      expect(exclusive_lower.subset_of?(inclusive_lower)).to be true
+      expect(inclusive_lower.subset_of?(exclusive_lower)).to be false
+    end
+
+    it 'is false when other is nil' do
+      expect(@interval.subset_of?(nil)).to be false
+    end
+  end
 end
 

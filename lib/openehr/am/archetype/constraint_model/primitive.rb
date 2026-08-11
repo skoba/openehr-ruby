@@ -61,6 +61,10 @@ module OpenEHR
               return @false_valid
             end
 
+            def valid_value?(value)
+              (value == true && true_valid?) || (value == false && false_valid?)
+            end
+
             private
             def binary_consistency(true_valid, false_valid)
               if (true_valid == false) && (false_valid == false)
@@ -77,6 +81,7 @@ module OpenEHR
 
           class CString < CPrimitive
             attr_reader :pattern, :list
+            attr_accessor :list_open
 
             def initialize(args = { })
               args[:type] = 'String'
@@ -84,6 +89,7 @@ module OpenEHR
               consistency(args[:pattern], args[:list])
               @pattern = args[:pattern]
               @list = args[:list]
+              @list_open = args[:list_open]
             end
 
             def pattern=(pattern)
@@ -96,9 +102,20 @@ module OpenEHR
               @list = list
             end
 
+            def valid_value?(value)
+              return false unless value.is_a?(String)
+              return true if pattern.nil? && list.nil?
+              return list.include?(value) if list
+
+              Regexp.new(pattern).match?(value)
+            end
+
             private
+            # C_STRING may be fully unconstrained (neither pattern nor
+            # list, i.e. any_allowed); only having both set
+            # simultaneously is a genuine contradiction.
             def consistency(pattern, list)
-              if pattern.nil? == list.nil?
+              if !pattern.nil? && !list.nil?
                 raise ArgumentError, 'consistency invaild'
               end
             end
@@ -125,6 +142,12 @@ module OpenEHR
               @range = range
             end
 
+            def valid_value?(value)
+              return false unless value.is_a?(Integer)
+
+              constrained_value?(value)
+            end
+
             private
             # C_INTEGER may be fully unconstrained (neither list nor range,
             # i.e. any_allowed); only having both set simultaneously is a
@@ -134,12 +157,25 @@ module OpenEHR
                 raise ArgumentError, 'consistency invalid'
               end
             end
+
+            def constrained_value?(value)
+              return true if list.nil? && range.nil?
+              return list.include?(value) if list
+
+              range.has?(value)
+            end
           end
 
           class CReal < CInteger
             def initialize(args = { })
               args[:type] = 'Real'
               super
+            end
+
+            def valid_value?(value)
+              return false unless value.is_a?(Numeric)
+
+              constrained_value?(value)
             end
           end
 
@@ -166,6 +202,13 @@ module OpenEHR
               return !@range.nil?
             end
 
+            def valid_value?(value)
+              date = as_date(value)
+              return false if date.nil?
+
+              date_fields_valid?(date) && constrained_date?(date)
+            end
+
             protected
             def valid_pattern?(pattern)
               if /^([Yy?X]{4})(-([Mm?X]{2})(-([Dd?X]{2}))?)?$/ =~ pattern
@@ -175,8 +218,42 @@ module OpenEHR
               end
             end
 
+            def date_fields_valid?(date)
+              validity_satisfied?(month_validity, !date.month_unknown?) &&
+                validity_satisfied?(day_validity, !date.day_unknown?)
+            end
+
+            def validity_satisfied?(validity, field_present)
+              case validity
+              when ValidityKind::DISALLOWED then !field_present
+              when ValidityKind::MANDATORY then field_present
+              else
+                true
+              end
+            end
+
             private
             def consistency_validity(month_validity, day_validity)
+            end
+
+            # A String value is parsed as a DV_DATE (matching the
+            # concrete type this codebase's range/list bounds actually
+            # use, so Comparable/Interval#has? compare like with like);
+            # a malformed string surfaces as ArgumentError, caught below.
+            def as_date(value)
+              return value if value.respond_to?(:month_unknown?)
+              return nil unless value.is_a?(String)
+
+              OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate.new(:value => value)
+            rescue ArgumentError
+              nil
+            end
+
+            def constrained_date?(date)
+              return true if range.nil? && list.nil?
+              return list.any? { |item| as_date(item) == date } if list
+
+              range.has?(date)
             end
           end
 
@@ -215,7 +292,7 @@ module OpenEHR
           end
 
           module CTimeModule
-            attr_accessor :range, :list
+            attr_accessor :range, :list, :timezone_validity
             attr_reader :minute_validity, :second_validity,
                         :millisecond_validity, :pattern
             def pattern=(pattern)
@@ -250,6 +327,13 @@ module OpenEHR
               return !@range.nil?
             end
 
+            def valid_value?(value)
+              time = as_time(value)
+              return false if time.nil?
+
+              time_fields_valid?(time) && constrained_time?(time)
+            end
+
             protected
             def valid_pattern?(pattern)
               if /^([Hh?X]{2})(:([Mm?X]{2})(:([Ss?X]{2}))?)?$/ =~ pattern
@@ -257,6 +341,43 @@ module OpenEHR
               else
                 false
               end
+            end
+
+            def time_fields_valid?(time)
+              validity_satisfied?(minute_validity, !time.minute_unknown?) &&
+                validity_satisfied?(second_validity, !time.second_unknown?) &&
+                validity_satisfied?(millisecond_validity, time.has_fractional_second?)
+            end
+
+            def validity_satisfied?(validity, field_present)
+              case validity
+              when ValidityKind::DISALLOWED then !field_present
+              when ValidityKind::MANDATORY then field_present
+              else
+                true
+              end
+            end
+
+            private
+
+            # A String value is parsed as a DV_TIME (matching the
+            # concrete type this codebase's range/list bounds actually
+            # use, so Comparable/Interval#has? compare like with like);
+            # a malformed string surfaces as ArgumentError, caught below.
+            def as_time(value)
+              return value if value.respond_to?(:minute_unknown?)
+              return nil unless value.is_a?(String)
+
+              OpenEHR::RM::DataTypes::Quantity::DateTime::DvTime.new(:value => value)
+            rescue ArgumentError
+              nil
+            end
+
+            def constrained_time?(time)
+              return true if range.nil? && list.nil?
+              return list.any? { |item| as_time(item) == time } if list
+
+              range.has?(time)
             end
           end
 
@@ -316,6 +437,15 @@ module OpenEHR
               @day_validity = day_validity
             end
 
+            def valid_value?(value)
+              datetime = as_datetime(value)
+              return false if datetime.nil?
+
+              date_fields_valid?(datetime) && time_fields_valid?(datetime) &&
+                validity_satisfied?(hour_validity, !datetime.hour_unknown?) &&
+                constrained_datetime?(datetime)
+            end
+
             protected
             def valid_pattern?(pattern)
               if /^([Yy?X]{4})(-([Mm?X]{2})(-([Dd?X]{2}))?)?[T ]?([Hh?X]{2})(:([Mm?X]{2})(:([Ss?X]{2}))?)?$/ =~ pattern
@@ -323,6 +453,28 @@ module OpenEHR
               else
                 false
               end
+            end
+
+            private
+
+            # A String value is parsed as a DV_DATE_TIME (matching the
+            # concrete type this codebase's range/list bounds actually
+            # use, so Comparable/Interval#has? compare like with like);
+            # a malformed string surfaces as ArgumentError, caught below.
+            def as_datetime(value)
+              return value if value.respond_to?(:hour_unknown?)
+              return nil unless value.is_a?(String)
+
+              OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime.new(:value => value)
+            rescue ArgumentError
+              nil
+            end
+
+            def constrained_datetime?(datetime)
+              return true if range.nil? && list.nil?
+              return list.any? { |item| as_datetime(item) == datetime } if list
+
+              range.has?(datetime)
             end
           end
 
@@ -338,6 +490,49 @@ module OpenEHR
               self.pattern = args[:pattern]
               self.list = args[:list]
               self.range = args[:range]
+              self.years_allowed = args[:years_allowed]
+              self.months_allowed = args[:months_allowed]
+              self.weeks_allowed = args[:weeks_allowed]
+              self.days_allowed = args[:days_allowed]
+              self.hours_allowed = args[:hours_allowed]
+              self.minutes_allowed = args[:minutes_allowed]
+              self.seconds_allowed = args[:seconds_allowed]
+              self.fractional_seconds_allowed = args[:fractional_seconds_allowed]
+            end
+
+            def valid_value?(value)
+              duration = as_duration(value)
+              return false if duration.nil?
+              return false unless fields_allowed?(duration)
+              return true if list.nil? && range.nil?
+              return list.any? { |item| as_duration(item).to_seconds == duration.to_seconds } if list
+
+              range.has?(duration)
+            end
+
+            private
+
+            # A String value is parsed as a DV_DURATION (matching the
+            # concrete type this codebase's range/list bounds actually
+            # use, so Comparable/Interval#has? compare like with like);
+            # a malformed string surfaces as ArgumentError, caught below.
+            def as_duration(value)
+              return value if value.respond_to?(:to_seconds)
+              return nil unless value.is_a?(String)
+
+              OpenEHR::RM::DataTypes::Quantity::DateTime::DvDuration.new(:value => value)
+            rescue ArgumentError
+              nil
+            end
+
+            def fields_allowed?(duration)
+              [[years_allowed, duration.years], [months_allowed, duration.months],
+               [weeks_allowed, duration.weeks], [days_allowed, duration.days],
+               [hours_allowed, duration.hours], [minutes_allowed, duration.minutes],
+               [seconds_allowed, duration.seconds],
+               [fractional_seconds_allowed, duration.fractional_second]].all? do |allowed, field|
+                allowed != false || field.nil?
+              end
             end
           end
         end # of Primitive

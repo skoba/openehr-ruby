@@ -1,3 +1,118 @@
+=== 1.6.0 (in progress)
+Archetype Model validation: constraint nodes can now check values and
+their own specialisation conformance instead of raising
+NotImplementedError or performing no real check at all.
+
+* All eight C_PRIMITIVE subtypes (CBoolean, CInteger, CReal, CString,
+  CDate, CTime, CDateTime, CDuration) implement valid_value?, honouring
+  range/list/pattern constraints and, for the date/time family, each
+  field's ValidityKind (MANDATORY/OPTIONAL/DISALLOWED). CDate/CTime/
+  CDateTime#valid_value? accept either an RM DV_DATE/DV_TIME/DV_DATE_TIME
+  or a plain ISO8601 string. CInteger and CString's consistency checks no
+  longer reject a fully unconstrained node (range/list/pattern all nil);
+  previously only CInteger's, and not CString's, allowed this -
+  BREAKING: CString.new with all three nil now succeeds instead of
+  raising.
+* Fixed CDuration#initialize silently discarding the
+  years_allowed/months_allowed/weeks_allowed/days_allowed/hours_allowed/
+  minutes_allowed/seconds_allowed/fractional_seconds_allowed keyword
+  arguments - they were declared as attr_accessor but never read from
+  args, so e.g. CDuration.new(:weeks_allowed => false) had no effect.
+* New Interval#subset_of?(other): true when every value in self is also
+  in other, accounting for unbounded ends and boundary inclusivity. Used
+  to implement real specialisation conformance checks.
+* CObject#node_conforms_to?(other), CAttribute#node_conforms_to?(other)
+  and CMultipleAttribute#node_conforms_to?(other) now perform the actual
+  AOM conformance rules instead of inheriting ArchetypeConstraint's
+  generic path-prefix check: node_id specialisation (at0001.1 conforms to
+  at0001), rm_type_name equality (RM subtype tolerance is deferred until
+  the RM type-name helper lands), and occurrences/existence/cardinality
+  narrowing (via Interval#subset_of?, with a nil/unconstrained side
+  treated as "matches anything" on the parent and "does not narrow
+  anything" on the child).
+* New OpenEHR::RM.class_for(type_name) / type_name_of(class_or_instance) /
+  subtype_of?(class_or_instance, type_name) (lib/openehr/rm/type_name.rb):
+  looks up the RM class for a spec type name (or vice versa) and checks
+  RM inheritance, by walking the OpenEHR::RM module tree once and
+  memoizing a name -> class registry. Accepts UPPER_SNAKE, CamelCase or
+  lower_snake input, since rm_type_name is stored in different casings in
+  different places in this codebase (the ADL/OPT parsers always produce
+  UPPER_SNAKE; some CDomainType constructors hardcode CamelCase).
+* CCodePhrase, CDvOrdinal, CDvQuantity (+ its CQuantityItem#matches?) and
+  CDvState all gained valid_value?, checking a CODE_PHRASE against
+  terminology_id/code_list, a DV_ORDINAL against the value/symbol list,
+  a DV_QUANTITY against the per-unit magnitude/precision ranges, and a
+  DV_STATE's coded value plus is_terminal? against the constraint's
+  StateMachine, respectively.
+* CComplexObject#valid_value?(rm_instance) is now a real recursive
+  validator instead of raising NotImplementedError: rm_type_name
+  conformance (RM subtypes accepted, via OpenEHR::RM.subtype_of?),
+  archetype_node_id matching when this node specifies one,
+  attribute-by-attribute existence checking, CMultipleAttribute
+  cardinality plus per-child-alternative occurrences counting, and
+  recursion into each matched attribute value. ArchetypeSlot,
+  ArchetypeInternalRef and ConstraintRef children are accepted
+  permissively for now (v1 does not resolve slot-fillers or internal
+  references - documented limitation).
+* CComplexObject#default_value builds the minimal RM instance satisfying
+  a node's mandatory constraints (existence lower >= 1 attributes only,
+  each attribute's first child alternative's own default_value,
+  CMultipleAttribute getting cardinality.interval.lower copies) via
+  OpenEHR::RM.class_for; returns nil (rather than raising) whenever a
+  mandatory field has no derivable default, since no minimal instance can
+  be built in that case.
+* The ADL parser now retains the parent archetype id from a specialise
+  header instead of discarding it - Archetype#parent_archetype_id is
+  populated for specialised archetypes (previously always nil regardless
+  of the source ADL).
+* Archetype's nine structural-validity methods (physical_paths,
+  logical_paths, specialisation_depth, is_specialised?, node_ids_valid?,
+  constraint_references_valid?, internal_references_valid?,
+  previous_version, is_valid?) all had empty bodies (returning nil
+  unconditionally) and now have real implementations: physical_paths/
+  logical_paths walk the definition tree (the latter substituting each
+  at/ac/id-code predicate with its ontology term text); node_ids_valid?
+  checks every node_id is syntactically well-formed and defined in the
+  ontology; constraint_references_valid?/internal_references_valid? check
+  ConstraintRef/ArchetypeInternalRef targets resolve; is_specialised?/
+  specialisation_depth use the newly-retained parent_archetype_id and the
+  ontology's own specialisation_depth (falling back to the archetype_id's
+  domain_concept suffix); is_valid? composes the three structural checks.
+  previous_version stays nil - this gem does not parse ADL revision
+  history. The typo'd node_ids_vaild? is kept as a deprecated alias.
+* New OpenEHR::Parser::ArchetypeValidator, wiring up the VARID..VDFPT
+  archetype-validity rules (exception.rb's Validation error classes were
+  defined but never required or used by anything). #errors returns every
+  violated rule, #valid? and #validate! (raising the first violation) are
+  built on top. #validate_instance(rm_root) separately checks an RM
+  instance against the archetype's definition, returning a path-annotated
+  InstanceNonConformant (path resolved via the target's own
+  path_of_item - the PATHABLE navigation method from 1.4.0) when it does
+  not conform. ADLParser#parse gained a validate: keyword (default false,
+  preserving existing behaviour) to opt into raising via the validator
+  after parsing.
+* CComplexObject#find_violation(value): a diagnostic counterpart to
+  valid_value? used by ArchetypeValidator#validate_instance, returning
+  the first [failing_constraint_node, failing_rm_value] pair found
+  instead of a bare boolean.
+* The ADL parser now retains the invariant section's assertions
+  (previously parsed and then discarded) as Archetype#invariants, an
+  array of real Assertion objects (already built by the existing
+  assertion/boolean_expression grammar rules - only the archetype-level
+  wiring was missing).
+* Fixed two further ADL grammar bugs found while exercising the above:
+  a tagged invariant/assertion's tag (e.g. "inv1:" in "inv1:1>0") crashed
+  with NoMethodError instead of being captured, from calling .value on a
+  plain (label-less) sequence node two levels removed from the actual
+  identifier; and any_identifier's lowercase-identifier alternative
+  crashed with "uninitialized constant V_ATTRIBUTE_IDENTIFIER" because
+  Ruby parses a bare ALL-CAPS rule-name reference as a constant, not a
+  method call - both are fixed with explicit lower-case labels.
+* Fixed OpenEHR::Path::AT_CODE requiring 4+ digits before an optional
+  specialisation suffix (at\d{4,}(\.\d+)*) - real ADL 1.4 archetypes use
+  a short at0.N form (e.g. at0.2) for nodes newly introduced by a
+  specialisation, which the stricter pattern rejected as an invalid path.
+
 === 1.5.0 (in progress)
 RM 1.0.2 behavioral completeness and Factory coverage.
 

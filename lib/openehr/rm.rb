@@ -44,3 +44,6 @@ require_relative 'rm/integration'
 
 #factory and builder
 require_relative 'rm/factory'
+
+#RM type name <-> class lookup
+require_relative 'rm/type_name'

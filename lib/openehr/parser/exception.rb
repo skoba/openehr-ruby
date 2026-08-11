@@ -60,6 +60,19 @@ module OpenEHR
         class VDFPT < Base
           MESSAGE = "Any path mentioned in the definition section must be valid syntactically, and a valid path with respect to the hierarchical structure of the definition section."
         end
+
+        # Raised by ArchetypeValidator#validate_instance for an RM
+        # instance that does not conform to an archetype's definition;
+        # not one of the VARID..VDFPT archetype-structure rules, since
+        # this checks an RM instance against the archetype instead.
+        class InstanceNonConformant < Base
+          attr_reader :path
+
+          def initialize(message, path = nil)
+            super(message)
+            @path = path
+          end
+        end
       end
 
     end

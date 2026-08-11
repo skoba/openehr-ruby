@@ -38,4 +38,31 @@ describe CDuration do
       expect(@c_duration.list[0].value).to eq('PT0s')
     end
   end
+
+  describe '#valid_value?' do
+    it 'is true for a value within the range' do
+      within_range = DvDuration.new(:value => 'P1Y')
+      expect(@c_duration.valid_value?(within_range)).to be true
+    end
+
+    it 'is false for a value outside the range' do
+      outside_range = DvDuration.new(:value => 'P10Y')
+      expect(@c_duration.valid_value?(outside_range)).to be false
+    end
+
+    it 'accepts an ISO8601 duration string too' do
+      expect(@c_duration.valid_value?('P1Y')).to be true
+    end
+
+    it 'is true for any duration when unconstrained' do
+      c_duration = CDuration.new
+      expect(c_duration.valid_value?('P100Y')).to be true
+    end
+
+    it 'is false when a disallowed field is present in the value' do
+      c_duration = CDuration.new(:weeks_allowed => false)
+      expect(c_duration.valid_value?('P2W')).to be false
+      expect(c_duration.valid_value?('P2D')).to be true
+    end
+  end
 end

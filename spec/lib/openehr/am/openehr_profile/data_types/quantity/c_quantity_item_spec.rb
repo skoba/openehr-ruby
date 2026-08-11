@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../../../../../../spec_helper'
 require 'openehr/am/openehr_profile/data_types/quantity'
 include OpenEHR::AssumedLibraryTypes
 include OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity
+include OpenEHR::RM::DataTypes::Quantity
 
 describe CQuantityItem do
   before(:each) do
@@ -53,6 +54,40 @@ describe CQuantityItem do
 
     it 'precision unconstrained is true, not a NoMethodError' do
       expect(@c_quantity_item).to be_precision_unconstrained
+    end
+  end
+
+  describe '#matches?' do
+    it 'is true when units, magnitude and precision are all within range' do
+      value = DvQuantity.new(:magnitude => 50, :units => 'mg', :precision => 5)
+      expect(@c_quantity_item.matches?(value)).to be true
+    end
+
+    it 'is false when units differ' do
+      value = DvQuantity.new(:magnitude => 50, :units => 'kg', :precision => 5)
+      expect(@c_quantity_item.matches?(value)).to be false
+    end
+
+    it 'is false when magnitude is outside range' do
+      value = DvQuantity.new(:magnitude => 200, :units => 'mg', :precision => 5)
+      expect(@c_quantity_item.matches?(value)).to be false
+    end
+
+    it 'is false when precision is outside range' do
+      value = DvQuantity.new(:magnitude => 50, :units => 'mg', :precision => 20)
+      expect(@c_quantity_item.matches?(value)).to be false
+    end
+
+    it 'ignores precision when unconstrained' do
+      @c_quantity_item.precision = Interval.new(:upper => -1, :lower => -1)
+      value = DvQuantity.new(:magnitude => 50, :units => 'mg', :precision => 20)
+      expect(@c_quantity_item.matches?(value)).to be true
+    end
+
+    it 'ignores magnitude when unconstrained' do
+      @c_quantity_item.magnitude = nil
+      value = DvQuantity.new(:magnitude => 999, :units => 'mg', :precision => 5)
+      expect(@c_quantity_item.matches?(value)).to be true
     end
   end
 end

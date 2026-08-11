@@ -125,6 +125,11 @@ describe OpenEHR::Path do
         segment = OpenEHR::Path.parse('/content[at0001.1]').segments[0]
         expect(segment.archetype_node_id).to eq('at0001.1')
       end
+
+      it 'parses a short specialisation-introduced at-code (e.g. at0.2, as used by real ADL 1.4 archetypes for nodes newly added in a specialisation)' do
+        segment = OpenEHR::Path.parse('/content[at0.2]').segments[0]
+        expect(segment.archetype_node_id).to eq('at0.2')
+      end
     end
 
     context 'node_id predicate (archetype id)' do

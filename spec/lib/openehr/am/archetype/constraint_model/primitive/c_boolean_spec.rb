@@ -50,4 +50,23 @@ describe CBoolean do
       @c_boolean.default_value = true
     }.to raise_error ArgumentError
   end
+
+  describe '#valid_value?' do
+    it 'is true for true when true_valid' do
+      expect(@c_boolean.valid_value?(true)).to be true
+    end
+
+    it 'is true for false when false_valid' do
+      expect(@c_boolean.valid_value?(false)).to be true
+    end
+
+    it 'is false for true when only false_valid' do
+      c_boolean = OpenEHR::AM::Archetype::ConstraintModel::Primitive::CBoolean.new(:true_valid => false, :false_valid => true)
+      expect(c_boolean.valid_value?(true)).to be false
+    end
+
+    it 'is false for a non-boolean value' do
+      expect(@c_boolean.valid_value?('true')).to be false
+    end
+  end
 end

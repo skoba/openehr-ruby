@@ -37,6 +37,19 @@ module OpenEHR
           def parent_path
             parent ? parent.path : ''
           end
+
+          # Nil-safe interval subset check shared by the
+          # occurrences/existence/cardinality conformance rules: an
+          # unconstrained parent (nil) accepts anything, an
+          # unconstrained child (nil) only conforms to an
+          # unconstrained parent, and otherwise the child interval
+          # must be a genuine subset of the parent's.
+          def interval_conforms_to?(mine, other)
+            return true if other.nil?
+            return false if mine.nil?
+
+            mine.subset_of?(other)
+          end
         end
 
         class Cardinality
@@ -118,7 +131,29 @@ module OpenEHR
             @rm ||= OpenEHR::RM::Factory.create(rm_type_name, params)
           end
 
+          # Whether this (potentially specialised) node is a legal
+          # redefinition of +other+, the corresponding node in the
+          # flat parent archetype: same node_id lineage (at0001.1
+          # specialises at0001), same rm_type_name (subtype checking
+          # is deferred until the RM type-name helper lands), and
+          # occurrences no wider than the parent's.
+          def node_conforms_to?(other)
+            return false if other.nil?
+
+            node_id_conforms_to?(other.node_id) &&
+              rm_type_name == other.rm_type_name &&
+              interval_conforms_to?(occurrences, other.occurrences)
+          end
+
           private
+
+          def node_id_conforms_to?(other_node_id)
+            return true if node_id == other_node_id
+            return false if node_id.nil? || other_node_id.nil?
+
+            node_id.start_with?(other_node_id + '.') &&
+              node_id[(other_node_id.length + 1)..-1] =~ /\A\d+(\.\d+)*\z/
+          end
 
           def calculate_path
             path_left_part = parent_path
@@ -175,6 +210,16 @@ module OpenEHR
 
           def path
             @path || calculate_path
+          end
+
+          # Whether this (potentially specialised) attribute node is
+          # a legal redefinition of +other+: same rm_attribute_name
+          # and an existence no wider than the parent's.
+          def node_conforms_to?(other)
+            return false if other.nil?
+
+            rm_attribute_name == other.rm_attribute_name &&
+              interval_conforms_to?(existence, other.existence)
           end
 
           private
@@ -262,6 +307,175 @@ module OpenEHR
 
           def any_allowed?
             return (@attributes.nil? or @attributes.empty?)
+          end
+
+          # Recursively checks +value+ (an RM instance) against this
+          # node's constraints: rm_type_name conformance (RM subtypes
+          # allowed), archetype_node_id (when this node specifies
+          # one), then each attribute's existence/cardinality and its
+          # children constraints. ArchetypeSlot/ArchetypeInternalRef/
+          # ConstraintRef children are accepted permissively (v1 does
+          # not resolve slot-fillers or internal references).
+          def valid_value?(value)
+            return false if value.nil?
+            return false unless node_id_matches?(value)
+            return false unless OpenEHR::RM.subtype_of?(value, rm_type_name)
+            return true if any_allowed?
+
+            attributes.all? { |attribute| attribute_conforms?(attribute, attribute_values(attribute, value)) }
+          end
+
+          # Diagnostic counterpart to valid_value?, for building
+          # path-annotated instance-validation reports: walks the same
+          # rules but returns the first [failing_constraint_node,
+          # failing_rm_value] pair found (depth-first) instead of a
+          # bare boolean, or nil when +value+ fully conforms.
+          def find_violation(value)
+            if value.nil? || !node_id_matches?(value) || !OpenEHR::RM.subtype_of?(value, rm_type_name)
+              return [self, value]
+            end
+            return nil if any_allowed?
+
+            attributes.each do |attribute|
+              violation = attribute_violation(attribute, value)
+              return violation if violation
+            end
+            nil
+          end
+
+          private
+
+          def attribute_violation(attribute, value)
+            rm_values = attribute_values(attribute, value)
+            return [self, value] unless interval_satisfied?(attribute.existence, rm_values.empty? ? 0 : 1)
+
+            if attribute.is_a?(CMultipleAttribute)
+              return [self, value] unless interval_satisfied?(attribute.cardinality&.interval, rm_values.size)
+              return [self, value] unless children_occurrences_satisfied?(attribute.children, rm_values)
+            end
+
+            children = attribute.children || []
+            rm_values.each do |v|
+              matched = children.find { |child| child_matches?(child, v) }
+              return [self, v] if matched.nil?
+              next unless matched.respond_to?(:find_violation)
+
+              violation = matched.find_violation(v)
+              return violation if violation
+            end
+            nil
+          end
+
+          def node_id_matches?(value)
+            return true if node_id.nil?
+            return true unless value.respond_to?(:archetype_node_id)
+
+            value.archetype_node_id == node_id
+          end
+
+          def attribute_values(attribute, value)
+            name = attribute.rm_attribute_name
+            Array(value.respond_to?(name) ? value.send(name) : nil)
+          end
+
+          def attribute_conforms?(attribute, rm_values)
+            present = rm_values.empty? ? 0 : 1
+            return false unless interval_satisfied?(attribute.existence, present)
+
+            if attribute.is_a?(CMultipleAttribute)
+              return false unless interval_satisfied?(attribute.cardinality&.interval, rm_values.size)
+              return false unless children_occurrences_satisfied?(attribute.children, rm_values)
+            end
+
+            children = attribute.children || []
+            rm_values.all? { |v| children.any? { |child| child_matches?(child, v) } }
+          end
+
+          def interval_satisfied?(interval, count)
+            interval.nil? || interval.has?(count)
+          end
+
+          def children_occurrences_satisfied?(children, rm_values)
+            (children || []).all? do |child|
+              next true if child.occurrences.nil?
+
+              child.occurrences.has?(rm_values.count { |v| child_matches?(child, v) })
+            end
+          end
+
+          def child_matches?(child, rm_value)
+            return true if child.is_a?(ArchetypeSlot) ||
+                           child.is_a?(ArchetypeInternalRef) ||
+                           child.is_a?(ConstraintRef)
+
+            child.valid_value?(rm_value)
+          end
+
+          public
+
+          # Builds the minimal RM instance satisfying this node's
+          # mandatory constraints: only attributes with existence
+          # lower >= 1 are populated, each from its first child
+          # alternative's own default_value (recursively), and
+          # CMultipleAttribute gets exactly cardinality.interval.lower
+          # (or 1) copies of it. Returns nil - rather than raising -
+          # whenever a mandatory field has no derivable default, since
+          # that means no minimal instance can be built at all.
+          def default_value
+            return nil if any_allowed?
+
+            klass = OpenEHR::RM.class_for(rm_type_name)
+            return nil if klass.nil?
+
+            params = mandatory_attribute_params
+            return nil if params.nil?
+
+            klass.new(node_id.nil? ? params : params.merge(:archetype_node_id => node_id))
+          rescue ArgumentError, NotImplementedError
+            nil
+          end
+
+          private
+
+          def mandatory_attribute_params
+            attributes.each_with_object({}) do |attribute, params|
+              next unless mandatory_attribute?(attribute)
+
+              value = attribute_default(attribute)
+              return nil if value.nil?
+
+              params[attribute.rm_attribute_name.to_sym] = value
+            end
+          end
+
+          def mandatory_attribute?(attribute)
+            attribute.existence.nil? || attribute.existence.lower.to_i >= 1
+          end
+
+          def attribute_default(attribute)
+            children = attribute.children || []
+            return nil if children.empty?
+
+            child = children.first
+            return nil if child.is_a?(ArchetypeSlot) ||
+                          child.is_a?(ArchetypeInternalRef) ||
+                          child.is_a?(ConstraintRef)
+
+            if attribute.is_a?(CMultipleAttribute)
+              multiple_default(child, attribute.cardinality)
+            else
+              child.default_value
+            end
+          end
+
+          def multiple_default(child, cardinality)
+            value = child.default_value
+            return nil if value.nil?
+
+            count = cardinality&.interval&.lower
+            count = 1 if count.nil? || count < 1
+
+            Array.new(count) { value }
           end
         end
 
@@ -370,11 +584,21 @@ module OpenEHR
 
         class CMultipleAttribute < CAttribute
           attr_accessor :members, :cardinality
-          
+
           def initialize(args = { })
             super
             self.members = args[:members]
             self.cardinality = args[:cardinality]
+          end
+
+          # Adds cardinality⊆ on top of CAttribute's rm_attribute_name
+          # and existence conformance rules.
+          def node_conforms_to?(other)
+            return false unless super
+
+            mine = cardinality ? cardinality.interval : nil
+            others = other.cardinality ? other.cardinality.interval : nil
+            interval_conforms_to?(mine, others)
           end
         end
       end # of ConstraintModel

@@ -21,6 +21,13 @@ module OpenEHR
                 return false
               end
             end
+
+            def valid_value?(value)
+              return true if any_allowed?
+              return false if list.nil? || value.nil?
+
+              list.any? { |item| item.matches?(value) }
+            end
           end
           
           class CDvOrdinal < OpenEHR::AM::Archetype::ConstraintModel::CDomainType
@@ -32,6 +39,15 @@ module OpenEHR
 
             def any_allowed?
               @list.nil?
+            end
+
+            def valid_value?(value)
+              return true if any_allowed?
+              return false unless value.respond_to?(:value) && value.respond_to?(:symbol)
+
+              list.any? do |item|
+                item.value == value.value && item.symbol.code_string == value.symbol.code_string
+              end
             end
           end
 
@@ -59,6 +75,29 @@ module OpenEHR
               else
                 return false
               end
+            end
+
+            def matches?(value)
+              return false unless value.respond_to?(:units) && value.units == units
+
+              magnitude_matches?(value.magnitude) &&
+                precision_matches?(value.respond_to?(:precision) ? value.precision : nil)
+            end
+
+            private
+
+            def magnitude_matches?(value_magnitude)
+              return true if magnitude.nil?
+              return magnitude.has?(value_magnitude) if magnitude.respond_to?(:has?)
+
+              magnitude == value_magnitude
+            end
+
+            def precision_matches?(value_precision)
+              return true if precision_unconstrained?
+              return precision.has?(value_precision) if precision.respond_to?(:has?)
+
+              precision == value_precision
             end
           end
         end

@@ -15,7 +15,7 @@ module OpenEHR
         lang:(arch_language)?
         desc:(arch_description)?
         arch_definition
-        arch_invariant?
+        inv:(arch_invariant)?
         arch_ontology {
           def archetype_id
             arch_identification.archetype_id
@@ -51,6 +51,14 @@ module OpenEHR
 
           def ontology
             arch_ontology.value
+          end
+
+          def parent_archetype_id
+            spec.archetype_id unless spec.empty?
+          end
+
+          def invariants
+            inv.value unless inv.empty?
           end
         }
       end
@@ -194,7 +202,11 @@ module OpenEHR
       end
 
       rule arch_invariant
-        SYM_INVARIANT V_ASSERTION_TEXT space
+        SYM_INVARIANT text:V_ASSERTION_TEXT space {
+          def value
+            text.value
+          end
+        }
       end
 
       rule arch_ontology
@@ -1460,7 +1472,7 @@ module OpenEHR
           def value
             if (id && !id.empty?)
               OpenEHR::AM::Archetype::Assertion::Assertion.new(
-                :tag => id.value, :expression => boolean_expression.value,
+                :tag => id.elements[0].value, :expression => boolean_expression.value,
                 :string_expression => id.text_value + boolean_expression.text_value)
             else
               OpenEHR::AM::Archetype::Assertion::Assertion.new(
@@ -2168,9 +2180,9 @@ module OpenEHR
             type_identifier.value
           end
         }
-      / V_ATTRIBUTE_IDENTIFIER '' {
+      / id:V_ATTRIBUTE_IDENTIFIER '' {
           def value
-            V_ATTRIBUTE_IDENTIFIER.value
+            id.value
           end
         }
       end

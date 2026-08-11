@@ -41,10 +41,54 @@ describe CString do
     }.to raise_error ArgumentError
   end
 
-  it 'should raise ArgumentError if both list and pattern are nil' do
+  it 'should allow both list and pattern to be nil (unconstrained/any_allowed)' do
     expect {
       @c_string.pattern = nil
-    }.to raise_error ArgumentError
+    }.not_to raise_error
+    expect(@c_string.pattern).to be_nil
+    expect(@c_string.list).to be_nil
+  end
+
+  it 'defaults list_open to nil (unset)' do
+    expect(@c_string.list_open).to be_nil
+  end
+
+  it 'accepts list_open as a constructor argument' do
+    c_string = CString.new(:list => ['a'], :list_open => true)
+    expect(c_string.list_open).to be true
+  end
+
+  describe '#valid_value?' do
+    it 'matches the pattern' do
+      expect(@c_string.valid_value?('test')).to be true
+    end
+
+    it 'does not match the pattern' do
+      expect(@c_string.valid_value?('xyz')).to be false
+    end
+
+    it 'is false for a non-String' do
+      expect(@c_string.valid_value?(123)).to be false
+    end
+
+    it 'is true for any String when unconstrained' do
+      c_string = CString.new
+      expect(c_string.valid_value?('anything')).to be true
+    end
+
+    context 'with a list constraint' do
+      before(:each) do
+        @c_string = CString.new(:list => ['test', 'behavior'])
+      end
+
+      it 'is true for a value in the list' do
+        expect(@c_string.valid_value?('test')).to be true
+      end
+
+      it 'is false for a value not in the list' do
+        expect(@c_string.valid_value?('other')).to be false
+      end
+    end
   end
 
   describe 'list attribute' do

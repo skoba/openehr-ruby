@@ -101,4 +101,34 @@ describe CTime do
       expect(@c_timel.list[0].value).to eq('09:51:17')
     end
   end
+
+  it 'timezone_validity should be assignable' do
+    @c_time.timezone_validity = ValidityKind::OPTIONAL
+    expect(@c_time.timezone_validity).to be_equal ValidityKind::OPTIONAL
+  end
+
+  describe '#valid_value?' do
+    it 'is true for a value within range' do
+      expect(@c_time.valid_value?(DvTime.new(:value => '12:00:00'))).to be true
+    end
+
+    it 'is false for a value outside range' do
+      expect(@c_time.valid_value?(DvTime.new(:value => '23:59:59.999'))).to be false
+    end
+
+    it 'accepts an ISO8601 time string too' do
+      expect(@c_time.valid_value?('12:00:00')).to be true
+    end
+
+    it 'is true for any time when unconstrained' do
+      c_time = CTime.new
+      expect(c_time.valid_value?('00:00:00')).to be true
+    end
+
+    it 'enforces minute_validity MANDATORY' do
+      c_time = CTime.new(:minute_validity => ValidityKind::MANDATORY)
+      expect(c_time.valid_value?('12:30')).to be true
+      expect(c_time.valid_value?('12')).to be false
+    end
+  end
 end

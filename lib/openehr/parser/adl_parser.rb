@@ -13,8 +13,10 @@ module OpenEHR
         super
       end
       
-      def parse
-        archetype
+      def parse(validate: false)
+        archetype.tap do |a|
+          ArchetypeValidator.new(a).validate! if validate
+        end
       end
 
       private
@@ -67,6 +69,16 @@ module OpenEHR
         parsed_data.concept
       end
 
+      def parent_archetype_id
+        if parsed_data.parent_archetype_id
+          OpenEHR::RM::Support::Identification::ArchetypeID.new(:value => parsed_data.parent_archetype_id)
+        end
+      end
+
+      def invariants
+        parsed_data.invariants
+      end
+
       def description
         parsed_data.description
       end
@@ -82,13 +94,15 @@ module OpenEHR
       def archetype
         OpenEHR::AM::Archetype::Archetype.new(:archetype_id => archetype_id,
                                   :adl_version => adl_version,
-                                  :uid => uid,            
+                                  :uid => uid,
                                   :concept => concept,
                                   :original_language => original_language,
                                   :translations => translations,
                                   :description => description,
                                   :definition => definition,
-                                  :ontology => ontology)
+                                  :ontology => ontology,
+                                  :parent_archetype_id => parent_archetype_id,
+                                  :invariants => invariants)
       end
     end
   end # of Parser

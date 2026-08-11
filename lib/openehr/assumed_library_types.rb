@@ -71,6 +71,35 @@ module OpenEHR
           (@lower_included == value.lower_included?) &&
             (@upper_included == value.upper_included?)
       end
+
+      # True if every value this interval has is also had by other (a
+      # standard subset test, e.g. for conformance checks: does a
+      # constraint's occurrences/existence/cardinality interval fit
+      # within its parent's).
+      def subset_of?(other)
+        return false if other.nil?
+
+        lower_ok = if lower_unbounded?
+                     other.lower_unbounded?
+                   elsif other.lower_unbounded? || lower > other.lower
+                     true
+                   elsif lower == other.lower
+                     !lower_included? || other.lower_included?
+                   else
+                     false
+                   end
+        upper_ok = if upper_unbounded?
+                     other.upper_unbounded?
+                   elsif other.upper_unbounded? || upper < other.upper
+                     true
+                   elsif upper == other.upper
+                     !upper_included? || other.upper_included?
+                   else
+                     false
+                   end
+        lower_ok && upper_ok
+      end
+
       private
 
       def check_lower_upper(lower, upper)

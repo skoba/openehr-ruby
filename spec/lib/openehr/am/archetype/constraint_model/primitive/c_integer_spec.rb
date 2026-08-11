@@ -66,4 +66,29 @@ describe CInteger do
       }.to raise_error ArgumentError
     end
   end
+
+  describe '#valid_value?' do
+    it 'is true for a value in the list' do
+      expect(@c_integer.valid_value?(1)).to be true
+    end
+
+    it 'is false for a value not in the list' do
+      expect(@c_integer.valid_value?(99)).to be false
+    end
+
+    it 'is false for a non-Integer' do
+      expect(@c_integer.valid_value?(1.5)).to be false
+    end
+
+    it 'is true for any Integer when unconstrained' do
+      c_integer = CInteger.new
+      expect(c_integer.valid_value?(-999)).to be true
+    end
+
+    it 'checks the range when a range constraint is set' do
+      c_integer = CInteger.new(:range => Interval.new(:lower => 0, :upper => 5))
+      expect(c_integer.valid_value?(3)).to be true
+      expect(c_integer.valid_value?(6)).to be false
+    end
+  end
 end

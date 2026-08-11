@@ -58,4 +58,51 @@ describe CObject do
   #     @c_object.occurrences = nil
   #   }.should raise_error ArgumentError
   # end
+
+  describe '#node_conforms_to?' do
+    let(:parent_node) do
+      CObject.new(:rm_type_name => 'DV_TIME',
+                  :node_id => 'at0001',
+                  :occurrences => Interval.new(:lower => 0, :upper => 3))
+    end
+
+    it 'is true when node_id and rm_type_name match and occurrences is a subset' do
+      child = CObject.new(:rm_type_name => 'DV_TIME',
+                          :node_id => 'at0001',
+                          :occurrences => Interval.new(:lower => 1, :upper => 2))
+      expect(child.node_conforms_to?(parent_node)).to be true
+    end
+
+    it 'is true when node_id is a specialisation of the parent node_id (at0001.1 conforms to at0001)' do
+      child = CObject.new(:rm_type_name => 'DV_TIME',
+                          :node_id => 'at0001.1',
+                          :occurrences => Interval.new(:lower => 0, :upper => 1))
+      expect(child.node_conforms_to?(parent_node)).to be true
+    end
+
+    it 'is false when node_id is unrelated' do
+      child = CObject.new(:rm_type_name => 'DV_TIME',
+                          :node_id => 'at0002',
+                          :occurrences => Interval.new(:lower => 0, :upper => 1))
+      expect(child.node_conforms_to?(parent_node)).to be false
+    end
+
+    it 'is false when rm_type_name differs' do
+      child = CObject.new(:rm_type_name => 'DV_DATE',
+                          :node_id => 'at0001',
+                          :occurrences => Interval.new(:lower => 0, :upper => 1))
+      expect(child.node_conforms_to?(parent_node)).to be false
+    end
+
+    it 'is false when occurrences is wider than the parent occurrences' do
+      child = CObject.new(:rm_type_name => 'DV_TIME',
+                          :node_id => 'at0001',
+                          :occurrences => Interval.new(:lower => 0, :upper => 5))
+      expect(child.node_conforms_to?(parent_node)).to be false
+    end
+
+    it 'is false when other is nil' do
+      expect(parent_node.node_conforms_to?(nil)).to be false
+    end
+  end
 end

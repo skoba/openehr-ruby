@@ -50,4 +50,41 @@ describe CDate do
       expect(@c_date.list[0].value).to eq('2011-11-28')
     end
   end
+
+  describe '#valid_value?' do
+    before(:all) do
+      range = Interval.new(:lower => DvDate.new(:value => '2001-01-01'),
+                           :upper => DvDate.new(:value => '2010-12-31'))
+      @c_date_ranged = CDate.new(:range => range)
+    end
+
+    it 'is true for a value within range' do
+      expect(@c_date_ranged.valid_value?(DvDate.new(:value => '2005-06-15'))).to be true
+    end
+
+    it 'is false for a value outside range' do
+      expect(@c_date_ranged.valid_value?(DvDate.new(:value => '2020-06-15'))).to be false
+    end
+
+    it 'accepts an ISO8601 date string too' do
+      expect(@c_date_ranged.valid_value?('2005-06-15')).to be true
+    end
+
+    it 'is true for any date when unconstrained' do
+      c_date = CDate.new
+      expect(c_date.valid_value?('1900-01-01')).to be true
+    end
+
+    it 'enforces month_validity DISALLOWED' do
+      c_date = CDate.new(:month_validity => ValidityKind::DISALLOWED, :day_validity => ValidityKind::DISALLOWED)
+      expect(c_date.valid_value?('2020')).to be true
+      expect(c_date.valid_value?('2020-06')).to be false
+    end
+
+    it 'enforces month_validity MANDATORY' do
+      c_date = CDate.new(:month_validity => ValidityKind::MANDATORY)
+      expect(c_date.valid_value?('2020-06')).to be true
+      expect(c_date.valid_value?('2020')).to be false
+    end
+  end
 end

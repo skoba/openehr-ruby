@@ -18,6 +18,29 @@ module OpenEHR
             def any_allowed?
               @terminology_id.nil? && @code_list.nil?
             end
+
+            def valid_value?(value)
+              return true if any_allowed?
+              return false if value.nil?
+
+              code, term = code_and_terminology(value)
+              return false if code.nil?
+
+              (code_list.nil? || code_list.include?(code)) &&
+                (terminology_id.nil? || term.nil? || term == terminology_id.value)
+            end
+
+            private
+
+            def code_and_terminology(value)
+              if value.is_a?(String)
+                [value, nil]
+              elsif value.respond_to?(:code_string)
+                [value.code_string, value.respond_to?(:terminology_id) ? value.terminology_id&.value : nil]
+              else
+                [nil, nil]
+              end
+            end
           end
         end # of Text
       end # of Data_Types

@@ -7,7 +7,9 @@
 #   segment   := attribute predicate?
 #   attribute := [a-z][a-zA-Z0-9_]*
 #   predicate := '[' node_id (',' ws* name)? ']'
-#   node_id   := at-code (at\d{4,}(\.\d+)*, incl. specialised at0001.1)
+#   node_id   := at-code (at\d+(\.\d+)*, incl. specialised at0001.1 and
+#                the short at0.2 form ADL 1.4 uses for nodes newly
+#                introduced by a specialisation)
 #              | archetype-id
 #   name      := "'" ... "'" (a Locatable#name.value literal)
 #
@@ -22,7 +24,7 @@ module OpenEHR
   class Path
     class InvalidPathError < ArgumentError; end
 
-    AT_CODE = /\Aat\d{4,}(\.\d+)*\z/
+    AT_CODE = /\Aat\d+(\.\d+)*\z/
     ARCHETYPE_ID = /\A[a-zA-Z]\w+-[a-zA-Z]\w+-[a-zA-Z]\w+\.[a-zA-Z]\w+(-[a-zA-Z]\w+)?\.v\d+\z/
     ATTRIBUTE = /\A[a-z][a-zA-Z0-9_]*\z/
 

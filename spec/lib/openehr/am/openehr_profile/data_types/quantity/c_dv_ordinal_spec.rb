@@ -38,4 +38,31 @@ describe CDvOrdinal do
     @c_dv_ordinal.list = nil
     expect(@c_dv_ordinal).to be_any_allowed
   end
+
+  describe '#valid_value?' do
+    it 'is true for a value matching one of the list items' do
+      symbol = double(DvCodedText, :code_string => 'AML')
+      value = DvOrdinal.new(:value => 1, :symbol => symbol)
+      expect(@c_dv_ordinal.valid_value?(value)).to be true
+    end
+
+    it 'is false when the value does not match any list item' do
+      symbol = double(DvCodedText, :code_string => 'AML')
+      value = DvOrdinal.new(:value => 2, :symbol => symbol)
+      expect(@c_dv_ordinal.valid_value?(value)).to be false
+    end
+
+    it 'is false when the symbol differs even if the numeric value matches' do
+      symbol = double(DvCodedText, :code_string => 'OTHER')
+      value = DvOrdinal.new(:value => 1, :symbol => symbol)
+      expect(@c_dv_ordinal.valid_value?(value)).to be false
+    end
+
+    it 'is true for any value when any_allowed' do
+      @c_dv_ordinal.list = nil
+      symbol = double(DvCodedText, :code_string => 'ANYTHING')
+      value = DvOrdinal.new(:value => 42, :symbol => symbol)
+      expect(@c_dv_ordinal.valid_value?(value)).to be true
+    end
+  end
 end

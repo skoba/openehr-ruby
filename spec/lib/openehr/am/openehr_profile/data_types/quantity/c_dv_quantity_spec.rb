@@ -47,4 +47,20 @@ describe CDvQuantity do
       expect(@c_dv_quantity).to be_any_allowed
     end
   end
+
+  describe '#valid_value?' do
+    it 'is true for a value matching one of the list items' do
+      expect(@c_dv_quantity.valid_value?(DvQuantity.new(:magnitude => 10, :units => 'mg'))).to be true
+    end
+
+    it 'is false for a value matching no list item' do
+      expect(@c_dv_quantity.valid_value?(DvQuantity.new(:magnitude => 10, :units => 'kg'))).to be false
+    end
+
+    it 'is true for any value when any_allowed' do
+      @c_dv_quantity.list = nil
+      @c_dv_quantity.property = nil
+      expect(@c_dv_quantity.valid_value?(DvQuantity.new(:magnitude => 999, :units => 'anything'))).to be true
+    end
+  end
 end

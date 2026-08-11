@@ -31,4 +31,32 @@ describe CDvState do
   it 'raise error if value is nil' do
     expect {@c_dv_state.value = nil}.to raise_error ArgumentError
   end
+
+  describe '#valid_value?' do
+    it 'is true for a DV_STATE naming a non-terminal state, is_terminal matching' do
+      rm_state = OpenEHR::RM::DataTypes::Basic::DvState.new(:value => 'PROPOSED', :is_terminal => false)
+      expect(@c_dv_state.valid_value?(rm_state)).to be true
+    end
+
+    it 'is true for a DV_STATE naming the terminal state, is_terminal matching' do
+      rm_state = OpenEHR::RM::DataTypes::Basic::DvState.new(:value => 'COMPLETED', :is_terminal => true)
+      expect(@c_dv_state.valid_value?(rm_state)).to be true
+    end
+
+    it 'is false when the state name is not in the state machine' do
+      rm_state = OpenEHR::RM::DataTypes::Basic::DvState.new(:value => 'UNKNOWN', :is_terminal => false)
+      expect(@c_dv_state.valid_value?(rm_state)).to be false
+    end
+
+    it 'is false when is_terminal disagrees with the named state' do
+      rm_state = OpenEHR::RM::DataTypes::Basic::DvState.new(:value => 'PROPOSED', :is_terminal => true)
+      expect(@c_dv_state.valid_value?(rm_state)).to be false
+    end
+
+    it 'accepts a code phrase value carrying the state name' do
+      code = double(:code_string => 'PROPOSED')
+      rm_state = OpenEHR::RM::DataTypes::Basic::DvState.new(:value => code, :is_terminal => false)
+      expect(@c_dv_state.valid_value?(rm_state)).to be true
+    end
+  end
 end

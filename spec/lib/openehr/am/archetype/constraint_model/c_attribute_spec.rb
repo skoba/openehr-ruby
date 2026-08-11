@@ -80,6 +80,49 @@ describe CAttribute do
       expect(@c_attribute.path).to eq('/event[at0001]/new')
     end
   end
+
+  describe '#node_conforms_to?' do
+    let(:parent_attribute) do
+      CAttribute.new(:rm_attribute_name => 'data',
+                     :existence => Interval.new(:lower => 0, :upper => 1))
+    end
+
+    it 'is true when rm_attribute_name matches and existence is a subset' do
+      child = CAttribute.new(:rm_attribute_name => 'data',
+                             :existence => Interval.new(:lower => 1, :upper => 1))
+      expect(child.node_conforms_to?(parent_attribute)).to be true
+    end
+
+    it 'is false when rm_attribute_name differs' do
+      child = CAttribute.new(:rm_attribute_name => 'state',
+                             :existence => Interval.new(:lower => 0, :upper => 1))
+      expect(child.node_conforms_to?(parent_attribute)).to be false
+    end
+
+    it 'is false when existence is wider than the parent existence' do
+      mandatory_parent = CAttribute.new(:rm_attribute_name => 'data',
+                                        :existence => Interval.new(:lower => 1, :upper => 1))
+      child = CAttribute.new(:rm_attribute_name => 'data',
+                             :existence => Interval.new(:lower => 0, :upper => 1))
+      expect(child.node_conforms_to?(mandatory_parent)).to be false
+    end
+
+    it 'is true when the parent existence is unconstrained' do
+      unconstrained_parent = CAttribute.new(:rm_attribute_name => 'data')
+      child = CAttribute.new(:rm_attribute_name => 'data',
+                             :existence => Interval.new(:lower => 1, :upper => 1))
+      expect(child.node_conforms_to?(unconstrained_parent)).to be true
+    end
+
+    it 'is false when self is unconstrained but the parent existence is constrained' do
+      child = CAttribute.new(:rm_attribute_name => 'data')
+      expect(child.node_conforms_to?(parent_attribute)).to be false
+    end
+
+    it 'is false when other is nil' do
+      expect(parent_attribute.node_conforms_to?(nil)).to be false
+    end
+  end
 end
 
 
