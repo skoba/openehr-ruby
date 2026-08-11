@@ -1,3 +1,52 @@
+=== 1.8.0 (in progress)
+RM 1.1.0 / BASE 1.2.0 deltas layered onto the 1.0.2 baseline. See the new
+"RM 1.0.2 vs RM 1.1.0 semantics" section in README.rdoc for the full
+list and which RM version each item belongs to.
+
+* New DvScale (DataTypes::Quantity) and its AOM constraint CDvScale
+  (OpenEHRProfile::DataTypes::Quantity), plus a DvScaleFactory and an
+  OPTParser#c_dv_scale handler - RM 1.1.0's SPECRM-19, a DV_ORDINAL
+  sibling for scales/scores whose points are Real-valued rather than
+  Integer-valued (e.g. the Borg CR10 breathlessness scale, which
+  includes 0.5).
+* DvQuantity gained units_system and units_display_name (SPECRM-65,
+  both optional): units is UCUM by default, units_system names another
+  units system when it isn't, and units_display_name gives a
+  displayable form when the units code itself isn't one (UCUM 'Cel' vs
+  '°C'). is_strictly_comparable_to? now also requires units_system to
+  match, not just units.
+* CodePhrase gained an optional preferred_term (String), for
+  integration mappings that need both a non-preferred actual term and
+  a preferred term.
+* DvParagraph now emits a deprecation warning on construction (it's
+  been deprecated since RM 1.0.4 in favour of DvText/DvCodedText with
+  markdown or newlines) - it remains legal and fully functional, this
+  only warns, since it's still needed for legacy data.
+* Negative ISO8601 durations (e.g. "-P10D", meaning "10 days before an
+  unstated origin point" - used for e.g. a premature newborn's adjusted
+  age) are now consistently supported (SPECRM-96): ISO8601Duration and
+  DvDuration both gained negative?/negative=, to_seconds/magnitude and
+  as_string are sign-aware, and DvDuration gained unary -@ (DV_AMOUNT's
+  "negative" operation), returning a new DvDuration with the sign
+  flipped. Component setters (years=, days=, ...) still reject negative
+  magnitudes - the sign applies to the duration as a whole.
+* EHR gained folders (SPECRM-55, List<OBJECT_REF>, optional): when set,
+  directory is kept pointing at folders.item(1) (the Directory_in_folders
+  invariant), for backward compatibility with pre-1.1.0 systems that
+  only had directory.
+* FOLDER gained details (optional ITEM_STRUCTURE, archetypable
+  meta-data), and FEEDER_AUDIT_DETAILS gained other_details (SPECRM-74,
+  optional ITEM_STRUCTURE, custom meta-data).
+* ACTIVITY.timing is no longer mandatory - RM 1.1.0 made it optional
+  (it may be omitted when timing is instead represented structurally in
+  description, or is unavailable, e.g. imported legacy data).
+* IsmTransition gained an optional reason (List<DV_TEXT> - one or more
+  reasons for a careflow step, e.g. useful in medication management).
+* COMPOSITION.category accepting "episodic" (SPECRM-89) needed no code
+  change: category validation already goes through the pluggable
+  OpenEHR::TerminologyService seam (1.5.0), which is terminology-content
+  agnostic by design.
+
 === 1.7.0 (in progress)
 Serializers: ADLSerializer can now emit a full cADL definition section
 instead of hanging.
