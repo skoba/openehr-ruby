@@ -14,6 +14,10 @@ module OpenEHR
           @limit_clause = limit_clause
           freeze
         end
+
+        def execute(dataset, params: {})
+          OpenEHR::AQL::Engine.new(self).execute(dataset, params: params)
+        end
       end
     end
   end
