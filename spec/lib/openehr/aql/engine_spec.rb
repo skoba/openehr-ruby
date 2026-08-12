@@ -107,3 +107,58 @@ describe 'OpenEHR::AQL.execute (E3: EHR root, CONTAINS chain, archetype predicat
     expect(result.rows).to eq([[bp_composition]])
   end
 end
+
+# E4 milestone: SELECT paths beyond a bare variable - walking Pathable's
+# declared path_attribute chain via items_at_path (with node/archetype
+# predicates), then falling through to a whitelisted public_send for the
+# trailing non-Pathable hop (a DV_QUANTITY's "magnitude", reached only
+# after "value" already navigated onto it). WHERE, ORDER BY/LIMIT and
+# functions are added by later engine milestones.
+describe 'OpenEHR::AQL.execute (E4: SELECT paths)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:bp_composition) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+
+  def bp_dataset
+    OpenEHR::AQL::Dataset.of_compositions([bp_composition])
+  end
+
+  it 'walks a deep path down to a DV_QUANTITY magnitude' do
+    result = OpenEHR::AQL.execute(
+      'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude ' \
+      'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o', bp_dataset
+    )
+    expect(result.rows).to eq([[150]])
+  end
+
+  it 'walks a deep path down to the diastolic magnitude, aliased' do
+    result = OpenEHR::AQL.execute(
+      'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS diastolic ' \
+      'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o', bp_dataset
+    )
+    expect(result.columns).to eq(['diastolic'])
+    expect(result.rows).to eq([[95]])
+  end
+
+  it 'evaluates two path columns in the same row' do
+    result = OpenEHR::AQL.execute(
+      'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic, ' \
+      'o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS diastolic ' \
+      'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o', bp_dataset
+    )
+    expect(result.rows).to eq([[150, 95]])
+  end
+
+  it 'reaches a DV_TEXT value without a trailing non-Pathable hop' do
+    result = OpenEHR::AQL.execute('SELECT c/name FROM EHR e CONTAINS COMPOSITION c', bp_dataset)
+    expect(result.rows.first.first.value).to eq('Encounter')
+  end
+
+  it 'raises ExecutionError for an unsupported trailing attribute hop' do
+    expect {
+      OpenEHR::AQL.execute(
+        'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/not_a_real_attribute ' \
+        'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o', bp_dataset
+      ).rows
+    }.to raise_error(OpenEHR::AQL::ExecutionError, /not_a_real_attribute/)
+  end
+end
