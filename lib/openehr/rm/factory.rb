@@ -21,13 +21,30 @@ module OpenEHR
           param.each_with_object({}) do |item, parameters|
             key = item.shift
             value = item.shift
-            if value.instance_of? Hash
-              parameters[key] = Factory.create(value[:_type], **value)
-            else
-              parameters[key] = value
-            end
+            parameters[key] = convert_value(value)
           end
-        end          
+        end
+
+        private
+
+        # A canonical-JSON attribute value is either a typed sub-object
+        # (Hash with _type), a List<...> of those (Array - openEHR RM
+        # multiplicity 0..*/1..* attributes, e.g. COMPOSITION.content,
+        # HISTORY.events, ITEM_TREE.items), or a plain value (String,
+        # Numeric, ...). Arrays recurse so nested multiplicities (e.g. a
+        # CLUSTER's own items) convert too; non-Hash array elements
+        # (there is no List<String>/List<Numeric> attribute in this RM,
+        # but doubles/pre-built objects show up in specs) pass through
+        # unchanged.
+        def convert_value(value)
+          if value.instance_of? Hash
+            Factory.create(value[:_type], **value)
+          elsif value.instance_of? Array
+            value.map { |element| convert_value(element) }
+          else
+            value
+          end
+        end
       end
 
       def build

@@ -4,6 +4,57 @@ require_relative File.dirname(__FILE__) + '/../adl_parser/parser_spec_helper'
 module OpenEHR
   module RM
     describe Factory do
+      describe '.params' do
+        it 'converts each Hash element of an Array value into an RM object via its _type' do
+          result = Factory.params(
+            items: [
+              { _type: 'DV_TEXT', value: 'first' },
+              { _type: 'DV_TEXT', value: 'second' }
+            ]
+          )
+          expect(result[:items]).to all(be_an_instance_of(OpenEHR::RM::DataTypes::Text::DvText))
+          expect(result[:items].map(&:value)).to eq(%w[first second])
+        end
+
+        it 'passes an empty Array value through as an empty Array' do
+          expect(Factory.params(items: [])[:items]).to eq([])
+        end
+
+        it 'passes Array elements that are not Hashes through unchanged (e.g. DV_PARAGRAPH item strings)' do
+          result = Factory.params(items: ['short sentence', 'long sentence'])
+          expect(result[:items]).to eq(['short sentence', 'long sentence'])
+        end
+
+        it 'converts Hash elements inside nested Arrays recursively' do
+          result = Factory.params(rows: [[{ _type: 'DV_TEXT', value: 'cell' }]])
+          expect(result[:rows].first.first).to be_an_instance_of(OpenEHR::RM::DataTypes::Text::DvText)
+        end
+      end
+
+      describe HistoryFactory do
+        subject do
+          Factory.create('HISTORY',
+                          archetype_node_id: 'at0001',
+                          name: Factory.create('DV_TEXT', value: 'Event Series'),
+                          origin: Factory.create('DV_DATE_TIME', value: '2020-09-22T16:18:51+02:00'),
+                          events: [{ _type: 'POINT_EVENT',
+                                     archetype_node_id: 'at0002',
+                                     name: { _type: 'DV_TEXT', value: 'Any event' },
+                                     time: { _type: 'DV_DATE_TIME', value: '2020-09-22T16:18:51+02:00' },
+                                     data: { _type: 'ITEM_TREE',
+                                             archetype_node_id: 'at0003',
+                                             name: { _type: 'DV_TEXT', value: 'Tree' } } }])
+        end
+
+        it 'builds real PointEvent objects from an events array of typed Hashes' do
+          expect(subject.events.first).to be_an_instance_of(OpenEHR::RM::DataStructures::History::PointEvent)
+        end
+
+        it 'wires the parent back-reference on each built event' do
+          expect(subject.events.first.parent).to equal(subject)
+        end
+      end
+
       describe DvBooleanFactory do
         subject { Factory.create('DV_BOOLEAN', value: true) }
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Basic::DvBoolean }
@@ -505,497 +556,44 @@ module OpenEHR
         subject { composition }
 
         it { is_expected.to be_an_instance_of ::OpenEHR::RM::Composition::Composition }
+
+        it 'builds real Observation objects in content, not raw Hashes' do
+          expect(composition.content).to all(
+            be_an_instance_of(OpenEHR::RM::Composition::Content::Entry::Observation)
+          )
+          expect(composition.content.first.archetype_node_id).to eq('openEHR-EHR-OBSERVATION.story.v1')
+        end
+
+        it 'makes every node in content Pathable (the AQL CONTAINS prerequisite)' do
+          expect(composition.content.first).to be_a(OpenEHR::RM::Common::Archetyped::Pathable)
+        end
+
+        it 'builds real Participation objects in context.participations' do
+          expect(composition.context.participations).to all(
+            be_an_instance_of(OpenEHR::RM::Common::Generic::Participation)
+          )
+        end
+
+        it 'recurses through content -> data.events -> ITEM_TREE -> CLUSTER -> ELEMENT' do
+          observation = composition.content.first
+          event = observation.data.events.first
+          expect(event).to be_an_instance_of(OpenEHR::RM::DataStructures::History::PointEvent)
+
+          cluster = event.data.items.last
+          expect(cluster).to be_an_instance_of(OpenEHR::RM::DataStructures::ItemStructure::Representation::Cluster)
+          expect(cluster.archetype_node_id).to eq('openEHR-EHR-CLUSTER.symptom_sign.v1')
+
+          element = cluster.items.first
+          expect(element).to be_an_instance_of(OpenEHR::RM::DataStructures::ItemStructure::Representation::Element)
+          expect(element.value.value).to eq('咳、鼻水')
+        end
+
+        it 'wires the parent back-reference on a content element' do
+          expect(composition.content.first.parent).to equal(composition)
+        end
       end
     end
   end
 end
 
-COMPOSITION_JSON=<<END
-{
-    "name": {
-        "_type": "DV_TEXT",
-        "value": "Health summary"
-    },
-    "archetype_details": {
-        "_type": "ARCHETYPED",
-        "archetype_id": {
-            "_type": "ARCHETYPE_ID",
-            "value": "openEHR-EHR-COMPOSITION.health_summary.v1"
-        },
-        "template_id": {
-            "_type": "TEMPLATE_ID",
-            "value": "symptom_screening"
-        },
-        "rm_version": "1.0.4"
-    },
-    "archetype_node_id": "openEHR-EHR-COMPOSITION.health_summary.v1",
-    "language": {
-        "_type": "CODE_PHRASE",
-        "terminology_id": {
-            "_type": "TERMINOLOGY_ID",
-            "value": "ISO_639-1"
-        },
-        "code_string": "en"
-    },
-    "territory": {
-        "_type": "CODE_PHRASE",
-        "terminology_id": {
-            "_type": "TERMINOLOGY_ID",
-            "value": "ISO_3166-1"
-        },
-        "code_string": "JP"
-    },
-    "category": {
-        "_type": "DV_CODED_TEXT",
-        "value": "event",
-        "defining_code": {
-            "_type": "CODE_PHRASE",
-            "terminology_id": {
-                "_type": "TERMINOLOGY_ID",
-                "value": "openehr"
-            },
-            "code_string": "433"
-        }
-    },
-    "composer": {
-        "_type": "PARTY_IDENTIFIED",
-        "name": "Shinji Kobayashi"
-    },
-    "context": {
-        "_type": "EVENT_CONTEXT",
-        "start_time": {
-            "_type": "DV_DATE_TIME",
-            "value": "2020-09-22T16:18:51.481222+02:00"
-        },
-        "setting": {
-            "_type": "DV_CODED_TEXT",
-            "value": "other care",
-            "defining_code": {
-                "_type": "CODE_PHRASE",
-                "terminology_id": {
-                    "_type": "TERMINOLOGY_ID",
-                    "value": "openehr"
-                },
-                "code_string": "238"
-            }
-        },
-        "health_care_facility": {
-            "_type": "PARTY_IDENTIFIED",
-            "external_ref": {
-                "_type": "PARTY_REF",
-                "id": {
-                    "_type": "GENERIC_ID",
-                    "value": "9091",
-                    "scheme": "Wako Hospital"
-                },
-                "namespace": "local",
-                "type": "PARTY"
-            },
-            "name": "Wako Hospital"
-        },
-        "participations": [
-            {
-                "_type": "PARTICIPATION",
-                "function": {
-                    "_type": "DV_TEXT",
-                    "value": "requester"
-                },
-                "performer": {
-                    "_type": "PARTY_IDENTIFIED",
-                    "external_ref": {
-                        "_type": "PARTY_REF",
-                        "id": {
-                            "_type": "GENERIC_ID",
-                            "value": "199",
-                            "scheme": "Wako Hospital"
-                        },
-                        "namespace": "Wako hospital",
-                        "type": "ANY"
-                    },
-                    "name": "Dr. Shinji Kobayashi"
-                },
-                "mode": {
-                    "_type": "DV_CODED_TEXT",
-                    "value": "face-to-face communication",
-                    "defining_code": {
-                        "_type": "CODE_PHRASE",
-                        "terminology_id": {
-                            "_type": "TERMINOLOGY_ID",
-                            "value": "openehr"
-                        },
-                        "code_string": "216"
-                    }
-                }
-            },
-            {
-                "_type": "PARTICIPATION",
-                "function": {
-                    "_type": "DV_TEXT",
-                    "value": "performer"
-                },
-                "performer": {
-                    "_type": "PARTY_IDENTIFIED",
-                    "external_ref": {
-                        "_type": "PARTY_REF",
-                        "id": {
-                            "_type": "GENERIC_ID",
-                            "value": "198",
-                            "scheme": "Wako Hospital"
-                        },
-                        "namespace": "Wako hospital",
-                        "type": "ANY"
-                    },
-                    "name": "Nurse 1"
-                },
-                "mode": {
-                    "_type": "DV_CODED_TEXT",
-                    "value": "not specified",
-                    "defining_code": {
-                        "_type": "CODE_PHRASE",
-                        "terminology_id": {
-                            "_type": "TERMINOLOGY_ID",
-                            "value": "openehr"
-                        },
-                        "code_string": "193"
-                    }
-                }
-            }
-        ]
-    },
-    "content": [
-        {
-            "_type": "OBSERVATION",
-            "name": {
-                "_type": "DV_TEXT",
-                "value": "Story/History"
-            },
-            "archetype_details": {
-                "_type": "ARCHETYPED",
-                "archetype_id": {
-                    "_type": "ARCHETYPE_ID",
-                    "value": "openEHR-EHR-OBSERVATION.story.v1"
-                },
-                "rm_version": "1.0.4"
-            },
-            "archetype_node_id": "openEHR-EHR-OBSERVATION.story.v1",
-            "language": {
-                "_type": "CODE_PHRASE",
-                "terminology_id": {
-                    "_type": "TERMINOLOGY_ID",
-                    "value": "ISO_639-1"
-                },
-                "code_string": "ja"
-            },
-            "encoding": {
-                "_type": "CODE_PHRASE",
-                "terminology_id": {
-                    "_type": "TERMINOLOGY_ID",
-                    "value": "IANA_character-sets"
-                },
-                "code_string": "UTF-8"
-            },
-            "subject": {
-                "_type": "PARTY_SELF"
-            },
-            "other_participations": [
-                {
-                    "_type": "PARTICIPATION",
-                    "function": {
-                        "_type": "DV_TEXT",
-                        "value": "requester"
-                    },
-                    "performer": {
-                        "_type": "PARTY_IDENTIFIED",
-                        "external_ref": {
-                            "_type": "PARTY_REF",
-                            "id": {
-                                "_type": "GENERIC_ID",
-                                "value": "199",
-                                "scheme": "Wako Hospital"
-                            },
-                            "namespace": "Wako hospital",
-                            "type": "ANY"
-                        },
-                        "name": "Dr. Shinji Kobayashi"
-                    },
-                    "mode": {
-                        "_type": "DV_CODED_TEXT",
-                        "value": "face-to-face communication",
-                        "defining_code": {
-                            "_type": "CODE_PHRASE",
-                            "terminology_id": {
-                                "_type": "TERMINOLOGY_ID",
-                                "value": "openehr"
-                            },
-                            "code_string": "216"
-                        }
-                    }
-                },
-                {
-                    "_type": "PARTICIPATION",
-                    "function": {
-                        "_type": "DV_TEXT",
-                        "value": "performer"
-                    },
-                    "performer": {
-                        "_type": "PARTY_IDENTIFIED",
-                        "external_ref": {
-                            "_type": "PARTY_REF",
-                            "id": {
-                                "_type": "GENERIC_ID",
-                                "value": "198",
-                                "scheme": "Wako Hospital"
-                            },
-                            "namespace": "Wako hospital",
-                            "type": "ANY"
-                        },
-                        "name": "Nurse 1"
-                    },
-                    "mode": {
-                        "_type": "DV_CODED_TEXT",
-                        "value": "not specified",
-                        "defining_code": {
-                            "_type": "CODE_PHRASE",
-                            "terminology_id": {
-                                "_type": "TERMINOLOGY_ID",
-                                "value": "openehr"
-                            },
-                            "code_string": "193"
-                        }
-                    }
-                }
-            ],
-            "data": {
-                "_type": "HISTORY",
-                "name": {
-                    "_type": "DV_TEXT",
-                    "value": "Event Series"
-                },
-                "archetype_node_id": "at0001",
-                "origin": {
-                    "_type": "DV_DATE_TIME",
-                    "value": "2020-09-22T16:18:51.481222+02:00"
-                },
-                "events": [
-                    {
-                        "_type": "POINT_EVENT",
-                        "name": {
-                            "_type": "DV_TEXT",
-                            "value": "Any event"
-                        },
-                        "archetype_node_id": "at0002",
-                        "time": {
-                            "_type": "DV_DATE_TIME",
-                            "value": "2020-09-22T16:18:51.481222+02:00"
-                        },
-                        "data": {
-                            "_type": "ITEM_TREE",
-                            "name": {
-                                "_type": "DV_TEXT",
-                                "value": "Tree"
-                            },
-                            "archetype_node_id": "at0003",
-                            "items": [
-                                {
-                                    "_type": "ELEMENT",
-                                    "name": {
-                                        "_type": "DV_TEXT",
-                                        "value": "Story"
-                                    },
-                                    "archetype_node_id": "at0004",
-                                    "value": {
-                                        "_type": "DV_TEXT",
-                                        "value": "4日前より発熱。解熱せず呼吸器症状悪化"
-                                    }
-                                },
-                                {
-                                    "_type": "CLUSTER",
-                                    "name": {
-                                        "_type": "DV_TEXT",
-                                        "value": "Symptom/Sign"
-                                    },
-                                    "archetype_details": {
-                                        "_type": "ARCHETYPED",
-                                        "archetype_id": {
-                                            "_type": "ARCHETYPE_ID",
-                                            "value": "openEHR-EHR-CLUSTER.symptom_sign.v1"
-                                        },
-                                        "rm_version": "1.0.4"
-                                    },
-                                    "archetype_node_id": "openEHR-EHR-CLUSTER.symptom_sign.v1",
-                                    "items": [
-                                        {
-                                            "_type": "ELEMENT",
-                                            "name": {
-                                                "_type": "DV_TEXT",
-                                                "value": "Symptom/Sign name"
-                                            },
-                                            "archetype_node_id": "at0001",
-                                            "value": {
-                                                "_type": "DV_TEXT",
-                                                "value": "咳、鼻水"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "_type": "OBSERVATION",
-            "name": {
-                "_type": "DV_TEXT",
-                "value": "Temperature"
-            },
-            "archetype_details": {
-                "_type": "ARCHETYPED",
-                "archetype_id": {
-                    "_type": "ARCHETYPE_ID",
-                    "value": "openEHR-EHR-OBSERVATION.temperature.v1"
-                },
-                "rm_version": "1.0.4"
-            },
-            "archetype_node_id": "openEHR-EHR-OBSERVATION.temperature.v1",
-            "language": {
-                "_type": "CODE_PHRASE",
-                "terminology_id": {
-                    "_type": "TERMINOLOGY_ID",
-                    "value": "ISO_639-1"
-                },
-                "code_string": "ja"
-            },
-            "encoding": {
-                "_type": "CODE_PHRASE",
-                "terminology_id": {
-                    "_type": "TERMINOLOGY_ID",
-                    "value": "IANA_character-sets"
-                },
-                "code_string": "UTF-8"
-            },
-            "subject": {
-                "_type": "PARTY_SELF"
-            },
-            "other_participations": [
-                {
-                    "_type": "PARTICIPATION",
-                    "function": {
-                        "_type": "DV_TEXT",
-                        "value": "requester"
-                    },
-                    "performer": {
-                        "_type": "PARTY_IDENTIFIED",
-                        "external_ref": {
-                            "_type": "PARTY_REF",
-                            "id": {
-                                "_type": "GENERIC_ID",
-                                "value": "199",
-                                "scheme": "Wako Hospital"
-                            },
-                            "namespace": "Wako hospital",
-                            "type": "ANY"
-                        },
-                        "name": "Dr. Shinji Kobayashi"
-                    },
-                    "mode": {
-                        "_type": "DV_CODED_TEXT",
-                        "value": "face-to-face communication",
-                        "defining_code": {
-                            "_type": "CODE_PHRASE",
-                            "terminology_id": {
-                                "_type": "TERMINOLOGY_ID",
-                                "value": "openehr"
-                            },
-                            "code_string": "216"
-                        }
-                    }
-                },
-                {
-                    "_type": "PARTICIPATION",
-                    "function": {
-                        "_type": "DV_TEXT",
-                        "value": "performer"
-                    },
-                    "performer": {
-                        "_type": "PARTY_IDENTIFIED",
-                        "external_ref": {
-                            "_type": "PARTY_REF",
-                            "id": {
-                                "_type": "GENERIC_ID",
-                                "value": "198",
-                                "scheme": "Wako Hospital"
-                            },
-                            "namespace": "Wako hospital",
-                            "type": "ANY"
-                        },
-                        "name": "Nurse 1"
-                    },
-                    "mode": {
-                        "_type": "DV_CODED_TEXT",
-                        "value": "not specified",
-                        "defining_code": {
-                            "_type": "CODE_PHRASE",
-                            "terminology_id": {
-                                "_type": "TERMINOLOGY_ID",
-                                "value": "openehr"
-                            },
-                            "code_string": "193"
-                        }
-                    }
-                }
-            ],
-            "data": {
-                "_type": "HISTORY",
-                "name": {
-                    "_type": "DV_TEXT",
-                    "value": "Event Series"
-                },
-                "archetype_node_id": "at0001",
-                "origin": {
-                    "_type": "DV_DATE_TIME",
-                    "value": "2020-09-22T16:18:51.481222+02:00"
-                },
-                "events": [
-                    {
-                        "_type": "POINT_EVENT",
-                        "name": {
-                            "_type": "DV_TEXT",
-                            "value": "Any event"
-                        },
-                        "archetype_node_id": "at0002",
-                        "time": {
-                            "_type": "DV_DATE_TIME",
-                            "value": "2020-09-22T16:18:51.481222+02:00"
-                        },
-                        "data": {
-                            "_type": "ITEM_LIST",
-                            "name": {
-                                "_type": "DV_TEXT",
-                                "value": "Single"
-                            },
-                            "archetype_node_id": "at0003",
-                            "items": [
-                                {
-                                    "_type": "ELEMENT",
-                                    "name": {
-                                        "_type": "DV_TEXT",
-                                        "value": "Temperature"
-                                    },
-                                    "archetype_node_id": "at0004",
-                                    "value": {
-                                        "_type": "DV_QUANTITY",
-                                        "magnitude": 37.0,
-                                        "units": "°C"
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        }
-    ]
-}
-END
+COMPOSITION_JSON = File.read(File.expand_path('../../../fixtures/health_summary_composition.json', __dir__))
