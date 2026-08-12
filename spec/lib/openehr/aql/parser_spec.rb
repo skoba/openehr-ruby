@@ -544,3 +544,72 @@ describe 'OpenEHR::AQL.parse (M8: functions and aggregates)' do
     expect(columns[2].expression).to be_a(OpenEHR::AQL::Model::AggregateFunctionCall)
   end
 end
+
+# Driven by real-world queries (spec/lib/openehr/aql/real_world_examples_spec.rb,
+# sourced from EHRbase's own AQL parser test suite) that the M0-M8
+# milestones above didn't cover: a predicate directly on an identifiedPath's
+# own variable (not just on a FROM class expression), nodePredicate's
+# AND/OR combination and its SYM_COMMA name/param suffix, and an objectPath
+# as a standardPredicate comparison operand.
+describe 'OpenEHR::AQL.parse (real-world gap: predicate on identifiedPath, nodePredicate AND/OR/comma-suffix)' do
+  it 'parses a predicate directly on a SELECT column identifiedPath' do
+    query = OpenEHR::AQL.parse('SELECT c[at0001] FROM COMPOSITION c')
+    predicate = query.select_clause.columns.first.expression.predicate
+
+    expect(predicate).to be_a(OpenEHR::AQL::Model::NodePredicate)
+    expect(predicate.code).to eq('at0001')
+  end
+
+  it 'parses nodePredicate OR of bare at-codes' do
+    query = OpenEHR::AQL.parse('SELECT c[at001 or at002] FROM COMPOSITION c')
+    predicate = query.select_clause.columns.first.expression.predicate
+
+    expect(predicate).to be_a(OpenEHR::AQL::Model::PredicateOr)
+    expect(predicate.left.code).to eq('at001')
+    expect(predicate.right.code).to eq('at002')
+  end
+
+  it 'parses nodePredicate AND mixing a bare at-code with a path comparison' do
+    query = OpenEHR::AQL.parse("SELECT c[at001 and archetype_node_id='at002'] FROM COMPOSITION c")
+    predicate = query.select_clause.columns.first.expression.predicate
+
+    expect(predicate).to be_a(OpenEHR::AQL::Model::PredicateAnd)
+    expect(predicate.left).to be_a(OpenEHR::AQL::Model::NodePredicate)
+    expect(predicate.right).to be_a(OpenEHR::AQL::Model::StandardPredicate)
+    expect(predicate.right.operand.value).to eq('at002')
+  end
+
+  it 'parses the SYM_COMMA name suffix on a bare at-code' do
+    query = OpenEHR::AQL.parse("SELECT c[at001, 'Name'] FROM COMPOSITION c")
+    predicate = query.select_clause.columns.first.expression.predicate
+
+    expect(predicate.code).to eq('at001')
+    expect(predicate.value).to eq('Name')
+  end
+
+  it 'parses the SYM_COMMA suffix as a $parameter' do
+    query = OpenEHR::AQL.parse('SELECT c[at001, $Same] FROM COMPOSITION c')
+    expect(query.select_clause.columns.first.expression.predicate.value).to be_a(OpenEHR::AQL::Model::Parameter)
+  end
+
+  it 'parses an objectPath as a standardPredicate comparison operand' do
+    query = OpenEHR::AQL.parse('SELECT c[at001 and archetype_node_id = name/value] FROM COMPOSITION c')
+    comparison = query.select_clause.columns.first.expression.predicate.right
+
+    expect(comparison.operand).to be_a(OpenEHR::AQL::Model::ObjectPath)
+    expect(comparison.operand.segments.map(&:attribute)).to eq(%w[name value])
+  end
+
+  it 'parses a nested predicate inside an objectPath segment inside a predicate' do
+    query = OpenEHR::AQL.parse(
+      "SELECT c[content[name/value=$contentName]/data/origin>'2013'] FROM COMPOSITION c"
+    )
+    predicate = query.select_clause.columns.first.expression.predicate
+
+    expect(predicate).to be_a(OpenEHR::AQL::Model::StandardPredicate)
+    content_segment = predicate.path.segments.first
+    expect(content_segment.attribute).to eq('content')
+    expect(content_segment.predicate).to be_a(OpenEHR::AQL::Model::StandardPredicate)
+    expect(content_segment.predicate.operand).to be_a(OpenEHR::AQL::Model::Parameter)
+  end
+end

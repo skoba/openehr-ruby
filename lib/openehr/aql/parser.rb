@@ -132,27 +132,68 @@ module OpenEHR
       end
 
       # pathPredicate : SYM_LEFT_BRACKET (standardPredicate | archetypePredicate | nodePredicate) SYM_RIGHT_BRACKET ;
+      # standardPredicate's shape (objectPath COMPARISON_OPERATOR
+      # pathPredicateOperand) is literally nodePredicate's 4th
+      # alternative, and archetypePredicate/nodePredicate's bare-code
+      # forms both take the same optional SYM_COMMA suffix - so rather
+      # than dispatch to three separate rules, the bracket content is
+      # parsed as one predicate-expression grammar (bare code/archetype-id/
+      # parameter, or a path comparison, combined with AND/OR - same
+      # precedence-climbing shape as whereExpr/containsExpr).
       def parse_path_predicate
         expect(:left_bracket)
-        predicate = if check(:archetype_hrid)
-                      parse_archetype_predicate
-                    elsif check(:at_code) || check(:id_code)
-                      parse_node_predicate
-                    else
-                      parse_standard_predicate
-                    end
+        predicate = parse_predicate_or
         expect(:right_bracket)
         predicate
       end
 
-      # archetypePredicate : ARCHETYPE_HRID | PARAMETER ;
-      def parse_archetype_predicate
-        Model::ArchetypePredicate.new(archetype_id: expect(:archetype_hrid).value)
+      # nodePredicate : ... | nodePredicate OR nodePredicate ;
+      def parse_predicate_or
+        left = parse_predicate_and
+        left = Model::PredicateOr.new(left: left, right: parse_predicate_and) while match(:or)
+        left
       end
 
-      # nodePredicate (simple form): (ID_CODE | AT_CODE) ;
-      def parse_node_predicate
-        Model::NodePredicate.new(code: advance.value)
+      # nodePredicate : ... | nodePredicate AND nodePredicate ;
+      def parse_predicate_and
+        left = parse_predicate_primary
+        left = Model::PredicateAnd.new(left: left, right: parse_predicate_primary) while match(:and)
+        left
+      end
+
+      # archetypePredicate : ARCHETYPE_HRID (SYM_COMMA ...)? | PARAMETER ;
+      # nodePredicate : (ID_CODE | AT_CODE) (SYM_COMMA ...)? | ARCHETYPE_HRID (SYM_COMMA ...)? | PARAMETER
+      #               | objectPath COMPARISON_OPERATOR pathPredicateOperand | objectPath MATCHES CONTAINED_REGEX ;
+      # objectPath MATCHES CONTAINED_REGEX needs a lexer token this gem
+      # doesn't implement yet (deferred, same as elsewhere).
+      def parse_predicate_primary
+        return parse_archetype_predicate if check(:archetype_hrid)
+        return parse_code_predicate if check(:at_code) || check(:id_code)
+        return Model::Parameter.new(name: advance.value) if check(:parameter)
+
+        parse_standard_predicate
+      end
+
+      def parse_archetype_predicate
+        archetype_id = expect(:archetype_hrid).value
+        value = match(:comma) ? parse_node_predicate_value : nil
+        Model::ArchetypePredicate.new(archetype_id: archetype_id, value: value)
+      end
+
+      def parse_code_predicate
+        code = advance.value
+        value = match(:comma) ? parse_node_predicate_value : nil
+        Model::NodePredicate.new(code: code, value: value)
+      end
+
+      # The SYM_COMMA suffix's value set: STRING | PARAMETER | TERM_CODE | AT_CODE | ID_CODE.
+      # TERM_CODE needs a lexer token this gem doesn't implement yet
+      # (deferred, same as elsewhere) and is not supported here.
+      def parse_node_predicate_value
+        return Model::Parameter.new(name: advance.value) if check(:parameter)
+        return advance.value if check(:string) || check(:at_code) || check(:id_code)
+
+        raise error("expected a string, parameter, at-code or id-code after ',', got #{describe(peek)}")
       end
 
       # standardPredicate : objectPath COMPARISON_OPERATOR pathPredicateOperand ;
@@ -163,13 +204,16 @@ module OpenEHR
       end
 
       # pathPredicateOperand : primitive | objectPath | PARAMETER | ID_CODE | AT_CODE ;
-      # The objectPath/ID_CODE/AT_CODE alternatives aren't needed by any
-      # M2 example and are deferred.
+      # The bare ID_CODE/AT_CODE alternatives (distinct from an objectPath
+      # that happens to start with one - objectPath's pathPart is always
+      # IDENTIFIER, never a code) aren't needed by any current example and
+      # are deferred.
       def parse_path_predicate_operand
         return Model::Parameter.new(name: advance.value) if check(:parameter)
         return parse_primitive if primitive_ahead?
+        return parse_object_path if check(:identifier)
 
-        raise error("expected a parameter or a literal value, got #{describe(peek)}")
+        raise error("expected a parameter, a literal value or a path, got #{describe(peek)}")
       end
 
       # objectPath : pathPart (SYM_SLASH pathPart)* ;
@@ -187,12 +231,11 @@ module OpenEHR
       end
 
       # identifiedPath : IDENTIFIER pathPredicate? (SYM_SLASH objectPath)? ;
-      # The leading pathPredicate alternative isn't needed by any M2
-      # example and is deferred.
       def parse_identified_path
         variable = expect(:identifier).value
+        predicate = check(:left_bracket) ? parse_path_predicate : nil
         path = match(:slash) ? parse_object_path : nil
-        Model::IdentifiedPath.new(variable: variable, path: path)
+        Model::IdentifiedPath.new(variable: variable, predicate: predicate, path: path)
       end
 
       # whereClause : WHERE whereExpr ;
