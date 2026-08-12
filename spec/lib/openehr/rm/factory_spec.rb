@@ -29,6 +29,44 @@ module OpenEHR
           result = Factory.params(rows: [[{ _type: 'DV_TEXT', value: 'cell' }]])
           expect(result[:rows].first.first).to be_an_instance_of(OpenEHR::RM::DataTypes::Text::DvText)
         end
+
+        context 'a Hash value without _type' do
+          it 'still converts a Hash that DOES have an explicit _type (pin: the fallback must not disturb this)' do
+            result = Factory.params(
+              archetype_id: { _type: 'ARCHETYPE_ID', value: 'openEHR-EHR-COMPOSITION.report-result.v1' }
+            )
+            expect(result[:archetype_id]).to be_an_instance_of(OpenEHR::RM::Support::Identification::ArchetypeID)
+            expect(result[:archetype_id].value).to eq('openEHR-EHR-COMPOSITION.report-result.v1')
+          end
+
+          it 'resolves a _type-less Hash under :terminology_id to a TerminologyID, its only possible RM type' do
+            result = Factory.params(terminology_id: { value: 'ISO_639-1' })
+            expect(result[:terminology_id]).to be_an_instance_of(OpenEHR::RM::Support::Identification::TerminologyID)
+            expect(result[:terminology_id].value).to eq('ISO_639-1')
+          end
+
+          it 'resolves a _type-less Hash under :archetype_id to an ArchetypeID, its only possible RM type' do
+            result = Factory.params(archetype_id: { value: 'openEHR-EHR-COMPOSITION.report-result.v1' })
+            expect(result[:archetype_id]).to be_an_instance_of(OpenEHR::RM::Support::Identification::ArchetypeID)
+            expect(result[:archetype_id].value).to eq('openEHR-EHR-COMPOSITION.report-result.v1')
+          end
+
+          it 'resolves a _type-less Hash under :template_id to a TemplateID, its only possible RM type' do
+            result = Factory.params(template_id: { value: 'bmi_calculation' })
+            expect(result[:template_id]).to be_an_instance_of(OpenEHR::RM::Support::Identification::TemplateID)
+            expect(result[:template_id].value).to eq('bmi_calculation')
+          end
+
+          it 'raises a clear ArgumentError for a _type-less Hash under a genuinely polymorphic key (uid)' do
+            expect { Factory.params(uid: { value: 'some-uid-value' }) }
+              .to raise_error(ArgumentError, /:uid.*_type/m)
+          end
+
+          it 'raises the same clear ArgumentError when the _type-less Hash is inside an Array (events)' do
+            expect { Factory.params(events: [{ value: 'x' }]) }
+              .to raise_error(ArgumentError, /:events.*_type/m)
+          end
+        end
       end
 
       describe HistoryFactory do
@@ -93,6 +131,15 @@ module OpenEHR
                                  code_string: 'C890') }
 
         it { is_expected.to be_an_instance_of OpenEHR::RM::DataTypes::Text::CodePhrase }
+
+        it 'builds a CodePhrase from a _type-less terminology_id Hash, as serialized by openehr-rails' do
+          code_phrase = Factory.create('CODE_PHRASE', terminology_id: { value: 'ISO_639-1' }, code_string: 'en')
+
+          expect(code_phrase).to be_an_instance_of OpenEHR::RM::DataTypes::Text::CodePhrase
+          expect(code_phrase.terminology_id).to be_an_instance_of OpenEHR::RM::Support::Identification::TerminologyID
+          expect(code_phrase.terminology_id.value).to eq('ISO_639-1')
+          expect(code_phrase.code_string).to eq('en')
+        end
       end
 
       describe DvCodedTextFactory do
@@ -338,6 +385,22 @@ module OpenEHR
                          name: Factory.create('DV_TEXT', value: 'cluster'))
         }
         it { is_expected.to be_an_instance_of DataStructures::ItemStructure::Representation::Cluster }
+      end
+
+      describe ArchetypedFactory do
+        it 'builds Archetyped from _type-less archetype_id and template_id Hashes, as serialized by openehr-rails' do
+          archetyped = Factory.create('ARCHETYPED',
+                                       archetype_id: { value: 'openEHR-EHR-COMPOSITION.report-result.v1' },
+                                       template_id: { value: 'bmi_calculation' },
+                                       rm_version: '1.0.4')
+
+          expect(archetyped).to be_an_instance_of OpenEHR::RM::Common::Archetyped::Archetyped
+          expect(archetyped.archetype_id).to be_an_instance_of OpenEHR::RM::Support::Identification::ArchetypeID
+          expect(archetyped.archetype_id.value).to eq('openEHR-EHR-COMPOSITION.report-result.v1')
+          expect(archetyped.template_id).to be_an_instance_of OpenEHR::RM::Support::Identification::TemplateID
+          expect(archetyped.template_id.value).to eq('bmi_calculation')
+          expect(archetyped.rm_version).to eq('1.0.4')
+        end
       end
 
       describe EvaluationFactory do

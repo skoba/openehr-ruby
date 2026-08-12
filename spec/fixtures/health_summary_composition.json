@@ -6,11 +6,9 @@
     "archetype_details": {
         "_type": "ARCHETYPED",
         "archetype_id": {
-            "_type": "ARCHETYPE_ID",
             "value": "openEHR-EHR-COMPOSITION.health_summary.v1"
         },
         "template_id": {
-            "_type": "TEMPLATE_ID",
             "value": "symptom_screening"
         },
         "rm_version": "1.0.4"
@@ -19,7 +17,6 @@
     "language": {
         "_type": "CODE_PHRASE",
         "terminology_id": {
-            "_type": "TERMINOLOGY_ID",
             "value": "ISO_639-1"
         },
         "code_string": "en"

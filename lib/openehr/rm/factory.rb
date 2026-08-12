@@ -3,6 +3,23 @@ require 'active_support/inflector'
 module OpenEHR
   module RM
     class Factory
+      # Attribute keys whose openEHR RM type is always exactly one
+      # concrete class (never actually polymorphic), so a real-world
+      # canonical-JSON serializer may legally omit _type for them - e.g.
+      # openehr-rails's own CanonicalSerializer does. Consulted only as
+      # a fallback when _type is absent; see convert_hash below.
+      #
+      # Deliberately does NOT include attributes whose declared type is
+      # abstract (e.g. LOCATABLE.uid : UID_BASED_ID, which could be an
+      # ObjectVersionID or a HierObjectID; OBJECT_REF.id : OBJECT_ID,
+      # similarly abstract) - guessing there would silently build the
+      # wrong object instead of failing loudly.
+      NON_POLYMORPHIC_TYPE_FOR_KEY = {
+        archetype_id: 'ARCHETYPE_ID',
+        template_id: 'TEMPLATE_ID',
+        terminology_id: 'TERMINOLOGY_ID'
+      }.freeze
+
       def initialize(cobject)
         @cobject = cobject
       end
@@ -21,29 +38,48 @@ module OpenEHR
           param.each_with_object({}) do |item, parameters|
             key = item.shift
             value = item.shift
-            parameters[key] = convert_value(value)
+            parameters[key] = convert_value(key, value)
           end
         end
 
         private
 
         # A canonical-JSON attribute value is either a typed sub-object
-        # (Hash with _type), a List<...> of those (Array - openEHR RM
+        # (Hash, normally with _type - see convert_hash for the
+        # _type-less case), a List<...> of those (Array - openEHR RM
         # multiplicity 0..*/1..* attributes, e.g. COMPOSITION.content,
         # HISTORY.events, ITEM_TREE.items), or a plain value (String,
-        # Numeric, ...). Arrays recurse so nested multiplicities (e.g. a
-        # CLUSTER's own items) convert too; non-Hash array elements
-        # (there is no List<String>/List<Numeric> attribute in this RM,
-        # but doubles/pre-built objects show up in specs) pass through
-        # unchanged.
-        def convert_value(value)
+        # Numeric, ...). Arrays recurse (passing the same attribute key
+        # down, since none of NON_POLYMORPHIC_TYPE_FOR_KEY's keys are
+        # ever Array-valued) so nested multiplicities (e.g. a CLUSTER's
+        # own items) convert too; non-Hash array elements (there is no
+        # List<String>/List<Numeric> attribute in this RM, but doubles/
+        # pre-built objects show up in specs) pass through unchanged.
+        def convert_value(key, value)
           if value.instance_of? Hash
-            Factory.create(value[:_type], **value)
+            convert_hash(key, value)
           elsif value.instance_of? Array
-            value.map { |element| convert_value(element) }
+            value.map { |element| convert_value(key, element) }
           else
             value
           end
+        end
+
+        # _type is how a Hash normally says what RM class to become;
+        # when it's absent, fall back to NON_POLYMORPHIC_TYPE_FOR_KEY.
+        # Anything else raises with the attribute name rather than
+        # silently guessing or passing a raw Hash through where an RM
+        # object is expected (downstream code - e.g. Locatable#concept
+        # calling archetype_id.concept_name - would then fail far from
+        # the real cause).
+        def convert_hash(key, value)
+          type = value[:_type] || NON_POLYMORPHIC_TYPE_FOR_KEY[key]
+          unless type
+            raise ArgumentError,
+                  "cannot determine the RM type for attribute #{key.inspect}: its Hash value has no _type key " \
+                  "and #{key.inspect} is not a known non-polymorphic attribute (keys: #{value.keys.inspect})"
+          end
+          Factory.create(type, **value)
         end
       end
 
