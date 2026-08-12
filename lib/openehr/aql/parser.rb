@@ -17,13 +17,15 @@ module OpenEHR
       end
 
       # selectQuery : selectClause fromClause whereClause? orderByClause? limitClause? SYM_DOUBLE_DASH? EOF ;
-      # WHERE/ORDER BY/LIMIT are added by M5/M6; until then, any token
-      # left over after the FROM clause is a ParseError.
+      # ORDER BY/LIMIT are added by M6; until then, any token left over
+      # after the WHERE clause (or FROM clause, if there is none) is a
+      # ParseError.
       def parse_select_query
         select_clause = parse_select_clause
         from_clause = parse_from_clause
+        where_clause = check(:where) ? parse_where_clause : nil
         expect(:eof)
-        Model::Query.new(select_clause: select_clause, from_clause: from_clause)
+        Model::Query.new(select_clause: select_clause, from_clause: from_clause, where_clause: where_clause)
       end
 
       PRIMITIVE_TOKEN_TYPES = %i[string integer real sci_integer sci_real boolean null].freeze
@@ -141,6 +143,106 @@ module OpenEHR
         variable = expect(:identifier).value
         path = match(:slash) ? parse_object_path : nil
         Model::IdentifiedPath.new(variable: variable, path: path)
+      end
+
+      # whereClause : WHERE whereExpr ;
+      def parse_where_clause
+        expect(:where)
+        Model::WhereClause.new(expression: parse_or_expr)
+      end
+
+      # whereExpr's left-recursive AND/OR/NOT alternatives, rewritten as
+      # standard precedence climbing (NOT tightest, then AND, then OR -
+      # the usual boolean-operator precedence, matching how the official
+      # examples read without needing extra parens).
+      def parse_or_expr
+        left = parse_and_expr
+        left = Model::OrExpr.new(left: left, right: parse_and_expr) while match(:or)
+        left
+      end
+
+      def parse_and_expr
+        left = parse_not_expr
+        left = Model::AndExpr.new(left: left, right: parse_not_expr) while match(:and)
+        left
+      end
+
+      # whereExpr : ... | NOT whereExpr | ... ;
+      def parse_not_expr
+        return Model::NotExpr.new(operand: parse_not_expr) if match(:not)
+
+        parse_where_primary
+      end
+
+      # whereExpr : ... | SYM_LEFT_PAREN whereExpr SYM_RIGHT_PAREN ;
+      # (identifiedExpr's own, narrower "( identifiedExpr )" alternative is
+      # already covered by this, since identifiedExpr is one kind of
+      # whereExpr.)
+      def parse_where_primary
+        return parse_identified_expr unless match(:left_paren)
+
+        expr = parse_or_expr
+        expect(:right_paren)
+        expr
+      end
+
+      # identifiedExpr : EXISTS identifiedPath
+      #                | identifiedPath COMPARISON_OPERATOR terminal
+      #                | identifiedPath LIKE likeOperand
+      #                | identifiedPath MATCHES matchesOperand ;
+      # The functionCall-on-the-left comparison alternative is added by M8.
+      def parse_identified_expr
+        return Model::ExistsExpr.new(path: parse_identified_path) if match(:exists)
+
+        path = parse_identified_path
+        if check(:comparison_operator)
+          Model::Comparison.new(left: path, operator: advance.value, right: parse_terminal)
+        elsif match(:like)
+          Model::LikeExpr.new(path: path, operand: parse_like_operand)
+        elsif match(:matches)
+          Model::MatchesExpr.new(path: path, operand: parse_matches_operand)
+        else
+          raise error("expected a comparison operator, LIKE or MATCHES, got #{describe(peek)}")
+        end
+      end
+
+      # terminal : primitive | PARAMETER | identifiedPath | functionCall ;
+      # functionCall is added by M8.
+      def parse_terminal
+        return Model::Parameter.new(name: advance.value) if check(:parameter)
+        return parse_primitive if primitive_ahead?
+        return parse_identified_path if check(:identifier)
+
+        raise error("expected a value, parameter or path, got #{describe(peek)}")
+      end
+
+      # likeOperand : STRING | PARAMETER ;
+      def parse_like_operand
+        return Model::Parameter.new(name: advance.value) if check(:parameter)
+
+        Model::Literal.new(value: expect(:string).value)
+      end
+
+      # matchesOperand : SYM_LEFT_CURLY valueListItem (SYM_COMMA valueListItem)* SYM_RIGHT_CURLY
+      #                | terminologyFunction
+      #                | SYM_LEFT_CURLY URI SYM_RIGHT_CURLY ;
+      # The terminologyFunction and bare-URI alternatives need a URI lexer
+      # token that doesn't exist yet, and are deferred.
+      def parse_matches_operand
+        expect(:left_curly)
+        items = [parse_value_list_item]
+        items << parse_value_list_item while match(:comma)
+        expect(:right_curly)
+        Model::MatchesValueList.new(items: items)
+      end
+
+      # valueListItem : primitive | PARAMETER | terminologyFunction ;
+      # terminologyFunction is added alongside the MATCHES/TERMINOLOGY(...) support.
+      def parse_value_list_item
+        return Model::Parameter.new(name: advance.value) if check(:parameter)
+        return parse_primitive if primitive_ahead?
+
+        raise error("expected a literal value or a parameter in a MATCHES value list, got #{describe(peek)}")
       end
 
       def primitive_ahead?

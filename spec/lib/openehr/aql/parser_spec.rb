@@ -53,8 +53,8 @@ describe 'OpenEHR::AQL.parse (M1: minimal query)' do
     expect { OpenEHR::AQL.parse('SELECT c') }.to raise_error(OpenEHR::AQL::ParseError, /FROM/)
   end
 
-  it 'raises a ParseError on trailing input after the FROM clause (e.g. an unsupported WHERE, pre-M5)' do
-    expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c WHERE c/name/value = 1') }
+  it 'raises a ParseError on trailing input after the FROM clause (e.g. an unsupported ORDER BY, pre-M6)' do
+    expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c ORDER BY c/name/value') }
       .to raise_error(OpenEHR::AQL::ParseError)
   end
 end
@@ -208,5 +208,108 @@ describe 'OpenEHR::AQL.parse (M4: SELECT paths with node predicates + alias)' do
 
     expect(query.select_clause.columns.first.expression.path.segments.map(&:attribute))
       .to eq(%w[data events data items value magnitude])
+  end
+end
+
+# M5 milestone: WHERE - comparisons, AND/OR/NOT with standard precedence
+# (NOT tightest, then AND, then OR) and explicit parens, EXISTS, LIKE, and
+# MATCHES against a literal value list. MATCHES against a URI or a
+# TERMINOLOGY(...) function call needs lexer support (URI tokens) not yet
+# added, and is deferred to a follow-up increment.
+describe 'OpenEHR::AQL.parse (M5: WHERE clause)' do
+  it 'parses a simple comparison' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c WHERE c/name/value = 1')
+    expr = query.where_clause.expression
+
+    expect(expr).to be_a(OpenEHR::AQL::Model::Comparison)
+    expect(expr.left.variable).to eq('c')
+    expect(expr.operator).to eq('=')
+    expect(expr.right).to be_a(OpenEHR::AQL::Model::Literal)
+    expect(expr.right.value).to eq(1)
+  end
+
+  it 'parses OR of two comparisons (the blood-pressure-threshold shape)' do
+    query = OpenEHR::AQL.parse(
+      'SELECT c FROM COMPOSITION c WHERE o/data[at0004]/value/magnitude >= 140 OR o/data[at0005]/value/magnitude >= 90'
+    )
+    expr = query.where_clause.expression
+    expect(expr).to be_a(OpenEHR::AQL::Model::OrExpr)
+    expect(expr.left).to be_a(OpenEHR::AQL::Model::Comparison)
+    expect(expr.right).to be_a(OpenEHR::AQL::Model::Comparison)
+  end
+
+  it 'binds AND tighter than OR (no parens needed)' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c WHERE a/x = 1 OR b/y = 2 AND c/z = 3')
+    expr = query.where_clause.expression
+
+    expect(expr).to be_a(OpenEHR::AQL::Model::OrExpr)
+    expect(expr.left).to be_a(OpenEHR::AQL::Model::Comparison)
+    expect(expr.right).to be_a(OpenEHR::AQL::Model::AndExpr)
+  end
+
+  it 'parses NOT (EXISTS ... AND ...) with explicit parens' do
+    query = OpenEHR::AQL.parse(
+      "SELECT e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c " \
+      "WHERE NOT (EXISTS c/content[openEHR-EHR-ADMIN_ENTRY.discharge.v1] AND " \
+      "e/ehr_status/subject/external_ref/namespace = 'CEC')"
+    )
+    expr = query.where_clause.expression
+
+    expect(expr).to be_a(OpenEHR::AQL::Model::NotExpr)
+    expect(expr.operand).to be_a(OpenEHR::AQL::Model::AndExpr)
+    expect(expr.operand.left).to be_a(OpenEHR::AQL::Model::ExistsExpr)
+  end
+
+  it 'parses "NOT EXISTS ... OR ..." with NOT binding only to EXISTS' do
+    query = OpenEHR::AQL.parse(
+      "SELECT e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c " \
+      "WHERE NOT EXISTS c/content[openEHR-EHR-ADMIN_ENTRY.discharge.v1] OR " \
+      "e/ehr_status/subject/external_ref/namespace != 'CEC'"
+    )
+    expr = query.where_clause.expression
+
+    expect(expr).to be_a(OpenEHR::AQL::Model::OrExpr)
+    expect(expr.left).to be_a(OpenEHR::AQL::Model::NotExpr)
+    expect(expr.left.operand).to be_a(OpenEHR::AQL::Model::ExistsExpr)
+    expect(expr.right).to be_a(OpenEHR::AQL::Model::Comparison)
+  end
+
+  it 'parses a plain EXISTS' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c WHERE EXISTS c/name/value')
+    expect(query.where_clause.expression).to be_a(OpenEHR::AQL::Model::ExistsExpr)
+  end
+
+  it 'parses LIKE with a string operand' do
+    query = OpenEHR::AQL.parse("SELECT c FROM COMPOSITION c WHERE c/context/start_time LIKE '2019-0?-*'")
+    expr = query.where_clause.expression
+
+    expect(expr).to be_a(OpenEHR::AQL::Model::LikeExpr)
+    expect(expr.operand.value).to eq('2019-0?-*')
+  end
+
+  it 'parses MATCHES against a literal value list' do
+    query = OpenEHR::AQL.parse(
+      "SELECT c FROM COMPOSITION c WHERE c/name/value matches {'18919-1', '18961-3', '19000-9'}"
+    )
+    expr = query.where_clause.expression
+
+    expect(expr).to be_a(OpenEHR::AQL::Model::MatchesExpr)
+    expect(expr.operand).to be_a(OpenEHR::AQL::Model::MatchesValueList)
+    expect(expr.operand.items.map(&:value)).to eq(%w[18919-1 18961-3 19000-9])
+  end
+
+  it 'parses the official LIKE example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT
+         e/ehr_id/value, c/context/start_time
+      FROM
+         EHR e
+            CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.administrative_encounter.v1]
+               CONTAINS ADMIN_ENTRY admission[openEHR-EHR-ADMIN_ENTRY.admission.v1]
+      WHERE
+         c/context/start_time LIKE '2019-0?-*'
+    AQL
+
+    expect(query.where_clause.expression).to be_a(OpenEHR::AQL::Model::LikeExpr)
   end
 end
