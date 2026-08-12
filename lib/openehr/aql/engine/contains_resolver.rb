@@ -5,15 +5,17 @@ module OpenEHR
     # Walks a FromClause's containment tree against a Dataset, producing
     # one Binding per match.
     #
-    # E3 scope: an EHR root variable (bound to the Dataset::EHRRecord
-    # itself - not an OpenEHR::RM::EHR::EHR - since a Dataset element
-    # doesn't have to carry one; see Dataset's own header comment), a
-    # right-recursive CONTAINS chain searching a matched Locatable's
-    # *entire* subtree (any depth, via Pathable#path_children) for the
-    # next class, and archetype-predicate filtering. AND/OR/NOT CONTAINS,
-    # standardPredicate/nodePredicate filtering, and an EHR-level
-    # predicate (e.g. "[ehr_id/value=$ehr_id]") are added by later
-    # engine milestones.
+    # An EHR root variable (bound to the Dataset::EHRRecord itself - not
+    # an OpenEHR::RM::EHR::EHR - since a Dataset element doesn't have to
+    # carry one; see Dataset's own header comment), a right-recursive
+    # CONTAINS chain searching a matched Locatable's *entire* subtree
+    # (any depth, via Pathable#path_children) for the next class,
+    # archetype-predicate filtering, AND/OR-grouped sibling branches
+    # (cross-product / union of each branch's matches) and NOT CONTAINS
+    # (parent matches survive only when the negated class is absent).
+    # standardPredicate/nodePredicate filtering and an EHR-level
+    # predicate (e.g. "[ehr_id/value=$ehr_id]") are added by a later
+    # engine milestone.
     class ContainsResolver
       def initialize(from_clause, dataset)
         @root = from_clause.containment
@@ -44,6 +46,10 @@ module OpenEHR
           resolve_class_expression(node, ehr_record, pool)
         when Model::Containment
           resolve_containment(node, ehr_record, pool)
+        when Model::ContainmentAnd
+          resolve_containment_and(node, ehr_record, pool)
+        when Model::ContainmentOr
+          resolve_containment_or(node, ehr_record, pool)
         else
           raise ExecutionError, "cannot execute a #{node.class} containment yet"
         end
@@ -57,14 +63,45 @@ module OpenEHR
       end
 
       def resolve_containment(containment, ehr_record, pool)
-        raise ExecutionError, 'NOT CONTAINS is not yet supported' if containment.negated
+        parent_matches = resolve(containment.parent, ehr_record, pool)
+        return negated_matches(containment, ehr_record, parent_matches) if containment.negated
 
-        resolve(containment.parent, ehr_record, pool).flat_map do |parent_vars, parent_obj|
-          child_pool = descendant_pool(parent_obj, ehr_record)
-          resolve(containment.child, ehr_record, child_pool).map do |child_vars, child_obj|
+        parent_matches.flat_map do |parent_vars, parent_obj|
+          resolve(containment.child, ehr_record, descendant_pool(parent_obj, ehr_record)).map do |child_vars, child_obj|
             [parent_vars.merge(child_vars), child_obj]
           end
         end
+      end
+
+      # "A NOT CONTAINS B": a parent match survives only when B has no
+      # match anywhere in that parent's subtree. B never binds a
+      # variable (there's nothing to bind an absence to).
+      def negated_matches(containment, ehr_record, parent_matches)
+        parent_matches.select do |_parent_vars, parent_obj|
+          resolve(containment.child, ehr_record, descendant_pool(parent_obj, ehr_record)).empty?
+        end
+      end
+
+      # "A CONTAINS (B AND C)": both branches must match somewhere in
+      # the same pool; every combination of a B-match and a C-match
+      # becomes its own binding (AQL has no correlation between sibling
+      # branches beyond sharing a parent).
+      def resolve_containment_and(node, ehr_record, pool)
+        left_matches = resolve(node.left, ehr_record, pool)
+        return [] if left_matches.empty?
+
+        right_matches = resolve(node.right, ehr_record, pool)
+        return [] if right_matches.empty?
+
+        left_matches.flat_map do |left_vars, _left_obj|
+          right_matches.map { |right_vars, right_obj| [left_vars.merge(right_vars), right_obj] }
+        end
+      end
+
+      # "A CONTAINS (B OR C)": either branch matching is enough; each
+      # branch's matches contribute their own bindings independently.
+      def resolve_containment_or(node, ehr_record, pool)
+        resolve(node.left, ehr_record, pool) + resolve(node.right, ehr_record, pool)
       end
 
       def descendant_pool(bound_object, ehr_record)

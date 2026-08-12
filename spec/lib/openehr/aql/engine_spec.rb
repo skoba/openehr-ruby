@@ -302,3 +302,61 @@ describe 'OpenEHR::AQL.execute (E6: ORDER BY / DISTINCT / LIMIT-OFFSET)' do
     expect(result.rows).to eq([[130]])
   end
 end
+
+# E7 milestone: boolean containment execution - AND-grouped CONTAINS
+# branches (both must match, cross-product bindings), OR-grouped
+# branches (either matches, union of bindings) and NOT CONTAINS
+# (parent matches survive only when the negated class is absent from
+# its subtree). Functions/aggregates are added by a later milestone.
+describe 'OpenEHR::AQL.execute (E7: boolean containment execution)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:bp_only) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+  let(:temp_only) { builder.body_temperature_composition }
+  let(:both) do
+    builder.encounter(
+      bp_only.content.first, temp_only.content.first,
+      start_time: '2024-01-01T10:00:00+09:00', composer_name: 'Dr. Test'
+    )
+  end
+
+  it 'requires both branches of an AND-grouped CONTAINS to match, binding both variables' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([both])
+    query = 'SELECT o1, o2 FROM EHR e CONTAINS COMPOSITION c ' \
+            'CONTAINS (OBSERVATION o1 [openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
+            'AND OBSERVATION o2 [openEHR-EHR-OBSERVATION.body_temperature.v1])'
+    result = OpenEHR::AQL.execute(query, dataset)
+
+    expect(result.rows.size).to eq(1)
+    expect(result.rows.first[0].archetype_node_id).to eq('openEHR-EHR-OBSERVATION.blood_pressure.v1')
+    expect(result.rows.first[1].archetype_node_id).to eq('openEHR-EHR-OBSERVATION.body_temperature.v1')
+  end
+
+  it 'returns no rows when only one branch of an AND-grouped CONTAINS matches' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([bp_only])
+    query = 'SELECT o1, o2 FROM EHR e CONTAINS COMPOSITION c ' \
+            'CONTAINS (OBSERVATION o1 [openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
+            'AND OBSERVATION o2 [openEHR-EHR-OBSERVATION.body_temperature.v1])'
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
+  end
+
+  it 'matches when either branch of an OR-grouped CONTAINS matches' do
+    query = 'SELECT o FROM EHR e CONTAINS COMPOSITION c ' \
+            'CONTAINS (OBSERVATION o [openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
+            'OR OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v1])'
+    bp_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.of_compositions([bp_only]))
+    temp_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.of_compositions([temp_only]))
+
+    expect(bp_result.rows.first.first.archetype_node_id).to eq('openEHR-EHR-OBSERVATION.blood_pressure.v1')
+    expect(temp_result.rows.first.first.archetype_node_id).to eq('openEHR-EHR-OBSERVATION.body_temperature.v1')
+  end
+
+  it 'excludes compositions that DO contain the negated class via NOT CONTAINS' do
+    query = 'SELECT c FROM EHR e CONTAINS COMPOSITION c ' \
+            'NOT CONTAINS OBSERVATION [openEHR-EHR-OBSERVATION.body_temperature.v1]'
+    only_bp_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.of_compositions([bp_only]))
+    has_temp_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.of_compositions([both]))
+
+    expect(only_bp_result.rows).to eq([[bp_only]])
+    expect(has_temp_result.rows).to eq([])
+  end
+end
