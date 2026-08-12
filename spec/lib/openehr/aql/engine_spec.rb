@@ -170,3 +170,82 @@ describe 'OpenEHR::AQL.execute (E4: SELECT paths)' do
     }.to raise_error(OpenEHR::AQL::ExecutionError, /not_a_real_attribute/)
   end
 end
+
+# E5 milestone: WHERE clause execution - the official AQL example's own
+# stated acceptance criterion, "returns only the hypertensive rows"
+# (systolic >= 140 OR diastolic >= 90). ORDER BY/LIMIT, boolean
+# containment execution and functions are added by later engine
+# milestones.
+describe 'OpenEHR::AQL.execute (E5: WHERE clause)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:normal) { builder.blood_pressure_composition(systolic: 120, diastolic: 80) }
+  let(:high_systolic) { builder.blood_pressure_composition(systolic: 150, diastolic: 85) }
+  let(:high_diastolic) { builder.blood_pressure_composition(systolic: 130, diastolic: 95) }
+
+  let(:hypertension_query) do
+    'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic, ' \
+    'o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS diastolic ' \
+    'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+    'WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 140 OR ' \
+    'o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude >= 90'
+  end
+
+  it 'returns only the hypertensive rows (systolic >= 140 OR diastolic >= 90)' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal, high_systolic, high_diastolic])
+    result = OpenEHR::AQL.execute(hypertension_query, dataset)
+
+    expect(result.rows).to contain_exactly([150, 85], [130, 95])
+  end
+
+  it 'returns no rows when nothing matches' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal])
+    expect(OpenEHR::AQL.execute(hypertension_query, dataset).rows).to eq([])
+  end
+
+  it 'filters with a plain AND' do
+    query = 'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 140 AND ' \
+            'o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude < 90'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal, high_systolic, high_diastolic])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[150]])
+  end
+
+  it 'filters with NOT' do
+    query = 'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE NOT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 140'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal, high_systolic])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[120]])
+  end
+
+  it 'binds a $parameter in the comparison operand' do
+    query = 'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= $threshold'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal, high_systolic])
+    result = OpenEHR::AQL.execute(query, dataset, params: { threshold: 140 })
+    expect(result.rows).to eq([[150]])
+  end
+
+  it 'raises UnboundParameterError for a $parameter with no binding supplied' do
+    query = 'SELECT c FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= $threshold'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal])
+    expect { OpenEHR::AQL.execute(query, dataset).rows }.to raise_error(OpenEHR::AQL::UnboundParameterError, /threshold/)
+  end
+
+  it 'evaluates EXISTS as true for a present path' do
+    query = 'SELECT c FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE EXISTS o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[normal]])
+  end
+
+  it 'evaluates EXISTS as false for an absent path' do
+    query = 'SELECT c FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE EXISTS o/data[at0001]/events[at0006]/data[at0003]/items[at9999]/value/magnitude'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([normal])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
+  end
+end
