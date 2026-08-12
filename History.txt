@@ -1,4 +1,83 @@
-=== 1.8.0 (in progress)
+=== 2.0.0
+AQL (Archetype Query Language): a hand-written lexer/parser plus an
+in-memory execution engine, evaluating queries directly against RM
+object graphs. This is the headline feature behind the major version
+bump, together with the scope declaration it comes with: AQL here
+queries in-memory data only, never a persistent store or search index.
+
+Parser (lib/openehr/aql/lexer.rb, parser.rb, model/*):
+* Hand-written Lexer + recursive-descent Parser, not a parser
+  generator - method names mirror the official AqlLexer.g4/AqlParser.g4
+  rule names for traceability against the reference grammar, and error
+  messages carry a 1-based line/column ("expected FROM, got WHERE
+  (line 2, column 8)").
+* Full SELECT/FROM/WHERE/ORDER BY/LIMIT/OFFSET coverage: DISTINCT and
+  the deprecated TOP N form; EHR/CONTAINS class expressions nested to
+  any depth, with archetype-id and at-code/id-code node predicates
+  (including their AND/OR combination and comma-separated name/param
+  suffix); SELECT paths with node predicates and AS aliases; WHERE
+  comparisons/AND/OR/NOT/parens/EXISTS/LIKE/MATCHES (literal value
+  list, a bare URI, or a TERMINOLOGY(...) call); boolean containment
+  grouping and NOT CONTAINS; aggregate functions (COUNT/MIN/MAX/SUM/
+  AVG) and generic function calls.
+* Validated against all 19 example queries in the official AQL
+  specification (specifications.openehr.org), and against 33 real-world
+  queries sourced from EHRbase's own AQL parser test suite and a
+  regression fixture (both Apache License 2.0) - production AQL
+  exercises considerably more of the grammar than the spec's own
+  textbook examples do, and closed several real parser gaps this way
+  (a predicate directly on a SELECT variable, nodePredicate's AND/OR
+  combination and comma-suffix, an objectPath as a predicate's
+  comparison operand).
+* Deliberately unimplemented (documented, not silently wrong): TERM_CODE
+  literals, CONTAINED_REGEX, dedicated DATE/TIME/DATETIME literal
+  tokens (quoted values are treated as generic strings), and
+  VERSION/LATEST_VERSION/ALL_VERSIONS version-aware containment
+  (out of scope by design - see below).
+
+Execution engine (lib/openehr/aql/engine.rb, engine/*, result_set.rb):
+* OpenEHR::AQL::Dataset is the engine's only input boundary, and the
+  whole of its independence from any particular web framework or O/R
+  mapper: it depends on nothing but Ruby's Enumerable/#each protocol
+  and this gem's own RM classes - no ActiveRecord, no Rails, no
+  Sequel, anywhere under lib/openehr/aql/. Dataset.new(ehrs:) accepts
+  a Hash, a duck-typed record object, or a full OpenEHR::RM::EHR::EHR
+  (unwrapped via VersionedObject#latest_version); Dataset.of_compositions
+  and Dataset.wrap cover quick, non-database scripts. Construction
+  never iterates its source, so a lazily-produced Enumerable (e.g. an
+  ActiveRecord find_each.lazy chain, entirely outside this gem) stays
+  lazy all the way through execute. Every composition is checked
+  against is_a?(Pathable) at normalization time, raising DatasetError
+  (naming the offending class/index) otherwise.
+* The pipeline runs CONTAINS -> WHERE -> ORDER BY -> SELECT ->
+  DISTINCT -> LIMIT/OFFSET. CONTAINS resolution searches a matched
+  Locatable's entire subtree at any depth (not just direct children),
+  correctly implementing AND-grouped (cross product), OR-grouped
+  (union) and NOT CONTAINS (subtree-absence) sibling branches. SELECT
+  paths walk PATHABLE#items_at_path for declared path_attributes and
+  fall through to a small, explicit whitelist of public_send hops for
+  RM metadata/non-Pathable terminals outside that DSL (never an
+  arbitrary send driven by query text) - a path matching nothing
+  resolves to nil (AQL's path-absent-means-null semantics), not an
+  error. WHERE comparisons, AND/OR/NOT, EXISTS and $parameter binding
+  are fully wired; a SELECT clause made entirely of aggregate columns
+  collapses the whole result into one summary row.
+* ResultSet#to_json follows the openEHR REST Query API's result-set
+  shape (columns/rows), reusing the existing RMJSONSerializer for any
+  RM object row values.
+* Not yet wired into WHERE execution (parsed, not evaluated): LIKE,
+  MATCHES, and function-call operands. Mixing aggregate and
+  non-aggregate SELECT columns raises a clear error rather than
+  guessing at SQL's GROUP BY-less semantics.
+* See README.rdoc's new "Querying with AQL" / "Supplying data to AQL"
+  sections for the public API and the Dataset contract in full,
+  including a worked (outside-this-gem) Rails+ActiveRecord adapter
+  sketch alongside a plain-script example.
+
+This release also folds in 1.4.0-1.8.0 below, which had accumulated
+since 1.3.1 without being cut as separate gem releases.
+
+=== 1.8.0
 RM 1.1.0 / BASE 1.2.0 deltas layered onto the 1.0.2 baseline. See the new
 "RM 1.0.2 vs RM 1.1.0 semantics" section in README.rdoc for the full
 list and which RM version each item belongs to.
@@ -47,7 +126,7 @@ list and which RM version each item belongs to.
   OpenEHR::TerminologyService seam (1.5.0), which is terminology-content
   agnostic by design.
 
-=== 1.7.0 (in progress)
+=== 1.7.0
 Serializers: ADLSerializer can now emit a full cADL definition section
 instead of hanging.
 
@@ -149,7 +228,7 @@ instead of hanging.
   serializer.rb (referenced by nothing). serializer.rb is now split into
   serializer/{base,adl_serializer,xml_serializer,opt_serializer}.rb.
 
-=== 1.6.0 (in progress)
+=== 1.6.0
 Archetype Model validation: constraint nodes can now check values and
 their own specialisation conformance instead of raising
 NotImplementedError or performing no real check at all.
@@ -264,7 +343,7 @@ NotImplementedError or performing no real check at all.
   a short at0.N form (e.g. at0.2) for nodes newly introduced by a
   specialisation, which the stricter pattern rejected as an invalid path.
 
-=== 1.5.0 (in progress)
+=== 1.5.0
 RM 1.0.2 behavioral completeness and Factory coverage.
 
 * New OpenEHR::TerminologyService seam: RM classes that must validate
@@ -310,7 +389,7 @@ RM 1.0.2 behavioral completeness and Factory coverage.
   classes have their own pre-existing duck-typed #type checks that need
   fixing first (a separate piece of work).
 
-=== 1.4.0 (in progress)
+=== 1.4.0
 openEHR path navigation: implemented item_at_path, items_at_path,
 path_exists?, path_of_item and path_unique? on PATHABLE (previously all
 five raised NotImplementedError with no overrides anywhere in the gem).
