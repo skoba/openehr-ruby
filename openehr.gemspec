@@ -35,7 +35,12 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('rspec-collection_matchers')
   gem.add_development_dependency('guard')
   gem.add_development_dependency('guard-rspec')
-  gem.add_development_dependency('simplecov')
+  # simplecov 1.x renamed add_filter/add_group to skip/group (used in
+  # spec_helper.rb) and requires Ruby >= 3.2, which would break this gem's
+  # Ruby 3.1 support. Gemfile.lock isn't committed (see git history), so an
+  # unconstrained dependency here would let a fresh `bundle install` drift
+  # onto 1.x and hit both problems.
+  gem.add_development_dependency('simplecov', '< 1.0')
   gem.add_development_dependency('libnotify')
   gem.add_development_dependency('rubocop')
   gem.add_development_dependency('meowcop')

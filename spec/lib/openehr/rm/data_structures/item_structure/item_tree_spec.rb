@@ -27,19 +27,19 @@ describe ItemTree do
   end
 
   it 'has valid element path' do
-    expect(@item_tree.has_element_path?('at0002')).to be_truthy
+    expect(@item_tree.has_element_path?('/items[at0002]')).to be_truthy
   end
 
   it 'should return false with wrong node' do
-    expect(@item_tree.has_element_path?('at0005')).to be_falsey
+    expect(@item_tree.has_element_path?('/items[at0005]')).to be_falsey
   end
 
   it 'path at002 should return two' do
-    expect(@item_tree.element_at_path('at0003').name.value).to eq('two')
+    expect(@item_tree.element_at_path('/items[at0003]').name.value).to eq('two')
   end
 
   it 'path at005 should return nil' do
-    expect(@item_tree.element_at_path('at0005')).to be_nil
+    expect(@item_tree.element_at_path('/items[at0005]')).to be_nil
   end
 
   it 'should returns ItemTree as Cluster' do
