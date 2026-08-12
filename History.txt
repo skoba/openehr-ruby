@@ -1,3 +1,27 @@
+=== 2.0.1
+Bug fix release.
+
+* Fixed: OpenEHR::RM::Factory.params (and therefore
+  CompositionFactory.create_from_json) only recursively converted
+  Hash-valued attributes into RM objects, never Array-valued ones.
+  Every RM attribute with openEHR multiplicity 0..*/1..* -
+  COMPOSITION.content, HISTORY.events, ITEM_TREE.items, CLUSTER.items,
+  and so on - is a JSON array of typed sub-objects, so any composition
+  rebuilt via create_from_json (the path this gem's own README
+  recommends for supplying data to the AQL engine) silently kept raw
+  Hashes nested inside it instead of real RM objects. This never
+  raised an exception: it just made AQL CONTAINS queries against that
+  data return zero rows, since OpenEHR::AQL::Dataset only checks that
+  top-level compositions are Pathable, and the CONTAINS subtree walk
+  quietly skips anything that isn't. Reported by openehr-rails after
+  upgrading to 2.0.0 and following this exact integration pattern.
+  Array values now recurse the same way Hash values already did,
+  cascading through arbitrarily deep nesting; non-Hash array elements
+  (e.g. DV_PARAGRAPH's plain-string items) are left untouched.
+* Local development environment bumped to Ruby 4.0.6; CI gained a
+  '4.0' matrix entry alongside the existing 3.1-3.4 (the declared
+  minimum-supported floor, >= 3.1, is unchanged).
+
 === 2.0.0
 AQL (Archetype Query Language): a hand-written lexer/parser plus an
 in-memory execution engine, evaluating queries directly against RM
