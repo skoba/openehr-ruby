@@ -416,3 +416,50 @@ describe 'OpenEHR::AQL.execute (E8: aggregate functions)' do
     expect(OpenEHR::AQL.execute(query, empty_dataset).rows).to eq([[0, nil]])
   end
 end
+
+# E9 milestone (cross-consistency): the same query against the same
+# underlying data, supplied via Dataset's three accepted shapes -
+# a Hash record, a *lazy* bare Enumerator (proving the "construction
+# never iterates" promise holds all the way through a real execute),
+# and a full OpenEHR::RM::EHR::EHR - must return identical results.
+# See lib/openehr/aql/engine/dataset.rb's header comment for the full
+# contract this locks in.
+describe 'OpenEHR::AQL.execute (E9: Dataset shape cross-consistency)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:composition) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+  let(:query) do
+    'SELECT e/ehr_id/value AS ehr_id, ' \
+    'o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+    'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+  end
+
+  def real_ehr(ehr_id)
+    versioned_status = double('VersionedEHRStatus', type: 'VERSIONED_EHR_STATUS', latest_version: double(data: nil))
+    versioned_composition = double('VersionedComposition', type: 'VERSIONED_COMPOSITION',
+                                    latest_version: double(data: composition))
+    OpenEHR::RM::EHR::EHR.new(
+      system_id: OpenEHR::RM::Support::Identification::HierObjectID.new(value: 'system-1'),
+      ehr_id: OpenEHR::RM::Support::Identification::HierObjectID.new(value: ehr_id),
+      time_created: builder.date_time('2024-01-01T00:00:00+09:00'),
+      contributions: [double('ObjectRef', type: 'CONTRIBUTION')],
+      ehr_access: double('ObjectRef', type: 'VERSIONED_EHR_ACCESS'),
+      ehr_status: versioned_status,
+      compositions: [versioned_composition]
+    )
+  end
+
+  it 'returns the same rows from a Hash record, a lazy Enumerator, and a real EHR::EHR' do
+    hash_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.new(
+      ehrs: [{ ehr_id: 'ehr-1', compositions: [composition] }]
+    ))
+
+    lazy_source = Enumerator.new { |y| y << { ehr_id: 'ehr-1', compositions: [composition] } }.lazy
+    lazy_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.new(ehrs: lazy_source))
+
+    ehr_result = OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.new(ehrs: [real_ehr('ehr-1')]))
+
+    expect(hash_result.rows).to eq([['ehr-1', 150]])
+    expect(lazy_result.rows).to eq(hash_result.rows)
+    expect(ehr_result.rows).to eq(hash_result.rows)
+  end
+end

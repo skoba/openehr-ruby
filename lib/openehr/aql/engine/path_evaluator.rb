@@ -20,7 +20,13 @@ module OpenEHR
       # Attribute hops not reachable through the path_attribute DSL.
       # Expand only when a real query needs another one - see the
       # project's "no arbitrary send" rule in the class comment above.
-      ALLOWED_TERMINAL_HOPS = %w[magnitude name].freeze
+      ALLOWED_TERMINAL_HOPS = %w[magnitude name value].freeze
+
+      # Dataset::EHRRecord#ehr_id is already an unwrapped String (see
+      # Dataset's own header comment), but AQL's "e/ehr_id/value" syntax
+      # still expects a HierObjectID-shaped hop with its own #value -
+      # this tiny wrapper bridges that gap.
+      EhrIdValue = Struct.new(:value)
 
       module_function
 
@@ -47,10 +53,28 @@ module OpenEHR
       end
 
       def navigate(current, segment)
+        return navigate_ehr_record(current, segment) if current.is_a?(Dataset::EHRRecord)
+
         if declared_path_attribute?(current, segment)
           navigate_pathable(current, segment)
         else
           navigate_terminal(current, segment)
+        end
+      end
+
+      # "e/ehr_id/value" and "e/ehr_status/..." always resolve (from
+      # Dataset's own record shape); any other "e/..." path falls
+      # through to whatever full RM::EHR::EHR the record carries, if
+      # any, else resolves to nil rather than erroring - AQL's
+      # path-absent-means-null semantics again, not a missing feature.
+      def navigate_ehr_record(record, segment)
+        raise ExecutionError, "path predicates on an EHR root are not supported (#{segment.attribute})" if segment.predicate
+
+        case segment.attribute
+        when 'ehr_id' then EhrIdValue.new(record.ehr_id)
+        when 'ehr_status' then record.ehr_status
+        else
+          record.ehr.nil? ? nil : navigate(record.ehr, segment)
         end
       end
 
