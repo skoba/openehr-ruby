@@ -123,3 +123,38 @@ describe 'OpenEHR::AQL.parse (M2: EHR root, parameters, CONTAINS)' do
     expect(query.select_clause.columns[1].expression.variable).to eq('c')
   end
 end
+
+# M3 milestone: archetype containment, i.e. an ARCHETYPE_HRID predicate on
+# a class expression: "OBSERVATION o [openEHR-EHR-OBSERVATION.blood_pressure.v1]".
+# nodePredicate (bare at-codes for SELECT path segments) is M4's job.
+describe 'OpenEHR::AQL.parse (M3: archetype containment)' do
+  it 'parses an archetype predicate on the FROM class expression' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c [openEHR-EHR-COMPOSITION.encounter.v1]')
+    predicate = query.from_clause.containment.predicate
+
+    expect(predicate).to be_a(OpenEHR::AQL::Model::ArchetypePredicate)
+    expect(predicate.archetype_id).to eq('openEHR-EHR-COMPOSITION.encounter.v1')
+  end
+
+  it 'parses archetype predicates through a two-level CONTAINS chain' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT o
+      FROM EHR
+         CONTAINS COMPOSITION [openEHR-EHR-COMPOSITION.encounter.v1]
+            CONTAINS OBSERVATION o [openEHR-EHR-OBSERVATION.blood_pressure.v1]
+    AQL
+
+    inner = query.from_clause.containment.child
+    composition = inner.parent
+    observation = inner.child
+
+    expect(composition.predicate.archetype_id).to eq('openEHR-EHR-COMPOSITION.encounter.v1')
+    expect(observation.predicate.archetype_id).to eq('openEHR-EHR-OBSERVATION.blood_pressure.v1')
+    expect(observation.variable).to eq('o')
+  end
+
+  it 'allows a class expression with neither a variable nor a predicate' do
+    query = OpenEHR::AQL.parse('SELECT c FROM EHR CONTAINS COMPOSITION c')
+    expect(query.from_clause.containment.parent.predicate).to be_nil
+  end
+end

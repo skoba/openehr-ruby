@@ -80,11 +80,18 @@ module OpenEHR
       end
 
       # pathPredicate : SYM_LEFT_BRACKET (standardPredicate | archetypePredicate | nodePredicate) SYM_RIGHT_BRACKET ;
+      # nodePredicate (bare AT_CODE/ID_CODE forms, used by SELECT path
+      # segments) is added by M4.
       def parse_path_predicate
         expect(:left_bracket)
-        predicate = parse_standard_predicate
+        predicate = check(:archetype_hrid) ? parse_archetype_predicate : parse_standard_predicate
         expect(:right_bracket)
         predicate
+      end
+
+      # archetypePredicate : ARCHETYPE_HRID | PARAMETER ;
+      def parse_archetype_predicate
+        Model::ArchetypePredicate.new(archetype_id: expect(:archetype_hrid).value)
       end
 
       # standardPredicate : objectPath COMPARISON_OPERATOR pathPredicateOperand ;

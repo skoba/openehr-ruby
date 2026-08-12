@@ -15,6 +15,19 @@ module OpenEHR
         end
       end
 
+      # archetypePredicate : ARCHETYPE_HRID | PARAMETER ;
+      # The PARAMETER alternative (a whole predicate substituted at
+      # execution time, e.g. "[$archetypeId]") isn't needed by any current
+      # milestone and is deferred.
+      class ArchetypePredicate
+        attr_reader :archetype_id
+
+        def initialize(archetype_id:)
+          @archetype_id = archetype_id
+          freeze
+        end
+      end
+
       # PARAMETER: '$' IDENTIFIER_CHAR ;
       class Parameter
         attr_reader :name
