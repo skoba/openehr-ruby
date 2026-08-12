@@ -100,6 +100,18 @@ describe OpenEHR::AQL::Lexer do
     end
   end
 
+  describe 'URI tokens' do
+    it 'tokenizes a scheme://authority/path?query URI' do
+      token = tokenize('terminology://snomed-ct/hierarchy?rootConceptId=50043002').first
+      expect(token.type).to eq(:uri)
+      expect(token.value).to eq('terminology://snomed-ct/hierarchy?rootConceptId=50043002')
+    end
+
+    it 'does not misparse an archetype id (no colon) as a URI' do
+      expect(tokenize('openEHR-EHR-OBSERVATION.blood_pressure.v1').first.type).to eq(:archetype_hrid)
+    end
+  end
+
   describe 'archetype-id tokens' do
     it 'tokenizes a full archetype HRID' do
       token = tokenize('openEHR-EHR-OBSERVATION.blood_pressure.v1').first

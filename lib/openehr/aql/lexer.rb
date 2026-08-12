@@ -67,6 +67,8 @@ module OpenEHR
                             \.v\d+(?:\.\d+)*(?:-(?:rc|alpha)(?:\.\d+)?)?/x
       AT_ID_CODE_RE = /\A(?:at|id)\d+(?:\.\d+)*/
       IDENTIFIER_RE = /\A[A-Za-z][A-Za-z0-9_]*/
+      URI_CHAR = %r{[A-Za-z0-9\-._~%!$&'()*+,;=:@/]}.source
+      URI_RE = %r{\A[A-Za-z][A-Za-z0-9+.-]*:(?://)?#{URI_CHAR}*(?:\?#{URI_CHAR}*)?(?:\##{URI_CHAR}*)?}o
       NUMBER_RE = /\A(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?/
 
       ESCAPES = {
@@ -174,12 +176,14 @@ module OpenEHR
       def read_word(line, column)
         hrid = ARCHETYPE_HRID_RE.match(remaining)&.to_s
         at_id = AT_ID_CODE_RE.match(remaining)&.to_s
+        uri = URI_RE.match(remaining)&.to_s
         plain = IDENTIFIER_RE.match(remaining)&.to_s
 
         candidates = [
           [hrid, :archetype_hrid, 0],
           [at_id, :at_id_code, 1],
-          [plain, :plain_word, 2]
+          [uri, :uri, 2],
+          [plain, :plain_word, 3]
         ].select { |text, _type, _pri| text }
         text, kind, = candidates.max_by { |t, _k, pri| [t.length, -pri] }
 
@@ -191,6 +195,8 @@ module OpenEHR
         when :at_id_code
           type = text.start_with?('at') ? :at_code : :id_code
           Token.new(type, text, line: line, column: column)
+        when :uri
+          Token.new(:uri, text, line: line, column: column)
         else
           build_word_token(text, line, column)
         end
