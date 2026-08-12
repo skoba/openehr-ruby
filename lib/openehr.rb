@@ -12,3 +12,6 @@ require_relative 'openehr/am'
 #Adl/xml parser/serializer
 require_relative 'openehr/parser'
 require_relative 'openehr/serializer'
+
+#Archetype Query Language
+require_relative 'openehr/aql'
