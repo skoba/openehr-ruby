@@ -1,3 +1,31 @@
+=== 2.0.2
+Bug fix and maintenance release.
+
+* Fixed: OpenEHR::RM::Factory.params/convert_value raised a confusing
+  NoMethodError (undefined method 'include?' for nil) on a Hash value
+  that has no _type key. This is legal for openEHR RM attributes whose
+  type is always exactly one concrete class - ARCHETYPED.archetype_id,
+  .template_id, and CODE_PHRASE.terminology_id - so a real-world
+  canonical-JSON serializer (e.g. openehr-rails's CanonicalSerializer)
+  may omit _type for them. These 3 attributes now resolve correctly
+  even without _type; any other _type-less Hash now raises a clear
+  ArgumentError naming the attribute instead of the old NoMethodError.
+  Reported by openehr-rails after upgrading to 2.0.1.
+* Ruby support policy change: only Ruby versions currently maintained
+  upstream by Ruby core are supported. As of this release that's 3.2,
+  3.4, and 4.0 - 3.1 and 3.3 are dropped (required_ruby_version is now
+  >= 3.2, and the CI matrix was trimmed to match).
+* simplecov moved to the 1.x line (previously unconstrained, which
+  could silently resolve to a version whose add_filter/add_group are
+  deprecated in favour of skip/group); spec_helper.rb now uses the
+  latter, non-deprecated API. This was viable once Ruby 3.1 support
+  (which simplecov 1.x's own >= 3.2 requirement conflicted with) was
+  dropped per the policy change above.
+* Miscellaneous warning cleanup: fixed a circular require, a duplicate
+  ADL grammar rule, a handful of ambiguous-operator and redundant
+  attr_reader warnings, and 3 RSpec raise_error assertions that were
+  flagged as false-positive-prone; none were behavior changes.
+
 === 2.0.1
 Bug fix release.
 
