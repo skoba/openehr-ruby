@@ -75,18 +75,46 @@ module OpenEHR
       # fromClause : FROM fromExpr ; fromExpr : containsExpr ;
       def parse_from_clause
         expect(:from)
-        Model::FromClause.new(containment: parse_contains_expr)
+        Model::FromClause.new(containment: parse_contains_or_expr)
       end
 
-      # containsExpr : classExprOperand (NOT? CONTAINS containsExpr)? | ... ;
-      # AND/OR grouping, parens and "NOT CONTAINS" are added by M7; this
-      # milestone only implements the right-recursive
-      # "A CONTAINS B CONTAINS C ..." chain.
-      def parse_contains_expr
-        operand = parse_class_expr_operand
-        return operand unless match(:contains)
+      # containsExpr : ... | containsExpr OR containsExpr | ... ;
+      # AND binds tighter than OR (same precedence-climbing rewrite of the
+      # reference grammar's left recursion as whereExpr, M5).
+      def parse_contains_or_expr
+        left = parse_contains_and_expr
+        left = Model::ContainmentOr.new(left: left, right: parse_contains_and_expr) while match(:or)
+        left
+      end
 
-        Model::Containment.new(parent: operand, child: parse_contains_expr)
+      # containsExpr : ... | containsExpr AND containsExpr | ... ;
+      def parse_contains_and_expr
+        left = parse_contains_primary
+        left = Model::ContainmentAnd.new(left: left, right: parse_contains_primary) while match(:and)
+        left
+      end
+
+      # containsExpr : ... | SYM_LEFT_PAREN containsExpr SYM_RIGHT_PAREN ;
+      def parse_contains_primary
+        return parse_containment_chain unless match(:left_paren)
+
+        expr = parse_contains_or_expr
+        expect(:right_paren)
+        expr
+      end
+
+      # containsExpr : classExprOperand (NOT? CONTAINS containsExpr)? ;
+      # The right-recursive "A CONTAINS B CONTAINS C ..." chain, with an
+      # optional NOT flag on each containment edge.
+      def parse_containment_chain
+        operand = parse_class_expr_operand
+        negated = match(:not)
+        if negated
+          expect(:contains)
+        elsif !match(:contains)
+          return operand
+        end
+        Model::Containment.new(parent: operand, child: parse_contains_or_expr, negated: negated)
       end
 
       # classExprOperand : IDENTIFIER variable=IDENTIFIER? pathPredicate? #classExpression | ... ;

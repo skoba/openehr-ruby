@@ -384,3 +384,67 @@ describe 'OpenEHR::AQL.parse (M6: DISTINCT/TOP/ORDER BY/LIMIT/OFFSET)' do
     expect(query.limit_clause.offset).to eq(10)
   end
 end
+
+# M7 milestone: boolean containment - NOT CONTAINS (a negated
+# parent/child containment edge) and AND/OR grouping of sibling
+# containment branches, with the same "AND binds tighter than OR"
+# precedence as WHERE (M5).
+describe 'OpenEHR::AQL.parse (M7: boolean containment)' do
+  it 'parses a plain CONTAINS as not negated' do
+    query = OpenEHR::AQL.parse('SELECT c FROM EHR e CONTAINS COMPOSITION c')
+    expect(query.from_clause.containment.negated).to be false
+  end
+
+  it 'parses NOT CONTAINS' do
+    query = OpenEHR::AQL.parse('SELECT e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c NOT CONTAINS ADMIN_ENTRY admission')
+    inner = query.from_clause.containment.child
+    expect(inner).to be_a(OpenEHR::AQL::Model::Containment)
+    expect(inner.negated).to be true
+    expect(inner.child.class_name).to eq('ADMIN_ENTRY')
+  end
+
+  it 'parses AND-grouped sibling containment branches' do
+    query = OpenEHR::AQL.parse(
+      'SELECT c FROM EHR CONTAINS COMPOSITION c CONTAINS (OBSERVATION o1 AND OBSERVATION o2)'
+    )
+    branches = query.from_clause.containment.child.child
+
+    expect(branches).to be_a(OpenEHR::AQL::Model::ContainmentAnd)
+    expect(branches.left).to be_a(OpenEHR::AQL::Model::ClassExpression)
+    expect(branches.left.variable).to eq('o1')
+    expect(branches.right.variable).to eq('o2')
+  end
+
+  it 'parses OR-grouped sibling containment branches' do
+    query = OpenEHR::AQL.parse('SELECT c FROM EHR CONTAINS (COMPOSITION c1 OR COMPOSITION c2)')
+    branches = query.from_clause.containment.child
+
+    expect(branches).to be_a(OpenEHR::AQL::Model::ContainmentOr)
+    expect(branches.left.variable).to eq('c1')
+    expect(branches.right.variable).to eq('c2')
+  end
+
+  it 'binds AND tighter than OR inside a containment group' do
+    query = OpenEHR::AQL.parse('SELECT c FROM EHR CONTAINS (COMPOSITION c1 OR COMPOSITION c2 AND COMPOSITION c3)')
+    top = query.from_clause.containment.child
+
+    expect(top).to be_a(OpenEHR::AQL::Model::ContainmentOr)
+    expect(top.left.variable).to eq('c1')
+    expect(top.right).to be_a(OpenEHR::AQL::Model::ContainmentAnd)
+  end
+
+  it 'parses the official NOT CONTAINS example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT
+         e/ehr_id/value
+      FROM
+         EHR e
+            CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.administrative_encounter.v1]
+               NOT CONTAINS ADMIN_ENTRY admission[openEHR-EHR-ADMIN_ENTRY.admission.v1]
+      WHERE
+         e/ehr_status/subject/external_ref/namespace != 'CEC'
+    AQL
+
+    expect(query.from_clause.containment.child.negated).to be true
+  end
+end
