@@ -249,3 +249,56 @@ describe 'OpenEHR::AQL.execute (E5: WHERE clause)' do
     expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
   end
 end
+
+# E6 milestone: ORDER BY (ascending default, DESC, multiple keys),
+# DISTINCT and LIMIT/OFFSET, spliced into the pipeline in the project
+# plan's own stated order (CONTAINS -> WHERE -> ORDER BY -> SELECT ->
+# DISTINCT/LIMIT/OFFSET). Boolean containment execution and functions
+# are added by later engine milestones.
+describe 'OpenEHR::AQL.execute (E6: ORDER BY / DISTINCT / LIMIT-OFFSET)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:low) { builder.blood_pressure_composition(systolic: 110, diastolic: 70) }
+  let(:mid) { builder.blood_pressure_composition(systolic: 130, diastolic: 85) }
+  let(:high) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+
+  def systolic_query(extra = '')
+    'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+    "FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o #{extra}"
+  end
+
+  it 'sorts ascending by default' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    result = OpenEHR::AQL.execute(systolic_query('ORDER BY o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude'), dataset)
+    expect(result.rows).to eq([[110], [130], [150]])
+  end
+
+  it 'sorts DESC' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    result = OpenEHR::AQL.execute(systolic_query('ORDER BY o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude DESC'), dataset)
+    expect(result.rows).to eq([[150], [130], [110]])
+  end
+
+  it 'applies LIMIT' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    result = OpenEHR::AQL.execute(
+      systolic_query('ORDER BY o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude LIMIT 2'), dataset
+    )
+    expect(result.rows).to eq([[110], [130]])
+  end
+
+  it 'applies LIMIT with OFFSET' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    result = OpenEHR::AQL.execute(
+      systolic_query('ORDER BY o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude LIMIT 1 OFFSET 1'), dataset
+    )
+    expect(result.rows).to eq([[130]])
+  end
+
+  it 'applies SELECT DISTINCT, collapsing equal-valued rows' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([mid, mid])
+    query = 'SELECT DISTINCT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    result = OpenEHR::AQL.execute(query, dataset)
+    expect(result.rows).to eq([[130]])
+  end
+end
