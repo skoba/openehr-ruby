@@ -613,3 +613,40 @@ describe 'OpenEHR::AQL.parse (real-world gap: predicate on identifiedPath, nodeP
     expect(content_segment.predicate.operand).to be_a(OpenEHR::AQL::Model::Parameter)
   end
 end
+
+# M9 milestone (parser-side finishing touches): the trailing
+# "SYM_DOUBLE_DASH? EOF" grammar allowance, and parse error message
+# quality across a representative set of malformed queries. ResultSet,
+# Dataset and the README's "Supplying data to AQL" section - the other
+# items under M9 in the project plan - need the execution engine to
+# exist first and are handled as part of Phase 8, not here.
+describe 'OpenEHR::AQL.parse (M9: trailing "--" and error quality)' do
+  it 'accepts a bare trailing "--" (absorbed as an empty comment by the lexer)' do
+    expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c --') }.not_to raise_error
+  end
+
+  it 'accepts a trailing "-- note" comment' do
+    expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c -- trailing note') }.not_to raise_error
+  end
+
+  {
+    'empty input' => ['', 1, 1, 'expected SELECT, got end of input'],
+    'missing SELECT' => ['FROM COMPOSITION c', 1, 1, 'expected SELECT, got from "FROM"'],
+    'missing FROM' => ['SELECT c', 1, 9, 'expected FROM, got end of input'],
+    'FROM with no class name' => ['SELECT c FROM', 1, 14, 'expected IDENTIFIER, got end of input'],
+    'WHERE with no expression' => ['SELECT c FROM COMPOSITION c WHERE', 1, 34, 'expected IDENTIFIER, got end of input'],
+    'unclosed parenthesis' => ['SELECT c FROM COMPOSITION c WHERE (a/b = 1', 1, 43,
+                                'expected RIGHT_PAREN, got end of input'],
+    'unclosed bracket predicate' => ['SELECT c FROM COMPOSITION c[unterminated', 1, 41,
+                                      'expected COMPARISON_OPERATOR, got end of input'],
+    'trailing garbage' => ['SELECT c FROM COMPOSITION c GARBAGE', 1, 29, 'expected EOF, got identifier "GARBAGE"']
+  }.each do |description, (source, line, column, message_fragment)|
+    it "reports a precise line/column and a clear message for: #{description}" do
+      expect { OpenEHR::AQL.parse(source) }.to raise_error(OpenEHR::AQL::ParseError) { |e|
+        expect(e.line).to eq(line)
+        expect(e.column).to eq(column)
+        expect(e.message).to include(message_fragment)
+      }
+    end
+  end
+end

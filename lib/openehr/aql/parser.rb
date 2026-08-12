@@ -17,8 +17,11 @@ module OpenEHR
       end
 
       # selectQuery : selectClause fromClause whereClause? orderByClause? limitClause? SYM_DOUBLE_DASH? EOF ;
-      # The trailing SYM_DOUBLE_DASH (a batch-file query terminator) isn't
-      # needed by any example and is deferred to M9.
+      # The trailing SYM_DOUBLE_DASH needs no explicit handling here: the
+      # Lexer's COMMENT rule already treats a "--" immediately followed by
+      # EOF (or a space, or a newline) as an empty/line comment and skips
+      # it, so a trailing "--" is silently absorbed before the parser ever
+      # sees a token for it.
       def parse_select_query
         select_clause = parse_select_clause
         from_clause = parse_from_clause
