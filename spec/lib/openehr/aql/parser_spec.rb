@@ -53,8 +53,8 @@ describe 'OpenEHR::AQL.parse (M1: minimal query)' do
     expect { OpenEHR::AQL.parse('SELECT c') }.to raise_error(OpenEHR::AQL::ParseError, /FROM/)
   end
 
-  it 'raises a ParseError on trailing input after the FROM clause (e.g. an unsupported ORDER BY, pre-M6)' do
-    expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c ORDER BY c/name/value') }
+  it 'raises a ParseError on trailing input after the FROM clause' do
+    expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c GARBAGE') }
       .to raise_error(OpenEHR::AQL::ParseError)
   end
 end
@@ -311,5 +311,76 @@ describe 'OpenEHR::AQL.parse (M5: WHERE clause)' do
     AQL
 
     expect(query.where_clause.expression).to be_a(OpenEHR::AQL::Model::LikeExpr)
+  end
+end
+
+# M6 milestone: DISTINCT, the deprecated TOP N form, ORDER BY (single and
+# multiple, ASC default / DESC), and LIMIT/OFFSET.
+describe 'OpenEHR::AQL.parse (M6: DISTINCT/TOP/ORDER BY/LIMIT/OFFSET)' do
+  it 'parses SELECT DISTINCT' do
+    query = OpenEHR::AQL.parse('SELECT DISTINCT c/name/value FROM COMPOSITION c')
+    expect(query.select_clause.distinct).to be true
+  end
+
+  it 'parses the deprecated SELECT TOP N form' do
+    query = OpenEHR::AQL.parse('SELECT TOP 10 c/name/value FROM COMPOSITION c')
+    expect(query.select_clause.top).to be_a(OpenEHR::AQL::Model::Top)
+    expect(query.select_clause.top.count).to eq(10)
+    expect(query.select_clause.top.direction).to be_nil
+  end
+
+  it 'parses ORDER BY with a default (ascending) direction' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c ORDER BY c/context/start_time')
+    item = query.order_by_clause.items.first
+
+    expect(item.path.variable).to eq('c')
+    expect(item.direction).to eq(:asc)
+  end
+
+  it 'parses ORDER BY DESC and multiple comma-separated paths' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c ORDER BY c/context/start_time DESC, c/name/value')
+    items = query.order_by_clause.items
+
+    expect(items.size).to eq(2)
+    expect(items[0].direction).to eq(:desc)
+    expect(items[1].direction).to eq(:asc)
+  end
+
+  it 'parses LIMIT alone (offset defaults to 0)' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c LIMIT 10')
+    expect(query.limit_clause.limit).to eq(10)
+    expect(query.limit_clause.offset).to eq(0)
+  end
+
+  it 'parses LIMIT with OFFSET' do
+    query = OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c LIMIT 10 OFFSET 20')
+    expect(query.limit_clause.limit).to eq(10)
+    expect(query.limit_clause.offset).to eq(20)
+  end
+
+  it 'parses the official SELECT DISTINCT example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT DISTINCT
+         c/name/value AS Name, c/composer/name AS Composer
+      FROM
+         EHR e[ehr_id/value=$ehrUid]
+            CONTAINS COMPOSITION c
+    AQL
+    expect(query.select_clause.distinct).to be true
+  end
+
+  it 'parses the official ORDER BY + LIMIT/OFFSET example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT
+         c/name/value AS Name, c/context/start_time AS date_time, c/composer/name AS Composer
+      FROM
+         EHR e[ehr_id/value=$ehrUid]
+            CONTAINS COMPOSITION c
+      ORDER BY c/context/start_time
+      LIMIT 10 OFFSET 10
+    AQL
+    expect(query.order_by_clause.items.first.direction).to eq(:asc)
+    expect(query.limit_clause.limit).to eq(10)
+    expect(query.limit_clause.offset).to eq(10)
   end
 end

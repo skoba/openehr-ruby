@@ -17,27 +17,44 @@ module OpenEHR
       end
 
       # selectQuery : selectClause fromClause whereClause? orderByClause? limitClause? SYM_DOUBLE_DASH? EOF ;
-      # ORDER BY/LIMIT are added by M6; until then, any token left over
-      # after the WHERE clause (or FROM clause, if there is none) is a
-      # ParseError.
+      # The trailing SYM_DOUBLE_DASH (a batch-file query terminator) isn't
+      # needed by any example and is deferred to M9.
       def parse_select_query
         select_clause = parse_select_clause
         from_clause = parse_from_clause
         where_clause = check(:where) ? parse_where_clause : nil
+        order_by_clause = check(:order) ? parse_order_by_clause : nil
+        limit_clause = check(:limit) ? parse_limit_clause : nil
         expect(:eof)
-        Model::Query.new(select_clause: select_clause, from_clause: from_clause, where_clause: where_clause)
+        Model::Query.new(select_clause: select_clause, from_clause: from_clause, where_clause: where_clause,
+                          order_by_clause: order_by_clause, limit_clause: limit_clause)
       end
 
       PRIMITIVE_TOKEN_TYPES = %i[string integer real sci_integer sci_real boolean null].freeze
+      DESCENDING_DIRECTIONS = %i[desc descending].freeze
 
       private
 
       # selectClause : SELECT DISTINCT? top? selectExpr (SYM_COMMA selectExpr)* ;
       def parse_select_clause
         expect(:select)
+        distinct = match(:distinct)
+        top = check(:top) ? parse_top : nil
         columns = [parse_select_expr]
         columns << parse_select_expr while match(:comma)
-        Model::SelectClause.new(columns: columns, distinct: false)
+        Model::SelectClause.new(columns: columns, distinct: distinct, top: top)
+      end
+
+      # top : TOP INTEGER direction=(FORWARD|BACKWARD)? ; (deprecated)
+      def parse_top
+        expect(:top)
+        count = expect(:integer).value
+        direction = if match(:forward)
+                      :forward
+                    elsif match(:backward)
+                      :backward
+                    end
+        Model::Top.new(count: count, direction: direction)
       end
 
       # selectExpr : columnExpr (AS aliasName=IDENTIFIER)? ;
@@ -243,6 +260,33 @@ module OpenEHR
         return parse_primitive if primitive_ahead?
 
         raise error("expected a literal value or a parameter in a MATCHES value list, got #{describe(peek)}")
+      end
+
+      # orderByClause : ORDER BY orderByExpr (SYM_COMMA orderByExpr)* ;
+      def parse_order_by_clause
+        expect(:order)
+        expect(:by)
+        items = [parse_order_by_expr]
+        items << parse_order_by_expr while match(:comma)
+        Model::OrderByClause.new(items: items)
+      end
+
+      # orderByExpr : identifiedPath order=(DESCENDING|DESC|ASCENDING|ASC)? ;
+      def parse_order_by_expr
+        path = parse_identified_path
+        direction = :asc
+        if check(:desc) || check(:descending) || check(:asc) || check(:ascending)
+          direction = DESCENDING_DIRECTIONS.include?(advance.type) ? :desc : :asc
+        end
+        Model::OrderByItem.new(path: path, direction: direction)
+      end
+
+      # limitClause : LIMIT limit=INTEGER (OFFSET offset=INTEGER)? ;
+      def parse_limit_clause
+        expect(:limit)
+        limit = expect(:integer).value
+        offset = match(:offset) ? expect(:integer).value : 0
+        Model::LimitClause.new(limit: limit, offset: offset)
       end
 
       def primitive_ahead?
