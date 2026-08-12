@@ -275,11 +275,11 @@ describe ADLParser do
 
       context 'eighth attribute' do
         it 'lower range is -10' do
-          expect(attr(8).range.lower).to eq -10
+          expect(attr(8).range.lower).to eq(-10)
         end
 
         it 'upper range is -5' do
-          expect(attr(8).range.upper).to eq -5
+          expect(attr(8).range.upper).to eq(-5)
         end
 
         it 'is lower included' do
@@ -417,11 +417,11 @@ describe ADLParser do
 
       context '16th attribute' do
         it 'lower range is -10' do
-          expect(attr(16).range.lower).to be -10
+          expect(attr(16).range.lower).to be(-10)
         end
 
         it 'upper range is -5' do
-          expect(attr(16).range.upper).to be -5
+          expect(attr(16).range.upper).to be(-5)
         end
 
         it 'is upper included' do
@@ -433,7 +433,7 @@ describe ADLParser do
         end
 
         it 'assumed value is -7' do
-          expect(attr(16).assumed_value).to be -7
+          expect(attr(16).assumed_value).to be(-7)
         end
       end
 

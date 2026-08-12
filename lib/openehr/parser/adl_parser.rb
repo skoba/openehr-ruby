@@ -1,7 +1,6 @@
 require 'treetop'
 #require 'polyglot'
 
-require_relative '../parser'
 #require_relative './adl_grammar'
 
 module OpenEHR

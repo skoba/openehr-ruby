@@ -86,7 +86,7 @@ module OpenEHR
         end # of CodePhrase
 
         class DvText < OpenEHR::RM::DataTypes::Basic::DataValue
-          attr_reader :formatting, :hyperlink, :mappings,
+          attr_reader :formatting, :mappings,
                       :language, :encoding
           attr_accessor :hyperlink
 

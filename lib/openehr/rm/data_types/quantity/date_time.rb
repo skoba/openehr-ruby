@@ -116,7 +116,7 @@ module OpenEHR
               diff = (other.magnitude - self.magnitude).abs
               hour = (diff / 60 / 60).to_i
               minute = ((diff - hour*60*60)/60).to_i
-              second = (diff - hour * 60 *60 - minute * 60).to_i
+              second = (diff - hour * 60 * 60 - minute * 60).to_i
               fractional_second = ((diff - diff.to_i)*1000000.0).to_i/1000000.0
               str = 'P0Y0M0W0DT' + hour.to_s + 'H' +
                 minute.to_s + 'M' + second.to_s
@@ -184,11 +184,11 @@ module OpenEHR
               date_duration = past_date.diff(future_date)
               hour = (time_diff / 60 / 60).to_i
               minute = ((time_diff - hour*60*60)/60).to_i
-              second = (time_diff - hour * 60 *60 - minute * 60).to_i
+              second = (time_diff - hour * 60 * 60 - minute * 60).to_i
               str = date_duration.value + 'T' + hour.to_s + 'H' +
                 minute.to_s + 'M' + second.to_s
               if @fractional_second.nil?
-                return DvDuration.new(:value => str +'S')
+                return DvDuration.new(:value => str + 'S')
               else
                 fractional_second =
                   ((time_diff - time_diff.to_i)*1000000.0).to_i/1000000.0

@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
-require File.dirname(__FILE__) + '/sample_archetype_spec'
+require File.dirname(__FILE__) + '/sample_archetype_fixture'
 require 'rexml/document'
 include OpenEHR::Serializer
 

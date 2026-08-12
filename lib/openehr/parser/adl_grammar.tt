@@ -3140,10 +3140,6 @@ module OpenEHR
         [Uu] [Nn] [Ii] [Qq] [Uu] [Ee] space
       end
 
-      rule SYM_INFINITY
-        [Ii] [Nn] [Ff] [Ii] [Nn] [Ii] [Tt] [Yy] space
-      end
-
       rule SYM_USE_NODE
         [Uu] [Ss] [Ee] '_' [Nn] [Oo] [Dd] [Ee] space
       end

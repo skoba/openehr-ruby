@@ -8,7 +8,7 @@ describe TimeDefinitions do
     end
 
     it '-1 should not be valid year' do
-      expect(TimeDefinitions).not_to be_valid_year -1
+      expect(TimeDefinitions).not_to be_valid_year(-1)
     end
 
     it 'nil year should be invaild' do
@@ -104,7 +104,7 @@ describe TimeDefinitions do
     end
 
     it 'should be not less than 0' do
-      expect(TimeDefinitions).not_to be_valid_minute -1
+      expect(TimeDefinitions).not_to be_valid_minute(-1)
     end
 
     it 'should less than 60' do
@@ -122,7 +122,7 @@ describe TimeDefinitions do
     end
 
     it 'should be not less than 0' do
-      expect(TimeDefinitions).not_to be_valid_second -1
+      expect(TimeDefinitions).not_to be_valid_second(-1)
     end
 
     it 'should less than 60' do

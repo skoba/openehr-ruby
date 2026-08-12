@@ -11,7 +11,7 @@ describe ISO8601Timezone do
   end
 
   it 'sign should be +1' do
-    expect(@iso8601timezone.sign).to eq +1
+    expect(@iso8601timezone.sign).to eq(+1)
   end
 
   it 'hour should be 9' do

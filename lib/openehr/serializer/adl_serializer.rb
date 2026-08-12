@@ -81,7 +81,7 @@ module OpenEHR
           items.each do |code, item|
             ontology << INDENT*4 + "[\"#{code}\"] = <" + NL
             item.items.each do |name, desc|
-              ontology << INDENT*5 + "#{name} = <\"#{desc}\">" +NL
+              ontology << INDENT*5 + "#{name} = <\"#{desc}\">" + NL
             end
             ontology << INDENT*4 + '>'+NL
           end

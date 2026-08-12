@@ -15,7 +15,7 @@ describe ProportionKind do
   end
 
   it 'should not be valid proportionkind -1' do
-    expect(ProportionKind).not_to be_valid_proportion_kind -1
+    expect(ProportionKind).not_to be_valid_proportion_kind(-1)
   end
 
   it 'should not be valid proportionkind 5' do

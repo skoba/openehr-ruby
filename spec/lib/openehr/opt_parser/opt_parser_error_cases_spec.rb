@@ -8,7 +8,7 @@ module OpenEHR
           it 'should raise error for non-existent file' do
             expect {
               OPTParser.new('/non/existent/file.opt').parse
-            }.to raise_error
+            }.to raise_error(Errno::ENOENT)
           end
         end
 
@@ -23,16 +23,16 @@ module OpenEHR
             
             expect {
               OPTParser.new(temp_file.path).parse
-            }.to raise_error
+            }.to raise_error(ArgumentError, 'invalid archetype id form')
           end
 
           it 'should handle invalid XML gracefully' do
             temp_file.write('<?xml version="1.0"?><invalid><unclosed>')
             temp_file.close
-            
+
             expect {
               OPTParser.new(temp_file.path).parse
-            }.to raise_error
+            }.to raise_error(ArgumentError, 'invalid archetype id form')
           end
         end
 

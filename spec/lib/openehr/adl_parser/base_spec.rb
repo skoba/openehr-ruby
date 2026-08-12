@@ -13,7 +13,7 @@ describe Base do
     end
 
     it 'returns filename' do
-      expect(@bp.filename).to match /openEHR-EHR-SECTION.summary.v1.adl$/
+      expect(@bp.filename).to match(/openEHR-EHR-SECTION.summary.v1.adl$/)
     end
   end
 end
