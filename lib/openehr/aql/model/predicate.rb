@@ -28,6 +28,20 @@ module OpenEHR
         end
       end
 
+      # nodePredicate (simple form): (ID_CODE | AT_CODE) ;
+      # The SYM_COMMA name/param suffix, the ARCHETYPE_HRID alternative
+      # (already covered by ArchetypePredicate, which pathPredicate
+      # dispatches to directly), and the AND/OR/objectPath-comparison
+      # forms are deferred until an example needs them.
+      class NodePredicate
+        attr_reader :code
+
+        def initialize(code:)
+          @code = code
+          freeze
+        end
+      end
+
       # PARAMETER: '$' IDENTIFIER_CHAR ;
       class Parameter
         attr_reader :name

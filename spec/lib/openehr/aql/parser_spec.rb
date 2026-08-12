@@ -158,3 +158,55 @@ describe 'OpenEHR::AQL.parse (M3: archetype containment)' do
     expect(query.from_clause.containment.parent.predicate).to be_nil
   end
 end
+
+# M4 milestone: SELECT paths whose segments carry a bare at-code node
+# predicate ("data[at0001]/events[at0006]/.../value/magnitude"), plus an
+# AS alias. The SYM_COMMA name/param suffix and AND/OR forms of
+# nodePredicate, and node predicates that hold an ARCHETYPE_HRID (used by
+# WHERE's EXISTS c/content[archetype-id], M5), are deferred until an
+# example needs them.
+describe 'OpenEHR::AQL.parse (M4: SELECT paths with node predicates + alias)' do
+  it 'parses a deep path with bare at-code predicates on several segments' do
+    query = OpenEHR::AQL.parse(
+      'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude FROM OBSERVATION o'
+    )
+    path = query.select_clause.columns.first.expression
+    segments = path.path.segments
+
+    expect(segments.map(&:attribute)).to eq(%w[data events data items value magnitude])
+    expect(segments[0].predicate).to be_a(OpenEHR::AQL::Model::NodePredicate)
+    expect(segments[0].predicate.code).to eq('at0001')
+    expect(segments[1].predicate.code).to eq('at0006')
+    expect(segments[2].predicate.code).to eq('at0003')
+    expect(segments[3].predicate.code).to eq('at0004')
+    expect(segments[4].predicate).to be_nil
+    expect(segments[5].predicate).to be_nil
+  end
+
+  it 'parses an AS alias on a deep path' do
+    query = OpenEHR::AQL.parse(
+      'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic FROM OBSERVATION o'
+    )
+    expect(query.select_clause.columns.first.alias_name).to eq('systolic')
+  end
+
+  it 'parses an id-code node predicate' do
+    query = OpenEHR::AQL.parse('SELECT o/items[id5]/value FROM OBSERVATION o')
+    predicate = query.select_clause.columns.first.expression.path.segments.first.predicate
+    expect(predicate.code).to eq('id5')
+  end
+
+  it 'parses the official blood-pressure-values example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT
+         o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude
+      FROM
+         EHR [ehr_id/value='1234']
+            CONTAINS COMPOSITION [openEHR-EHR-COMPOSITION.encounter.v1]
+               CONTAINS OBSERVATION o [openEHR-EHR-OBSERVATION.blood_pressure.v1]
+    AQL
+
+    expect(query.select_clause.columns.first.expression.path.segments.map(&:attribute))
+      .to eq(%w[data events data items value magnitude])
+  end
+end
