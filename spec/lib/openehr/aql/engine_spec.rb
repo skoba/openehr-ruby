@@ -360,3 +360,59 @@ describe 'OpenEHR::AQL.execute (E7: boolean containment execution)' do
     expect(has_temp_result.rows).to eq([])
   end
 end
+
+# E8 milestone: aggregate function execution (COUNT/MIN/MAX/AVG/SUM). A
+# SELECT clause made entirely of aggregate columns collapses the whole
+# (post-WHERE) binding set into a single summary row; ORDER BY/DISTINCT/
+# LIMIT don't apply to it. Mixing aggregate and plain columns, and
+# generic (non-aggregate) function calls, are not yet supported.
+describe 'OpenEHR::AQL.execute (E8: aggregate functions)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:low) { builder.blood_pressure_composition(systolic: 110, diastolic: 70) }
+  let(:mid) { builder.blood_pressure_composition(systolic: 130, diastolic: 85) }
+  let(:high) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+  let(:dataset) { OpenEHR::AQL::Dataset.of_compositions([low, mid, high]) }
+
+  it 'computes MAX/MIN/AVG over a path, one summary row' do
+    query = 'SELECT ' \
+            'MAX(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS maxValue, ' \
+            'MIN(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS minValue, ' \
+            'AVG(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS meanValue ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    result = OpenEHR::AQL.execute(query, dataset)
+
+    expect(result.columns).to eq(%w[maxValue minValue meanValue])
+    expect(result.rows).to eq([[150, 110, 130.0]])
+  end
+
+  it 'computes SUM' do
+    query = 'SELECT SUM(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS total ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[390]])
+  end
+
+  it 'computes COUNT(*)' do
+    query = 'SELECT COUNT(*) AS n FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[3]])
+  end
+
+  it 'computes COUNT(DISTINCT path)' do
+    dataset_with_dup = OpenEHR::AQL::Dataset.of_compositions([low, mid, mid])
+    query = 'SELECT COUNT(DISTINCT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS n ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    expect(OpenEHR::AQL.execute(query, dataset_with_dup).rows).to eq([[2]])
+  end
+
+  it 'respects WHERE before aggregating' do
+    query = 'SELECT COUNT(*) AS n FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude >= 130'
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[2]])
+  end
+
+  it 'aggregates to 0/nil over an empty match set' do
+    empty_dataset = OpenEHR::AQL::Dataset.of_compositions([])
+    query = 'SELECT COUNT(*) AS n, MAX(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS m ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    expect(OpenEHR::AQL.execute(query, empty_dataset).rows).to eq([[0, nil]])
+  end
+end

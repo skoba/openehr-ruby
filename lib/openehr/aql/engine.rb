@@ -8,8 +8,13 @@ module OpenEHR
   module AQL
     # Orchestrates one Query execution against a Dataset, in the order
     # CONTAINS -> WHERE -> ORDER BY -> SELECT -> DISTINCT -> LIMIT/OFFSET.
-    # Boolean containment execution (AND/OR/NOT CONTAINS) and functions
-    # are added by later engine milestones.
+    #
+    # A SELECT clause made entirely of aggregate columns
+    # (Model::AggregateFunctionCall) collapses the whole (post-WHERE)
+    # binding set into a single summary row instead - ORDER BY/DISTINCT/
+    # LIMIT don't apply to it, matching plain SQL aggregate-without-
+    # GROUP-BY semantics. Mixing aggregate and plain columns, and
+    # generic (non-aggregate) function calls, are not yet supported.
     class Engine
       def initialize(query)
         @query = query
@@ -18,10 +23,7 @@ module OpenEHR
       def execute(dataset, params: {})
         bindings = ContainsResolver.new(@query.from_clause, Dataset.wrap(dataset)).each_binding
                                     .select { |binding| where_matches?(binding, params) }
-        bindings = order(bindings)
-        rows = project(bindings)
-        rows = rows.uniq if @query.select_clause.distinct
-        rows = apply_limit(rows)
+        rows = aggregate_query? ? [aggregate_row(bindings)] : select_rows(bindings)
         ResultSet.new(columns: @query.select_clause.columns.map { |column| column_name(column) }, rows: rows)
       end
 
@@ -29,6 +31,12 @@ module OpenEHR
 
       def where_matches?(binding, params)
         PredicateEvaluator.matches?(@query.where_clause&.expression, binding, params)
+      end
+
+      def select_rows(bindings)
+        rows = project(order(bindings))
+        rows = rows.uniq if @query.select_clause.distinct
+        apply_limit(rows)
       end
 
       def order(bindings)
@@ -67,6 +75,37 @@ module OpenEHR
         return rows unless limit_clause
 
         rows.drop(limit_clause.offset).take(limit_clause.limit)
+      end
+
+      def aggregate_query?
+        @query.select_clause.columns.any? { |column| column.expression.is_a?(Model::AggregateFunctionCall) }
+      end
+
+      def aggregate_row(bindings)
+        @query.select_clause.columns.map do |column|
+          call = column.expression
+          unless call.is_a?(Model::AggregateFunctionCall)
+            raise ExecutionError, 'mixing aggregate and non-aggregate SELECT columns is not yet supported'
+          end
+
+          evaluate_aggregate(call, bindings)
+        end
+      end
+
+      def evaluate_aggregate(call, bindings)
+        return bindings.size if call.name == :count && call.path.nil?
+
+        values = bindings.map { |binding| PathEvaluator.evaluate(call.path, binding) }.compact
+        values = values.uniq if call.distinct
+
+        case call.name
+        when :count then values.size
+        when :min then values.min
+        when :max then values.max
+        when :sum then values.empty? ? nil : values.sum
+        when :avg then values.empty? ? nil : values.sum.fdiv(values.size)
+        else raise ExecutionError, "cannot evaluate a #{call.name.inspect} aggregate function yet"
+        end
       end
 
       def column_name(column)
