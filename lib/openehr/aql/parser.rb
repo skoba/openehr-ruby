@@ -32,6 +32,9 @@ module OpenEHR
 
       PRIMITIVE_TOKEN_TYPES = %i[string integer real sci_integer sci_real boolean null].freeze
       DESCENDING_DIRECTIONS = %i[desc descending].freeze
+      AGGREGATE_FUNCTION_TYPES = %i[count min max sum avg].freeze
+      FUNCTION_NAME_TYPES = %i[length position substring concat concat_ws abs mod ceil floor round
+                                now current_date current_time current_date_time current_timezone].freeze
 
       private
 
@@ -66,10 +69,12 @@ module OpenEHR
 
       # columnExpr : identifiedPath | primitive | aggregateFunctionCall | functionCall ;
       def parse_column_expr
+        return parse_aggregate_function_call if aggregate_function_ahead?
+        return parse_function_call if function_call_ahead?
         return parse_identified_path if check(:identifier)
         return parse_primitive if primitive_ahead?
 
-        raise error("expected a path or a literal value, got #{describe(peek)}")
+        raise error("expected a path, a literal value or a function call, got #{describe(peek)}")
       end
 
       # fromClause : FROM fromExpr ; fromExpr : containsExpr ;
@@ -252,13 +257,13 @@ module OpenEHR
       end
 
       # terminal : primitive | PARAMETER | identifiedPath | functionCall ;
-      # functionCall is added by M8.
       def parse_terminal
         return Model::Parameter.new(name: advance.value) if check(:parameter)
+        return parse_function_call if function_call_ahead?
         return parse_primitive if primitive_ahead?
         return parse_identified_path if check(:identifier)
 
-        raise error("expected a value, parameter or path, got #{describe(peek)}")
+        raise error("expected a value, parameter, path or function call, got #{describe(peek)}")
       end
 
       # likeOperand : STRING | PARAMETER ;
@@ -271,23 +276,88 @@ module OpenEHR
       # matchesOperand : SYM_LEFT_CURLY valueListItem (SYM_COMMA valueListItem)* SYM_RIGHT_CURLY
       #                | terminologyFunction
       #                | SYM_LEFT_CURLY URI SYM_RIGHT_CURLY ;
-      # The terminologyFunction and bare-URI alternatives need a URI lexer
-      # token that doesn't exist yet, and are deferred.
       def parse_matches_operand
+        return parse_terminology_function if check(:terminology)
+
         expect(:left_curly)
-        items = [parse_value_list_item]
-        items << parse_value_list_item while match(:comma)
+        operand = if check(:uri)
+                    Model::UriRef.new(uri: advance.value)
+                  else
+                    items = [parse_value_list_item]
+                    items << parse_value_list_item while match(:comma)
+                    Model::MatchesValueList.new(items: items)
+                  end
         expect(:right_curly)
-        Model::MatchesValueList.new(items: items)
+        operand
       end
 
       # valueListItem : primitive | PARAMETER | terminologyFunction ;
-      # terminologyFunction is added alongside the MATCHES/TERMINOLOGY(...) support.
       def parse_value_list_item
         return Model::Parameter.new(name: advance.value) if check(:parameter)
+        return parse_terminology_function if check(:terminology)
         return parse_primitive if primitive_ahead?
 
-        raise error("expected a literal value or a parameter in a MATCHES value list, got #{describe(peek)}")
+        raise error("expected a literal value, a parameter or TERMINOLOGY(...) in a MATCHES value list, " \
+                     "got #{describe(peek)}")
+      end
+
+      # terminologyFunction : TERMINOLOGY SYM_LEFT_PAREN STRING SYM_COMMA STRING SYM_COMMA STRING SYM_RIGHT_PAREN ;
+      def parse_terminology_function
+        expect(:terminology)
+        expect(:left_paren)
+        args = [expect(:string).value]
+        2.times do
+          expect(:comma)
+          args << expect(:string).value
+        end
+        expect(:right_paren)
+        Model::TerminologyFunctionCall.new(args: args)
+      end
+
+      # aggregateFunctionCall : name=COUNT SYM_LEFT_PAREN (DISTINCT? identifiedPath | SYM_ASTERISK) SYM_RIGHT_PAREN
+      #                       | name=(MIN | MAX | SUM | AVG) SYM_LEFT_PAREN identifiedPath SYM_RIGHT_PAREN ;
+      def parse_aggregate_function_call
+        name = advance.type
+        expect(:left_paren)
+        if name == :count && check(:asterisk)
+          advance
+          path = nil
+          distinct = false
+        else
+          distinct = name == :count && match(:distinct)
+          path = parse_identified_path
+        end
+        expect(:right_paren)
+        Model::AggregateFunctionCall.new(name: name, path: path, distinct: distinct)
+      end
+
+      def aggregate_function_ahead?
+        AGGREGATE_FUNCTION_TYPES.include?(peek.type) && peek(1).type == :left_paren
+      end
+
+      # functionCall : terminologyFunction
+      #              | name=(STRING_FUNCTION_ID | NUMERIC_FUNCTION_ID | DATE_TIME_FUNCTION_ID | IDENTIFIER)
+      #                SYM_LEFT_PAREN (terminal (SYM_COMMA terminal)*)? SYM_RIGHT_PAREN ;
+      # The functionCall-on-the-left-of-a-comparison identifiedExpr
+      # alternative isn't needed by any example and is deferred.
+      def parse_function_call
+        return parse_terminology_function if check(:terminology)
+
+        name = advance.value
+        expect(:left_paren)
+        args = []
+        unless check(:right_paren)
+          args << parse_terminal
+          args << parse_terminal while match(:comma)
+        end
+        expect(:right_paren)
+        Model::FunctionCall.new(name: name, arguments: args)
+      end
+
+      def function_call_ahead?
+        return true if check(:terminology)
+
+        (FUNCTION_NAME_TYPES.include?(peek.type) || check(:identifier)) && peek(1).type == :left_paren
       end
 
       # orderByClause : ORDER BY orderByExpr (SYM_COMMA orderByExpr)* ;
@@ -329,8 +399,8 @@ module OpenEHR
 
       # --- token stream helpers ---
 
-      def peek
-        @tokens[@pos]
+      def peek(offset = 0)
+        @tokens[@pos + offset] || @tokens.last
       end
 
       def check(type)

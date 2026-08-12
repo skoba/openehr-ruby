@@ -448,3 +448,99 @@ describe 'OpenEHR::AQL.parse (M7: boolean containment)' do
     expect(query.from_clause.containment.child.negated).to be true
   end
 end
+
+# M8 milestone: aggregate functions (COUNT/MIN/MAX/SUM/AVG), generic
+# function calls (string/numeric/date-time), and the two matchesOperand
+# forms deferred from M5 (a bare URI, and a TERMINOLOGY(...) call).
+describe 'OpenEHR::AQL.parse (M8: functions and aggregates)' do
+  it 'parses COUNT(*)' do
+    query = OpenEHR::AQL.parse('SELECT COUNT(*) AS counter FROM COMPOSITION c')
+    call = query.select_clause.columns.first.expression
+
+    expect(call).to be_a(OpenEHR::AQL::Model::AggregateFunctionCall)
+    expect(call.name).to eq(:count)
+    expect(call.path).to be_nil
+    expect(call.distinct).to be false
+  end
+
+  it 'parses COUNT(DISTINCT path)' do
+    query = OpenEHR::AQL.parse('SELECT COUNT(DISTINCT c/name/value) FROM COMPOSITION c')
+    call = query.select_clause.columns.first.expression
+
+    expect(call.distinct).to be true
+    expect(call.path).to be_a(OpenEHR::AQL::Model::IdentifiedPath)
+  end
+
+  it 'parses MAX/MIN/AVG/SUM over a path' do
+    query = OpenEHR::AQL.parse(
+      'SELECT MAX(o/data/value/magnitude) AS maxValue, MIN(o/data/value/magnitude) AS minValue, ' \
+      'AVG(o/data/value/magnitude) AS meanValue, SUM(o/data/value/magnitude) AS total ' \
+      'FROM OBSERVATION o'
+    )
+    names = query.select_clause.columns.map { |c| c.expression.name }
+    expect(names).to eq(%i[max min avg sum])
+  end
+
+  it 'parses a generic function call' do
+    query = OpenEHR::AQL.parse('SELECT LENGTH(c/name/value) FROM COMPOSITION c')
+    call = query.select_clause.columns.first.expression
+
+    expect(call).to be_a(OpenEHR::AQL::Model::FunctionCall)
+    expect(call.name).to eq('LENGTH')
+    expect(call.arguments.size).to eq(1)
+    expect(call.arguments.first).to be_a(OpenEHR::AQL::Model::IdentifiedPath)
+  end
+
+  it 'parses MATCHES against a bare URI' do
+    query = OpenEHR::AQL.parse(
+      'SELECT c FROM COMPOSITION c WHERE c/value matches { terminology://snomed-ct/hierarchy?rootConceptId=1 }'
+    )
+    operand = query.where_clause.expression.operand
+
+    expect(operand).to be_a(OpenEHR::AQL::Model::UriRef)
+    expect(operand.uri).to eq('terminology://snomed-ct/hierarchy?rootConceptId=1')
+  end
+
+  it 'parses MATCHES against a TERMINOLOGY(...) function call' do
+    query = OpenEHR::AQL.parse(
+      "SELECT c FROM COMPOSITION c WHERE c/value matches TERMINOLOGY('expand', 'hl7.org/fhir/4.0', 'http://x')"
+    )
+    operand = query.where_clause.expression.operand
+
+    expect(operand).to be_a(OpenEHR::AQL::Model::TerminologyFunctionCall)
+    expect(operand.args).to eq(['expand', 'hl7.org/fhir/4.0', 'http://x'])
+  end
+
+  it 'parses the official aggregate functions example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT
+          MAX(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS maxValue,
+          MIN(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS minValue,
+          AVG(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS meanValue
+      FROM
+          EHR e CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.encounter.v1]
+              CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1]
+    AQL
+
+    expect(query.select_clause.columns.map { |c| c.expression.name }).to eq(%i[max min avg])
+  end
+
+  it 'parses the official literal/COUNT(*) example end to end' do
+    query = OpenEHR::AQL.parse(<<~AQL)
+      SELECT
+          true AS dangerousBP, "alert" as indication, count(*) as counter
+      FROM
+          EHR [ehr_id/value=$ehrUid]
+              CONTAINS COMPOSITION [openEHR-EHR-COMPOSITION.encounter.v1]
+                  CONTAINS OBSERVATION obs [openEHR-EHR-OBSERVATION.blood_pressure.v1]
+      WHERE
+          obs/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude>= 160 OR
+          obs/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude>= 110
+    AQL
+
+    columns = query.select_clause.columns
+    expect(columns[0].expression.value).to be true
+    expect(columns[1].expression.value).to eq('alert')
+    expect(columns[2].expression).to be_a(OpenEHR::AQL::Model::AggregateFunctionCall)
+  end
+end
