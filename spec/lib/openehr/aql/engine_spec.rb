@@ -153,6 +153,14 @@ describe 'OpenEHR::AQL.execute (E4: SELECT paths)' do
     expect(result.rows.first.first.value).to eq('Encounter')
   end
 
+  it 'resolves a path with no matching node (e.g. a wrong at-code) to nil, not an error' do
+    result = OpenEHR::AQL.execute(
+      'SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at9999]/value/magnitude ' \
+      'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o', bp_dataset
+    )
+    expect(result.rows).to eq([[nil]])
+  end
+
   it 'raises ExecutionError for an unsupported trailing attribute hop' do
     expect {
       OpenEHR::AQL.execute(

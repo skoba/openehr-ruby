@@ -41,7 +41,9 @@ module OpenEHR
         value = binding[path.variable]
         return value unless path.path
 
-        path.path.segments.reduce(value) { |current, segment| navigate(current, segment) }
+        path.path.segments.reduce(value) do |current, segment|
+          current.nil? ? nil : navigate(current, segment)
+        end
       end
 
       def navigate(current, segment)
@@ -57,10 +59,14 @@ module OpenEHR
           current.class.path_attributes.map(&:to_s).include?(segment.attribute)
       end
 
+      # A path segment matching nothing is a legitimate "no value here"
+      # (AQL's path-absent-means-null semantics, same convention as
+      # PATHABLE#item_at_path itself), not an error - only an
+      # *ambiguous* match (more than one item) is.
       def navigate_pathable(current, segment)
         matches = current.items_at_path(rm_path_for(segment))
         case matches.size
-        when 0 then raise ExecutionError, "path segment #{segment.to_s.inspect} matched no items"
+        when 0 then nil
         when 1 then matches.first
         else raise ExecutionError, "path segment #{segment.to_s.inspect} matched #{matches.size} items " \
                                     '(fan-out SELECT paths are not yet supported)'
