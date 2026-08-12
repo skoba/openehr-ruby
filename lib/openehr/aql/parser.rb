@@ -54,23 +54,77 @@ module OpenEHR
       end
 
       # fromClause : FROM fromExpr ; fromExpr : containsExpr ;
-      # CONTAINS nesting/AND/OR/parens are added by M3/M7; a single
-      # unpredicated class expression is all M1 supports.
       def parse_from_clause
         expect(:from)
-        Model::FromClause.new(containment: parse_class_expr_operand)
+        Model::FromClause.new(containment: parse_contains_expr)
+      end
+
+      # containsExpr : classExprOperand (NOT? CONTAINS containsExpr)? | ... ;
+      # AND/OR grouping, parens and "NOT CONTAINS" are added by M7; this
+      # milestone only implements the right-recursive
+      # "A CONTAINS B CONTAINS C ..." chain.
+      def parse_contains_expr
+        operand = parse_class_expr_operand
+        return operand unless match(:contains)
+
+        Model::Containment.new(parent: operand, child: parse_contains_expr)
       end
 
       # classExprOperand : IDENTIFIER variable=IDENTIFIER? pathPredicate? #classExpression | ... ;
+      # (archetypePredicate/nodePredicate alternatives inside pathPredicate are added by M3)
       def parse_class_expr_operand
         class_name = expect(:identifier).value
         variable = check(:identifier) ? advance.value : nil
-        Model::ClassExpression.new(class_name: class_name, variable: variable)
+        predicate = check(:left_bracket) ? parse_path_predicate : nil
+        Model::ClassExpression.new(class_name: class_name, variable: variable, predicate: predicate)
+      end
+
+      # pathPredicate : SYM_LEFT_BRACKET (standardPredicate | archetypePredicate | nodePredicate) SYM_RIGHT_BRACKET ;
+      def parse_path_predicate
+        expect(:left_bracket)
+        predicate = parse_standard_predicate
+        expect(:right_bracket)
+        predicate
+      end
+
+      # standardPredicate : objectPath COMPARISON_OPERATOR pathPredicateOperand ;
+      def parse_standard_predicate
+        path = parse_object_path
+        operator = expect(:comparison_operator).value
+        Model::StandardPredicate.new(path: path, operator: operator, operand: parse_path_predicate_operand)
+      end
+
+      # pathPredicateOperand : primitive | objectPath | PARAMETER | ID_CODE | AT_CODE ;
+      # The objectPath/ID_CODE/AT_CODE alternatives aren't needed by any
+      # M2 example and are deferred.
+      def parse_path_predicate_operand
+        return Model::Parameter.new(name: advance.value) if check(:parameter)
+        return parse_primitive if primitive_ahead?
+
+        raise error("expected a parameter or a literal value, got #{describe(peek)}")
+      end
+
+      # objectPath : pathPart (SYM_SLASH pathPart)* ;
+      def parse_object_path
+        parts = [parse_path_part]
+        parts << parse_path_part while match(:slash)
+        Model::ObjectPath.new(segments: parts)
+      end
+
+      # pathPart : IDENTIFIER pathPredicate? ;
+      def parse_path_part
+        attribute = expect(:identifier).value
+        predicate = check(:left_bracket) ? parse_path_predicate : nil
+        Model::PathPart.new(attribute: attribute, predicate: predicate)
       end
 
       # identifiedPath : IDENTIFIER pathPredicate? (SYM_SLASH objectPath)? ;
+      # The leading pathPredicate alternative isn't needed by any M2
+      # example and is deferred.
       def parse_identified_path
-        Model::IdentifiedPath.new(variable: expect(:identifier).value)
+        variable = expect(:identifier).value
+        path = match(:slash) ? parse_object_path : nil
+        Model::IdentifiedPath.new(variable: variable, path: path)
       end
 
       def primitive_ahead?

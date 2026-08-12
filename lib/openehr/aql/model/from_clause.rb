@@ -17,14 +17,16 @@ module OpenEHR
       # classExprOperand's #classExpression alternative:
       #   IDENTIFIER variable=IDENTIFIER? pathPredicate?
       # A bare RM class name (e.g. "COMPOSITION"), optionally bound to a
-      # variable. `predicate` (archetype-id / at-code / node predicate) is
-      # added by M3.
+      # variable and constrained by a predicate. Until M3 adds
+      # archetypePredicate/nodePredicate, `predicate` can only be a
+      # StandardPredicate (or nil).
       class ClassExpression
-        attr_reader :class_name, :variable
+        attr_reader :class_name, :variable, :predicate
 
-        def initialize(class_name:, variable: nil)
+        def initialize(class_name:, variable: nil, predicate: nil)
           @class_name = class_name
           @variable = variable
+          @predicate = predicate
           freeze
         end
       end
