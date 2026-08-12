@@ -27,11 +27,16 @@ This package includes:
 * ADL 1.4 parser
 * AM/RM packages based on the openEHR specification 1.0.2, plus RM 1.1.0 deltas
 * ADL/XML/JSON serializers and an ADL archetype validator
+* AQL (Archetype Query Language): a parser plus an in-memory execution
+  engine that evaluates queries directly against RM object graphs you
+  already have in memory (see "Querying with AQL" below)
 
 This package excludes:
 * An XML archetype parser (in progress)
-* AQL (in progress)
-* Data store/retrieve would be separate to the other project.
+* Persistent data stores and search indexes - AQL here only ever
+  queries in-memory RM object graphs; the moment your data lives in a
+  database, that integration (e.g. openehr-rails) owns fetching it out
+  and this gem's AQL engine stays completely unaware of how
 * Terminology service(moved to openehr-terminology package)
 * Rails plugin(moved to openehr-rails package
 
@@ -71,6 +76,53 @@ way, from RM 1.1.0 onward.
 Not yet incorporated from RM 1.1.0 / BASE 1.2.0: ITEM_TAG (still in a
 development branch, not yet in a released RM version) and the finer
 points of DV_DURATION arithmetic beyond negation/unary minus.
+
+=Querying with AQL
+
+  query  = OpenEHR::AQL.parse(aql_string)                    # => a parsed, immutable Query
+  result = query.execute(dataset, params: { ehr_id: '...' })  # => a ResultSet (Enumerable, plus #to_json)
+  result = OpenEHR::AQL.execute(aql_string, dataset, params: {})  # one-shot
+
+The engine evaluates queries against <tt>OpenEHR::AQL::Dataset</tt>, its
+one and only input boundary - and the whole of its independence from
+any particular web framework or O/R mapper. Everything under
+<tt>lib/openehr/aql/</tt> talks to "wherever your data lives"
+exclusively through <tt>Dataset</tt>, which itself depends on nothing
+but Ruby's own <tt>Enumerable</tt>/<tt>#each</tt> protocol and this
+gem's own RM classes - no ActiveRecord, no Rails, no Sequel, anywhere
+in this gem, ever.
+
+==Supplying data to AQL
+
+<tt>Dataset</tt> accepts any Enumerable of records shaped like
+<tt>{ehr_id:, compositions:, ehr_status: (optional)}</tt> (a Hash with
+symbol or string keys, or a duck-typed object responding to the same
+methods), or a full <tt>OpenEHR::RM::EHR::EHR</tt> if you already have
+one. Every element yielded by a record's <tt>compositions</tt> must be
+one of this gem's own RM objects (<tt>is_a?(OpenEHR::RM::Common::Archetyped::Pathable)</tt>) -
+anything else raises <tt>OpenEHR::AQL::DatasetError</tt> immediately,
+naming the offending class and index, rather than half-working via
+loose duck typing.
+
+Construction never iterates its source, so a lazily-produced
+Enumerable stays lazy all the way through <tt>execute</tt>. A
+hypothetical Rails + ActiveRecord integration (e.g. openehr-rails)
+might look like this - note this is entirely outside this gem, shown
+only to make the boundary concrete:
+
+  records = Ehr.find_each.lazy.map { |row|
+    { ehr_id: row.uid,
+      compositions: row.composition_records.lazy.map { |cr|
+        OpenEHR::RM::CompositionFactory.create_from_json(cr.canonical_json) } } }
+  OpenEHR::AQL.execute(aql, OpenEHR::AQL::Dataset.new(ehrs: records))
+
+Swapping to Sinatra + Sequel, or any other framework/ORM, only changes
+the two <tt>.map</tt> bodies above - nothing in this gem's AQL code
+needs to know or care. For quick, non-database scripts:
+
+  c1 = OpenEHR::RM::CompositionFactory.create_from_json(composition_json)  # or build one by hand
+  OpenEHR::AQL.execute(aql, OpenEHR::AQL::Dataset.of_compositions([c1, c2]))
+  # or even just: OpenEHR::AQL.execute(aql, [c1, c2])  # via Dataset.wrap
 
 =Main codebase authors
 * Shinji Kobayashi and Akimichi Tatsukawa of http://openehr.jp
