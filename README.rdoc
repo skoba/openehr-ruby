@@ -25,6 +25,9 @@ The intention is to have a sample EHR to deploy quickly with Ruby on Rails for d
 
 This package includes:
 * ADL 1.4 parser
+* An XML archetype parser (reads the canonical openEHR ITS-XML shape
+  that this gem's own XMLSerializer produces, sharing its constraint-
+  tree node builders with the OPT parser)
 * AM/RM packages based on the openEHR specification 1.0.2, plus RM 1.1.0 deltas
 * ADL/XML/JSON serializers and an ADL archetype validator
 * AQL (Archetype Query Language): a parser plus an in-memory execution
@@ -32,7 +35,6 @@ This package includes:
   already have in memory (see "Querying with AQL" below)
 
 This package excludes:
-* An XML archetype parser (in progress)
 * Persistent data stores and search indexes - AQL here only ever
   queries in-memory RM object graphs; the moment your data lives in a
   database, that integration (e.g. openehr-rails) owns fetching it out

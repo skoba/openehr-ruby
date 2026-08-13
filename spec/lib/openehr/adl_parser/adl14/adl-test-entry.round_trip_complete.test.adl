@@ -1,0 +1,91 @@
+archetype (adl_version=1.4; uid=12345678-abcd-4321-9876-1234567890ab)
+	adl-test-ENTRY.round_trip_complete.v1
+
+concept
+	[at0000]	-- round trip complete test
+
+language
+	original_language = <[ISO_639-1::en]>
+	translations = <
+		["de"] = <
+			language = <[ISO_639-1::de]>
+			author = <
+				["name"] = <"Translator Name">
+			>
+			accreditation = <"Accreditation ID 00400595">
+		>
+	>
+
+description
+	original_author = <
+		["name"] = <"Test Author">
+		["organisation"] = <"openEHR.jp">
+	>
+	lifecycle_state = <"draft">
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"round trip completeness test">
+		>
+	>
+
+definition
+	ENTRY[at0000] matches {	-- round trip complete test
+		items cardinality matches {0..*; unordered} matches {
+			ELEMENT[at0004] matches {	-- quantity element
+				value matches {
+					C_DV_QUANTITY <
+						property = <[openehr::128]>
+						list = <
+							["1"] = <
+								units = <"yr">
+								magnitude = <|0.0..200.0|>
+								precision = <|2|>
+							>
+						>
+						assumed_value = <
+							units = <"yr">
+							magnitude = <8.0>
+							precision = <2>
+						>
+					>
+				}
+			}
+			allow_archetype CLUSTER[at0005] occurrences matches {0..1} matches {	-- alternative structure
+				include
+					archetype_id/value matches {/openEHR-EHR-CLUSTER\.anatomical_location(-[a-zA-Z0-9_]+)*\.v1/}
+			}
+		}
+	}
+
+invariant
+	inv1:1>0
+
+ontology
+	primary_language = <"en">
+	languages_available = <"en", "de">
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"round trip complete test">
+					description = <"round trip complete test">
+				>
+				["at0004"] = <
+					text = <"quantity element">
+					description = <"quantity element">
+				>
+				["at0005"] = <
+					text = <"alternative structure">
+					description = <"alternative structure">
+				>
+			>
+		>
+	>
+	term_bindings = <
+		["SNOMED-CT"] = <
+			items = <
+				["at0004"] = <[SNOMED-CT::123456]>
+			>
+		>
+	>
