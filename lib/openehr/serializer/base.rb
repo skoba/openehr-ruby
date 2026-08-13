@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenEHR
   module Serializer
     NL = "\r\n"

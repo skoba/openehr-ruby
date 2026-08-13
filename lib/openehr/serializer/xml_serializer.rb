@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rexml/document'
 require 'builder'
 require_relative 'base'
@@ -6,7 +8,7 @@ module OpenEHR
   module Serializer
     class XMLSerializer < BaseSerializer
       def header
-        header = ''
+        header = +''
         xml = Builder::XmlMarkup.new(:indent => 2, :target => header)
         xml.archetype_id do
           xml.value @archetype.archetype_id.value
@@ -22,7 +24,7 @@ module OpenEHR
       end
 
       def description
-        desc = ''
+        desc = +''
         xml = Builder::XmlMarkup.new(:indent => 2, :target => desc)
         ad = @archetype.description
         if ad
@@ -66,7 +68,7 @@ module OpenEHR
       end
 
       def definition
-        definition = ''
+        definition = +''
         xml = Builder::XmlMarkup.new(:indent => 2, :target => definition)
         xml.definition do
           emit_c_object_body(xml, @archetype.definition)
@@ -75,7 +77,7 @@ module OpenEHR
       end
 
       def ontology
-        ontology = ''
+        ontology = +''
         ao = @archetype.ontology
         xml = Builder::XmlMarkup.new(:indent => 2, :target => ontology)
         xml.ontology do

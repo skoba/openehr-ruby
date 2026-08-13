@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module OpenEHR
   module Serializer
     class ADLSerializer < BaseSerializer
       def header
-        hd = 'archetype'
+        hd = +'archetype'
         unless @archetype.adl_version.nil?
           hd << " (adl_version = #{@archetype.adl_version})"
         end
@@ -17,7 +19,7 @@ module OpenEHR
       end
 
       def description
-        desc = ''
+        desc = +''
         if @archetype.description
           ad = @archetype.description
           desc << 'description' + NL
