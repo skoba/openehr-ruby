@@ -1,3 +1,66 @@
+=== 2.2.0
+Bug fix and feature release: AQL/RM 1.1.0 spec-compliance fixes,
+ADL/XML serializer round-trip completeness, and a new XML archetype
+parser.
+
+* Fixed two AQL execution bugs that returned silently wrong results
+  (no error, just the wrong rows):
+  - `FROM EHR e [ehr_id/value=$ehr_id]`-style EHR-root predicates -
+    the idiom used by roughly a third of the official AQL examples to
+    scope a query to one patient - were parsed but never evaluated,
+    so every query matched every EHR regardless of the predicate.
+  - `SELECT TOP n` was parsed but never applied, so queries returned
+    every row instead of just the top n.
+* RM 1.1.0/1.0.4 relaxed several attributes from mandatory to optional
+  that this gem still enforced as mandatory, rejecting valid RM 1.1.0
+  data: DV_IDENTIFIER.issuer/assigner/type, PARTICIPATION.mode,
+  ISM_TRANSITION.transition, EHR.contributions/EHR.compositions.
+* Added the two RM 1.1.0 attributes this gem was missing entirely:
+  DV_MULTIMEDIA.size (falls back to the inherited value-based size
+  when not given explicitly, so existing callers are unaffected) and
+  ELEMENT.null_reason (requires null_flavor to already be set).
+* DV_AMOUNT/DV_TEMPORAL arithmetic: DvAmount#+/-/-@ read and wrote the
+  @magnitude ivar directly, which silently produced wrong results for
+  DvProportion (its magnitude is derived from numerator/denominator,
+  never ivar-backed - 2/3 + 1/3 returned 2/3 unchanged, no error).
+  DvAmount now builds results through an overridable hook, with a new
+  `multiply`/`*`; DvProportion overrides +/-/-@/multiply at the
+  numerator/denominator level instead. DV_DURATION gained +/-/multiply,
+  and DV_DATE/DV_TIME/DV_DATE_TIME gained #add/#subtract against a
+  DV_DURATION (month-end clamping, leap years, day/timezone
+  wraparound) - previously calling .add/.subtract on any of these
+  raised ArgumentError immediately, so only #diff worked at all.
+* ADLSerializer: added C_DV_QUANTITY support (a very common real-world
+  constraint type that previously made any archetype using it
+  unserializable), plus the archetype-level sections it was silently
+  dropping - uid, specialise, language/translations, an invariant
+  section, and the ontology's primary_language/constraint_definitions/
+  constraint_bindings.
+* XMLSerializer rewritten to the canonical openEHR ITS-XML shape.
+  Concretely, its own output could not be read back by this gem's own
+  OPTParser: `<occurrence>` (singular) instead of `<occurrences>`, no
+  xsi:type on `<attributes>` at all (OPTParser can't dispatch attribute
+  reading without it), flat text where the schema nests, and ASSERTION
+  as flat text even though Assertion#expression= is non-nil-mandatory.
+  Also adds C_DV_QUANTITY/C_DV_SCALE support and fixes the same
+  ordinal symbol.code_string bug ADLSerializer had.
+* New: XMLArchetypeParser, closing the "XML archetype parser (in
+  progress)" gap the README had documented. Reads the canonical shape
+  XMLSerializer now emits, sharing constraint-tree node builders with
+  OPTParser (both extracted into 3 shared modules under
+  lib/openehr/parser/). Verified end-to-end by round-tripping real
+  archetypes through ADLParser -> XMLSerializer -> XMLArchetypeParser
+  and comparing against the ADLParser-built original.
+* Along the way, found and fixed two more pre-existing bugs shared
+  with OPTParser, neither previously triggered by its existing .opt
+  fixtures: sibling C_COMPLEX_OBJECT/ARCHETYPE_SLOT nodes under one
+  C_MULTIPLE_ATTRIBUTE corrupted each other's paths (a shared mutable
+  Node object leaked path state between siblings), and
+  ARCHETYPE_SLOT's own node_id was never folded into its path.
+* Ruby support narrowed to 3.3, 3.4, and 4.0 (3.2 dropped, EOL),
+  following this gem's existing "Ruby core's currently-supported
+  versions only" policy.
+
 === 2.1.0
 New feature and maintenance release.
 
