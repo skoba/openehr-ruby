@@ -40,17 +40,19 @@ module OpenEHR
 # because I could not obtain HL7 specification related them.
 
         class DvGeneralTimeSpecification < DvTimeSpecification
-          attr_reader :value
-          def initialize(value)
-            super(value)
-          end
+          FORMALISM = 'HL7:GTS'
+
           def value=(value)
-            raise ArgumentError, "value is not valied" unless value.formalism.is_equal?('HL7:GTS')
-            @value = value
+            unless value.respond_to?(:formalism) && value.formalism == FORMALISM
+              raise ArgumentError, "formalism must be #{FORMALISM}"
+            end
+            super
           end
-          private
-          def value_valid(value)
-          end
+          # calendar_alignment / event_alignment / institution_specified
+          # remain NotImplementedError (inherited from DvTimeSpecification):
+          # deriving them requires parsing the full HL7 GTS set-algebra
+          # (union/intersection/exclusion of interval sets), which is
+          # explicitly out of scope here.
         end
 
         class DvPeriodicTimeSpecification < DvTimeSpecification
