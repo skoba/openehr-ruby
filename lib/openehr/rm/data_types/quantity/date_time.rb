@@ -55,20 +55,8 @@ module OpenEHR
               else
                 past, future = self, other
               end
-              year, month, day = 0, 0, 0
-              if (future.day >= past.day)
-                day = future.day - past.day
-              else
-                month = -1
-                previous_month = future.month - 1
-                if previous_month == 0
-                  previous_month = 12
-                end
-                day = DAYS_IN_MONTH[previous_month] + future.day - past.day
-                if leapyear?(future.year) && (previous_month == 2)
-                  day += 1
-                end
-              end
+              year = 0
+              month, day = day_borrow(past, future)
               week = day / 7
               if (future.month >= past.month)
                 month += future.month - past.month
@@ -82,11 +70,26 @@ module OpenEHR
               end
               year += future.year - past.year
               return DvDuration.new(:value =>
-                   'P' + year.to_s + 'Y' + month.to_s + 'M' + 
+                   'P' + year.to_s + 'Y' + month.to_s + 'M' +
                          week.to_s + 'W' + day.to_s + 'D')
             end
+
+            private
+
+            # Returns [month_adjustment, day] for diff: when future's
+            # day-of-month is behind past's, a month is borrowed from
+            # future's calendar to make day non-negative.
+            def day_borrow(past, future)
+              return [0, future.day - past.day] if future.day >= past.day
+
+              previous_month = future.month - 1
+              previous_month = 12 if previous_month == 0
+              day = DAYS_IN_MONTH[previous_month] + future.day - past.day
+              day += 1 if leapyear?(future.year) && previous_month == 2
+              [-1, day]
+            end
           end
-          
+
           class DvTime < DvTemporal
             include OpenEHR::AssumedLibraryTypes::ISO8601TimeModule
 
@@ -168,6 +171,9 @@ module OpenEHR
               end
             end
 
+            # rubocop:disable Metrics/AbcSize -- dense calendar arithmetic; refactoring
+            # without broader leap-year/borrow coverage (only 1 example exercises this
+            # method) is riskier than the lint value gained
             def diff(other)
               if self.magnitude >= other.magnitude
                 past, future = other, self
@@ -196,6 +202,7 @@ module OpenEHR
                                       fractional_second.to_s[1..-1] + 'S')
               end
             end
+            # rubocop:enable Metrics/AbcSize
 
             private
             def split_date_time(date_time)

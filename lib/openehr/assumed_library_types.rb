@@ -472,17 +472,20 @@ module OpenEHR
           end
           # A timezone is optional in ISO 8601; its absence does not make an
           # otherwise-valid time invalid.
-          unless tz.nil?
-            timezone = Timezone.new(tz)
-            if timezone.hour < 0 or timezone.hour >= HOURS_IN_DAY
-              return false
-            end
-            if timezone.minute < 0 or timezone.minute >= MINUTES_IN_HOUR
-              return false
-            end
-          end
+          return false unless valid_timezone_part?(tz)
+
           return true
         end
+      end
+
+      def self.valid_timezone_part?(tz)
+        return true if tz.nil?
+
+        timezone = Timezone.new(tz)
+        return false if timezone.hour < 0 or timezone.hour >= HOURS_IN_DAY
+        return false if timezone.minute < 0 or timezone.minute >= MINUTES_IN_HOUR
+
+        true
       end
     end # end of ISO8601_TIME
 
