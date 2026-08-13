@@ -42,11 +42,9 @@ describe 'ADLSerializer#ontology / XMLSerializer#ontology (terminologies_availab
     end
 
     it 'includes term_bindings' do
-      binding = REXML::XPath.first(doc, '//ontology/term_bindings')
+      binding = REXML::XPath.first(doc, "//ontology/term_bindings[@terminology='SNOMED-CT'][@code='at0000']")
       expect(binding).not_to be_nil
-      expect(REXML::XPath.first(binding, 'terminology').text).to eq('SNOMED-CT')
-      expect(REXML::XPath.first(binding, 'code').text).to eq('at0000')
-      expect(REXML::XPath.first(binding, 'value').text).to eq('SNOMED-CT::272741003')
+      expect(binding.text).to eq('SNOMED-CT::272741003')
     end
   end
 end

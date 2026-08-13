@@ -24,8 +24,8 @@ describe 'XMLSerializer#definition (recursive emitter)' do
     node = CComplexObject.new(:rm_type_name => 'CLUSTER', :node_id => 'at0000',
                               :occurrences => Interval.new(:lower => 0, :upper => 5, :lower_included => true, :upper_included => true))
     doc = doc_for(node)
-    expect(REXML::XPath.first(doc, '//definition/occurrence/lower').text).to eq('0')
-    expect(REXML::XPath.first(doc, '//definition/occurrence/upper').text).to eq('5')
+    expect(REXML::XPath.first(doc, '//definition/occurrences/lower').text).to eq('0')
+    expect(REXML::XPath.first(doc, '//definition/occurrences/upper').text).to eq('5')
   end
 
   it 'still renders an any_allowed complex object with no attributes element' do
@@ -51,7 +51,7 @@ describe 'XMLSerializer#definition (recursive emitter)' do
     expect(REXML::XPath.first(doc, "//definition/attributes/children/node_id").text).to eq('at0001')
   end
 
-  it 'emits a C_PRIMITIVE_OBJECT child with its range' do
+  it 'emits a C_PRIMITIVE_OBJECT child with its range nested in a typed <item>' do
     attribute = CSingleAttribute.new(:rm_attribute_name => 'magnitude', :existence => mandatory,
                                      :children => [CPrimitiveObject.new(:rm_type_name => 'Integer', :occurrences => mandatory,
                                                                           :item => CInteger.new(:range => Interval.new(:lower => 0, :upper => 100)))])
@@ -60,8 +60,10 @@ describe 'XMLSerializer#definition (recursive emitter)' do
     doc = doc_for(node)
     child = REXML::XPath.first(doc, "//definition/attributes/children[@xsi:type='C_PRIMITIVE_OBJECT']")
     expect(child).not_to be_nil
-    expect(REXML::XPath.first(child, 'range/lower').text).to eq('0')
-    expect(REXML::XPath.first(child, 'range/upper').text).to eq('100')
+    item = REXML::XPath.first(child, "item[@xsi:type='C_INTEGER']")
+    expect(item).not_to be_nil
+    expect(REXML::XPath.first(item, 'range/lower').text).to eq('0')
+    expect(REXML::XPath.first(item, 'range/upper').text).to eq('100')
   end
 
   it 'emits a CONSTRAINT_REF child with its reference' do
