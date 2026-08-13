@@ -4,3 +4,16 @@ AllCops:
 inherit_gem:
   meowcop:
     - config/rubocop.yml
+
+# meowcop already excludes spec/ from Metrics/BlockLength but predates
+# this cop's spec-module pattern (specs here wrap a module OpenEHR).
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*'
+
+# 7 of the 8 flagged initializers deliberately skip super: the parent
+# initialize's signature or behavior genuinely doesn't fit (e.g.
+# DvTemporal, whose parent sets an attribute this class undefs). The
+# one truly redundant case (DvUri#initialize) was deleted instead.
+Lint/MissingSuper:
+  Enabled: false

@@ -31,10 +31,6 @@ module OpenEHR
     module DataTypes
       module URI
         class DvUri < OpenEHR::RM::DataTypes::Basic::DataValue
-          def initialize(args = {})
-            self.value = args[:value]
-          end
-
           def value
             @value
           end
