@@ -15,6 +15,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'libnotify'
   gem 'rubocop'
+  gem 'rubocop-rspec'
   gem 'meowcop'
   gem 'better_errors'
 end
