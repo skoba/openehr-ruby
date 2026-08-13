@@ -19,6 +19,7 @@ module OpenEHR
     require_relative 'parser/exception'
     require_relative 'parser/adl_parser'
     require_relative 'parser/opt_parser'
+    require_relative 'parser/xml_archetype_parser'
     require_relative 'parser/archetype_validator'
   end
 end

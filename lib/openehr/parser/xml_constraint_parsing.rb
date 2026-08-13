@@ -231,8 +231,25 @@ module OpenEHR
         OpenEHR::AM::Archetype::ConstraintModel::CPrimitiveObject.new(rm_type_name: rm_type_name, occurrences: occurrences, node_id: node.id, item: item)
       end
 
+      # Bare-literal ExprLeaf#item readers (type "String"/"Integer"/
+      # "Real"/"Boolean", reference_type "CONSTANT") - distinct from
+      # the C_STRING/C_INTEGER/... constraint-item readers in
+      # xml_primitive_parsing.rb, which are dispatched to for
+      # reference_type "constraint" leaves instead.
       def string(attr_xml)
         attr_xml.text
+      end
+
+      def integer(attr_xml)
+        attr_xml.text.to_i
+      end
+
+      def real(attr_xml)
+        attr_xml.text.to_f
+      end
+
+      def boolean(attr_xml)
+        to_bool(attr_xml.text)
       end
 
       def to_bool(str)
