@@ -261,6 +261,55 @@ module OpenEHR
               text = value.start_with?('-') ? value[1..-1] : "-#{value}"
               DvDuration.new(:value => text)
             end
+
+            # DV_DURATION is a DV_AMOUNT in the openEHR RM even though it
+            # inherits DvAbsoluteQuantity's add/subtract/diff method names
+            # here (see DvTemporal); those assume magnitude=-based
+            # reconstruction, which DvTemporal subclasses can't support,
+            # so +/-/multiply are implemented directly instead, going
+            # through magnitude (already sign-aware and nominal-month
+            # aware) and reconstructing via an ISO8601 string.
+            def +(other)
+              raise ArgumentError, 'type mismatch' unless is_strictly_comparable_to?(other)
+
+              self.class.from_seconds(magnitude + other.magnitude)
+            end
+
+            def -(other)
+              raise ArgumentError, 'type mismatch' unless is_strictly_comparable_to?(other)
+
+              self.class.from_seconds(magnitude - other.magnitude)
+            end
+
+            def multiply(factor)
+              raise ArgumentError, 'factor must be Numeric' unless factor.is_a?(Numeric)
+
+              self.class.from_seconds(magnitude * factor)
+            end
+            alias * multiply
+
+            def self.from_seconds(total_seconds)
+              sign = total_seconds.negative? ? '-' : ''
+              days, hours, minutes, seconds_part = duration_components(total_seconds.abs)
+              new(:value => "#{sign}P0Y0M0W#{days}DT#{hours}H#{minutes}M#{seconds_part}S")
+            end
+
+            def self.duration_components(total_seconds)
+              days, remainder = total_seconds.divmod(HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE)
+              hours, remainder = remainder.divmod(MINUTES_IN_HOUR * SECONDS_IN_MINUTE)
+              minutes, remainder = remainder.divmod(SECONDS_IN_MINUTE)
+              [days, hours, minutes, seconds_with_fraction(remainder)]
+            end
+            private_class_method :duration_components
+
+            def self.seconds_with_fraction(remainder)
+              seconds = remainder.to_i
+              fractional = (remainder - seconds).round(6)
+              seconds += 1 if fractional >= 1.0
+              fractional = 0.0 if fractional >= 1.0
+              fractional.zero? ? seconds.to_s : "#{seconds}#{fractional.to_s[1..]}"
+            end
+            private_class_method :seconds_with_fraction
           end
         end # of DateTime
       end # of Quantity
