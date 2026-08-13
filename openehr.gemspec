@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files -- lib/*`.split("\n")
   gem.files        += %w[README.rdoc]
   gem.require_path  = "lib"
-  gem.required_ruby_version = '>= 3.2'
+  gem.required_ruby_version = '>= 3.3'
 
   gem.add_dependency('rake')
   gem.add_dependency('xml-simple')
