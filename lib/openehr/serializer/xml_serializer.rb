@@ -147,7 +147,10 @@ module OpenEHR
 
         text = +''
         xml = Builder::XmlMarkup.new(:indent => 2, :target => text)
-        xml.invariants { invariants.each { |assertion| emit_assertion(xml, assertion) } }
+        # Each assertion is wrapped in its own <invariant> - without a
+        # per-item boundary, multiple invariants' tag/string_expression/
+        # expression triplets would flatten into indistinguishable siblings.
+        xml.invariants { invariants.each { |assertion| xml.tag!('invariant') { emit_assertion(xml, assertion) } } }
         text
       end
 
