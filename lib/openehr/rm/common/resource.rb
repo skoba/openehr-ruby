@@ -1,4 +1,3 @@
-require 'set'
 
 module OpenEHR
   module RM

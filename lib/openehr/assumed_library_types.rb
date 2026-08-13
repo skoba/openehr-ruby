@@ -254,8 +254,8 @@ module OpenEHR
       end
 
       def to_days
-        days = nilthenzero(@year)*TimeDefinitions::NOMINAL_DAYS_IN_YEAR +
-          nilthenzero(@month)*TimeDefinitions::NOMINAL_DAYS_IN_MONTH +
+        days = (nilthenzero(@year)*TimeDefinitions::NOMINAL_DAYS_IN_YEAR) +
+          (nilthenzero(@month)*TimeDefinitions::NOMINAL_DAYS_IN_MONTH) +
           nilthenzero(@day)
         return days
       end
@@ -406,7 +406,7 @@ module OpenEHR
       end
 
       def to_second
-        second = (nilthenzero(@hour)*60 + nilthenzero(@minute))*60 +
+        second = (((nilthenzero(@hour)*60) + nilthenzero(@minute))*60) +
           nilthenzero(@second) +
           nilthenzero(@fractional_second)
         return second
@@ -571,7 +571,7 @@ module OpenEHR
 
       protected
       def magnitude
-        return self.to_days*HOURS_IN_DAY*MINUTES_IN_HOUR*SECONDS_IN_MINUTE +
+        return (self.to_days*HOURS_IN_DAY*MINUTES_IN_HOUR*SECONDS_IN_MINUTE) +
           self.to_second
       end
     end
@@ -719,11 +719,11 @@ module OpenEHR
       end
 
       def to_seconds
-        days = nilthenzero(@years)*TimeDefinitions::DAYS_IN_YEAR +
-          nilthenzero(@months)*TimeDefinitions::DAYS_IN_MONTH +
-          nilthenzero(@weeks)*TimeDefinitions::DAYS_IN_WEEK + 
+        days = (nilthenzero(@years)*TimeDefinitions::DAYS_IN_YEAR) +
+          (nilthenzero(@months)*TimeDefinitions::DAYS_IN_MONTH) +
+          (nilthenzero(@weeks)*TimeDefinitions::DAYS_IN_WEEK) + 
           nilthenzero(@days)
-        seconds_with_fractional = (((days*TimeDefinitions::HOURS_IN_DAY + nilthenzero(@hours))*TimeDefinitions::MINUTES_IN_HOUR)+nilthenzero(@minutes))*TimeDefinitions::SECONDS_IN_MINUTE +
+        seconds_with_fractional = (((((days*TimeDefinitions::HOURS_IN_DAY) + nilthenzero(@hours))*TimeDefinitions::MINUTES_IN_HOUR)+nilthenzero(@minutes))*TimeDefinitions::SECONDS_IN_MINUTE) +
           nilthenzero(@seconds) +
           @fractional_second.to_f
         return negative? ? -seconds_with_fractional : seconds_with_fractional

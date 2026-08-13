@@ -2,7 +2,6 @@ require File.dirname(__FILE__) + '/../../../../../spec_helper'
 #require File.dirname(__FILE__) + '/shared_examples_spec'
 include OpenEHR::RM::Common::ChangeControl
 include OpenEHR::RM::DataTypes::Text
-require 'set'
 
 describe ImportedVersion do
 #  it_should_behave_like 'change_control'

@@ -2,7 +2,6 @@
 require File.dirname(__FILE__) + '/../../../../../../spec_helper'
 require 'openehr/am/openehr_profile/data_types/basic'
 include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Basic
-require 'set'
 
 describe StateMachine do
   before(:each) do

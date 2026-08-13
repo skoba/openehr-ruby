@@ -15,7 +15,7 @@ shared_examples 'c_dv_quantity' do
     end
 
     context 'property' do
-      let (:property) { c_dv_quantity.property}
+      let(:property) { c_dv_quantity.property}
 
       it 'property should not be nil' do
         expect(property).not_to be_nil

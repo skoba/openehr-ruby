@@ -104,19 +104,19 @@ module OpenEHR
               if @fractional_second.nil? && @second.nil? && @minute.nil?
                 return @hour * 60 * 60
               elsif @fractional_second.nil? && @second.nil?
-                return @hour * 60 * 60 + @minute * 60
+                return (@hour * 60 * 60) + (@minute * 60)
               elsif @fractional_second.nil?
-                return @hour * 60 * 60 + @minute * 60 + @second
+                return (@hour * 60 * 60) + (@minute * 60) + @second
               else
-                return @hour*60*60+@minute* 60 + @second + @fractional_second
+                return (@hour*60*60)+(@minute* 60) + @second + @fractional_second
               end
             end
 
             def diff(other)
               diff = (other.magnitude - self.magnitude).abs
               hour = (diff / 60 / 60).to_i
-              minute = ((diff - hour*60*60)/60).to_i
-              second = (diff - hour * 60 * 60 - minute * 60).to_i
+              minute = ((diff - (hour*60*60))/60).to_i
+              second = (diff - (hour * 60 * 60) - (minute * 60)).to_i
               fractional_second = ((diff - diff.to_i)*1000000.0).to_i/1000000.0
               str = 'P0Y0M0W0DT' + hour.to_s + 'H' +
                 minute.to_s + 'M' + second.to_s
@@ -156,11 +156,11 @@ module OpenEHR
                   minute += @timezone.minute
                 end
               end
-              seconds = (((@year * 365.24 +
-                           @month * 30.42 +
-                           @day) * 24 +
-                           hour) * 60 +
-                           minute) * 60 + @second
+              seconds = (((((((@year * 365.24) +
+                           (@month * 30.42) +
+                           @day) * 24) +
+                           hour) * 60) +
+                           minute) * 60) + @second
               if @fractional_second.nil?
                 return seconds
               else
@@ -183,8 +183,8 @@ module OpenEHR
               end
               date_duration = past_date.diff(future_date)
               hour = (time_diff / 60 / 60).to_i
-              minute = ((time_diff - hour*60*60)/60).to_i
-              second = (time_diff - hour * 60 * 60 - minute * 60).to_i
+              minute = ((time_diff - (hour*60*60))/60).to_i
+              second = (time_diff - (hour * 60 * 60) - (minute * 60)).to_i
               str = date_duration.value + 'T' + hour.to_s + 'H' +
                 minute.to_s + 'M' + second.to_s
               if @fractional_second.nil?

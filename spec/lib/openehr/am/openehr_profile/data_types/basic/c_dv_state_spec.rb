@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/../../../../../../spec_helper'
 require 'openehr/am/openehr_profile/data_types/basic'
 include ::OpenEHR::AM::OpenEHRProfile::DataTypes::Basic
 include ::OpenEHR::AssumedLibraryTypes
-require 'set'
 
 describe CDvState do
   before(:each) do

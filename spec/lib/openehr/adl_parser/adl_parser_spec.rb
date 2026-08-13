@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 
 describe OpenEHR::Parser::ADLParser do
 
-  before (:all) do
+  before(:all) do
     @adl_dir = File.dirname(__FILE__) + '/adl14/'
   end
 

@@ -1,4 +1,3 @@
-require 'set'
 require 'active_support/core_ext/string/inflections'
 
 module OpenEHR

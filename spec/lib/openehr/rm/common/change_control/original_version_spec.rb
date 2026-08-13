@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../../../../../spec_helper'
 #require File.dirname(__FILE__) + '/shared_examples_spec'
-require 'set'
 include OpenEHR::RM::Common::ChangeControl
 include OpenEHR::RM::DataTypes::Text
 

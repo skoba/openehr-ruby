@@ -10,11 +10,11 @@ module OpenEHR
         unless @archetype.adl_version.nil?
           hd << " (adl_version = #{@archetype.adl_version})"
         end
-        hd << NL+INDENT + "#{@archetype.archetype_id.value}"+NL*2
-        hd << 'concept'+NL+ INDENT+"[#{@archetype.concept}]"+NL
-        hd << NL+'language'+NL+INDENT+'original_language = <['+
+        hd << (NL+INDENT + "#{@archetype.archetype_id.value}"+(NL*2))
+        hd << ('concept'+NL+ INDENT+"[#{@archetype.concept}]"+NL)
+        hd << (NL+'language'+NL+INDENT+'original_language = <['+
           @archetype.original_language.terminology_id.value+'::'+
-          @archetype.original_language.code_string+']>'+NL
+          @archetype.original_language.code_string+']>'+NL)
         return hd
       end
 
@@ -22,47 +22,47 @@ module OpenEHR
         desc = +''
         if @archetype.description
           ad = @archetype.description
-          desc << 'description' + NL
-          desc << INDENT + 'original_author = <' + NL
+          desc << ('description' + NL)
+          desc << (INDENT + 'original_author = <' + NL)
           ad.original_author.each do |k,v|
-            desc << INDENT+INDENT+'["'+k+'"] = <"'+v+'">'+NL
+            desc << (INDENT+INDENT+'["'+k+'"] = <"'+v+'">'+NL)
           end
-          desc << INDENT+'>'+NL
-          desc << INDENT+'lifecycle_state = <"'+ad.lifecycle_state+'">'+NL
-          desc << INDENT+'details = <'+NL
+          desc << (INDENT+'>'+NL)
+          desc << (INDENT+'lifecycle_state = <"'+ad.lifecycle_state+'">'+NL)
+          desc << (INDENT+'details = <'+NL)
           ad.details.each do |lang,item|
-            desc << INDENT*2+'["'+lang+'"] = <'+NL
-            desc << INDENT*3+'language = <['+
+            desc << ((INDENT*2)+'["'+lang+'"] = <'+NL)
+            desc << ((INDENT*3)+'language = <['+
               item.language.terminology_id.value+'::'+
-              item.language.code_string+']>'+NL
-            desc << INDENT*3+'purpose = <"'+item.purpose+'">'+NL
+              item.language.code_string+']>'+NL)
+            desc << ((INDENT*3)+'purpose = <"'+item.purpose+'">'+NL)
             if item.keywords then
-              desc << INDENT*3+'keywords = <'
+              desc << ((INDENT*3)+'keywords = <')
               item.keywords.each do |word|
-                desc << '"'+word+'",'
+                desc << ('"'+word+'",')
               end
-              desc.chop! << '>'+NL
+              desc.chop! << ('>'+NL)
             end
-            desc << INDENT*3+'use = <"'+item.use+'">'+NL if item.use
-            desc << INDENT*3+'misuse = <"'+item.misuse+'">'+NL if item.misuse
-            desc << INDENT*3+'copyright = <"'+item.copyright+'">'+NL if item.copyright
+            desc << ((INDENT*3)+'use = <"'+item.use+'">'+NL) if item.use
+            desc << ((INDENT*3)+'misuse = <"'+item.misuse+'">'+NL) if item.misuse
+            desc << ((INDENT*3)+'copyright = <"'+item.copyright+'">'+NL) if item.copyright
             if item.original_resource_uri
-              desc << INDENT*3 + 'original_resource_uri = <'
+              desc << ((INDENT*3) + 'original_resource_uri = <')
               item.original_resource_uri.each do |k,v|
-                desc << INDENT*4+'["'+k+'"] = <"'+v+'">'+NL
+                desc << ((INDENT*4)+'["'+k+'"] = <"'+v+'">'+NL)
               end
-              desc << INDENT*3+'>'+NL
+              desc << ((INDENT*3)+'>'+NL)
             end
             if item.other_details
-              desc << INDENT*3 + 'other_details = <'
+              desc << ((INDENT*3) + 'other_details = <')
               item.other_details.each do |k,v|
-                desc << INDENT*4+'["'+k+'"] = <"'+v+'">'+NL
+                desc << ((INDENT*4)+'["'+k+'"] = <"'+v+'">'+NL)
               end
-              desc << INDENT*3+'>'+NL
+              desc << ((INDENT*3)+'>'+NL)
             end
-            desc << INDENT*2+'>'+NL
+            desc << ((INDENT*2)+'>'+NL)
           end
-          desc << INDENT+'>'+NL
+          desc << (INDENT+'>'+NL)
         end
         return desc
       end
@@ -76,21 +76,21 @@ module OpenEHR
         ontology = 'ontology'+NL
         ontology << string_list_line('languages_available', ao.languages_available)
         ontology << string_list_line('terminologies_available', ao.terminologies_available)
-        ontology << INDENT + 'term_definitions = <' + NL
+        ontology << (INDENT + 'term_definitions = <' + NL)
         ao.term_definitions.each do |lang, items|
-          ontology << INDENT*2 + "[\"#{lang}\"] = <" + NL
-          ontology << INDENT*3 + 'items = <'  + NL
+          ontology << ((INDENT*2) + "[\"#{lang}\"] = <" + NL)
+          ontology << ((INDENT*3) + 'items = <'  + NL)
           items.each do |code, item|
-            ontology << INDENT*4 + "[\"#{code}\"] = <" + NL
+            ontology << ((INDENT*4) + "[\"#{code}\"] = <" + NL)
             item.items.each do |name, desc|
-              ontology << INDENT*5 + "#{name} = <\"#{desc}\">" + NL
+              ontology << ((INDENT*5) + "#{name} = <\"#{desc}\">" + NL)
             end
-            ontology << INDENT*4 + '>'+NL
+            ontology << ((INDENT*4) + '>'+NL)
           end
-          ontology << INDENT*3 + '>' + NL
-          ontology << INDENT*2 + '>' + NL
+          ontology << ((INDENT*3) + '>' + NL)
+          ontology << ((INDENT*2) + '>' + NL)
         end
-        ontology << INDENT + '>' + NL
+        ontology << (INDENT + '>' + NL)
         ontology << term_bindings_block(ao.term_bindings)
         ontology
       end
@@ -116,16 +116,16 @@ module OpenEHR
 
         block = INDENT + 'term_bindings = <' + NL
         term_bindings.each do |terminology, codes|
-          block << INDENT*2 + "[\"#{terminology}\"] = <" + NL
-          block << INDENT*3 + 'items = <' + NL
+          block << ((INDENT*2) + "[\"#{terminology}\"] = <" + NL)
+          block << ((INDENT*3) + 'items = <' + NL)
           codes.each do |code, bindings|
             code_phrase = Array(bindings).first
-            block << INDENT*4 + "[\"#{code}\"] = <[#{code_phrase.terminology_id.value}::#{code_phrase.code_string}]>" + NL
+            block << ((INDENT*4) + "[\"#{code}\"] = <[#{code_phrase.terminology_id.value}::#{code_phrase.code_string}]>" + NL)
           end
-          block << INDENT*3 + '>' + NL
-          block << INDENT*2 + '>' + NL
+          block << ((INDENT*3) + '>' + NL)
+          block << ((INDENT*2) + '>' + NL)
         end
-        block << INDENT + '>' + NL
+        block << (INDENT + '>' + NL)
       end
 
       # Recursive cADL emitter for a single C_OBJECT node, dispatching
@@ -153,12 +153,12 @@ module OpenEHR
           head + ' matches {*}' + NL
         else
           body = node.attributes.map { |a| emit_c_attribute(a, depth + 1) }.join
-          head + ' matches {' + NL + body + INDENT*depth + '}' + NL
+          head + ' matches {' + NL + body + (INDENT*depth) + '}' + NL
         end
       end
 
       def complex_object_head(node, depth)
-        head = INDENT*depth + node.rm_type_name
+        head = (INDENT*depth) + node.rm_type_name
         head += "[#{node.node_id}]" if node.node_id
         head += " occurrences matches {#{interval_literal(node.occurrences)}}" if show_interval?(node.occurrences)
         head
@@ -179,12 +179,12 @@ module OpenEHR
           head + " matches {#{inline_body(children.first)}}" + NL
         else
           body = children.map { |c| emit_c_object(c, depth + 1) }.join
-          head + ' matches {' + NL + body + INDENT*depth + '}' + NL
+          head + ' matches {' + NL + body + (INDENT*depth) + '}' + NL
         end
       end
 
       def attribute_head(attribute, depth)
-        head = INDENT*depth + attribute.rm_attribute_name
+        head = (INDENT*depth) + attribute.rm_attribute_name
         head += " existence matches {#{interval_literal(attribute.existence)}}" if show_interval?(attribute.existence)
         head += " cardinality matches {#{cardinality_literal(attribute.cardinality)}}" if attribute.is_a?(CMultipleAttribute)
         head
@@ -210,30 +210,30 @@ module OpenEHR
       end
 
       def emit_archetype_slot(node, depth)
-        head = INDENT*depth + 'allow_archetype ' + node.rm_type_name
+        head = (INDENT*depth) + 'allow_archetype ' + node.rm_type_name
         head += "[#{node.node_id}]" if node.node_id
         head += " occurrences matches {#{interval_literal(node.occurrences)}}" if show_interval?(node.occurrences)
         lines = [head + ' matches {' + NL]
         lines << assertion_block(node.includes, 'include', depth + 1)
         lines << assertion_block(node.excludes, 'exclude', depth + 1)
-        lines << INDENT*depth + '}' + NL
+        lines << ((INDENT*depth) + '}' + NL)
         lines.join
       end
 
       def assertion_block(assertions, keyword, depth)
         return '' if assertions.nil?
 
-        lines = [INDENT*depth + keyword + NL]
-        assertions.each { |a| lines << INDENT*(depth+1) + a.string_expression + NL }
+        lines = [(INDENT*depth) + keyword + NL]
+        assertions.each { |a| lines << ((INDENT*(depth+1)) + a.string_expression + NL) }
         lines.join
       end
 
       def emit_internal_ref(node, depth)
-        INDENT*depth + "use_node #{node.rm_type_name} #{node.target_path}" + NL
+        (INDENT*depth) + "use_node #{node.rm_type_name} #{node.target_path}" + NL
       end
 
       def emit_constraint_ref(node, depth)
-        INDENT*depth + "[#{node.reference}]" + NL
+        (INDENT*depth) + "[#{node.reference}]" + NL
       end
 
       def primitive_body(item)

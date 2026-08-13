@@ -2,7 +2,6 @@
 # ItemStructure module
 # http://www.openehr.org/uml/release-1.0.1/Browsable/_9_0_76d0249_1109346709572_859750_3810Report.html
 # refs #54
-require 'set'
 
 require_relative '../data_structures'
 require_relative 'item_structure/representation'

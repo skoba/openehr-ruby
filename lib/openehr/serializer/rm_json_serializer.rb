@@ -1,5 +1,4 @@
 require 'json'
-require 'set'
 
 module OpenEHR
   module Serializer

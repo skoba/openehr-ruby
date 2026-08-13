@@ -1,4 +1,3 @@
-require 'set'
 require_relative File.dirname(__FILE__) + '/../../adl_parser/parser_spec_helper'
 describe OpenEHR::AM::Archetype::Archetype do
   let(:archetype) { adl14_archetype('openEHR-EHR-CLUSTER.anatomical_location.v1.adl') }

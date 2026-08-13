@@ -1,4 +1,3 @@
-#! /usr/bin/env ruby
 # Maintenance script (invoke via `rake charset:extract`, never autoloaded):
 # regenerates lib/openehr/rm/data_types/charset.lst from a local copy of
 # the IANA character-sets registry
