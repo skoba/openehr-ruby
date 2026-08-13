@@ -21,7 +21,7 @@ module OpenEHR
       end
 
       def execute(dataset, params: {})
-        bindings = ContainsResolver.new(@query.from_clause, Dataset.wrap(dataset)).each_binding
+        bindings = ContainsResolver.new(@query.from_clause, Dataset.wrap(dataset), params: params).each_binding
                                     .select { |binding| where_matches?(binding, params) }
         rows = aggregate_query? ? [aggregate_row(bindings)] : select_rows(bindings)
         ResultSet.new(columns: @query.select_clause.columns.map { |column| column_name(column) }, rows: rows)

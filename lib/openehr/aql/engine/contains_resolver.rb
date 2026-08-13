@@ -11,15 +11,18 @@ module OpenEHR
     # CONTAINS chain searching a matched Locatable's *entire* subtree
     # (any depth, via Pathable#path_children) for the next class,
     # archetype-predicate filtering, AND/OR-grouped sibling branches
-    # (cross-product / union of each branch's matches) and NOT CONTAINS
-    # (parent matches survive only when the negated class is absent).
-    # standardPredicate/nodePredicate filtering and an EHR-level
-    # predicate (e.g. "[ehr_id/value=$ehr_id]") are added by a later
-    # engine milestone.
+    # (cross-product / union of each branch's matches), NOT CONTAINS
+    # (parent matches survive only when the negated class is absent),
+    # and an EHR-level standardPredicate (e.g. "[ehr_id/value=$ehr_id]",
+    # reusing PathEvaluator/PredicateEvaluator's existing comparison
+    # machinery rather than new bespoke logic). standardPredicate/
+    # nodePredicate filtering on non-EHR CONTAINS classes is added by a
+    # later engine milestone (see predicate_matches? below).
     class ContainsResolver
-      def initialize(from_clause, dataset)
+      def initialize(from_clause, dataset, params: {})
         @root = from_clause.containment
         @dataset = dataset
+        @params = params
       end
 
       def each_binding
@@ -56,7 +59,11 @@ module OpenEHR
       end
 
       def resolve_class_expression(class_expression, ehr_record, pool)
-        return [[variables_for(class_expression, ehr_record), ehr_record]] if ehr_root?(class_expression)
+        if ehr_root?(class_expression)
+          return [] unless ehr_predicate_matches?(ehr_record, class_expression.predicate)
+
+          return [[variables_for(class_expression, ehr_record), ehr_record]]
+        end
 
         pool.select { |candidate| matches?(candidate, class_expression) }
             .map { |candidate| [variables_for(class_expression, candidate), candidate] }
@@ -145,6 +152,43 @@ module OpenEHR
         else
           raise ExecutionError, "cannot evaluate a #{predicate.class} predicate yet"
         end
+      end
+
+      # An EHR-root predicate (e.g. "[ehr_id/value=$ehr_id]") is a
+      # standardPredicate/PredicateAnd/PredicateOr tree evaluated against
+      # the Dataset::EHRRecord itself, reusing PathEvaluator.navigate
+      # (which already special-cases EHRRecord) and
+      # PredicateEvaluator.compare/lookup_param rather than new
+      # comparison code.
+      def ehr_predicate_matches?(ehr_record, predicate)
+        case predicate
+        when nil
+          true
+        when Model::StandardPredicate
+          standard_ehr_predicate_matches?(ehr_record, predicate)
+        when Model::PredicateAnd
+          ehr_predicate_matches?(ehr_record, predicate.left) && ehr_predicate_matches?(ehr_record, predicate.right)
+        when Model::PredicateOr
+          ehr_predicate_matches?(ehr_record, predicate.left) || ehr_predicate_matches?(ehr_record, predicate.right)
+        else
+          raise ExecutionError, "cannot evaluate a #{predicate.class} EHR predicate yet"
+        end
+      end
+
+      def standard_ehr_predicate_matches?(ehr_record, predicate)
+        left = ehr_predicate_operand(ehr_record, predicate.path)
+        right = ehr_predicate_operand(ehr_record, predicate.operand)
+        return false if left.nil? || right.nil?
+
+        PredicateEvaluator.compare(left, predicate.operator, right)
+      end
+
+      def ehr_predicate_operand(ehr_record, operand)
+        return PredicateEvaluator.lookup_param(operand, @params) if operand.is_a?(Model::Parameter)
+        return operand.value if operand.is_a?(Model::Literal)
+        return operand unless operand.is_a?(Model::ObjectPath)
+
+        operand.segments.reduce(ehr_record) { |current, segment| current.nil? ? nil : PathEvaluator.navigate(current, segment) }
       end
 
       def variables_for(class_expression, matched)

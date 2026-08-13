@@ -463,3 +463,70 @@ describe 'OpenEHR::AQL.execute (E9: Dataset shape cross-consistency)' do
     expect(ehr_result.rows).to eq(hash_result.rows)
   end
 end
+
+# E10 milestone: an EHR-level predicate ("[ehr_id/value=$ehr_id]" - the
+# canonical per-patient AQL idiom used throughout the official examples)
+# is now evaluated, not silently ignored - a FROM EHR class expression's
+# predicate used to be dropped entirely (contains_resolver matched every
+# EHR record regardless of it). Reuses PredicateEvaluator/PathEvaluator's
+# existing comparison machinery rather than new bespoke logic.
+describe 'OpenEHR::AQL.execute (E10: EHR-root predicate)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:bp_composition) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+  let(:temp_composition) { builder.body_temperature_composition }
+  let(:dataset) do
+    OpenEHR::AQL::Dataset.new(ehrs: [
+      { ehr_id: 'e1', compositions: [bp_composition] },
+      { ehr_id: 'e2', compositions: [temp_composition] }
+    ])
+  end
+
+  it 'filters to only the EHR matching a literal ehr_id predicate' do
+    result = OpenEHR::AQL.execute(
+      "SELECT e/ehr_id/value AS id FROM EHR e [ehr_id/value='e1'] CONTAINS COMPOSITION c", dataset
+    )
+    expect(result.rows).to eq([['e1']])
+  end
+
+  it 'filters using a $parameter, the idiom used throughout the official AQL examples' do
+    result = OpenEHR::AQL.execute(
+      'SELECT e/ehr_id/value AS id FROM EHR e [ehr_id/value=$ehrUid] CONTAINS COMPOSITION c',
+      dataset, params: { ehrUid: 'e2' }
+    )
+    expect(result.rows).to eq([['e2']])
+  end
+
+  it 'returns no rows when the predicate matches no EHR' do
+    result = OpenEHR::AQL.execute(
+      "SELECT e/ehr_id/value AS id FROM EHR e [ehr_id/value='e999'] CONTAINS COMPOSITION c", dataset
+    )
+    expect(result.rows).to eq([])
+  end
+
+  it 'filters even when the EHR root has no variable bound' do
+    result = OpenEHR::AQL.execute(
+      "SELECT c FROM EHR [ehr_id/value='e1'] CONTAINS COMPOSITION c", dataset
+    )
+    expect(result.rows).to eq([[bp_composition]])
+  end
+
+  it 'treats an unresolvable predicate path as never matching, not an error' do
+    result = OpenEHR::AQL.execute(
+      "SELECT e/ehr_id/value AS id FROM EHR e [some_unknown_key='v'] CONTAINS COMPOSITION c", dataset
+    )
+    expect(result.rows).to eq([])
+  end
+
+  it 'still returns every EHR when there is no predicate at all (regression pin)' do
+    result = OpenEHR::AQL.execute('SELECT e/ehr_id/value AS id FROM EHR e CONTAINS COMPOSITION c', dataset)
+    expect(result.rows).to eq([['e1'], ['e2']])
+  end
+
+  it 'raises ExecutionError for an EHR-root predicate kind it cannot evaluate yet' do
+    expect {
+      OpenEHR::AQL.execute(
+        'SELECT c FROM EHR e [openEHR-EHR-COMPOSITION.encounter.v1] CONTAINS COMPOSITION c', dataset
+      )
+    }.to raise_error(OpenEHR::AQL::ExecutionError)
+  end
+end
