@@ -33,7 +33,5 @@ jobs:
         with:
           ruby-version: '3.4'
           bundler-cache: true
-      # Non-blocking for now: the existing offense backlog hasn't been
-      # burned down yet. Flip to a normal (failing) step once it has.
       - name: Run rubocop
-        run: bundle exec rubocop || true
+        run: bundle exec rubocop
