@@ -99,6 +99,75 @@ describe DvProportion do
     end
   end
 
+  describe 'arithmetic' do
+    let(:a) { DvProportion.new(:numerator => 2, :denominator => 3, :type => PK_RATIO) }
+    let(:b) { DvProportion.new(:numerator => 1, :denominator => 3, :type => PK_RATIO) }
+
+    describe '#+' do
+      it 'adds numerators when denominators match' do
+        sum = a + b
+        expect(sum.numerator).to eq(3)
+        expect(sum.denominator).to eq(3)
+        expect(sum.magnitude).to eq(1.0)
+      end
+
+      it 'does not mutate either operand' do
+        _sum = a + b
+        expect(a.numerator).to eq(2)
+        expect(b.numerator).to eq(1)
+      end
+
+      it 'raises ArgumentError when denominators differ' do
+        other = DvProportion.new(:numerator => 1, :denominator => 4, :type => PK_RATIO)
+        expect { a + other }.to raise_error ArgumentError
+      end
+
+      it 'raises ArgumentError when types differ' do
+        percent = DvProportion.new(:numerator => 5, :denominator => 100, :type => PK_PERCENT)
+        expect { a + percent }.to raise_error ArgumentError
+      end
+    end
+
+    describe '#-@' do
+      it 'negates the numerator, preserving denominator and type' do
+        negated = -a
+        expect(negated.numerator).to eq(-2)
+        expect(negated.denominator).to eq(3)
+        expect(negated.type).to eq(PK_RATIO)
+      end
+
+      it 'does not mutate the receiver' do
+        _negated = -a
+        expect(a.numerator).to eq(2)
+      end
+    end
+
+    describe '#-' do
+      it 'subtracts numerators when denominators match' do
+        difference = a - b
+        expect(difference.numerator).to eq(1)
+        expect(difference.denominator).to eq(3)
+      end
+    end
+
+    describe '#* (multiply)' do
+      it 'scales the numerator by an Integer factor for a PK_RATIO proportion' do
+        scaled = a * 2
+        expect(scaled.numerator).to eq(4)
+        expect(scaled.denominator).to eq(3)
+      end
+
+      it 'raises ArgumentError for a non-Numeric factor' do
+        expect { a * 'x' }.to raise_error ArgumentError
+      end
+
+      it 'raises ArgumentError for a non-integer factor on a PK_FRACTION proportion' do
+        fraction = DvProportion.new(:numerator => 7, :denominator => 8, :type => PK_FRACTION)
+        expect { fraction * 1.5 }.to raise_error ArgumentError
+      end
+    end
+  end
+
   describe 'PK_UNITARY type' do
     it 'should be an instance of DvPropotion' do
       expect(@dv_proportion1).to be_an_instance_of DvProportion

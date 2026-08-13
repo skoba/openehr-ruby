@@ -237,22 +237,26 @@ module OpenEHR
             unless self.is_strictly_comparable_to? other
               raise ArgumentError, 'type mismatch'
             end
-            result = self.dup
-            result.magnitude = @magnitude + other.magnitude
-            return result
+            build_arithmetic_result(magnitude + other.magnitude)
           end
 
           def -(other)
-            negated = other.dup
-            negated.magnitude = -other.magnitude
-            self + negated
+            unless self.is_strictly_comparable_to? other
+              raise ArgumentError, 'type mismatch'
+            end
+            build_arithmetic_result(magnitude - other.magnitude)
           end
 
           def -@
-            negated = self.dup
-            negated.magnitude = -magnitude
-            negated
+            build_arithmetic_result(-magnitude)
           end
+
+          def multiply(factor)
+            raise ArgumentError, 'factor must be Numeric' unless factor.is_a?(Numeric)
+
+            build_arithmetic_result(magnitude * factor)
+          end
+          alias * multiply
 
           def set_accuracy(accuracy, accuracy_percent)
             if accuracy_percent
@@ -269,6 +273,20 @@ module OpenEHR
 
           def self.valid_percentage(number)
             number >= 0.0 && number <= 100.0
+          end
+
+          private
+
+          # Overridable hook used by +/-/-@/multiply: reconstructs the
+          # result from a new magnitude via dup + magnitude=. Works for
+          # any subclass whose magnitude is ivar-backed (DvQuantity,
+          # DvCount). DvProportion's magnitude is derived from
+          # numerator/denominator instead, so it overrides +/-@/multiply
+          # directly rather than relying on this hook.
+          def build_arithmetic_result(new_magnitude)
+            result = dup
+            result.magnitude = new_magnitude
+            result
           end
         end
 
@@ -445,6 +463,43 @@ module OpenEHR
             else
               return false
             end
+          end
+
+          # DvProportion's magnitude is derived from numerator/denominator
+          # rather than ivar-backed, so it cannot use DvAmount's default
+          # build_arithmetic_result (magnitude=-based reconstruction) -
+          # +/-@/multiply are overridden here at the numerator/denominator
+          # level instead. Only same-denominator addition/subtraction is
+          # well-defined without inventing a fraction-normalization
+          # policy beyond what the RM specifies.
+          def +(other)
+            unless is_strictly_comparable_to?(other) && denominator == other.denominator
+              raise ArgumentError, 'type mismatch: proportions must share type and denominator'
+            end
+            build_arithmetic_result(numerator + other.numerator)
+          end
+
+          def -(other)
+            self + (-other)
+          end
+
+          def -@
+            build_arithmetic_result(-numerator)
+          end
+
+          def multiply(factor)
+            raise ArgumentError, 'factor must be Numeric' unless factor.is_a?(Numeric)
+
+            build_arithmetic_result(numerator * factor)
+          end
+          alias * multiply
+
+          private
+
+          def build_arithmetic_result(new_numerator)
+            result = dup
+            result.numerator = new_numerator
+            result
           end
         end # end of DvProportion
       end # of Quantity

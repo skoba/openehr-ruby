@@ -39,6 +39,12 @@ describe DvQuantity do
     it 's unit should be mg' do
       expect((@dv_quantity + @dv_quantity5).units).to eq('mg')
     end
+
+    it 'should be 6mg when multiplied by 2' do
+      dv_quantity = @dv_quantity * 2
+      expect(dv_quantity.magnitude).to eq(6)
+      expect(dv_quantity.units).to eq('mg')
+    end
   end
 
   it 'should not be comparable to 8km' do

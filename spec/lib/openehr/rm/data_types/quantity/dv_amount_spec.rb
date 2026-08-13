@@ -139,4 +139,27 @@ describe DvAmount do
       expect(negated.accuracy_is_percent?).to be true
     end
   end
+
+  describe 'multiply (*)' do
+    it 'scales the magnitude by a Numeric factor' do
+      scaled = @dv_amount * 3
+      expect(scaled.magnitude).to eq(6)
+    end
+
+    it 'is aliased from #multiply' do
+      scaled = @dv_amount.multiply(3)
+      expect(scaled.magnitude).to eq(6)
+    end
+
+    it 'does not mutate the receiver' do
+      _scaled = @dv_amount * 3
+      expect(@dv_amount.magnitude).to eq(2)
+    end
+
+    it 'raises ArgumentError for a non-Numeric factor' do
+      expect {
+        @dv_amount * 'x'
+      }.to raise_error ArgumentError
+    end
+  end
 end

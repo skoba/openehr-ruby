@@ -24,4 +24,17 @@ describe DvCount do
     @dv_count.magnitude = 2
     expect(@dv_count.magnitude).to eq(2)
   end
+
+  describe 'multiply (*)' do
+    it 'scales the magnitude by an Integer factor' do
+      scaled = @dv_count * 3
+      expect(scaled.magnitude).to eq(3)
+    end
+
+    it 'raises ArgumentError for a non-integer factor' do
+      expect {
+        @dv_count * 1.5
+      }.to raise_error ArgumentError
+    end
+  end
 end
