@@ -597,6 +597,10 @@ module OpenEHR
 
     class CompositionFactory < Factory
       class << self
+        def create(param)
+          OpenEHR::RM::Composition::Composition.new(param)
+        end
+
         def create_from_json(json)
           hash = JSON.parse(json, max_nesting: false, symbolize_names: true)
           OpenEHR::RM::Composition::Composition.new(params(hash))

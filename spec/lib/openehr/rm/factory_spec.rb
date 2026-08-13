@@ -681,6 +681,14 @@ module OpenEHR
         it 'wires the parent back-reference on a content element' do
           expect(composition.content.first.parent).to equal(composition)
         end
+
+        it 'is buildable via the generic Factory.create entry point too (regression: CompositionFactory never overrode self.create)' do
+          hash = JSON.parse(COMPOSITION_JSON, symbolize_names: true)
+          result = Factory.create('COMPOSITION', **hash)
+
+          expect(result).to be_an_instance_of(::OpenEHR::RM::Composition::Composition)
+          expect(result.content.first).to be_an_instance_of(OpenEHR::RM::Composition::Content::Entry::Observation)
+        end
       end
     end
   end
