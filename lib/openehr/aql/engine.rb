@@ -13,8 +13,12 @@ module OpenEHR
     # (Model::AggregateFunctionCall) collapses the whole (post-WHERE)
     # binding set into a single summary row instead - ORDER BY/DISTINCT/
     # TOP/LIMIT don't apply to it, matching plain SQL aggregate-without-
-    # GROUP-BY semantics. Mixing aggregate and plain columns, and
-    # generic (non-aggregate) function calls, are not yet supported.
+    # GROUP-BY semantics. A SELECT mixing aggregate and non-aggregate
+    # columns implicitly groups by every non-aggregate column's value
+    # (the standard SQL reading when no explicit GROUP BY is given) -
+    # zero surviving bindings therefore means zero groups/rows, unlike
+    # the all-aggregate case's single row of aggregate defaults. Generic
+    # (non-aggregate) function calls are not yet supported.
     class Engine
       def initialize(query)
         @query = query
@@ -23,7 +27,7 @@ module OpenEHR
       def execute(dataset, params: {})
         bindings = ContainsResolver.new(@query.from_clause, Dataset.wrap(dataset), params: params).each_binding
                                     .select { |binding| where_matches?(binding, params) }
-        rows = aggregate_query? ? [aggregate_row(bindings)] : select_rows(bindings)
+        rows = aggregate_query? ? aggregate_rows(bindings) : select_rows(bindings)
         ResultSet.new(columns: @query.select_clause.columns.map { |column| column_name(column) }, rows: rows)
       end
 
@@ -91,14 +95,33 @@ module OpenEHR
         @query.select_clause.columns.any? { |column| column.expression.is_a?(Model::AggregateFunctionCall) }
       end
 
+      def all_aggregate_columns?
+        @query.select_clause.columns.all? { |column| column.expression.is_a?(Model::AggregateFunctionCall) }
+      end
+
+      # All-aggregate columns collapse every surviving binding into one
+      # summary row, same as plain SQL aggregate-without-GROUP-BY. A mix
+      # groups by the non-aggregate columns' values instead - every
+      # binding in a group shares those values by construction, so the
+      # group's first binding is as good as any for reading them back.
+      def aggregate_rows(bindings)
+        return [aggregate_row(bindings)] if all_aggregate_columns?
+
+        bindings.group_by { |binding| group_key(binding) }.map { |_key, group| aggregate_row(group) }
+      end
+
+      def group_key(binding)
+        @query.select_clause.columns.map do |column|
+          next nil if column.expression.is_a?(Model::AggregateFunctionCall)
+
+          PathEvaluator.evaluate(column.expression, binding)
+        end
+      end
+
       def aggregate_row(bindings)
         @query.select_clause.columns.map do |column|
           call = column.expression
-          unless call.is_a?(Model::AggregateFunctionCall)
-            raise ExecutionError, 'mixing aggregate and non-aggregate SELECT columns is not yet supported'
-          end
-
-          evaluate_aggregate(call, bindings)
+          call.is_a?(Model::AggregateFunctionCall) ? evaluate_aggregate(call, bindings) : PathEvaluator.evaluate(call, bindings.first)
         end
       end
 

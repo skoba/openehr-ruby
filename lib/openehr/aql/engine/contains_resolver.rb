@@ -149,9 +149,50 @@ module OpenEHR
           true
         when Model::ArchetypePredicate
           candidate.respond_to?(:archetype_node_id) && candidate.archetype_node_id == predicate.archetype_id
+        when Model::NodePredicate
+          node_predicate_matches?(candidate, predicate)
+        when Model::StandardPredicate
+          standard_predicate_matches?(candidate, predicate)
+        when Model::PredicateAnd
+          predicate_matches?(candidate, predicate.left) && predicate_matches?(candidate, predicate.right)
+        when Model::PredicateOr
+          predicate_matches?(candidate, predicate.left) || predicate_matches?(candidate, predicate.right)
         else
           raise ExecutionError, "cannot evaluate a #{predicate.class} predicate yet"
         end
+      end
+
+      # nodePredicate "[atNNNN]" matches by archetype_node_id alone;
+      # "[atNNNN, 'Name']" additionally requires the node's own `name`
+      # DV_TEXT to equal the given display name.
+      def node_predicate_matches?(candidate, predicate)
+        return false unless candidate.respond_to?(:archetype_node_id) && candidate.archetype_node_id == predicate.code
+        return true unless predicate.value
+
+        unless predicate.value.is_a?(String)
+          raise ExecutionError, "cannot evaluate a #{predicate.value.class} node predicate value yet"
+        end
+
+        node_name_matches?(candidate, predicate.value)
+      end
+
+      def node_name_matches?(candidate, value)
+        return false unless candidate.respond_to?(:name)
+
+        name = candidate.name
+        name.respond_to?(:value) && name.value == value
+      end
+
+      # standardPredicate on a CONTAINS class expression reuses the same
+      # operand-resolution/comparison machinery the E10 EHR-root
+      # predicate already established, just rooted at the matched
+      # candidate instead of the Dataset::EHRRecord.
+      def standard_predicate_matches?(candidate, predicate)
+        left = predicate_operand(candidate, predicate.path)
+        right = predicate_operand(candidate, predicate.operand)
+        return false if left.nil? || right.nil?
+
+        PredicateEvaluator.compare(left, predicate.operator, right)
       end
 
       # An EHR-root predicate (e.g. "[ehr_id/value=$ehr_id]") is a
@@ -176,19 +217,25 @@ module OpenEHR
       end
 
       def standard_ehr_predicate_matches?(ehr_record, predicate)
-        left = ehr_predicate_operand(ehr_record, predicate.path)
-        right = ehr_predicate_operand(ehr_record, predicate.operand)
+        left = predicate_operand(ehr_record, predicate.path)
+        right = predicate_operand(ehr_record, predicate.operand)
         return false if left.nil? || right.nil?
 
         PredicateEvaluator.compare(left, predicate.operator, right)
       end
 
-      def ehr_predicate_operand(ehr_record, operand)
+      # Shared by both the EHR-root and the CONTAINS-class-expression
+      # standardPredicate paths - `root` is whichever object the
+      # predicate's path is rooted at (a Dataset::EHRRecord or a
+      # CONTAINS-matched Pathable candidate); PathEvaluator.navigate
+      # already special-cases EHRRecord and falls through to ordinary
+      # Pathable navigation for everything else.
+      def predicate_operand(root, operand)
         return PredicateEvaluator.lookup_param(operand, @params) if operand.is_a?(Model::Parameter)
         return operand.value if operand.is_a?(Model::Literal)
         return operand unless operand.is_a?(Model::ObjectPath)
 
-        operand.segments.reduce(ehr_record) { |current, segment| current.nil? ? nil : PathEvaluator.navigate(current, segment) }
+        operand.segments.reduce(root) { |current, segment| current.nil? ? nil : PathEvaluator.navigate(current, segment) }
       end
 
       def variables_for(class_expression, matched)

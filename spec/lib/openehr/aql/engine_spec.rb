@@ -568,3 +568,198 @@ describe 'OpenEHR::AQL.execute (E11: SELECT TOP)' do
     expect { OpenEHR::AQL.execute(query, dataset) }.to raise_error(OpenEHR::AQL::ExecutionError, /TOP.*LIMIT/)
   end
 end
+
+# E12 milestone: WHERE ... LIKE was parsed into Model::LikeExpr and then
+# silently never handled by PredicateEvaluator ("cannot evaluate a
+# Model::LikeExpr WHERE expression yet"). The AQL spec's LIKE is a glob
+# match (? = one char, * = zero-or-more, whole-string anchored, no
+# wildcard at all behaves like =) - not SQL's %/_ - implemented that way.
+describe 'OpenEHR::AQL.execute (E12: WHERE ... LIKE)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:blood_pressure) { builder.blood_pressure_composition(systolic: 150, diastolic: 85) }
+  let(:body_temperature) { builder.body_temperature_composition }
+
+  def like_query(pattern)
+    "SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o WHERE o/name/value LIKE '#{pattern}'"
+  end
+
+  it 'matches a glob pattern with * (zero-or-more)' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure, body_temperature])
+    expect(OpenEHR::AQL.execute(like_query('Blood*'), dataset).rows).to eq([['Blood pressure']])
+  end
+
+  it 'matches a glob pattern with ? (exactly one char)' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(like_query('Blood pressur?'), dataset).rows).to eq([['Blood pressure']])
+  end
+
+  it 'behaves like = when the pattern has no wildcard' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure, body_temperature])
+    expect(OpenEHR::AQL.execute(like_query('Blood pressure'), dataset).rows).to eq([['Blood pressure']])
+    expect(OpenEHR::AQL.execute(like_query('Blood'), dataset).rows).to eq([])
+  end
+
+  it 'requires the whole string to match, not a substring' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(like_query('pressure'), dataset).rows).to eq([])
+  end
+
+  it 'binds a $parameter as the LIKE pattern' do
+    query = 'SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'WHERE o/name/value LIKE $pattern'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure, body_temperature])
+    result = OpenEHR::AQL.execute(query, dataset, params: { pattern: 'Body*' })
+    expect(result.rows).to eq([['Body temperature']])
+  end
+end
+
+# E13 milestone: WHERE ... MATCHES {...} was parsed into Model::MatchesExpr
+# (with a MatchesValueList/UriRef/TerminologyFunctionCall operand) and then
+# silently never handled. A value list is a pure in-memory membership
+# check, implemented fully; a URI/TERMINOLOGY(...) operand names an
+# external value-set/terminology-server lookup this engine has no
+# terminology service wired for (OpenEHR::TerminologyService validates a
+# single known code, it doesn't expand a value set) - raises a clear,
+# explanatory ExecutionError instead of silently guessing or matching
+# everything.
+describe 'OpenEHR::AQL.execute (E13: WHERE ... MATCHES)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:blood_pressure) { builder.blood_pressure_composition(systolic: 150, diastolic: 85) }
+  let(:body_temperature) { builder.body_temperature_composition }
+
+  it 'matches when the value is in the literal value list' do
+    query = "SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "WHERE o/name/value MATCHES {'Blood pressure', 'Something else'}"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure, body_temperature])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([['Blood pressure']])
+  end
+
+  it 'does not match when the value is absent from the list' do
+    query = "SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "WHERE o/name/value MATCHES {'Something else'}"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
+  end
+
+  it 'resolves a $parameter inside the value list' do
+    query = 'SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            "WHERE o/name/value MATCHES {\$name, 'Something else'}"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    result = OpenEHR::AQL.execute(query, dataset, params: { name: 'Blood pressure' })
+    expect(result.rows).to eq([['Blood pressure']])
+  end
+
+  it 'raises a clear ExecutionError for a URI operand (no terminology service wired in)' do
+    query = 'SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            "WHERE o/name/value MATCHES {terminology://openehr/some_value_set}"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect { OpenEHR::AQL.execute(query, dataset) }.to raise_error(OpenEHR::AQL::ExecutionError, /terminology service/)
+  end
+
+  it 'raises a clear ExecutionError for a TERMINOLOGY(...) operand (no terminology service wired in)' do
+    query = 'SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            "WHERE o/name/value MATCHES {TERMINOLOGY('expand', 'SNOMED-CT', '<10001000>')}"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect { OpenEHR::AQL.execute(query, dataset) }.to raise_error(OpenEHR::AQL::ExecutionError, /terminology service/)
+  end
+end
+
+# E14 milestone: a nodePredicate/standardPredicate directly on a
+# CONTAINS class expression (e.g. "CONTAINS ELEMENT e2[at0004]" or
+# "CONTAINS ELEMENT e2[name/value='Systolic']") already parsed into
+# Model::NodePredicate/Model::StandardPredicate (the exact same grammar
+# used for archetypePredicate) but ContainsResolver only ever evaluated
+# Model::ArchetypePredicate, raising for anything else. Reuses the same
+# PathEvaluator.navigate/PredicateEvaluator.compare machinery the E10
+# EHR-root predicate already established.
+describe 'OpenEHR::AQL.execute (E14: CONTAINS node/standard predicates)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:blood_pressure) { builder.blood_pressure_composition(systolic: 150, diastolic: 85) }
+
+  it 'matches CONTAINS ELEMENT e[atNNNN] by node id' do
+    query = 'SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'CONTAINS ELEMENT e2[at0004]'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[150]])
+  end
+
+  it 'excludes a node id that does not match' do
+    query = 'SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'CONTAINS ELEMENT e2[at9999]'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
+  end
+
+  it 'matches CONTAINS ELEMENT e[atNNNN, \'Name\'] by node id and name together' do
+    query = "SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "CONTAINS ELEMENT e2[at0004, 'Systolic']"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[150]])
+  end
+
+  it 'excludes a node id whose name does not match' do
+    query = "SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "CONTAINS ELEMENT e2[at0004, 'Wrong name']"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
+  end
+
+  it 'matches CONTAINS ELEMENT e[name/value=\'X\'] via a standardPredicate' do
+    query = "SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "CONTAINS ELEMENT e2[name/value='Diastolic']"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[85]])
+  end
+
+  it 'combines node and standard predicates with AND' do
+    query = "SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "CONTAINS ELEMENT e2[at0004 AND name/value='Systolic']"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[150]])
+  end
+
+  it 'combines node predicates with OR' do
+    query = 'SELECT e2/value/magnitude FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+            'CONTAINS ELEMENT e2[at0004 OR at0005] ORDER BY e2/value/magnitude'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([[85], [150]])
+  end
+end
+
+# E15 milestone: a SELECT list mixing a plain (non-aggregate) column with
+# an aggregate column (e.g. "SELECT o/name/value, COUNT(o) FROM ...")
+# used to raise unconditionally ("mixing aggregate and non-aggregate
+# SELECT columns is not yet supported"). Implemented as an implicit
+# GROUP BY over every non-aggregate column's value (the standard SQL
+# reading when a query mixes aggregate and non-aggregate columns without
+# an explicit GROUP BY) - zero surviving bindings therefore produces zero
+# groups/rows, same as SQL, not one row of aggregate defaults (that stays
+# the all-aggregate-columns behaviour, unchanged).
+describe 'OpenEHR::AQL.execute (E15: mixed aggregate/non-aggregate SELECT)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:blood_pressure_a) { builder.blood_pressure_composition(systolic: 150, diastolic: 85) }
+  let(:blood_pressure_b) { builder.blood_pressure_composition(systolic: 130, diastolic: 80) }
+  let(:body_temperature) { builder.body_temperature_composition }
+
+  it 'groups by the non-aggregate column and counts each group' do
+    query = 'SELECT o/name/value, COUNT(o) FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure_a, blood_pressure_b, body_temperature])
+    result = OpenEHR::AQL.execute(query, dataset)
+    expect(result.rows).to contain_exactly(['Blood pressure', 2], ['Body temperature', 1])
+  end
+
+  it 'produces zero rows (zero groups) when nothing survives WHERE, unlike the all-aggregate case' do
+    query = "SELECT o/name/value, COUNT(o) FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o " \
+            "WHERE o/name/value = 'nonexistent'"
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure_a])
+    expect(OpenEHR::AQL.execute(query, dataset).rows).to eq([])
+  end
+
+  it 'supports multiple aggregate columns alongside the grouping column' do
+    query = 'SELECT o/name/value, COUNT(o), MAX(e2/value/magnitude) ' \
+            'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o CONTAINS ELEMENT e2[at0004]'
+    dataset = OpenEHR::AQL::Dataset.of_compositions([blood_pressure_a, blood_pressure_b])
+    result = OpenEHR::AQL.execute(query, dataset)
+    expect(result.rows).to eq([['Blood pressure', 2, 150]])
+  end
+end
