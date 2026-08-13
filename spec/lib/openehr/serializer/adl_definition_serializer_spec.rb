@@ -146,9 +146,7 @@ describe 'ADLSerializer#definition (recursive cADL emitter)' do
   describe 'round trip against real archetypes' do
     def round_trip(file)
       archetype = adl14_archetype(file)
-      serializer = ADLSerializer.new(archetype)
-      text = serializer.header + OpenEHR::Serializer::NL + serializer.description +
-             OpenEHR::Serializer::NL + serializer.definition + OpenEHR::Serializer::NL + serializer.ontology
+      text = ADLSerializer.new(archetype).merge
 
       tempfile = Tempfile.new(['roundtrip', '.adl'])
       tempfile.write(text)
@@ -201,6 +199,51 @@ describe 'ADLSerializer#definition (recursive cADL emitter)' do
 
       reparsed_node = find_cdv_quantity(reparsed.definition)
       expect(reparsed_node.any_allowed?).to be true
+    end
+
+    it 'preserves uid through a round trip' do
+      original = adl14_archetype('openEHR-EHR-CLUSTER.anatomical_location.v1.adl')
+      reparsed = round_trip('openEHR-EHR-CLUSTER.anatomical_location.v1.adl')
+
+      expect(original.uid.value).to eq('2fe9e9f8-adfd-4406-878a-82b38ef498a9')
+      expect(reparsed.uid.value).to eq(original.uid.value)
+    end
+
+    it 'preserves a specialise header through a round trip' do
+      original = adl14_archetype('openEHR-EHR-CLUSTER.exam-uterus.v1.adl')
+      reparsed = round_trip('openEHR-EHR-CLUSTER.exam-uterus.v1.adl')
+
+      expect(original).to be_is_specialised
+      expect(reparsed.parent_archetype_id.value).to eq(original.parent_archetype_id.value)
+    end
+
+    it 'preserves translations through a round trip' do
+      original = adl14_archetype('adl-test-entry.archetype_language.test.adl')
+      reparsed = round_trip('adl-test-entry.archetype_language.test.adl')
+
+      expect(original.translations.keys.sort).to eq(%w[de ru])
+      expect(reparsed.translations.keys.sort).to eq(original.translations.keys.sort)
+      expect(reparsed.translations['de'].accreditation).to eq(original.translations['de'].accreditation)
+      expect(reparsed.translations['de'].author).to eq(original.translations['de'].author)
+    end
+
+    it 'preserves an invariant section through a round trip' do
+      original = adl14_archetype('adl-test-entry.invariant.test.adl')
+      reparsed = round_trip('adl-test-entry.invariant.test.adl')
+
+      expect(original.invariants.map(&:string_expression)).to eq(['inv1:1>0'])
+      expect(reparsed.invariants.map(&:string_expression)).to eq(original.invariants.map(&:string_expression))
+    end
+
+    it 'preserves constraint_definitions and constraint_bindings through a round trip' do
+      original = adl14_archetype('adl-test-entry.archetype_bindings.test.adl')
+      reparsed = round_trip('adl-test-entry.archetype_bindings.test.adl')
+
+      expect(original.ontology.constraint_definitions).not_to be_nil
+      expect(reparsed.ontology.constraint_definitions['en']['ac0001'].items).to eq(
+        original.ontology.constraint_definitions['en']['ac0001'].items)
+      expect(reparsed.ontology.constraint_bindings['SNOMED-CT']['ac0001'].value).to eq(
+        original.ontology.constraint_bindings['SNOMED-CT']['ac0001'].value)
     end
   end
 end

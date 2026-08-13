@@ -129,6 +129,23 @@ describe 'ADLSerializer C_DV_QUANTITY (cADL domain type emitter)' do
     end
   end
 
+  describe 'C_DV_ORDINAL (regression: symbol code emission)' do
+    def ordinal_definition(node)
+      attribute = CSingleAttribute.new(:rm_attribute_name => 'value', :existence => mandatory, :children => [node])
+      wrapped = CComplexObject.new(:rm_type_name => 'DV_ORDINAL', :node_id => 'at0000', :occurrences => mandatory,
+                                   :attributes => [attribute])
+      serializer_for(wrapped).definition
+    end
+
+    it 'emits each list item as value|[terminology::code], matching the ADL grammar c_ordinal rule' do
+      symbol = DvCodedText.new(:value => '[local::at0.1]', :defining_code => code_phrase('local', 'at0.1'))
+      node = CDvOrdinal.new(:rm_type_name => 'DvOrdinal', :occurrences => mandatory,
+                            :list => [DvOrdinal.new(:value => 0, :symbol => symbol)])
+
+      expect(ordinal_definition(node)).to include('value matches {0|[local::at0.1]}')
+    end
+  end
+
   describe 'unsupported ADL 1.4 domain types' do
     it 'raises a clear ArgumentError for C_DV_SCALE (no ADL 1.4 grammar rule)' do
       node = CDvScale.new(:rm_type_name => 'DvScale', :occurrences => mandatory)

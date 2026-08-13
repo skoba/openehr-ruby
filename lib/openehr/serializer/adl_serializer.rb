@@ -7,14 +7,14 @@ module OpenEHR
     class ADLSerializer < BaseSerializer
       def header
         hd = +'archetype'
-        unless @archetype.adl_version.nil?
-          hd << " (adl_version = #{@archetype.adl_version})"
-        end
-        hd << (NL+INDENT + "#{@archetype.archetype_id.value}"+(NL*2))
-        hd << ('concept'+NL+ INDENT+"[#{@archetype.concept}]"+NL)
+        hd << archetype_meta_data_clause
+        hd << (NL+INDENT + "#{@archetype.archetype_id.value}"+NL)
+        hd << specialise_section
+        hd << (NL+'concept'+NL+ INDENT+"[#{@archetype.concept}]"+NL)
         hd << (NL+'language'+NL+INDENT+'original_language = <['+
           @archetype.original_language.terminology_id.value+'::'+
           @archetype.original_language.code_string+']>'+NL)
+        hd << translations_block(@archetype.translations)
         return hd
       end
 
@@ -45,15 +45,18 @@ module OpenEHR
       def ontology
         ao = @archetype.ontology
         ontology = 'ontology'+NL
+        ontology << primary_language_line(ao.primary_language)
         ontology << string_list_line('languages_available', ao.languages_available)
         ontology << string_list_line('terminologies_available', ao.terminologies_available)
         ontology << term_definitions_block(ao.term_definitions)
+        ontology << term_definitions_block(ao.constraint_definitions, 'constraint_definitions') if ao.constraint_definitions
         ontology << term_bindings_block(ao.term_bindings)
+        ontology << constraint_bindings_block(ao.constraint_bindings)
         ontology
       end
 
       def merge
-        return header + NL + description + NL + definition + NL + ontology
+        return header + NL + description + NL + definition + NL + invariant_section + ontology
       end
 
       include OpenEHR::AM::Archetype::ConstraintModel
@@ -66,6 +69,56 @@ module OpenEHR
         return '' if values.nil? || values.empty?
 
         INDENT + "#{keyword} = <" + values.map { |v| "\"#{v}\"" }.join(', ') + '>' + NL
+      end
+
+      # archetype (adl_version = ...; uid = ...) - a ';'-separated
+      # metadata clause. Empty when neither is present, so callers that
+      # never set uid see byte-identical output to before uid support.
+      def archetype_meta_data_clause
+        items = []
+        items << "adl_version = #{@archetype.adl_version}" if @archetype.adl_version
+        items << "uid = #{@archetype.uid.value}" if @archetype.uid
+        return '' if items.empty?
+
+        " (#{items.join('; ')})"
+      end
+
+      def specialise_section
+        return '' if @archetype.parent_archetype_id.nil?
+
+        'specialise' + NL + INDENT + @archetype.parent_archetype_id.value + NL
+      end
+
+      def translations_block(translations)
+        return '' if translations.nil? || translations.empty?
+
+        block = INDENT + 'translations = <' + NL
+        translations.each { |code, details| block << translation_item_block(code, details) }
+        block << (INDENT + '>' + NL)
+      end
+
+      def translation_item_block(code, details)
+        block = (INDENT*2) + "[\"#{code}\"] = <" + NL
+        block << ((INDENT*3) + "language = <[#{details.language.terminology_id.value}::#{details.language.code_string}]>" + NL)
+        block << keyed_map_block('author', details.author) if details.author
+        block << ((INDENT*3) + "accreditation = <\"#{details.accreditation}\">" + NL) if details.accreditation
+        block << keyed_map_block('other_details', details.other_details) if details.other_details
+        block << ((INDENT*2) + '>' + NL)
+      end
+
+      def invariant_section
+        invariants = @archetype.invariants
+        return '' if invariants.nil? || invariants.empty?
+
+        block = 'invariant' + NL
+        invariants.each { |assertion| block << (INDENT + assertion.string_expression + NL) }
+        block << NL
+      end
+
+      def primary_language_line(primary_language)
+        return '' if primary_language.nil?
+
+        INDENT + "primary_language = <\"#{primary_language}\">" + NL
       end
 
       def description_details_item(lang, item)
@@ -109,8 +162,8 @@ module OpenEHR
         block << ((INDENT*3)+'>'+NL)
       end
 
-      def term_definitions_block(term_definitions)
-        block = INDENT + 'term_definitions = <' + NL
+      def term_definitions_block(term_definitions, keyword = 'term_definitions')
+        block = INDENT + "#{keyword} = <" + NL
         term_definitions.each do |lang, items|
           block << ((INDENT*2) + "[\"#{lang}\"] = <" + NL)
           block << ((INDENT*3) + 'items = <'  + NL)
@@ -137,6 +190,25 @@ module OpenEHR
           codes.each do |code, bindings|
             code_phrase = Array(bindings).first
             block << ((INDENT*4) + "[\"#{code}\"] = <[#{code_phrase.terminology_id.value}::#{code_phrase.code_string}]>" + NL)
+          end
+          block << ((INDENT*3) + '>' + NL)
+          block << ((INDENT*2) + '>' + NL)
+        end
+        block << (INDENT + '>' + NL)
+      end
+
+      # constraint_bindings mirrors term_bindings' 3-level nesting
+      # (terminology -> items -> code), but each value is a bare/unquoted
+      # URI (a DvUri) rather than a qualified term code reference.
+      def constraint_bindings_block(constraint_bindings)
+        return '' if constraint_bindings.nil? || constraint_bindings.empty?
+
+        block = INDENT + 'constraint_bindings = <' + NL
+        constraint_bindings.each do |terminology, codes|
+          block << ((INDENT*2) + "[\"#{terminology}\"] = <" + NL)
+          block << ((INDENT*3) + 'items = <' + NL)
+          codes.each do |code, uri|
+            block << ((INDENT*4) + "[\"#{code}\"] = <#{uri.value}>" + NL)
           end
           block << ((INDENT*3) + '>' + NL)
           block << ((INDENT*2) + '>' + NL)
@@ -375,8 +447,17 @@ module OpenEHR
       def ordinal_body(node)
         return 'C_DV_ORDINAL < >' if node.any_allowed?
 
-        body = node.list.map { |o| "#{o.value}|[#{o.symbol.code_string}]" }.join(', ')
+        body = node.list.map { |o| "#{o.value}|[#{ordinal_symbol_reference(o.symbol)}]" }.join(', ')
         with_assumed_value(body, node)
+      end
+
+      # The c_ordinal grammar rule builds symbol as a DV_CODED_TEXT
+      # (code lives at symbol.defining_code, not symbol itself) - a bare
+      # CODE_PHRASE-like symbol is also accepted, matching the dual
+      # shape CDvOrdinal#valid_value? already tolerates.
+      def ordinal_symbol_reference(symbol)
+        code_phrase = symbol.respond_to?(:defining_code) ? symbol.defining_code : symbol
+        "#{code_phrase.terminology_id.value}::#{code_phrase.code_string}"
       end
 
       def code_phrase_body(node)
