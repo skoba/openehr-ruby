@@ -88,7 +88,8 @@ module OpenEHR
             
             string_expr_node = double('string_expr', text: 'archetype_id/value matches {/.*/}')
             expression_xml = double('expression')
-            
+
+            allow(xml).to receive(:at).with('tag').and_return(nil)
             allow(xml).to receive(:at).with('string_expression').and_return(string_expr_node)
             allow(xml).to receive(:at).with('expression').and_return(expression_xml)
             allow(expression_xml).to receive(:attributes).and_return({'type' => double(text: 'EXPR_BINARY_OPERATOR')})
@@ -105,7 +106,8 @@ module OpenEHR
             node = Node.new
             
             expression_xml = double('expression')
-            
+
+            allow(xml).to receive(:at).with('tag').and_return(nil)
             allow(xml).to receive(:at).with('string_expression').and_return(nil)
             allow(xml).to receive(:at).with('expression').and_return(expression_xml)
             allow(expression_xml).to receive(:attributes).and_return({'type' => double(text: 'EXPR_LEAF')})
@@ -224,8 +226,10 @@ module OpenEHR
             allow(list_item2).to receive(:at).with('units').and_return(units2)
             allow(list_item2).to receive(:at).with('magnitude').and_return(magnitude2)
             allow(list_item2).to receive(:at).with('precision').and_return(nil)
-            
+
+            allow(xml).to receive(:at).with('assumed_value').and_return(nil)
             allow(parser).to receive(:occurrences).and_return(double('interval'))
+            allow(parser).to receive(:numeric_interval).and_return(double('interval'))
 
             result = parser.send(:c_dv_quantity, xml, node)
             expect(result).to be_a(OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity)

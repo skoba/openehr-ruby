@@ -266,6 +266,130 @@ module OpenEHR
           expect(result.list).to eq []
         end
       end
+
+      describe '#c_dv_quantity with a fully specified constraint' do
+        let(:node) do
+          fragment(<<~XML)
+            <children xsi:type="C_DV_QUANTITY">
+              <rm_type_name>DV_QUANTITY</rm_type_name>
+              <occurrences>
+                <lower_included>true</lower_included>
+                <upper_included>true</upper_included>
+                <lower_unbounded>false</lower_unbounded>
+                <upper_unbounded>false</upper_unbounded>
+                <lower>1</lower>
+                <upper>1</upper>
+              </occurrences>
+              <node_id />
+              <property>
+                <terminology_id><value>openehr</value></terminology_id>
+                <code_string>128</code_string>
+              </property>
+              <list>
+                <units>yr</units>
+                <magnitude>
+                  <lower_included>true</lower_included>
+                  <upper_included>true</upper_included>
+                  <lower_unbounded>false</lower_unbounded>
+                  <upper_unbounded>false</upper_unbounded>
+                  <lower>0.5</lower>
+                  <upper>200.5</upper>
+                </magnitude>
+                <precision>
+                  <lower_included>true</lower_included>
+                  <upper_included>true</upper_included>
+                  <lower_unbounded>false</lower_unbounded>
+                  <upper_unbounded>false</upper_unbounded>
+                  <lower>2</lower>
+                  <upper>2</upper>
+                </precision>
+              </list>
+              <assumed_value>
+                <units>yr</units>
+                <magnitude>8.5</magnitude>
+                <precision>2</precision>
+              </assumed_value>
+            </children>
+          XML
+        end
+
+        it 'reads the magnitude range as Real (not truncated to Integer)' do
+          result = parser.send(:c_dv_quantity, node, Node.new)
+          expect(result.list.first.magnitude.lower).to eq(0.5)
+          expect(result.list.first.magnitude.upper).to eq(200.5)
+        end
+
+        it 'reads the precision range as Integer' do
+          result = parser.send(:c_dv_quantity, node, Node.new)
+          expect(result.list.first.precision.lower).to eq(2)
+          expect(result.list.first.precision.upper).to eq(2)
+        end
+
+        it 'reads assumed_value as a real (non-ranged) DV_QUANTITY' do
+          result = parser.send(:c_dv_quantity, node, Node.new)
+          expect(result.assumed_value).to be_a(OpenEHR::RM::DataTypes::Quantity::DvQuantity)
+          expect(result.assumed_value.units).to eq('yr')
+          expect(result.assumed_value.magnitude).to eq(8.5)
+          expect(result.assumed_value.precision).to eq(2)
+        end
+      end
+
+      describe '#expr_unary_operator' do
+        let(:node) do
+          fragment(<<~XML)
+            <expression xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="EXPR_UNARY_OPERATOR">
+              <type>Boolean</type>
+              <operator>2010</operator>
+              <precedence_overridden>false</precedence_overridden>
+              <operand xsi:type="EXPR_LEAF">
+                <type>String</type>
+                <item xsi:type="xsd:string">archetype_id/value</item>
+                <reference_type>attribute</reference_type>
+              </operand>
+            </expression>
+          XML
+        end
+
+        it 'returns an ExprUnaryOperator with its operand' do
+          result = parser.send(:expr_unary_operator, node)
+          expect(result).to be_a(OpenEHR::AM::Archetype::Assertion::ExprUnaryOperator)
+          expect(result.operator.value).to eq(OpenEHR::AM::Archetype::Assertion::OperatorKind::OP_NOT)
+          expect(result.operand.item).to eq('archetype_id/value')
+        end
+      end
+
+      describe '#assertions with a tag' do
+        let(:node) do
+          fragment(<<~XML)
+            <includes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <tag>inv1</tag>
+              <string_expression>archetype_id/value matches {/.*\.v1/}</string_expression>
+              <expression xsi:type="EXPR_BINARY_OPERATOR">
+                <type>Boolean</type>
+                <operator>2007</operator>
+                <precedence_overridden>false</precedence_overridden>
+                <left_operand xsi:type="EXPR_LEAF">
+                  <type>String</type>
+                  <item xsi:type="xsd:string">archetype_id/value</item>
+                  <reference_type>attribute</reference_type>
+                </left_operand>
+                <right_operand xsi:type="EXPR_LEAF">
+                  <type>C_STRING</type>
+                  <item xsi:type="C_STRING">
+                    <pattern>.*\.v1</pattern>
+                  </item>
+                  <reference_type>constraint</reference_type>
+                </right_operand>
+              </expression>
+            </includes>
+          XML
+        end
+
+        it 'reads the tag onto the Assertion' do
+          result = parser.send(:assertions, node.children, Node.new)
+          expect(result.first.tag).to eq('inv1')
+        end
+      end
     end
   end
 end

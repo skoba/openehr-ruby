@@ -295,8 +295,9 @@ module OpenEHR
               allow(property_xml).to receive(:at).with('terminology_id/value').and_return(double(text: 'openehr'))
               allow(property_xml).to receive(:at).with('code_string').and_return(double(text: '382'))
               allow(xml).to receive(:xpath).with('.//list').and_return([])
+              allow(xml).to receive(:at).with('assumed_value').and_return(nil)
               allow(parser).to receive(:occurrences).and_return(double('interval'))
-              
+
               result = parser.send(:c_dv_quantity, xml, node)
               expect(result).to be_a(OpenEHR::AM::OpenEHRProfile::DataTypes::Quantity::CDvQuantity)
               expect(result.list).to eq([])
