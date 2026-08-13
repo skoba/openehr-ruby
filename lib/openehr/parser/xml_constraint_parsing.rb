@@ -53,9 +53,19 @@ module OpenEHR
         end
       end
 
+      # Each sibling child gets its own Node, copied fresh from the
+      # attribute's node - c_complex_object mutates node.path/node.id
+      # in place when a node_id is present, so sharing one Node across
+      # a map() here would leak sibling A's path into sibling B (e.g. a
+      # C_MULTIPLE_ATTRIBUTE with 2+ C_COMPLEX_OBJECT children, each
+      # with its own node_id, would produce "/items[a][b]" instead of
+      # "/items[a]" and "/items[b]").
       def children(children_xml, node)
         children_xml.map do |child|
-          send child.attributes['type'].text.downcase, child, node
+          child_node = Node.new(node)
+          child_node.path = node.path
+          child_node.id = node.id
+          send child.attributes['type'].text.downcase, child, child_node
         end
       end
 
@@ -72,15 +82,20 @@ module OpenEHR
       end
 
       def archetype_slot(attr_xml, node)
-        path = node.path
-        node.id = attr_xml.at('node_id').text
+        node_id = attr_xml.at('node_id').text
+        node.id = node_id
+        # Matches c_complex_object's path convention: a slot's own
+        # node_id belongs in its path (e.g. "/items[at0053]"), not just
+        # its parent attribute's path - without this, two slots under
+        # the same C_MULTIPLE_ATTRIBUTE would collapse to one path.
+        node.path = "#{node.path}[#{node.id}]" unless node_id.nil? || node_id.empty?
         rm_type_name = attr_xml.at('rm_type_name').text
         occurrences = occurrences(attr_xml.at('occurrences'))
         includes_leaf = attr_xml.at('includes')
         includes = assertions(includes_leaf.children, node) if includes_leaf
         excludes_leaf = attr_xml.at('excludes')
         excludes = assertions(excludes_leaf.children, node) if excludes_leaf
-        OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(path: path, node_id: node.id, rm_type_name: rm_type_name, occurrences: occurrences, includes: includes, excludes: excludes)
+        OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(path: node.path, node_id: node.id, rm_type_name: rm_type_name, occurrences: occurrences, includes: includes, excludes: excludes)
       end
 
       def occurrences(occurrence_xml)

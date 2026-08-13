@@ -358,6 +358,73 @@ module OpenEHR
         end
       end
 
+      describe '#children (regression: sibling path leakage)' do
+        it 'gives each sibling C_COMPLEX_OBJECT child under one C_MULTIPLE_ATTRIBUTE its own path' do
+          xml = fragment(<<~XML)
+            <definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <rm_type_name>CLUSTER</rm_type_name>
+              <occurrences>
+                <lower_included>true</lower_included><upper_included>true</upper_included>
+                <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+                <lower>1</lower><upper>1</upper>
+              </occurrences>
+              <node_id>at0000</node_id>
+              <attributes xsi:type="C_MULTIPLE_ATTRIBUTE">
+                <rm_attribute_name>items</rm_attribute_name>
+                <existence>
+                  <lower_included>true</lower_included><upper_included>true</upper_included>
+                  <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+                  <lower>1</lower><upper>1</upper>
+                </existence>
+                <children xsi:type="C_COMPLEX_OBJECT">
+                  <rm_type_name>ELEMENT</rm_type_name>
+                  <occurrences>
+                    <lower_included>true</lower_included><upper_included>true</upper_included>
+                    <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+                    <lower>1</lower><upper>1</upper>
+                  </occurrences>
+                  <node_id>at0001</node_id>
+                </children>
+                <children xsi:type="C_COMPLEX_OBJECT">
+                  <rm_type_name>ELEMENT</rm_type_name>
+                  <occurrences>
+                    <lower_included>true</lower_included><upper_included>true</upper_included>
+                    <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+                    <lower>1</lower><upper>1</upper>
+                  </occurrences>
+                  <node_id>at0002</node_id>
+                </children>
+              </attributes>
+            </definition>
+          XML
+
+          result = parser.send(:c_complex_object, xml, Node.new)
+          paths = result.attributes.first.children.map(&:path)
+          expect(paths).to eq(['/items[at0001]', '/items[at0002]'])
+        end
+      end
+
+      describe '#archetype_slot (regression: missing own node_id in path)' do
+        it "includes the slot's own node_id in its path" do
+          xml = fragment(<<~XML)
+            <children xsi:type="ARCHETYPE_SLOT">
+              <rm_type_name>CLUSTER</rm_type_name>
+              <occurrences>
+                <lower_included>true</lower_included><upper_included>true</upper_included>
+                <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+                <lower>0</lower><upper>1</upper>
+              </occurrences>
+              <node_id>at0053</node_id>
+            </children>
+          XML
+
+          node = Node.new
+          node.path = '/items'
+          result = parser.send(:archetype_slot, xml, node)
+          expect(result.path).to eq('/items[at0053]')
+        end
+      end
+
       describe '#assertions with a tag' do
         let(:node) do
           fragment(<<~XML)
