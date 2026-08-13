@@ -23,7 +23,7 @@ describe ISO8601Time do
   end
 
   it 's fractional second should be 0.32' do
-    @iso8601time.fractional_second == 0.32
+    expect(@iso8601time.fractional_second).to be_within(0.0001).of(0.32)
   end
 
   it 'have fractional_second' do

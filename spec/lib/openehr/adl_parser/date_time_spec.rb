@@ -624,7 +624,7 @@ describe ADLParser do
         end
 
         it 'fractional second is 995' do
-          @at.list[0].fractional_second == 0.995
+          expect(@at.list[0].fractional_second).to be_within(0.0001).of(0.995)
         end
       end
 
@@ -642,7 +642,7 @@ describe ADLParser do
         end
 
         it 'fractional second is 0.001' do
-          @at.list[0].fractional_second == 0.001
+          expect(@at.list[0].fractional_second).to be_within(0.0001).of(0.001)
         end
       end
 
@@ -660,7 +660,7 @@ describe ADLParser do
         end
 
         it 'fractional second is 0.001' do
-          @at.list[0].fractional_second == 0.001
+          expect(@at.list[0].fractional_second).to be_within(0.0001).of(0.001)
         end
       end
 
@@ -990,7 +990,7 @@ describe ADLParser do
         end
 
         it 'fractional second is 995' do
-          @at.list[0].fractional_second == 0.995
+          expect(@at.list[0].fractional_second).to be_within(0.0001).of(0.995)
         end
 
         it 'assumed value is 10:00:00' do
@@ -1012,7 +1012,7 @@ describe ADLParser do
         end
 
         it 'fractional second is 0.001' do
-          @at.list[0].fractional_second == 0.001
+          expect(@at.list[0].fractional_second).to be_within(0.0001).of(0.001)
         end
 
         it 'assumed value is 10:00:00' do
