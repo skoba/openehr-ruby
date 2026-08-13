@@ -145,8 +145,8 @@ module OpenEHR
       end
 
       # Recursive cADL emitter for a single C_OBJECT node, dispatching
-      # on its concrete class. Unsupported domain types (e.g.
-      # C_DV_QUANTITY's dADL block syntax, C_DV_STATE) deliberately
+      # on its concrete class. Domain types with no ADL 1.4 grammar rule
+      # (C_DV_SCALE, C_DV_STATE - both RM 1.1.0+ additions) deliberately
       # raise rather than emit a guess at their syntax.
       def emit_c_object(node, depth)
         case node
@@ -158,6 +158,14 @@ module OpenEHR
           emit_constraint_ref(node, depth)
         when CComplexObject
           emit_complex_object(node, depth)
+        when OpenEHRProfile::DataTypes::Quantity::CDvScale
+          raise ArgumentError,
+                'ADLSerializer cannot emit C_DV_SCALE in cADL - the ADL 1.4 grammar has no C_DV_SCALE rule ' \
+                '(RM 1.1.0 addition); use the XML serializer instead'
+        when OpenEHRProfile::DataTypes::Basic::CDvState
+          raise ArgumentError,
+                'ADLSerializer cannot emit C_DV_STATE in cADL - the ADL 1.4 grammar has no C_DV_STATE rule; ' \
+                'use the XML serializer instead'
         else
           raise ArgumentError, "ADLSerializer cannot emit a #{node.class} node"
         end
@@ -192,7 +200,7 @@ module OpenEHR
         head = attribute_head(attribute, depth)
         children = attribute.children || []
         if children.size == 1 && inline?(children.first)
-          head + " matches {#{inline_body(children.first)}}" + NL
+          head + " matches {#{inline_body(children.first, depth)}}" + NL
         else
           body = children.map { |c| emit_c_object(c, depth + 1) }.join
           head + ' matches {' + NL + body + (INDENT*depth) + '}' + NL
@@ -209,10 +217,11 @@ module OpenEHR
       def inline?(node)
         node.is_a?(CPrimitiveObject) || node.is_a?(ConstraintRef) ||
           node.is_a?(OpenEHRProfile::DataTypes::Quantity::CDvOrdinal) ||
-          node.is_a?(OpenEHRProfile::DataTypes::Text::CCodePhrase)
+          node.is_a?(OpenEHRProfile::DataTypes::Text::CCodePhrase) ||
+          node.is_a?(OpenEHRProfile::DataTypes::Quantity::CDvQuantity)
       end
 
-      def inline_body(node)
+      def inline_body(node, depth)
         case node
         when CPrimitiveObject
           primitive_body(node.item)
@@ -222,7 +231,54 @@ module OpenEHR
           ordinal_body(node)
         when OpenEHRProfile::DataTypes::Text::CCodePhrase
           code_phrase_body(node)
+        when OpenEHRProfile::DataTypes::Quantity::CDvQuantity
+          cdv_quantity_body(node, depth)
         end
+      end
+
+      # cADL syntax for C_DV_QUANTITY is a dADL-style block, not a short
+      # inline literal like the other inline? types above - see the
+      # adl_grammar.tt c_dv_quantity rule and CDvQuantityItems#value
+      # (adl_helper.rb) for the exact shape this mirrors: property is a
+      # qualified term code reference, list is an array of CQuantityItem
+      # keyed by 1-based position (the key itself isn't stored on
+      # CQuantityItem, so round-tripping only needs *a* stable key, not
+      # the original one), and assumed_value is a real DV_QUANTITY (plain
+      # magnitude/precision, not a range).
+      def cdv_quantity_body(node, depth)
+        return 'C_DV_QUANTITY < >' if node.any_allowed?
+
+        body = 'C_DV_QUANTITY <' + NL
+        body << quantity_property_line(node.property, depth + 1) if node.property
+        body << quantity_list_block(node.list, depth + 1) if node.list
+        body << assumed_quantity_block(node.assumed_value, depth + 1) if node.assumed_value
+        body << ((INDENT*depth) + '>')
+      end
+
+      def quantity_property_line(property, depth)
+        (INDENT*depth) + "property = <[#{property.terminology_id.value}::#{property.code_string}]>" + NL
+      end
+
+      def quantity_list_block(list, depth)
+        block = (INDENT*depth) + 'list = <' + NL
+        list.each_with_index { |item, index| block << quantity_item_block(item, index + 1, depth + 1) }
+        block << ((INDENT*depth) + '>' + NL)
+      end
+
+      def quantity_item_block(item, key, depth)
+        block = (INDENT*depth) + "[\"#{key}\"] = <" + NL
+        block << ((INDENT*(depth+1)) + "units = <\"#{item.units}\">" + NL)
+        block << ((INDENT*(depth+1)) + "magnitude = <|#{range_literal(item.magnitude)}|>" + NL) if item.magnitude
+        block << ((INDENT*(depth+1)) + "precision = <|#{range_literal(item.precision)}|>" + NL) if item.precision
+        block << ((INDENT*depth) + '>' + NL)
+      end
+
+      def assumed_quantity_block(assumed_value, depth)
+        block = (INDENT*depth) + 'assumed_value = <' + NL
+        block << ((INDENT*(depth+1)) + "units = <\"#{assumed_value.units}\">" + NL)
+        block << ((INDENT*(depth+1)) + "magnitude = <#{assumed_value.magnitude}>" + NL)
+        block << ((INDENT*(depth+1)) + "precision = <#{assumed_value.precision}>" + NL) unless assumed_value.precision.nil?
+        block << ((INDENT*depth) + '>' + NL)
       end
 
       def emit_archetype_slot(node, depth)

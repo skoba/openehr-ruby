@@ -168,5 +168,39 @@ describe 'ADLSerializer#definition (recursive cADL emitter)' do
       expect(reparsed.physical_paths.sort).to eq(original.physical_paths.sort)
       expect(reparsed.node_ids_valid?).to be true
     end
+
+    def find_cdv_quantity(node)
+      return node if node.is_a?(CDvQuantity)
+      return nil unless node.respond_to?(:attributes) && node.attributes
+
+      node.attributes.each do |attribute|
+        (attribute.children || []).each do |child|
+          found = find_cdv_quantity(child)
+          return found if found
+        end
+      end
+      nil
+    end
+
+    it 're-parses a fully specified C_DV_QUANTITY into an equivalent archetype' do
+      original = adl14_archetype('adl-test-entry.c_dv_quantity_full.test.adl')
+      reparsed = round_trip('adl-test-entry.c_dv_quantity_full.test.adl')
+
+      expect(reparsed.physical_paths.sort).to eq(original.physical_paths.sort)
+      expect(reparsed.node_ids_valid?).to be true
+
+      original_node = find_cdv_quantity(original.definition)
+      reparsed_node = find_cdv_quantity(reparsed.definition)
+      expect(reparsed_node.property.code_string).to eq(original_node.property.code_string)
+      expect(reparsed_node.list.size).to eq(original_node.list.size)
+      expect(reparsed_node.assumed_value.magnitude).to eq(original_node.assumed_value.magnitude)
+    end
+
+    it 're-parses an any_allowed C_DV_QUANTITY into an equivalent archetype' do
+      reparsed = round_trip('adl-test-entry.c_dv_quantity_empty.test.adl')
+
+      reparsed_node = find_cdv_quantity(reparsed.definition)
+      expect(reparsed_node.any_allowed?).to be true
+    end
   end
 end
