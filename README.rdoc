@@ -80,9 +80,13 @@ way, from RM 1.1.0 onward.
                                                           already supported via the pluggable
                                                           OpenEHR::TerminologyService seam
 
+DV_DATE/DV_TIME/DV_DATE_TIME now support #add/#subtract against a
+DV_DURATION (calendar-aware: month-end clamping, leap years, and
+day/timezone wraparound), and DV_DURATION supports +/-/multiply
+against another DV_DURATION.
+
 Not yet incorporated from RM 1.1.0 / BASE 1.2.0: ITEM_TAG (still in a
-development branch, not yet in a released RM version) and the finer
-points of DV_DURATION arithmetic beyond negation/unary minus.
+development branch, not yet in a released RM version).
 
 =Querying with AQL
 

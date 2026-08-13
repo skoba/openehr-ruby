@@ -30,6 +30,17 @@ module OpenEHR
             end
 
             undef magnitude=
+
+            private
+
+            # Shared guard for add/subtract on DvDate/DvTime/DvDateTime:
+            # DvAbsoluteQuantity#add/subtract assume magnitude=-based
+            # reconstruction, which DvTemporal subclasses can't support
+            # (see the undef above), so each subclass implements its own
+            # add/subtract against a DvDuration directly instead.
+            def validate_duration_operand(a_diff)
+              raise ArgumentError, 'a_diff must be a DvDuration' unless a_diff.is_a?(DvDuration)
+            end
           end
 
           class DvDate < DvTemporal
@@ -74,7 +85,29 @@ module OpenEHR
                          week.to_s + 'W' + day.to_s + 'D')
             end
 
+            def add(a_diff)
+              validate_duration_operand(a_diff)
+              raise ArgumentError, 'a_diff must not have a time component' if time_component?(a_diff)
+
+              DvDate.new(:value => shift_by(a_diff).iso8601)
+            end
+
+            def subtract(a_diff)
+              add(-a_diff)
+            end
+
             private
+
+            def time_component?(a_diff)
+              [a_diff.hours, a_diff.minutes, a_diff.seconds].any? { |v| v && !v.zero? }
+            end
+
+            def shift_by(a_diff)
+              sign = a_diff.negative? ? -1 : 1
+              months = (((a_diff.years || 0) * MONTH_IN_YEAR) + (a_diff.months || 0)) * sign
+              days = (((a_diff.weeks || 0) * DAYS_IN_WEEK) + (a_diff.days || 0)) * sign
+              (Date.new(@year, @month, @day) >> months) + days
+            end
 
             # Returns [month_adjustment, day] for diff: when future's
             # day-of-month is behind past's, a month is borrowed from
@@ -129,6 +162,48 @@ module OpenEHR
                 str += fractional_second.to_s[1..-1] + 'S'
               end
               return DvDuration.new(:value => str)
+            end
+
+            def add(a_diff)
+              validate_duration_operand(a_diff)
+              raise ArgumentError, 'a_diff must not have a date component' if date_component?(a_diff)
+
+              DvTime.new(:value => shifted_time_string(a_diff))
+            end
+
+            def subtract(a_diff)
+              add(-a_diff)
+            end
+
+            private
+
+            def date_component?(a_diff)
+              [a_diff.years, a_diff.months, a_diff.weeks, a_diff.days].any? { |v| v && !v.zero? }
+            end
+
+            def duration_seconds(a_diff)
+              ((a_diff.hours || 0) * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) +
+                ((a_diff.minutes || 0) * SECONDS_IN_MINUTE) +
+                (a_diff.seconds || 0) +
+                (a_diff.fractional_second || 0)
+            end
+
+            def shifted_time_string(a_diff)
+              sign = a_diff.negative? ? -1 : 1
+              day_seconds = HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE
+              total = (magnitude + (sign * duration_seconds(a_diff))) % day_seconds
+              formatted_time(total) + timezone
+            end
+
+            def formatted_time(total_seconds)
+              hour = (total_seconds / (MINUTES_IN_HOUR * SECONDS_IN_MINUTE)).to_i
+              remainder = total_seconds - (hour * MINUTES_IN_HOUR * SECONDS_IN_MINUTE)
+              minute = (remainder / SECONDS_IN_MINUTE).to_i
+              second_with_fraction = remainder - (minute * SECONDS_IN_MINUTE)
+              second = second_with_fraction.to_i
+              fractional = (second_with_fraction - second).round(6)
+              str = format('%02d:%02d:%02d', hour, minute, second)
+              fractional.zero? ? str : str + fractional.to_s[1..]
             end
           end
 
@@ -204,10 +279,54 @@ module OpenEHR
             end
             # rubocop:enable Metrics/AbcSize
 
+            def add(a_diff)
+              validate_duration_operand(a_diff)
+
+              shifted_date = date_part_shifted_by(a_diff)
+              day_carry, wrapped_seconds = time_of_day_seconds_shifted_by(a_diff).divmod(day_seconds)
+              DvDateTime.new(:value => combine(shifted_date + day_carry, wrapped_seconds) + timezone)
+            end
+
+            def subtract(a_diff)
+              add(-a_diff)
+            end
+
             private
+
             def split_date_time(date_time)
               /^(.*)T(.*)$/ =~ date_time.as_string
               return DvDate.new(:value => $1), DvTime.new(:value => $2)
+            end
+
+            def day_seconds
+              HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE
+            end
+
+            def date_part_shifted_by(a_diff)
+              sign = a_diff.negative? ? -1 : 1
+              months = (((a_diff.years || 0) * MONTH_IN_YEAR) + (a_diff.months || 0)) * sign
+              days = (((a_diff.weeks || 0) * DAYS_IN_WEEK) + (a_diff.days || 0)) * sign
+              (Date.new(@year, @month, @day) >> months) + days
+            end
+
+            def time_of_day_seconds_shifted_by(a_diff)
+              sign = a_diff.negative? ? -1 : 1
+              own_seconds = (@hour * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) + (@minute * SECONDS_IN_MINUTE) +
+                @second + (@fractional_second || 0)
+              diff_seconds = ((a_diff.hours || 0) * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) +
+                ((a_diff.minutes || 0) * SECONDS_IN_MINUTE) + (a_diff.seconds || 0) + (a_diff.fractional_second || 0)
+              own_seconds + (sign * diff_seconds)
+            end
+
+            def combine(date, total_seconds)
+              hour = (total_seconds / (MINUTES_IN_HOUR * SECONDS_IN_MINUTE)).to_i
+              remainder = total_seconds - (hour * MINUTES_IN_HOUR * SECONDS_IN_MINUTE)
+              minute = (remainder / SECONDS_IN_MINUTE).to_i
+              second_with_fraction = remainder - (minute * SECONDS_IN_MINUTE)
+              second = second_with_fraction.to_i
+              fractional = (second_with_fraction - second).round(6)
+              str = date.iso8601 + format('T%02d:%02d:%02d', hour, minute, second)
+              fractional.zero? ? str : str + fractional.to_s[1..]
             end
           end
 

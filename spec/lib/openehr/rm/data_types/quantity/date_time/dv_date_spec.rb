@@ -61,4 +61,49 @@ describe DvDate do
     future_date=DvDate.new(:value => '2010-01-01')
     expect(past_date.diff(future_date).value).to eq('P0Y0M0W1D')
   end
+
+  describe '#add / #subtract' do
+    it 'adds a day duration' do
+      expect(@dv_date.add(DvDuration.new(:value => 'P1D')).value).to eq('2009-09-29')
+    end
+
+    it 'adds a week duration' do
+      expect(@dv_date.add(DvDuration.new(:value => 'P1W')).value).to eq('2009-10-05')
+    end
+
+    it 'clamps to the last day of the month when the target month is shorter' do
+      dv_date = DvDate.new(:value => '2009-01-31')
+      expect(dv_date.add(DvDuration.new(:value => 'P1M')).value).to eq('2009-02-28')
+    end
+
+    it 'lands on the leap day when adding a year to Feb 29' do
+      dv_date = DvDate.new(:value => '2004-02-29')
+      expect(dv_date.add(DvDuration.new(:value => 'P1Y')).value).to eq('2005-02-28')
+    end
+
+    it 'adding a negative duration behaves like subtraction' do
+      expect(@dv_date.add(DvDuration.new(:value => '-P1D')).value).to eq('2009-09-27')
+    end
+
+    it 'subtracts a day duration' do
+      expect(@dv_date.subtract(DvDuration.new(:value => 'P1D')).value).to eq('2009-09-27')
+    end
+
+    it 'does not mutate the receiver' do
+      _result = @dv_date.add(DvDuration.new(:value => 'P1D'))
+      expect(@dv_date.value).to eq('2009-09-28')
+    end
+
+    it 'raises ArgumentError for a duration with a time component' do
+      expect {
+        @dv_date.add(DvDuration.new(:value => 'PT1H'))
+      }.to raise_error ArgumentError
+    end
+
+    it 'raises ArgumentError for a non-DvDuration operand' do
+      expect {
+        @dv_date.add(1)
+      }.to raise_error ArgumentError
+    end
+  end
 end
