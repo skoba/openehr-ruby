@@ -48,8 +48,8 @@ describe XMLSerializer do
       desc_doc = doc(@xml_serializer.description)
       expect(REXML::XPath.first(desc_doc, "//original_author[@id='name']").text).to eq('Shinji KOBAYASHI')
       expect(REXML::XPath.first(desc_doc, '//lifecycle_state').text).to eq('draft')
-      expect(REXML::XPath.first(desc_doc, '//details/purpose').text).to eq('Serializer test')
-      expect(REXML::XPath.first(desc_doc, '//details/misuse').text).to eq('evaluate message')
+      expect(REXML::XPath.first(desc_doc, "//details/detail[@language='ja']/purpose").text).to eq('Serializer test')
+      expect(REXML::XPath.first(desc_doc, "//details/detail[@language='ja']/misuse").text).to eq('evaluate message')
     end
   end
 

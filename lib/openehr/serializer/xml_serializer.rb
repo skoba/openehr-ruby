@@ -47,7 +47,13 @@ module OpenEHR
             ad.original_author.each { |key, value| xml.original_author(value, 'id' => key) }
             (ad.other_contributors || []).each { |co| xml.other_contributors co }
             xml.lifecycle_state ad.lifecycle_state
-            xml.details { ad.details.each { |lang, item| emit_description_detail(xml, lang, item) } }
+            xml.details do
+              # Each language's fields are wrapped in its own <detail
+              # language="..."> - without this, multiple languages would
+              # flatten into one <details> with no way to tell which
+              # purpose/keywords/etc. belong to which language.
+              ad.details.each { |lang, item| xml.tag!('detail', 'language' => lang) { emit_description_detail(xml, lang, item) } }
+            end
           end
         end
         return desc
