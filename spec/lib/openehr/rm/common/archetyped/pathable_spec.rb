@@ -11,14 +11,15 @@ describe Pathable do
   end
 
   describe 'path_attribute DSL' do
-    class PathableTestBase < Pathable
-      attr_accessor :data, :state
-      path_attribute :data, :state
-    end
-
-    class PathableTestChild < PathableTestBase
-      attr_accessor :items
-      path_attribute :items
+    before do
+      stub_const('PathableTestBase', Class.new(Pathable) do
+        attr_accessor :data, :state
+        path_attribute :data, :state
+      end)
+      stub_const('PathableTestChild', Class.new(PathableTestBase) do
+        attr_accessor :items
+        path_attribute :items
+      end)
     end
 
     it 'a class with no path_attribute declarations has none' do

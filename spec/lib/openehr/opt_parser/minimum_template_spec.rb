@@ -2,28 +2,30 @@ describe 'minimum_template' do
   let(:optparser) { OpenEHR::Parser::OPTParser.new(File.join(File.dirname(__FILE__), '/minimum_template.opt'))}
   let(:opt) {optparser.parse}
 
-  MANDATORY =
+  let(:mandatory) do
     OpenEHR::AssumedLibraryTypes::Interval.new(lower: 1,
                                                upper: 1,
                                                lower_included: true,
                                                upper_included: true,
                                                upper_unbounded: false,
                                                lower_unbounded: false)
-  OPTIONAL =
+  end
+  let(:optional) do
     OpenEHR::AssumedLibraryTypes::Interval.new(lower: 0,
                                                upper: 1,
                                                lower_included: true,
                                                upper_included: true,
                                                upper_unbounded: false,
                                                lower_unbounded: false)
+  end
+  let(:more_than_zero) do
+    OpenEHR::AssumedLibraryTypes::Interval.new(lower: 0,
+                                             lower_included: true,
+                                             upper_unbounded: true,
+                                             lower_unbounded: false)
+  end
 
-    MORE_THAN_ZERO =
-      OpenEHR::AssumedLibraryTypes::Interval.new(lower: 0,
-                                               lower_included: true,
-                                               upper_unbounded: true,
-                                               lower_unbounded: false)
 
-  
   it 'concept is minimum template' do
     expect(opt.concept).to eq 'minimum template'
   end
@@ -93,7 +95,7 @@ describe 'minimum_template' do
     end
 
     specify 'occurrence is 1..1' do
-      expect(opt.definition.occurrences).to eq MANDATORY
+      expect(opt.definition.occurrences).to eq mandatory
     end
 
     describe 'attributes' do
@@ -115,7 +117,7 @@ describe 'minimum_template' do
         end
 
         specify 'existence is 1..1' do
-          expect(category.existence).to eq MANDATORY
+          expect(category.existence).to eq mandatory
         end
 
         describe 'children' do
@@ -131,7 +133,7 @@ describe 'minimum_template' do
             end
 
             specify 'occurrences is 1..1' do
-              expect(child.occurrences).to eq MANDATORY
+              expect(child.occurrences).to eq mandatory
             end
 
             describe 'attribute defining code' do
@@ -160,7 +162,7 @@ describe 'minimum_template' do
         end
 
         specify 'context' do
-          expect(context.existence).to eq OPTIONAL
+          expect(context.existence).to eq optional
         end
 
         context 'children' do
@@ -181,7 +183,7 @@ describe 'minimum_template' do
 
           specify 'occurrence' do
             expect(child2_1.occurrences).
-              to eq MANDATORY
+              to eq mandatory
           end
 
           example 'node_id taken over form the parent' do
@@ -206,7 +208,7 @@ describe 'minimum_template' do
             end
 
             specify 'existence' do
-              expect(other_context.existence).to eq OPTIONAL
+              expect(other_context.existence).to eq optional
             end
 
             context 'children' do
@@ -225,7 +227,7 @@ describe 'minimum_template' do
               end
 
               specify 'occurrences' do
-                expect(oc0.occurrences).to eq MANDATORY
+                expect(oc0.occurrences).to eq mandatory
               end
 
               specify 'node_id' do
@@ -262,7 +264,7 @@ describe 'minimum_template' do
                 end
 
                 specify 'existence' do
-                  expect(items.existence).to eq OPTIONAL
+                  expect(items.existence).to eq optional
                 end
                 
                 context 'children' do
@@ -282,7 +284,7 @@ describe 'minimum_template' do
                   end
 
                   specify 'occurrences' do
-                    expect(child.occurrences).to eq OPTIONAL
+                    expect(child.occurrences).to eq optional
                   end
 
                   specify 'node_id' do
@@ -305,7 +307,7 @@ describe 'minimum_template' do
 
                       specify 'existence' do
                         expect(value.existence).
-                          to eq OPTIONAL
+                          to eq optional
                       end
 
                       context 'children' do
@@ -328,7 +330,7 @@ describe 'minimum_template' do
 
                         specify 'occurrence' do
                           expect(dv_text.occurrences).
-                            to eq MANDATORY
+                            to eq mandatory
                         end
 
                         specify 'node id' do
@@ -353,7 +355,7 @@ describe 'minimum_template' do
 
                       specify 'existence' do
                         expect(name.existence).
-                          to eq MANDATORY
+                          to eq mandatory
                       end
 
                       context 'children' do
@@ -375,7 +377,7 @@ describe 'minimum_template' do
 
                         specify 'occurrences' do
                           expect(value_t.occurrences).
-                            to eq MANDATORY
+                            to eq mandatory
                         end
 
                         specify 'node_id' do
@@ -401,7 +403,7 @@ describe 'minimum_template' do
                           end
                           specify 'existence' do
                             expect(value_2.existence).
-                              to eq MANDATORY
+                              to eq mandatory
                           end
 
                           context 'children' do
@@ -424,7 +426,7 @@ describe 'minimum_template' do
 
                             specify 'occurrences' do
                               expect(prim.occurrences).
-                                to eq MANDATORY
+                                to eq mandatory
                             end
 
                             specify 'node_id' do
@@ -465,7 +467,7 @@ describe 'minimum_template' do
         end
 
         specify 'existence' do
-          expect(content.existence).to eq OPTIONAL
+          expect(content.existence).to eq optional
         end
 
         context 'cardinality' do
@@ -499,7 +501,7 @@ describe 'minimum_template' do
           end
 
           specify 'occurrences' do
-            expect(section.occurrences).to eq MORE_THAN_ZERO
+            expect(section.occurrences).to eq more_than_zero
           end
 
           specify 'node_id' do
@@ -524,7 +526,7 @@ describe 'minimum_template' do
 
               specify 'existence' do
                 expect(items_attribute.existence).
-                  to eq OPTIONAL
+                  to eq optional
               end
 
               context 'children' do
@@ -547,7 +549,7 @@ describe 'minimum_template' do
 
                 specify 'occurrences' do
                   expect(evaluation.occurrences).
-                    to eq MORE_THAN_ZERO
+                    to eq more_than_zero
                 end
 
                 specify 'node_id' do
