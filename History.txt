@@ -1,3 +1,38 @@
+=== 2.1.0
+New feature and maintenance release.
+
+* Implemented DV_TIME_SPECIFICATION / DV_GENERAL_TIME_SPECIFICATION /
+  DV_PERIODIC_TIME_SPECIFICATION (openEHR's HL7-GTS-backed time
+  specification classes). DvPeriodicTimeSpecification was previously
+  uninstantiable (its constructor called a method that only existed,
+  as an empty no-op, on the sibling class), and DvGeneralTimeSpecification's
+  formalism check called a nonexistent method - both were dead code
+  left unimplemented since the original author couldn't obtain HL7's
+  spec text at the time. HL7's spec is public now: these classes parse
+  the single-literal PIVL ("[phase_low(;phase_high)?]/(period)@ALIGN? IST?",
+  e.g. "[200004181100;200004181110]/(7d)@DW IST") and EIVL
+  ("EVENT([+-]offset)?", e.g. "ACM+10min") forms and expose the
+  openEHR-mandated derived accessors (period, calendar_alignment,
+  event_alignment, institution_specified); composed/set-algebra GTS
+  expressions are out of scope and raise a clear ArgumentError.
+  **Breaking change**: DvTimeSpecification and its subclasses moved
+  from a positional `new(value)` constructor to the hash-based
+  `new(value: ...)` pattern every other RM class uses (also required
+  for Factory registration - all 3 classes are now Factory-creatable),
+  and DvTimeSpecification#value now requires a DV_PARSABLE-shaped
+  object rather than accepting anything non-nil.
+* ADLSerializer and XMLSerializer made frozen-string-literal safe:
+  the handful of methods that mutated a bare string literal in place
+  now seed from an explicit unfrozen copy, and both files (plus
+  serializer/base.rb) carry `# frozen_string_literal: true` so any
+  future regression fails loudly instead of silently warning.
+* RuboCop offense backlog burned down from 158 to 0, and the CI
+  rubocop job is now blocking (previously `|| true`). Along the way:
+  fixed 2 real test bugs (6 float-comparison assertions that never
+  actually ran because they were missing `expect(...)`; 2 vacuous
+  placeholder tests), a handful of dead/redundant methods, and moved
+  development dependencies from the gemspec into the Gemfile.
+
 === 2.0.2
 Bug fix and maintenance release.
 
