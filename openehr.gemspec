@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
   gem.description = "This project is an implementation of the openEHR specification on Ruby."
   gem.homepage = "http://openehr.jp"
   gem.license = "Apache 2.0"
+  gem.metadata = { 'rubygems_mfa_required' => 'true' }
   gem.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -29,16 +30,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency('treetop')
   gem.add_dependency('rdoc')
   gem.add_dependency('nokogiri')
-
-  gem.add_development_dependency('rspec')
-  gem.add_development_dependency('rspec-expectations')
-  gem.add_development_dependency('rspec-collection_matchers')
-  gem.add_development_dependency('guard')
-  gem.add_development_dependency('guard-rspec')
-  gem.add_development_dependency('simplecov')
-  gem.add_development_dependency('libnotify')
-  gem.add_development_dependency('rubocop')
-  gem.add_development_dependency('meowcop')
-  gem.add_development_dependency('better_errors')
 end
 
