@@ -8,19 +8,24 @@ module OpenEHR
         class DvTimeSpecification < OpenEHR::RM::DataTypes::Basic::DataValue
           attr_reader :value
 
-          def initialize(value)
-            self.value=(value)
-          end
-
           def value=(value)
             raise ArgumentError, 'value must be not nil' if value.nil?
+            unless value.respond_to?(:formalism) && value.respond_to?(:value)
+              raise ArgumentError, 'value must be a DV_PARSABLE'
+            end
             @value = value
           end
-          
+
           def calendar_alignment
             raise NotImplementedError, "calendar_alignment must be implemented"
           end
-          alias calender_alignment calendar_alignment
+
+          # Legacy misspelling, deliberately kept (pinned by spec). Defined
+          # as a delegating method rather than `alias` so a subclass
+          # override of calendar_alignment is still reached through it.
+          def calender_alignment
+            calendar_alignment
+          end
 
           def event_alignment
             raise NotImplementedError, "event_alignment must be implemented"

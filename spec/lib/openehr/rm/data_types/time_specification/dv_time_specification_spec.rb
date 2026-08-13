@@ -1,22 +1,30 @@
 require File.dirname(__FILE__) + '/../../../../../spec_helper'
 include OpenEHR::RM::DataTypes::TimeSpecification
+include OpenEHR::RM::DataTypes::Encapsulated
 
 describe DvTimeSpecification do
   before(:each) do
-    @dv_time_specification = DvTimeSpecification.new('dummy')
+    @parsable = DvParsable.new(:value => 'dummy', :formalism => 'plain/text')
+    @dv_time_specification = DvTimeSpecification.new(:value => @parsable)
   end
 
   it 'should be an instance of DvTimeSpecification' do
     expect(@dv_time_specification).to be_an_instance_of DvTimeSpecification
   end
 
-  it 'value should be dummy' do
-    expect(@dv_time_specification.value).to eq('dummy')
+  it 'value should be the DV_PARSABLE passed in' do
+    expect(@dv_time_specification.value).to equal(@parsable)
   end
 
   it 'should raise ArgumentError with nil value' do
     expect {
-      DvTimeSpecification.new(nil)
+      DvTimeSpecification.new(:value => nil)
+    }.to raise_error ArgumentError
+  end
+
+  it 'should raise ArgumentError when value is not a DV_PARSABLE' do
+    expect {
+      DvTimeSpecification.new(:value => 'dummy')
     }.to raise_error ArgumentError
   end
 
