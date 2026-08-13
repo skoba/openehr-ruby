@@ -35,10 +35,10 @@ def sample_archetype
   description = ResourceDescription.new(:original_author => original_author,
                                         :lifecycle_state => 'draft',
                                         :details => details)
-  return archetype = Archetype.new(:archetype_id => archetype_id,
-                                   :concept => 'at0000',
-                                   :original_language => original_language,
-                                   :ontology => ontology,
-                                   :description => description,
-                                   :definition => definition)
+  return Archetype.new(:archetype_id => archetype_id,
+                       :concept => 'at0000',
+                       :original_language => original_language,
+                       :ontology => ontology,
+                       :description => description,
+                       :definition => definition)
 end

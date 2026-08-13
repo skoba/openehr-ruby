@@ -41,7 +41,7 @@ describe DvAmount do
 
   it 'should not mutate the operand passed to -' do
     operand = DvAmount.new(:magnitude => 3)
-    @dv_amount - operand
+    _result = @dv_amount - operand
     expect(operand.magnitude).to eq(3)
   end
 
@@ -129,7 +129,7 @@ describe DvAmount do
     end
 
     it 'does not mutate the receiver' do
-      -@dv_amount
+      _negated = -@dv_amount
       expect(@dv_amount.magnitude).to eq(2)
     end
 

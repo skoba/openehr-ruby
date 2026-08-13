@@ -58,7 +58,7 @@ describe PartyRelationship do
     }.to raise_error ArgumentError
   end
 
-  it 'should accept a source whose id differs from the relationship''s own uid' do
+  it "should accept a source whose id differs from the relationship's own uid" do
     # PARTY_RELATIONSHIP.source references the *owning PARTY's* id, which
     # is unrelated to the relationship object's own uid; requiring them
     # to match (as an earlier version of this method did) is not a spec

@@ -56,7 +56,9 @@ describe EventContext do
       @event_context.setting = invalid_setting
     }.to raise_error ArgumentError
     expect {
+      # rubocop:disable Lint/SelfAssignment -- re-validating the current value must not raise
       @event_context.setting = @event_context.setting
+      # rubocop:enable Lint/SelfAssignment
     }.not_to raise_error
   ensure
     OpenEHR::TerminologyService.provider = nil

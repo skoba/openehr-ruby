@@ -122,10 +122,6 @@ describe Party do
     }.to raise_error ArgumentError
   end
 
-  it 'should validate reverse_relationships'  do
-    expect {}
-  end
-
   it 'details should be assigned properly' do
     expect(@party.details.archetype_node_id).to eq('at0005')
   end

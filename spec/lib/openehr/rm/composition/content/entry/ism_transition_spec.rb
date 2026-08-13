@@ -38,7 +38,9 @@ describe IsmTransition do
       @ism_transition.current_state = invalid_state
     }.to raise_error ArgumentError
     expect {
+      # rubocop:disable Lint/SelfAssignment -- re-validating the current value must not raise
       @ism_transition.current_state = @ism_transition.current_state
+      # rubocop:enable Lint/SelfAssignment
     }.not_to raise_error
   ensure
     OpenEHR::TerminologyService.provider = nil
@@ -66,7 +68,9 @@ describe IsmTransition do
       @ism_transition.transition = invalid_transition
     }.to raise_error ArgumentError
     expect {
+      # rubocop:disable Lint/SelfAssignment -- re-validating the current value must not raise
       @ism_transition.transition = @ism_transition.transition
+      # rubocop:enable Lint/SelfAssignment
     }.not_to raise_error
   ensure
     OpenEHR::TerminologyService.provider = nil

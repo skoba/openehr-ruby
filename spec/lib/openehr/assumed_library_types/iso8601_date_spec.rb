@@ -30,10 +30,6 @@ describe ISO8601Date do
     expect(@iso8601date.is_extended?).to be_truthy
   end
 
-  it 'should parse vaild date form' do
-
-  end
-
   it 'should parse valid adte form' do
     expect(ISO8601Date).to be_valid_iso8601_date '2009-09-22'
   end
@@ -81,7 +77,7 @@ describe ISO8601Date do
   end
 
   [1,3,5,7,8,10,12].each do |m|
-    describe '#{m}th month behavior' do
+    describe "#{m}th month behavior" do
       before do
         @iso8601date.month = m
       end
