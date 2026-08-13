@@ -284,6 +284,33 @@ module OpenEHR
         it { is_expected.to be_an_instance_of DataTypes::URI::DvEhrUri }
       end
 
+      describe DvTimeSpecificationFactory do
+        subject {
+          Factory.create('DV_TIME_SPECIFICATION',
+                         value: DataTypes::Encapsulated::DvParsable.new(value: 'dummy', formalism: 'plain/text'))
+        }
+
+        it { is_expected.to be_an_instance_of DataTypes::TimeSpecification::DvTimeSpecification }
+      end
+
+      describe DvGeneralTimeSpecificationFactory do
+        subject {
+          Factory.create('DV_GENERAL_TIME_SPECIFICATION',
+                         value: DataTypes::Encapsulated::DvParsable.new(value: 'some GTS literal', formalism: 'HL7:GTS'))
+        }
+
+        it { is_expected.to be_an_instance_of DataTypes::TimeSpecification::DvGeneralTimeSpecification }
+      end
+
+      describe DvPeriodicTimeSpecificationFactory do
+        subject {
+          Factory.create('DV_PERIODIC_TIME_SPECIFICATION',
+                         value: DataTypes::Encapsulated::DvParsable.new(value: '[200004181100]/(7d)', formalism: 'HL7:PIVL'))
+        }
+
+        it { is_expected.to be_an_instance_of DataTypes::TimeSpecification::DvPeriodicTimeSpecification }
+      end
+
       describe SectionFactory do
         subject { Factory.create('Section',
                                  archetype_node_id: 'at0001',

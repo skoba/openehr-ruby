@@ -277,6 +277,24 @@ module OpenEHR
       end
     end
 
+    class DvTimeSpecificationFactory
+      def self.create(param)
+        DataTypes::TimeSpecification::DvTimeSpecification.new(param)
+      end
+    end
+
+    class DvGeneralTimeSpecificationFactory
+      def self.create(param)
+        DataTypes::TimeSpecification::DvGeneralTimeSpecification.new(param)
+      end
+    end
+
+    class DvPeriodicTimeSpecificationFactory
+      def self.create(param)
+        DataTypes::TimeSpecification::DvPeriodicTimeSpecification.new(param)
+      end
+    end
+
     class ObservationFactory
       def self.create(param)
         Composition::Content::Entry::Observation.new(param)
