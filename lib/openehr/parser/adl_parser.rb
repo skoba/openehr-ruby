@@ -8,10 +8,6 @@ module OpenEHR
     class ADLParser < ::OpenEHR::Parser::Base
       Treetop.load(File.join(File.dirname(__FILE__), 'adl_grammar.tt'))
 
-      def initialize(filename)
-        super
-      end
-      
       def parse(validate: false)
         archetype.tap do |a|
           ArchetypeValidator.new(a).validate! if validate

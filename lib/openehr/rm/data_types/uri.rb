@@ -65,10 +65,6 @@ module OpenEHR
         end
 
         class DvEhrUri < DvUri
-          def initialize(value)
-            super
-          end
-
           def value=(value)
             raise ArgumentError, "scheme must be ehr" if !(value =~ /^ehr/i)
             parse(value)

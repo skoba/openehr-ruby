@@ -17,3 +17,9 @@ Metrics/ModuleLength:
 # one truly redundant case (DvUri#initialize) was deleted instead.
 Lint/MissingSuper:
   Enabled: false
+
+# AccessControlSettings (lib/openehr/rm/security.rb) is a deliberate
+# stub for a real openEHR RM 1.0.1 Security package class - allow an
+# explanatory comment to satisfy this cop instead of disabling it.
+Lint/EmptyClass:
+  AllowComments: true

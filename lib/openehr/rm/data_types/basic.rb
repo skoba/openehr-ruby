@@ -25,20 +25,11 @@ module OpenEHR
         end
 
         class DvBoolean < DataValue
-          def initialize(args)
-            super(args)
-          end
-
           def value=(value)
             raise ArgumentError, "value must not be nil" if value.nil?
-            if value == true
-              @value = true
-            elsif  value == false
-              @value = false
-            elsif /TRUE/i =~ value
-              @value = true
-            elsif /FALSE/i =~ value
-              @value = false
+            case value
+            when true, /TRUE/i then @value = true
+            when false, /FALSE/i then @value = false
             end
           end
 

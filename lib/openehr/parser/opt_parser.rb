@@ -31,10 +31,6 @@ module OpenEHR
         '/template/description/other_details'
       DEFINITION_PATH = '/template/definition'
       OCCURRENCE_PATH = '/occurrences'
-      
-      def initialize(filename)
-        super(filename)
-      end
 
       def parse
         @opt = Nokogiri::XML::Document.parse(File.open(@filename))

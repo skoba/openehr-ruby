@@ -37,9 +37,9 @@ module OpenEHR
             @charset = charset
           end
 
-          private
-
           CHARSET_LIST_PATH = File.expand_path('charset.lst', __dir__)
+
+          private
 
           def charset_valid?(charset)
             result = false

@@ -5,7 +5,9 @@ module OpenEHR
   module RM
     module Security
       class AccessControlSettings
-        
+        # Deliberate stub: openEHR RM 1.0.1 Security package class (see
+        # UML reference above); no behavior is specified for it beyond
+        # existence.
       end
     end
   end
