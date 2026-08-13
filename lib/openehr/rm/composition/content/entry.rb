@@ -258,9 +258,12 @@ module OpenEHR
               @current_state = current_state
             end
 
+            # transition is optional (0..1) since RM 1.1.0; when present
+            # its code is still validated against the terminology.
             def transition=(transition)
               if transition.nil?
-                raise ArgumentError, 'transition is mandatory'
+                @transition = nil
+                return
               end
               unless OpenEHR::TerminologyService.has_code_for_group?('ism transition careflow transition', transition.defining_code.code_string)
                 raise ArgumentError, 'transition code is invalid'

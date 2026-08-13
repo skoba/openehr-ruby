@@ -45,6 +45,8 @@ module OpenEHR
           @time_created = time_created
         end
 
+        # contributions is optional (0..1) since RM 1.1.0 (was mandatory
+        # pre-1.1.0).
         def contributions=(contributions)
           unless contributions.nil?
             contributions.each do |contrib|
@@ -52,10 +54,8 @@ module OpenEHR
                 raise ArgumentError, 'contribution type should be CONTRIBUTION'
               end
             end
-            @contributions = contributions
-          else
-            raise ArgumentError, 'contributions are mandatory'
           end
+          @contributions = contributions
         end
 
         def ehr_access=(ehr_access)
@@ -72,6 +72,8 @@ module OpenEHR
           @ehr_status = ehr_status
         end
 
+        # compositions is optional (0..1) since RM 1.1.0 (was mandatory
+        # pre-1.1.0).
         def compositions=(compositions)
           unless compositions.nil?
             compositions.each do |compo|
@@ -79,10 +81,8 @@ module OpenEHR
                 raise ArgumentError, 'composition type should be VERSIONED_COMPOSITION'
               end
             end
-            @compositions = compositions
-          else
-            raise ArgumentError, 'compositions are mandatory'
           end
+          @compositions = compositions
         end
 
         def directory=(directory)

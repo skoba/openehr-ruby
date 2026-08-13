@@ -69,6 +69,10 @@ way, from RM 1.1.0 onward.
   FEEDER_AUDIT_DETAILS.other_details         1.1.0       Optional ITEM_STRUCTURE meta-data (SPECRM-74)
   ACTIVITY.timing                            1.1.0       Now optional (was mandatory pre-1.1.0)
   ISM_TRANSITION.reason                      1.1.0       Optional List<DV_TEXT>
+  ISM_TRANSITION.transition                  1.1.0       Now optional (was mandatory pre-1.1.0)
+  DV_IDENTIFIER.issuer/assigner/type         1.0.4       Optional (only id remains 1..1 mandatory)
+  PARTICIPATION.mode                         1.0.4       Now optional (was mandatory pre-1.0.4)
+  EHR.contributions / EHR.compositions       1.1.0       Now optional (was mandatory pre-1.1.0)
   COMPOSITION.category = "episodic"          1.1.0       A terminology value, not a code change (SPECRM-89);
                                                           already supported via the pluggable
                                                           OpenEHR::TerminologyService seam

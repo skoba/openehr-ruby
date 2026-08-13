@@ -89,6 +89,23 @@ describe OpenEHR::AQL::Dataset do
       expect(record.ehr_status).to equal(ehr_status_content)
       expect(record.compositions).to eq([composition])
     end
+
+    it 'normalizes a real EHR with no compositions (optional since RM 1.1.0) to an empty list' do
+      versioned_status = double('VersionedEHRStatus', type: 'VERSIONED_EHR_STATUS',
+                                 latest_version: double(data: double('EHRStatus')))
+      ehr = OpenEHR::RM::EHR::EHR.new(
+        system_id: OpenEHR::RM::Support::Identification::HierObjectID.new(value: 'system-1'),
+        ehr_id: OpenEHR::RM::Support::Identification::HierObjectID.new(value: 'ehr-1'),
+        time_created: builder.date_time('2024-01-01T00:00:00+09:00'),
+        ehr_access: double('ObjectRef', type: 'VERSIONED_EHR_ACCESS'),
+        ehr_status: versioned_status
+      )
+
+      dataset = described_class.new(ehrs: [ehr])
+      record = dataset.each_ehr.to_a.first
+
+      expect(record.compositions).to eq([])
+    end
   end
 
   describe '.of_compositions' do

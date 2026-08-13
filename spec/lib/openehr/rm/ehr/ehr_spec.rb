@@ -32,6 +32,18 @@ describe EHR do
     expect(@ehr).to be_an_instance_of EHR
   end
 
+  it 'constructs without contributions or compositions, both optional since RM 1.1.0' do
+    system_id = HierObjectID.new(:value => 'ABC::DEF')
+    ehr_id = HierObjectID.new(:value => 'GHI::JKL')
+    time_created = DvDateTime.new(:value => '2009-11-14T19:01:11')
+    ehr_access = double(ObjectRef, :type => 'VERSIONED_EHR_ACCESS')
+    ehr_status = double(ObjectRef, :type => 'VERSIONED_EHR_STATUS')
+    minimal = EHR.new(:system_id => system_id, :ehr_id => ehr_id, :time_created => time_created,
+                      :ehr_access => ehr_access, :ehr_status => ehr_status)
+    expect(minimal.contributions).to be_nil
+    expect(minimal.compositions).to be_nil
+  end
+
   it 'system_id should be assigned properly' do
     expect(@ehr.system_id.value).to eq('ABC::DEF')
   end
@@ -73,10 +85,9 @@ describe EHR do
     }.to raise_error ArgumentError
   end
 
-  it 'should raise ArgumentError with nil contributions' do
-    expect {
-      @ehr.contributions = nil
-    }.to raise_error ArgumentError
+  it 'accepts nil contributions, optional since RM 1.1.0' do
+    expect { @ehr.contributions = nil }.not_to raise_error
+    expect(@ehr.contributions).to be_nil
   end
 
   it 'ehr_access should be assigned properly' do
@@ -115,10 +126,9 @@ describe EHR do
     expect(@ehr.compositions.size).to be_equal 3
   end
 
-  it 'should raise ArgumentError with nil compositions' do
-    expect {
-      @ehr.compositions = nil
-    }.to raise_error ArgumentError
+  it 'accepts nil compositions, optional since RM 1.1.0' do
+    expect { @ehr.compositions = nil }.not_to raise_error
+    expect(@ehr.compositions).to be_nil
   end
 
   it 'should raise ArgumentError with invalid type composition' do

@@ -75,17 +75,17 @@ module OpenEHR
             self.type = args[:type]
           end
 
+          # issuer/assigner/type are optional (0..1) since RM 1.0.4 - only
+          # id is mandatory. A non-nil value must still not be empty.
           def issuer=(issuer)
-            if issuer.nil? or issuer.empty?
-              raise ArgumentError, 'issuer is mandatory'
-            end
+            raise ArgumentError, 'issuer must not be empty' if !issuer.nil? && issuer.empty?
+
             @issuer = issuer
           end
 
           def assigner=(assigner)
-            if assigner.nil? or assigner.empty?
-              raise ArgumentError, 'assigner is mandatory'
-            end
+            raise ArgumentError, 'assigner must not be empty' if !assigner.nil? && assigner.empty?
+
             @assigner = assigner
           end
 
@@ -97,9 +97,8 @@ module OpenEHR
           end
 
           def type=(type)
-            if type.nil? or type.empty?
-              raise ArgumentError, 'type is mandatory'
-            end
+            raise ArgumentError, 'type must not be empty' if !type.nil? && type.empty?
+
             @type = type
           end
         end #end of DvIdentifier

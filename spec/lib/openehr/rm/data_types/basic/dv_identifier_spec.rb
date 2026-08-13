@@ -37,10 +37,9 @@ describe DvIdentifier do
       from('Ruby Hospital').to('Other Hospital')
   end
 
-  it 'raise ArgumentError for nil issuer' do
-    expect {
-      @dv_identifier.issuer = nil
-    }.to raise_error(ArgumentError)
+  it 'accepts a nil issuer (optional since RM 1.0.4)' do
+    expect { @dv_identifier.issuer = nil }.not_to raise_error
+    expect(@dv_identifier.issuer).to be_nil
   end
 
   it 'raise ArgumentError for empty issuer' do
@@ -56,10 +55,9 @@ describe DvIdentifier do
       from('Information office').to('Service office')
   end
 
-  it 'raise ArgumentError for nil assigner' do
-    expect {
-      @dv_identifier.assigner = nil
-    }.to raise_error(ArgumentError)
+  it 'accepts a nil assigner (optional since RM 1.0.4)' do
+    expect { @dv_identifier.assigner = nil }.not_to raise_error
+    expect(@dv_identifier.assigner).to be_nil
   end
 
   it 'raise ArgumentError for empty assigner' do
@@ -94,15 +92,22 @@ describe DvIdentifier do
       from('personal id').to('test id')
   end
 
-  it 'raise ArgumentError for nil type' do
-    expect {
-      @dv_identifier.type = nil
-    }.to raise_error(ArgumentError)
+  it 'accepts a nil type (optional since RM 1.0.4)' do
+    expect { @dv_identifier.type = nil }.not_to raise_error
+    expect(@dv_identifier.type).to be_nil
   end
 
   it 'raise ArgumentError for empty issuer' do
     expect {
       @dv_identifier.type = ''
     }.to raise_error(ArgumentError)
+  end
+
+  it 'constructs with only id, all other fields optional since RM 1.0.4' do
+    minimal = DvIdentifier.new(:id => '0123456-0')
+    expect(minimal.id).to eq('0123456-0')
+    expect(minimal.issuer).to be_nil
+    expect(minimal.assigner).to be_nil
+    expect(minimal.type).to be_nil
   end
 end

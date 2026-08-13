@@ -95,7 +95,9 @@ module OpenEHR
           ehr_id: ehr.ehr_id,
           ehr: ehr,
           ehr_status: ehr.ehr_status&.latest_version&.data,
-          compositions: ehr.compositions.map { |versioned_composition| versioned_composition.latest_version.data }
+          # EHR.compositions is optional (0..1) since RM 1.1.0 - Array()
+          # normalizes a nil (no compositions at all) to an empty list.
+          compositions: Array(ehr.compositions).map { |versioned_composition| versioned_composition.latest_version.data }
         )
       end
 

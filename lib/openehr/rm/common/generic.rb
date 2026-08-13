@@ -167,8 +167,8 @@ module OpenEHR
         end
 
         class Participation
-          attr_reader :performer, :function, :mode
-          attr_accessor :time
+          attr_reader :performer, :function
+          attr_accessor :time, :mode
 
           def initialize(args ={ })
             self.performer = args[:performer]
@@ -186,11 +186,8 @@ module OpenEHR
             raise ArgumentError, 'function is mandatory' if function.nil?
             @function = function
           end
-
-          def mode=(mode)
-            raise ArgumentError, 'mode is mandatory' if mode.nil?
-            @mode = mode
-          end
+          # mode is optional (0..1) since RM 1.0.4 - attr_accessor above
+          # covers it, no validation needed.
         end
 
         class Attestation < AuditDetails

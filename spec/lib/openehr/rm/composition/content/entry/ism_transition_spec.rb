@@ -50,10 +50,15 @@ describe IsmTransition do
     expect(@ism_transition.transition.value).to eq('scheduled')
   end
 
-  it 'should raise ArgumentError with nil transition' do
-    expect {
-      @ism_transition.transition = nil
-    }.to raise_error ArgumentError
+  it 'accepts a nil transition, optional since RM 1.1.0' do
+    expect { @ism_transition.transition = nil }.not_to raise_error
+    expect(@ism_transition.transition).to be_nil
+  end
+
+  it 'constructs without a transition' do
+    current_state = double(DvCodedText, :value => 'planned', :defining_code => double(CodePhrase, :code_string => '245'))
+    minimal = IsmTransition.new(:current_state => current_state)
+    expect(minimal.transition).to be_nil
   end
 
   it 'should raise ArugmentError with invalid transition code' do

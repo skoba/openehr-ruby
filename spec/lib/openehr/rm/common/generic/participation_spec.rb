@@ -33,4 +33,16 @@ describe Participation do
   it 'should assign time properly' do
     expect(@participation.time.lower.value).to eq('2009-10-03T20:33:05')
   end
+
+  it 'accepts a nil mode, optional since RM 1.0.4' do
+    expect { @participation.mode = nil }.not_to raise_error
+    expect(@participation.mode).to be_nil
+  end
+
+  it 'constructs without a mode' do
+    performer = double(PartyProxy, :name => 'GEHIRN')
+    function = double(DvText, :value => 'committer')
+    minimal = Participation.new(:performer => performer, :function => function)
+    expect(minimal.mode).to be_nil
+  end
 end
