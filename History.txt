@@ -1,3 +1,40 @@
+=== 2.3.0
+Feature and bug fix release: AQL execution catches up to the parser
+on 4 previously-ExecutionError constructs, and a Factory.create entry
+point that's been broken since 2.0.0 is fixed.
+
+* AQL: WHERE ... LIKE, WHERE ... MATCHES {...} (literal value list),
+  CONTAINS class-expression node/standard predicates ("CONTAINS
+  ELEMENT e2[at0004]", "...[name/value='Systolic']", and their AND/OR
+  combinations), and a SELECT mixing a plain column with an aggregate
+  were all already parsed correctly but raised ExecutionError the
+  moment the engine tried to run them - all four now execute:
+  - LIKE follows the AQL spec's glob syntax (? = one char, * =
+    zero-or-more, whole-string anchored, no wildcard behaves like =) -
+    not SQL's %/_, which some real-world queries use by habit but
+    isn't what the spec defines.
+  - MATCHES against a literal value list is a pure in-memory
+    membership check. A URI or TERMINOLOGY(...) operand names an
+    external terminology-server value-set expansion this engine has
+    no service wired for (OpenEHR::TerminologyService only validates a
+    single known code, it doesn't expand a value set) - those still
+    raise, now with a clear explanation instead of a generic "yet".
+  - CONTAINS node/standard predicates reuse the same
+    PathEvaluator/PredicateEvaluator machinery the EHR-root predicate
+    already used (2.2.0), generalized to any CONTAINS-matched
+    candidate instead of just the EHR record.
+  - A mixed aggregate/non-aggregate SELECT implicitly groups by every
+    non-aggregate column's value (the standard SQL reading when no
+    explicit GROUP BY is given) - zero surviving rows therefore
+    produces zero groups, unlike the all-aggregate case's single row
+    of aggregate defaults.
+* Fixed: OpenEHR::RM::Factory.create('COMPOSITION', ...) raised
+  NoMethodError - every other *Factory subclass overrides
+  self.create(param); CompositionFactory only defined
+  create_from_json. Reported repeatedly by openehr-rails across
+  2.0.0-2.2.0 (create_from_json worked around it, so not urgent for
+  them).
+
 === 2.2.0
 Bug fix and feature release: AQL/RM 1.1.0 spec-compliance fixes,
 ADL/XML serializer round-trip completeness, and a new XML archetype
