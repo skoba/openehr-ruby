@@ -530,3 +530,41 @@ describe 'OpenEHR::AQL.execute (E10: EHR-root predicate)' do
     }.to raise_error(OpenEHR::AQL::ExecutionError)
   end
 end
+
+# E11 milestone: SELECT TOP n (deprecated by QUERY 1.1.0 in favour of
+# LIMIT, but still grammatical) used to be parsed into
+# SelectClause#top and then silently never read by Engine - "SELECT
+# TOP 1 ..." returned every matching row, not just 1. Implemented by
+# reusing the LIMIT code path; TOP and LIMIT together have no defined
+# meaning, so combining them raises rather than guessing.
+describe 'OpenEHR::AQL.execute (E11: SELECT TOP)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:low) { builder.blood_pressure_composition(systolic: 110, diastolic: 70) }
+  let(:mid) { builder.blood_pressure_composition(systolic: 130, diastolic: 85) }
+  let(:high) { builder.blood_pressure_composition(systolic: 150, diastolic: 95) }
+
+  def systolic_query(top)
+    "SELECT TOP #{top} " \
+    'o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS systolic ' \
+    'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o ' \
+    'ORDER BY o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude'
+  end
+
+  it 'limits to the first n rows (regression: used to return every row)' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    result = OpenEHR::AQL.execute(systolic_query('1'), dataset)
+    expect(result.rows).to eq([[110]])
+  end
+
+  it 'TOP n BACKWARD takes the last n rows' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    result = OpenEHR::AQL.execute(systolic_query('2 BACKWARD'), dataset)
+    expect(result.rows).to eq([[130], [150]])
+  end
+
+  it 'raises ExecutionError when TOP and LIMIT are both present' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([high, low, mid])
+    query = "#{systolic_query('1')} LIMIT 2"
+    expect { OpenEHR::AQL.execute(query, dataset) }.to raise_error(OpenEHR::AQL::ExecutionError, /TOP.*LIMIT/)
+  end
+end

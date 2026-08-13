@@ -7,12 +7,12 @@ require_relative 'result_set'
 module OpenEHR
   module AQL
     # Orchestrates one Query execution against a Dataset, in the order
-    # CONTAINS -> WHERE -> ORDER BY -> SELECT -> DISTINCT -> LIMIT/OFFSET.
+    # CONTAINS -> WHERE -> ORDER BY -> SELECT -> DISTINCT -> TOP/LIMIT/OFFSET.
     #
     # A SELECT clause made entirely of aggregate columns
     # (Model::AggregateFunctionCall) collapses the whole (post-WHERE)
     # binding set into a single summary row instead - ORDER BY/DISTINCT/
-    # LIMIT don't apply to it, matching plain SQL aggregate-without-
+    # TOP/LIMIT don't apply to it, matching plain SQL aggregate-without-
     # GROUP-BY semantics. Mixing aggregate and plain columns, and
     # generic (non-aggregate) function calls, are not yet supported.
     class Engine
@@ -36,7 +36,7 @@ module OpenEHR
       def select_rows(bindings)
         rows = project(order(bindings))
         rows = rows.uniq if @query.select_clause.distinct
-        apply_limit(rows)
+        apply_limit(apply_top(rows))
       end
 
       def order(bindings)
@@ -75,6 +75,16 @@ module OpenEHR
         return rows unless limit_clause
 
         rows.drop(limit_clause.offset).take(limit_clause.limit)
+      end
+
+      # TOP is deprecated in favour of LIMIT (still grammatical); combined
+      # with LIMIT it has no defined meaning, so raise rather than guess.
+      def apply_top(rows)
+        top = @query.select_clause.top
+        return rows unless top
+        raise ExecutionError, 'combining SELECT TOP with LIMIT is not supported - use LIMIT alone' if @query.limit_clause
+
+        top.direction == :backward ? rows.last(top.count) : rows.take(top.count)
       end
 
       def aggregate_query?
