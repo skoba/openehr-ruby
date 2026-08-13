@@ -31,36 +31,7 @@ module OpenEHR
           desc << (INDENT+'lifecycle_state = <"'+ad.lifecycle_state+'">'+NL)
           desc << (INDENT+'details = <'+NL)
           ad.details.each do |lang,item|
-            desc << ((INDENT*2)+'["'+lang+'"] = <'+NL)
-            desc << ((INDENT*3)+'language = <['+
-              item.language.terminology_id.value+'::'+
-              item.language.code_string+']>'+NL)
-            desc << ((INDENT*3)+'purpose = <"'+item.purpose+'">'+NL)
-            if item.keywords then
-              desc << ((INDENT*3)+'keywords = <')
-              item.keywords.each do |word|
-                desc << ('"'+word+'",')
-              end
-              desc.chop! << ('>'+NL)
-            end
-            desc << ((INDENT*3)+'use = <"'+item.use+'">'+NL) if item.use
-            desc << ((INDENT*3)+'misuse = <"'+item.misuse+'">'+NL) if item.misuse
-            desc << ((INDENT*3)+'copyright = <"'+item.copyright+'">'+NL) if item.copyright
-            if item.original_resource_uri
-              desc << ((INDENT*3) + 'original_resource_uri = <')
-              item.original_resource_uri.each do |k,v|
-                desc << ((INDENT*4)+'["'+k+'"] = <"'+v+'">'+NL)
-              end
-              desc << ((INDENT*3)+'>'+NL)
-            end
-            if item.other_details
-              desc << ((INDENT*3) + 'other_details = <')
-              item.other_details.each do |k,v|
-                desc << ((INDENT*4)+'["'+k+'"] = <"'+v+'">'+NL)
-              end
-              desc << ((INDENT*3)+'>'+NL)
-            end
-            desc << ((INDENT*2)+'>'+NL)
+            desc << description_details_item(lang, item)
           end
           desc << (INDENT+'>'+NL)
         end
@@ -76,21 +47,7 @@ module OpenEHR
         ontology = 'ontology'+NL
         ontology << string_list_line('languages_available', ao.languages_available)
         ontology << string_list_line('terminologies_available', ao.terminologies_available)
-        ontology << (INDENT + 'term_definitions = <' + NL)
-        ao.term_definitions.each do |lang, items|
-          ontology << ((INDENT*2) + "[\"#{lang}\"] = <" + NL)
-          ontology << ((INDENT*3) + 'items = <'  + NL)
-          items.each do |code, item|
-            ontology << ((INDENT*4) + "[\"#{code}\"] = <" + NL)
-            item.items.each do |name, desc|
-              ontology << ((INDENT*5) + "#{name} = <\"#{desc}\">" + NL)
-            end
-            ontology << ((INDENT*4) + '>'+NL)
-          end
-          ontology << ((INDENT*3) + '>' + NL)
-          ontology << ((INDENT*2) + '>' + NL)
-        end
-        ontology << (INDENT + '>' + NL)
+        ontology << term_definitions_block(ao.term_definitions)
         ontology << term_bindings_block(ao.term_bindings)
         ontology
       end
@@ -109,6 +66,65 @@ module OpenEHR
         return '' if values.nil? || values.empty?
 
         INDENT + "#{keyword} = <" + values.map { |v| "\"#{v}\"" }.join(', ') + '>' + NL
+      end
+
+      def description_details_item(lang, item)
+        block = (INDENT*2)+'["'+lang+'"] = <'+NL
+        block << description_language_line(item.language)
+        block << ((INDENT*3)+'purpose = <"'+item.purpose+'">'+NL)
+        block << description_keywords_line(item) if item.keywords
+        block << optional_field_line('use', item.use)
+        block << optional_field_line('misuse', item.misuse)
+        block << optional_field_line('copyright', item.copyright)
+        block << keyed_map_block('original_resource_uri', item.original_resource_uri) if item.original_resource_uri
+        block << keyed_map_block('other_details', item.other_details) if item.other_details
+        block << ((INDENT*2)+'>'+NL)
+      end
+
+      def description_language_line(language)
+        (INDENT*3)+'language = <['+
+          language.terminology_id.value+'::'+
+          language.code_string+']>'+NL
+      end
+
+      def optional_field_line(keyword, value)
+        return '' if value.nil?
+
+        (INDENT*3)+"#{keyword} = <\"#{value}\">"+NL
+      end
+
+      def description_keywords_line(item)
+        block = (INDENT*3)+'keywords = <'
+        item.keywords.each do |word|
+          block << ('"'+word+'",')
+        end
+        block.chop! << ('>'+NL)
+      end
+
+      def keyed_map_block(keyword, hash)
+        block = (INDENT*3) + "#{keyword} = <"
+        hash.each do |k,v|
+          block << ((INDENT*4)+'["'+k+'"] = <"'+v+'">'+NL)
+        end
+        block << ((INDENT*3)+'>'+NL)
+      end
+
+      def term_definitions_block(term_definitions)
+        block = INDENT + 'term_definitions = <' + NL
+        term_definitions.each do |lang, items|
+          block << ((INDENT*2) + "[\"#{lang}\"] = <" + NL)
+          block << ((INDENT*3) + 'items = <'  + NL)
+          items.each do |code, item|
+            block << ((INDENT*4) + "[\"#{code}\"] = <" + NL)
+            item.items.each do |name, desc|
+              block << ((INDENT*5) + "#{name} = <\"#{desc}\">" + NL)
+            end
+            block << ((INDENT*4) + '>'+NL)
+          end
+          block << ((INDENT*3) + '>' + NL)
+          block << ((INDENT*2) + '>' + NL)
+        end
+        block << (INDENT + '>' + NL)
       end
 
       def term_bindings_block(term_bindings)
