@@ -21,12 +21,13 @@ module OpenEHR
             NULL_FLAVOUR_CODES = %w[271 272 273 253].freeze
 
             attr_accessor :value
-            attr_reader :null_flavor
-            path_attribute :value, :null_flavour
+            attr_reader :null_flavor, :null_reason
+            path_attribute :value, :null_flavour, :null_reason
             def initialize(args = {})
               super(args)
               self.value = args[:value]
               self.null_flavor= args[:null_flavor]
+              self.null_reason = args[:null_reason]
             end
 
             def null_flavor=(null_flavor)
@@ -39,6 +40,15 @@ module OpenEHR
             end
             alias null_flavour null_flavor
             alias null_flavour= null_flavor=
+
+            # null_reason is DV_TEXT [0..1] since RM 1.1.0. Invariant: if
+            # set, null_flavor must also be set.
+            def null_reason=(null_reason)
+              if !null_reason.nil? && @null_flavor.nil?
+                raise ArgumentError, 'null_reason requires null_flavor to be set'
+              end
+              @null_reason = null_reason
+            end
 
             def is_null?
               return @value.nil?

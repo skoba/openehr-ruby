@@ -50,4 +50,32 @@ describe Element do
       @element.null_flavor = other
     }.to raise_error ArgumentError
   end
+
+  describe 'RM 1.1.0 null_reason' do
+    it 'defaults to nil' do
+      expect(@element.null_reason).to be_nil
+    end
+
+    it 'accepts a null_reason when null_flavor is already set' do
+      @element.null_flavor = openehr_null_flavour('271')
+      reason = DvText.new(:value => 'not recorded during triage')
+      @element.null_reason = reason
+      expect(@element.null_reason).to equal(reason)
+    end
+
+    it 'accepts a null_reason at construction time alongside null_flavor' do
+      reason = DvText.new(:value => 'not recorded during triage')
+      element = Element.new(:archetype_node_id => 'at0001',
+                            :name => DvText.new(:value => 'element'),
+                            :null_flavor => openehr_null_flavour('271'),
+                            :null_reason => reason)
+      expect(element.null_reason).to equal(reason)
+    end
+
+    it 'raises ArgumentError for a null_reason without a null_flavor' do
+      expect {
+        @element.null_reason = DvText.new(:value => 'not recorded during triage')
+      }.to raise_error ArgumentError
+    end
+  end
 end

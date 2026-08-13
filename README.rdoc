@@ -73,6 +73,9 @@ way, from RM 1.1.0 onward.
   DV_IDENTIFIER.issuer/assigner/type         1.0.4       Optional (only id remains 1..1 mandatory)
   PARTICIPATION.mode                         1.0.4       Now optional (was mandatory pre-1.0.4)
   EHR.contributions / EHR.compositions       1.1.0       Now optional (was mandatory pre-1.1.0)
+  DV_MULTIMEDIA.size                         1.1.0       Optional Integer; falls back to the inherited
+                                                          value-based size when not given explicitly
+  ELEMENT.null_reason                        1.1.0       Optional DV_TEXT; requires null_flavor to be set
   COMPOSITION.category = "episodic"          1.1.0       A terminology value, not a code change (SPECRM-89);
                                                           already supported via the pluggable
                                                           OpenEHR::TerminologyService seam

@@ -127,4 +127,34 @@ describe DvMultimedia do
       DvMultimedia.new(:value => '<xml/>', :media_type => nil)
     }.to raise_error(ArgumentError)
   end
+
+  describe 'RM 1.1.0 size' do
+    it 'falls back to the inherited value-based size when not given explicitly' do
+      expect(@dv_multimedia.size).to be_equal 15
+    end
+
+    it 'accepts an explicit size' do
+      dv_multimedia = DvMultimedia.new(:value => '<xml/>',
+                                       :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                                       :data => Array['1234'],
+                                       :size => 1234)
+      expect(dv_multimedia.size).to eq(1234)
+    end
+
+    it 'raises ArgumentError for a non-Integer size' do
+      expect {
+        DvMultimedia.new(:value => '<xml/>',
+                         :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                         :size => '1234')
+      }.to raise_error ArgumentError
+    end
+
+    it 'raises ArgumentError for a negative size' do
+      expect {
+        DvMultimedia.new(:value => '<xml/>',
+                         :media_type => double(CodePhrase, :code_string => 'text/xml'),
+                         :size => -1)
+      }.to raise_error ArgumentError
+    end
+  end
 end

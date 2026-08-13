@@ -65,6 +65,7 @@ module OpenEHR
           def initialize(args = {})
             super(args)
             self.media_type = args[:media_type]
+            self.size = args[:size]
             self.uri = args[:uri]
             self.data = args[:data]
             self.compression_algorithm = args[:compression_algorithm]
@@ -79,6 +80,21 @@ module OpenEHR
               raise ArgumentError, 'media_type should not be nil'
             end
             @media_type = media_type
+          end
+
+          # size is Integer [1..1] since RM 1.1.0 (size in bytes of the raw
+          # data content). Left unset (nil), it falls back to the inherited
+          # DvEncapsulated#size (@value.size) for backward compatibility.
+          def size
+            @size.nil? ? super : @size
+          end
+
+          def size=(size)
+            unless size.nil?
+              raise ArgumentError, 'size must be an Integer' unless size.is_a?(Integer)
+              raise ArgumentError, 'size must not be negative' if size.negative?
+            end
+            @size = size
           end
 
           def is_external?
