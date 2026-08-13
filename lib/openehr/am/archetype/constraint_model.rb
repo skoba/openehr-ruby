@@ -286,7 +286,7 @@ module OpenEHR
         end
    
         class CComplexObject < CDefinedObject
-          attr_accessor :attributes
+          attr_reader :attributes
 
           def initialize(args = { })
             super

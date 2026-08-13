@@ -194,8 +194,8 @@ module OpenEHR
         end
 
         class Attestation < AuditDetails
-          attr_reader :reason
-          attr_accessor :proof, :attested_view, :is_pending, :items
+          attr_reader :reason, :items
+          attr_accessor :proof, :attested_view, :is_pending
 
           def initialize(args = { })
             super(args)
