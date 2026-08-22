@@ -364,6 +364,42 @@ reflection walker**とは実装方式もクラス階層も異なる。#32 の「
   **本 PR に同梱しない**。別 Issue ドラフトを英語で用意し、Claude Code の
   報告に含める（起票はユーザ。#32 と Related 相互リンク）。
 
+## 実装後検証: `ObjectVersionID` `@value` 追加の影響（2026-08-22、Claude Code）
+
+裁定後の Step 4 レビューで、`@value` 追加の影響を `git worktree` で
+真の pre-#32 コミット（`bedb2a7`）を分離チェックアウトし、実測で検証:
+
+- **真の元出力**（v2.3.2 相当、denylist も `@value` も無い状態）:
+  `{"_type":"OBJECT_VERSION_ID","oid":{...},"creating_system_id":{...},"version_tree_id":{...},"root":null,"extension":"my.system.com::1"}`
+  — `value` キーは**元々存在しない**（`ObjectVersionID` は `@value` ivar 自体を
+  持たなかったため。`root` が `null` なのは既知の seen-guard 誤爆、#32 スコープ外）。
+- **最終出力**（denylist + `@value` 修正後）:
+  `{"_type":"OBJECT_VERSION_ID","value":"..."}`
+- **消えたキー**: `oid, creating_system_id, version_tree_id, root, extension`（5件）
+- **新たに現れたキー**: `value`（1件） — `HierObjectID` 等（`UIDBasedID` 経由で
+  元々 `@value` を持つ）は「キーが消えるだけ」だが、`ObjectVersionID` は
+  「消える＋現れる」の両方が起きる唯一のクラス。History.txt に明記済み。
+
+**reader/writer と `@value` の整合確認**: `ObjectVersionID#value`（getter,
+identification.rb:260-264）は不変で、常に `@oid`/`@creating_system_id`/
+`@version_tree_id` から再計算する（`@value` を読まない）。よって `@value` は
+「reflection 専用の書きっぱなしキャッシュ」であり、getter の挙動には一切影響しない。
+
+**乖離の余地（pre-existing、本修正が新規に持ち込んだものではない）**:
+`objectid=`/`creating_system_id=`/`version_tree_id=`（identification.rb:270-287）は
+公開セッターであり、`value=` を経由せず直接呼べば `@oid` 等だけが更新され
+`@root`/`@extension`（既存）や `@value`（今回追加）が追随しない乖離が理論上
+起こりうる。ただし: (a) この乖離可能性は `@root`/`@extension` について
+**本修正以前から存在していた**設計であり、`@value` の追加が新たに持ち込んだ
+リスクではない。(b) `grep` で確認した限り、本 repo のどこにもこれらのセッターを
+`value=` 経由以外で呼ぶコードは無い（既存 spec の3箇所はいずれも `nil` を渡す
+バリデーションの負例テストで、成功パスでの直接再代入は無い）。
+
+**既存 spec への影響確認**: `spec/lib/openehr/rm/support/identification/`
+全体（123 examples）を単独実行し、0 failures を確認 — `ObjectVersionID` を
+含む識別子クラス群の既存挙動（`value`/`root`/`extension`/`is_branch?` 等）は
+一切変わっていない。
+
 ## 互換性ノート案（History.txt 草稿、=== 2.4.0 仮置き）
 
 ```
@@ -409,6 +445,16 @@ roundtrips now work.
 `bug`）、観測可能な出力変更を伴う以上 minor が妥当という判断。
 **ただし最終確定は Step 6 棚卸しで**（577a0d7 で確立した「shipped runtime
 code は最低 patch」規約がここでも下限として適用される）。
+
+**Step 6 棚卸し時の3成分分類（裁定・可視化条件2）**: 本 PR（1コミット）は
+性質の異なる3変更を含む。棚卸しではこの3成分に分けて評価すること:
+
+1. **denylist**（`rm_json_serializer.rb`）— write-side、出力からキーが消える
+2. **read 側寛容化**（`factory.rb`）— 未知/既知除外型への warn 区別付き無視
+3. **RM クラスの内部表現変更**（`identification.rb` の `ObjectVersionID`）—
+   `@value` ivar の新規保持。前述「実装後検証」節の通り、`value` キーが
+   ObjectVersionID の出力に**新たに現れる**という、他の2成分（キーが消える
+   方向のみ）とは異なる性質の変更
 
 ## Issue #32 増補用サマリ（英語・ペースト用）
 
