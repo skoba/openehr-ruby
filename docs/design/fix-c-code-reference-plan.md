@@ -509,19 +509,47 @@ end
 
 ### Cycle 3 — 未知型フォールバック
 
-- **Red — 追記** `spec/lib/openehr/opt_parser/opt_parser_error_cases_spec.rb` に
-  `context 'unknown constraint child types'`:
+共有 dispatch（`children`, xml_constraint_parsing.rb:63-70）を直接叩く単体テストと、
+OPT/XML archetype 両経路それぞれの end-to-end テストの 3 点で、「両パーサが同一の
+未知型入力に同一の挙動（warn + CComplexObject フォールバック）を返す」ことをテストで
+固定する（調査補遺 7 節の結論をテストとして定着させる）。
+
+- **Red — 追記（単体・共有 dispatch）** `spec/lib/openehr/opt_parser/opt_parser_error_cases_spec.rb`
+  に `context 'unknown constraint child types'`:
   `xsi:type="C_TERMINOLOGY_CODE"`（AOM2 実在名で現実的）+ 完全 occurrences →
   `parser.send(:children, ...)` が raise せず
   `output(/unknown constraint type "C_TERMINOLOGY_CODE" at \//).to_stderr` /
   結果先頭が CComplexObject（rm_type_name/occurrences 保持）/
   `xsi:type="C_DV_STATE"` は従来通り NotImplementedError（ガードが swallow しない証明）。
-- **Red — 書き換え** `spec/lib/openehr/parser/xml_archetype_parser_spec.rb:145-206` を
-  2 例に置換（同一 XML テンプレート流用）:
+- **Red — 追記（新規・OPT 経路 end-to-end）** 同じ spec ファイルに
+  `context 'unknown xsi:type via OPTParser#parse (end-to-end)'`:
+  完結した OPT ドキュメント（heredoc + Tempfile。xml_archetype_parser_spec.rb:145-206 の
+  既存手法を踏襲、新規 .opt fixture ファイルは作らない — 防御コードのテストであり
+  実アーティファクト由来の要件は適用外）で、definition の
+  `attributes[xsi:type=C_SINGLE_ATTRIBUTE]/children` に上と同じ
+  `xsi:type="C_TERMINOLOGY_CODE"`（occurrences 完備）を埋め込む。
+  `result = nil; expect { result = OPTParser.new(path).parse }.to
+  output(/unknown constraint type "C_TERMINOLOGY_CODE" at \//).to_stderr` /
+  `result.definition.attributes[0].children[0]` が CComplexObject
+  （rm_type_name はテスト用に埋め込んだ値と一致）。
+  **これが XMLArchetypeParser 側書き換え後 spec（直下）と対をなす** — 同一の型名・同一の
+  警告文言・同一のフォールバック形状を、ディスパッチを共有するもう一方の公開エントリ
+  ポイントでも確認することで、「経路依存の不整合」が「経路非依存の統一挙動」に
+  変わったことを実証する。
+- **Red — 書き換え（XML archetype 経路 end-to-end）**
+  `spec/lib/openehr/parser/xml_archetype_parser_spec.rb:145-206` を 2 例に置換
+  （同一 XML テンプレート流用）:
   1. occurrences 完備の C_SOMETHING_UNKNOWN → raise せず warn、
-     definition.attributes[0].children[0] が CComplexObject（rm_type_name 'DV_TEXT'）
+     definition.attributes[0].children[0] が CComplexObject（rm_type_name 'DV_TEXT'）。
+     spec の説明文はもはや「raises a ParseError for an unknown xsi:type」ではなく、
+     実態（warn + fallback、ParseError にならない）を言い当てる名前に変更する
+     （例: `'falls back to C_COMPLEX_OBJECT with a warning for an unknown xsi:type,
+     matching OPTParser (see docs/design/fix-c-code-reference-plan.md investigation)'`）。
   2. 元 XML そのまま（occurrences 欠落）→ 従来通り ParseError
-     （「生の NoMethodError を出さない」という元 spec の頑健性意図を新契約下で保存）
+     （「生の NoMethodError を出さない」という元 spec の頑健性意図を新契約下で保存。
+     ただし調査補遺の判定どおり、これは「unknown xsi:type 専用の契約」ではなく
+     「構造不正ノードに対する汎用 StandardError→ParseError 変換」という、より正確な
+     説明文にする）。
 - **Green — 変更** `lib/openehr/parser/xml_constraint_parsing.rb:63-70`（D3 のコード）。
   Refactor なし（8 行のディスパッチにヘルパ抽出は過剰）。全 suite green。
 
@@ -533,10 +561,15 @@ end
   （**rubocop-rspec todo は再生成しない** — 7720 件は意図的除外。新規/変更ファイルは
   offense ゼロで書くこと。todo ファイルに差分が出た場合は却下）
 - コミットは `Fix: ...` 流儀（`git log` 参照）。
-  PR 本文に semver 判断（2.3.1 + 厳密 semver なら minor という反対意見の記録）と
-  縮退リスク段落を含めること。
+  PR 本文に semver 判断（2.3.1 patch。「新公開クラス + エラー契約変更 = minor」という
+  反対意見は調査補遺の実証により棄却済みである旨とその根拠）と縮退リスク段落を含めること。
 
-## History.txt 記載案（=== 2.3.1）
+## History.txt 記載案（=== 2.3.1 — 作業上の仮置き版数、Step 6 で最終確定）
+
+Cycle 4 の実装時点ではこの版数（2.3.1）で `History.txt`/`lib/openehr/version.rb` を
+書いてよい。ただし PR マージ後、tag 作成前の Step 6 で `git diff v2.3.0..master` の
+実内容から最終版数を再判定すること（本文書「semver」節、`CLAUDE.md` の
+Release convention）。矛盾があれば tag せず停止して再裁定を仰ぐ。
 
 ```
 === 2.3.1
@@ -559,22 +592,40 @@ or other unknown constraint child types.
   The fallback keeps the C_OBJECT core but drops the unknown type's
   specific constraint payload, so validation of that node becomes more
   permissive than the template author intended - the warning makes
-  this visible. For XMLArchetypeParser this replaces the previous
-  ParseError-on-unknown-type behavior; a structurally invalid unknown
-  node (missing occurrences) still raises. C_DV_STATE still raises
-  NotImplementedError as before.
+  this visible. There was no prior verified, type-specific contract
+  here to preserve: OPTParser and XMLArchetypeParser share the exact
+  same dispatch code, but only XMLArchetypeParser wrapped the
+  resulting NoMethodError into a ParseError, and only as an incidental
+  side effect of a generic top-level `rescue StandardError` around
+  its whole parse (confirmed by inspecting the wrapped error - the
+  ParseError's message was, character for character, the stringified
+  NoMethodError). OPTParser had no such rescue and raised the same
+  NoMethodError raw. The two parsers already disagreed on the same
+  bug; this release makes them agree. A structurally invalid unknown
+  node (missing occurrences) still raises - via ParseError on the
+  XMLArchetypeParser path, raw on the OPTParser path, matching each
+  path's pre-existing general error-handling behavior (tracked as a
+  separate backlog item, not changed by this release). C_DV_STATE
+  still raises NotImplementedError as before.
 * Not included: XMLSerializer does not yet emit C_CODE_REFERENCE -
   serializing a parsed CCodeReference degrades it to an unconstrained
   C_CODE_PHRASE (referenceSetUri dropped). Round-trip support is
   deferred to the serializer work item.
 ```
 
-## semver: **2.3.1 (patch)**
+## semver: **2.3.1 (patch)** — 作業上の仮置き（2026-08-22 ユーザ裁定）
 
 主意は「schema 準拠の実在 OPT がパースできない」バグ修復。CCodeReference は修正の
 手段であり既存 API は不変（後方互換）。反対意見（新公開クラス + XMLArchetypeParser の
-エラー契約変更 = 厳密には minor）は認識した上でのユーザ判断。PR 本文にこの判断とその
-理由を明記すること。
+エラー契約変更 = 厳密には minor）は「調査補遺」5 節の実証により棄却済み — ParseError は
+検証された契約ではなく偶発的副作用だったため、「契約変更」という意味での minor 論拠は
+成立しない。
+
+**ただし実装完了時点（Step 4 レビュー）ではなく、tag 作成時点（Step 6）で
+`git diff <直前タグ>..master` の実内容から最終版数を再判定すること**
+（`CLAUDE.md` の Release convention、openehr-rails 0.4.1 の教訓）。
+実内容が本節の判定（patch）と矛盾する場合は tag せず、再裁定を仰いで停止する。
+本 plan 文書の「2.3.1」表記はすべて Step 6 まで仮置きとして扱う。
 
 ## 検証（実装完了の受け入れ基準）
 
