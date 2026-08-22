@@ -63,3 +63,10 @@ being tracked in `openehr-rails`'s own `docs/backlog.md`, not duplicated here.
   than a missing `*Factory` constant, which no code path currently exercises. No
   action taken; recorded for awareness if a future `NameError` starts appearing to
   vanish unexpectedly during `create_from_json`.
+- **`seen`-guard aliasing bug, filed as its own issue**:
+  [#40](https://github.com/skoba/openehr-ruby/issues/40) (`RMJSONSerializer` silently
+  drops an aliased attribute to `null`). Unscheduled. When fixed, the primary
+  reproduction path is a **synthetic** two-attributes-alias-one-object fixture (see
+  `CLAUDE.md`'s four-kind fixture taxonomy) — `ObjectVersionID`, this bug's original
+  real-world trigger, stopped being usable as one once #32 excluded its `root`/`oid`
+  pair from serialized output entirely.

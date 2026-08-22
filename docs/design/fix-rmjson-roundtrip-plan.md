@@ -86,6 +86,10 @@ OpenEHR::RM::Factory.create(parsed[:_type], **OpenEHR::RM::Factory.params(parsed
 データ損失**であり、#32（クラッシュ修正）とは別種の不具合。plan 末尾の
 「関連観察」で記録し、別 Issue 化を提案する。
 
+**起票済み（2026-08-23）**: [skoba/openehr-ruby#40](https://github.com/skoba/openehr-ruby/issues/40)
+「RMJSONSerializer silently drops an aliased attribute to null when two ivars point to the
+same object」。#32 側へ自動バックリンク済み（Issue 本文の `Related: #32` により）。
+
 ### 2. クラッシュ条件の一般化（悉皆版）
 
 | 派生 ivar の型 | 例 | `Factory.create_from_json` の挙動 |
@@ -363,6 +367,8 @@ reflection walker**とは実装方式もクラス階層も異なる。#32 の「
   `RMJSONSerializer` の `seen` ガード誤爆によるサイレント null 化）は
   **本 PR に同梱しない**。別 Issue ドラフトを英語で用意し、Claude Code の
   報告に含める（起票はユーザ。#32 と Related 相互リンク）。
+  → **[#40](https://github.com/skoba/openehr-ruby/issues/40) として起票済み**
+  （2026-08-23）。
 
 ## 実装後検証: `ObjectVersionID` `@value` 追加の影響（2026-08-22、Claude Code）
 
