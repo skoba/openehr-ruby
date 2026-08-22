@@ -34,6 +34,10 @@ For any non-trivial change (bug fix, hardening, enhancement):
 - **Don't commit scratch/tmp scripts.** One-off verification scripts used
   while working belong in a scratch directory outside the repo, not in the
   commit.
+- **Codex delivers working-tree changes only.** It does not commit. Claude
+  Code reviews the diff against the approved plan first, then makes the
+  commit(s) with a trailer identifying the source (e.g.
+  `Implemented-by: Codex`).
 
 ## Development Commands
 
