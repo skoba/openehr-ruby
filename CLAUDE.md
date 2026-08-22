@@ -47,6 +47,20 @@ from a pre-assigned version number. If the instructed version number
 contradicts the actual content, stop instead of tagging and ask for
 re-arbitration.
 
+To do this, classify every commit since the previous tag. A commit is semver
+**neutral** only if it affects none of: the gem's runtime behavior, its public
+API, or its install-time dependencies (the gemspec's runtime dependencies,
+`required_ruby_version`, and `files`). Docs, CI/dev-tooling config, and
+dev/test-group dependency additions are the common neutral cases — but judge
+each commit on what it actually touches, not on which of these categories it
+superficially resembles. If a commit's classification is genuinely unclear,
+that is itself a reason to stop instead of tagging and ask for re-arbitration,
+the same as a content/instructed-version mismatch.
+
+(Added 2026-08-22, fixing the v2.3.1 release's `e728023` — a dev-tooling
+commit unrelated to that release's actual fix — as the worked example of a
+neutral classification under this rule.)
+
 ## Development Commands
 
 ### Testing
