@@ -2,6 +2,10 @@
 
 **Status: APPROVED 2026-08-22 — 実装指示書（Codex 向け）**
 
+**Issue**: [skoba/openehr-ruby#30](https://github.com/skoba/openehr-ruby/issues/30)
+（本 PR は `Fixes #30`）。関連: [#31](https://github.com/skoba/openehr-ruby/issues/31)
+（term_bindings, PR 本文で関連リンクのみ・bindings 解析は別管理）。
+
 ## Context
 
 openehr-ruby の OPT/XML 制約パーサは xsi:type を `send`+`downcase` で動的ディスパッチするが、
