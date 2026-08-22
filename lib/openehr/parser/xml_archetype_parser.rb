@@ -30,7 +30,7 @@ module OpenEHR
 
       def doc
         @doc ||= begin
-          parsed = Nokogiri::XML::Document.parse(File.open(@filename, 'rb:bom|utf-8'))
+          parsed = Nokogiri::XML::Document.parse(File.open(@filename, 'rb:bom|utf-8'), options: SAFE_PARSE_OPTIONS)
           parsed.remove_namespaces!
           parsed
         end

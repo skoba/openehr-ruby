@@ -1,3 +1,16 @@
+=== 2.3.2
+Hardening release: already-safe OPT/archetype XML parsing is now explicit
+and regression-pinned instead of relying on Nokogiri's implicit defaults.
+
+* OPTParser and XMLArchetypeParser now use an explicit
+  OpenEHR::Parser::Base::SAFE_PARSE_OPTIONS (RECOVER | NONET | BIG_LINES).
+  The currently resolved Nokogiri already used those same safe defaults,
+  with NOENT and DTDLOAD disabled, so this does not fix an exploitable
+  vulnerability or change parsing behavior. It makes the existing safety
+  properties independent of future changes to Nokogiri's default option
+  constant and pins them with local-file entity regression tests. Parser
+  callers cannot override these options.
+
 === 2.3.1
 Bug fix release: OPT parsing no longer crashes on C_CODE_REFERENCE
 or other unknown constraint child types.
