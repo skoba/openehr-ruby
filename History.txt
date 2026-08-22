@@ -11,6 +11,10 @@ and regression-pinned instead of relying on Nokogiri's implicit defaults.
   constant and pins them with local-file entity regression tests. Parser
   callers cannot override these options.
 
+* Independently, file handles opened by OPTParser and XMLArchetypeParser
+  are now closed deterministically with block-form File.open instead of
+  being left to garbage-collector finalization.
+
 === 2.3.1
 Bug fix release: OPT parsing no longer crashes on C_CODE_REFERENCE
 or other unknown constraint child types.
