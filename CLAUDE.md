@@ -8,7 +8,32 @@ This is a Ruby implementation of the openEHR specifications (v1.0.2), providing 
 
 ## Development style
 
-allways follow t-wada TDD policy.
+allways follow t-wada TDD policy: write a failing spec first (red), make it
+pass with the minimal change (green), then clean up (refactor). Do not
+implement ahead of a red spec.
+
+## Contribution workflow
+
+For any non-trivial change (bug fix, hardening, enhancement):
+
+- **explore → plan → approval → implementation, in that order.** Read the
+  actual source and cite `file:line` for every claim about existing
+  behavior; do not guess at API shapes or call chains. Write the plan down
+  (e.g. under `docs/design/`) before writing code, and get it approved
+  before implementing.
+- **Fixtures come from real artifacts.** A spec fixture (ADL, OPT/XML, JSON)
+  should be derived from an actual openEHR artifact (a real archetype/
+  template, or output from a real tool), condensed if needed, with its
+  provenance noted in a comment. The one exception is a fixture built
+  specifically to exercise a security control (e.g. XXE) - note that
+  exception explicitly in the fixture itself.
+- **One issue = one branch = one PR.** Don't bundle unrelated fixes.
+- **Every change needs a semver call and a `History.txt` entry.** State
+  whether the change is patch/minor/major and why, even if the answer is
+  debatable - record the reasoning, not just the conclusion.
+- **Don't commit scratch/tmp scripts.** One-off verification scripts used
+  while working belong in a scratch directory outside the repo, not in the
+  commit.
 
 ## Development Commands
 
