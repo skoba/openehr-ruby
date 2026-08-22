@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+  This is a synthetic security-testing payload, not a clinical or real-world
+  openEHR artifact. It is exempt from this repository's real-artifact-only
+  fixture rule under CLAUDE.md's explicit security-fixture carve-out.
+-->
+<!DOCTYPE root [
+  <!ENTITY xxe SYSTEM "file://__SECURITY_FIXTURE_DIR__/xxe_sentinel.txt">
+]>
+<root>&xxe;</root>

@@ -40,7 +40,7 @@ module OpenEHR
       OCCURRENCE_PATH = '/occurrences'
 
       def parse
-        @opt = Nokogiri::XML::Document.parse(File.open(@filename))
+        @opt = Nokogiri::XML::Document.parse(File.open(@filename), options: SAFE_PARSE_OPTIONS)
         @opt.remove_namespaces!
 
         uid = build_uid
