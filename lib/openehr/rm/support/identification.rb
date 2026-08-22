@@ -249,6 +249,7 @@ module OpenEHR
               self.objectid = UID.new(:value => $1)
               self.creating_system_id = UID.new(:value => $2)
               self.version_tree_id = VersionTreeID.new(:value => $3)
+              @value = value
               @root = @oid
               @extension = @creating_system_id.value + '::' + @version_tree_id.value
             else

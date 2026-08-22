@@ -14,6 +14,12 @@ describe ObjectVersionID do
     expect(@object_version_id.value).to eq('F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2')
   end
 
+  it 'stores the canonical value for reflection-based serialization' do
+    expect(@object_version_id.instance_variable_get(:@value)).to eq(
+      'F7C5C7B7-75DB-4b39-9A1E-C0BA9BFDBDEC::87284370-2D4B-4e3d-A3F3-F303D2F4F34B::2'
+    )
+  end
+
   it 'should not be branched' do
     expect(@object_version_id.is_branch?).to be_falsey
   end
