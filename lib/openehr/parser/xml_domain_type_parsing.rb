@@ -11,6 +11,20 @@ module OpenEHR
       private
 
       def c_code_phrase(attr_xml, node)
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+          code_phrase_constraint_args(attr_xml, node)
+        )
+      end
+
+      def c_code_reference(attr_xml, node)
+        args = code_phrase_constraint_args(attr_xml, node)
+        args[:code_list] = nil if args[:code_list] && args[:code_list].empty?
+        uri = attr_xml.at('referenceSetUri')&.text&.strip
+        args[:reference_set_uri] = uri unless uri.nil? || uri.empty?
+        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodeReference.new(args)
+      end
+
+      def code_phrase_constraint_args(attr_xml, node)
         terminology_id_node = attr_xml.at('terminology_id/value')
         terminology_id = terminology_id_node ? OpenEHR::RM::Support::Identification::TerminologyID.new(value: terminology_id_node.text.strip) : nil
 
@@ -21,13 +35,13 @@ module OpenEHR
         occurrences_node = attr_xml.at('occurrences')
         occurrences_obj = occurrences_node ? occurrences(occurrences_node) : nil
 
-        OpenEHR::AM::OpenEHRProfile::DataTypes::Text::CCodePhrase.new(
+        {
           terminology_id: terminology_id,
           code_list: code_list,
           path: node.path,
           occurrences: occurrences_obj,
           rm_type_name: 'CODE_PHRASE'
-        )
+        }
       end
 
       # The <property> element is optional in real templates; return nil rather

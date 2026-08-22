@@ -65,7 +65,18 @@ module OpenEHR
           child_node = Node.new(node)
           child_node.path = node.path
           child_node.id = node.id
-          send child.attributes['type'].text.downcase, child, child_node
+          type_name = child.attributes['type'].text
+          handler = type_name.downcase
+          if respond_to?(handler, true)
+            send handler, child, child_node
+          else
+            # children is open to vendor/newer-model constraint extensions;
+            # the other xsi:type dispatch sites are schema-closed. Preserve
+            # the C_OBJECT core here, while warning that type-specific
+            # constraints are dropped and validation becomes more permissive.
+            warn "openehr parser: unknown constraint type \"#{type_name}\" at #{child_node.path}; treating as C_COMPLEX_OBJECT (type-specific constraints dropped)"
+            c_complex_object(child, child_node)
+          end
         end
       end
 

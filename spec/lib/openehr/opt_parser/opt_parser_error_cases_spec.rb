@@ -304,6 +304,91 @@ module OpenEHR
             end
           end
         end
+
+        context 'unknown constraint child types' do
+          let(:parser) do
+            OPTParser.new(File.join(File.dirname(__FILE__), './minimum_template.opt'))
+          end
+
+          def constraint_fragment(type)
+            doc = Nokogiri::XML::Document.parse(<<~XML)
+              <attributes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <children xsi:type="#{type}">
+                  <rm_type_name>DV_TEXT</rm_type_name>
+                  <occurrences>
+                    <lower_included>true</lower_included><upper_included>true</upper_included>
+                    <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+                    <lower>0</lower><upper>1</upper>
+                  </occurrences>
+                </children>
+              </attributes>
+            XML
+            doc.remove_namespaces!
+            doc.root
+          end
+
+          it 'warns and falls back to CComplexObject for an unknown child type' do
+            result = nil
+            expect {
+              result = parser.send(:children, constraint_fragment('C_TERMINOLOGY_CODE').xpath('./children'), Node.new)
+            }.to output(/unknown constraint type "C_TERMINOLOGY_CODE" at \//).to_stderr
+
+            expect(result.first).to be_a(OpenEHR::AM::Archetype::ConstraintModel::CComplexObject)
+            expect(result.first.rm_type_name).to eq('DV_TEXT')
+            expect(result.first.occurrences.lower).to eq(0)
+            expect(result.first.occurrences.upper).to eq(1)
+          end
+
+          it 'does not swallow the existing C_DV_STATE NotImplementedError' do
+            expect {
+              parser.send(:children, constraint_fragment('C_DV_STATE').xpath('./children'), Node.new)
+            }.to raise_error(NotImplementedError)
+          end
+        end
+
+        context 'unknown xsi:type via OPTParser#parse (end-to-end)' do
+          let(:unknown_type_file) { Tempfile.new(['unknown_type', '.opt']) }
+
+          after { unknown_type_file.unlink }
+
+          it 'warns and returns the same fallback shape as XMLArchetypeParser' do
+            unknown_type_file.write(<<~XML)
+              <?xml version="1.0"?>
+              <template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <language><terminology_id><value>ISO_639-1</value></terminology_id><code_string>en</code_string></language>
+                <description>
+                  <original_author id="name">Test</original_author><lifecycle_state>Initial</lifecycle_state>
+                  <details><language><terminology_id><value>ISO_639-1</value></terminology_id><code_string>en</code_string></language><purpose>test</purpose></details>
+                </description>
+                <template_id><value>unknown type template</value></template_id><concept>test</concept>
+                <definition>
+                  <rm_type_name>COMPOSITION</rm_type_name>
+                  <occurrences><lower>1</lower><upper>1</upper></occurrences>
+                  <node_id>at0000</node_id>
+                  <attributes xsi:type="C_SINGLE_ATTRIBUTE">
+                    <rm_attribute_name>content</rm_attribute_name>
+                    <existence><lower>0</lower><upper>1</upper></existence>
+                    <children xsi:type="C_TERMINOLOGY_CODE">
+                      <rm_type_name>DV_TEXT</rm_type_name>
+                      <occurrences><lower>0</lower><upper>1</upper></occurrences>
+                    </children>
+                  </attributes>
+                  <archetype_id><value>openEHR-EHR-COMPOSITION.unknown.v1</value></archetype_id>
+                  <term_definitions code="at0000"><items id="text">test</items><items id="description">test</items></term_definitions>
+                </definition>
+              </template>
+            XML
+            unknown_type_file.close
+
+            result = nil
+            expect {
+              result = OPTParser.new(unknown_type_file.path).parse
+            }.to output(/unknown constraint type "C_TERMINOLOGY_CODE" at \//).to_stderr
+            child = result.definition.attributes[0].children[0]
+            expect(child).to be_a(OpenEHR::AM::Archetype::ConstraintModel::CComplexObject)
+            expect(child.rm_type_name).to eq('DV_TEXT')
+          end
+        end
       end
     end
   end
