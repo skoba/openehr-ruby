@@ -255,6 +255,8 @@ c_complex_object(child, child_node)   # :31 と同アリティ、呼び出し互
   この spec の C_SOMETHING_UNKNOWN は occurrences も欠くため、変更後も
   「occurrences 欠落 → ArgumentError → ParseError ラップ」で*偶然*通り続けるが、
   意図が死ぬので誠実に書き換える（Cycle 3 参照）。ユーザ承認済み（2026-08-22）。
+  **→ 詳細は下記「調査補遺」節を参照。この ParseError は実際には unknown xsi:type 専用の
+  契約ではなく、汎用 rescue の偶発的副作用だったことが実証された。**
 - OPTParser 経路は現状「素の NoMethodError」なので純粋な改善。
 - serializer: CCodeReference は `when ...CCodePhrase`（xml_serializer.rb:234, `===` は
   サブクラスに match）に落ち、パース産物（terminology_id/code_list とも nil）なら
@@ -263,7 +265,184 @@ c_complex_object(child, child_node)   # :31 と同アリティ、呼び出し互
   キュー #5（RMJSONSerializer ⇔ create_from_json）とは別枠の XML serializer 課題として
   明示的に本 PR の範囲外とする。History.txt に lossy である旨を記載する。
 
-## TDD 手順（t-wada: 外側 acceptance red → 内側 red/green/refactor）
+## 調査補遺（2026-08-22）: xml_archetype_parser_spec.rb:145 が master で green である理由
+
+Cycle 3 で書き換える既存 spec が「なぜ今 green なのか」を実ソースの読解と実行の両方で
+検証した。結論: **ParseError は unknown xsi:type に対する意図的・型別の契約ではなく、
+XMLArchetypeParser#parse を包む汎用 `rescue StandardError` の偶発的副作用**であり、
+挙動は経路依存（OPTParser と不整合）だった。
+
+### 1. ParseError の発生源
+
+`lib/openehr/parser/xml_archetype_parser.rb:21-27`:
+
+```ruby
+def parse
+  archetype
+rescue OpenEHR::Parser::ParseError
+  raise
+rescue StandardError => e
+  raise OpenEHR::Parser::ParseError, "invalid XML archetype (#{@filename}): #{e.class}: #{e.message}"
+end
+```
+
+`rescue StandardError => e` は例外の**クラスも内容も一切検査しない**汎用ラッパー。
+`XMLArchetypeParser#parse` はこの 1 箇所にしか rescue を持たない
+（同ファイル内の他メソッドに rescue なし、確認済み）。
+
+実行して確認（`bundle exec ruby` でクラス名・メッセージ・backtrace を捕捉、tmp スクリプト・
+非コミット）:
+
+```
+$ parser.send(:archetype)  # parse のラップを迂回
+RAW EXCEPTION CLASS: NoMethodError
+RAW EXCEPTION MESSAGE: undefined method 'c_something_unknown' for an instance of OpenEHR::Parser::XMLArchetypeParser
+BACKTRACE TOP:
+  lib/openehr/parser/xml_constraint_parsing.rb:68:in 'block in ...#children'
+  ...
+
+$ parser.parse
+parse() EXCEPTION CLASS: OpenEHR::Parser::ParseError
+parse() EXCEPTION MESSAGE: invalid XML archetype (...): NoMethodError: undefined method 'c_something_unknown' for an instance of OpenEHR::Parser::XMLArchetypeParser
+```
+
+`:145` の spec が捕捉している `ParseError` は、`xml_constraint_parsing.rb:68` の
+`send child.attributes['type'].text.downcase, ...` が投げる**生の NoMethodError を
+そのまま文字列化してラップしたもの**。unknown xsi:type を検知する特別なロジックは
+どこにも存在しない — 同じ rescue はタイポによる NoMethodError や無関係な ArgumentError
+も区別なく同じ `ParseError` に変換する。
+
+### 2. OPT parser 経路との差分（実行して確認）
+
+`lib/openehr/parser/opt_parser.rb:42-63`（`#parse`）には rescue が**一切ない**
+（構文的にも確認済み、begin/rescue 節は存在しない）。同一の unknown xsi:type 入力
+（同じ `children` ディスパッチ、xml_constraint_parsing.rb:68 は共有モジュールの単一定義）
+を `OPTParser` に通すと:
+
+```
+OPTParser#parse EXCEPTION CLASS: NoMethodError
+OPTParser#parse EXCEPTION MESSAGE: undefined method 'c_something_unknown' for an instance of OpenEHR::Parser::OPTParser
+Is it OpenEHR::Parser::ParseError? false
+```
+
+**生の NoMethodError がそのまま呼び出し元へ伝播する** — `XMLArchetypeParser` 経路とは
+異なる結果になる。
+
+### 3. 判定: 経路依存（不整合）— 全経路で堅い契約ではなかった
+
+同一のディスパッチ機構（`XMLConstraintParsing#children`、両パーサが同一モジュールを
+include）に対して同一の不正入力を与えても、結果が `ParseError`（XMLArchetypeParser）と
+生の `NoMethodError`（OPTParser）に分かれる。これは「unknown xsi:type は ParseError に
+なる」という**検証された契約ではなく**、`XMLArchetypeParser#parse` にたまたま存在する
+汎用 rescue の副作用が、たまたまこの入力にも及んでいただけ、と判定する。
+`spec/lib/openehr/parser/xml_archetype_parser_spec.rb:145` のテスト名
+「raises a ParseError for an unknown xsi:type」は、実装が実際には持っていない
+型別の意図性を主張しすぎていた。
+
+### 4. History.txt / PR 本文の文言方針
+
+上記の判定に基づき、「意図的な契約を変更する」ではなく「**汎用 rescue の偶発的副作用として
+経路ごとに不統一だった挙動を、明示的かつ両経路で統一された挙動に置き換える**」という
+文言を採用する。具体的には:
+
+> Previously, an unknown constraint `xsi:type` only produced a `ParseError` on the
+> `XMLArchetypeParser` path, and only as an incidental side effect of a generic
+> `rescue StandardError` around the whole parse — not because of any type-specific
+> handling. `OPTParser`, which shares the exact same dispatch code, had no such
+> rescue and raised a raw `NoMethodError` for the identical input. The two parsers
+> disagreed on the same bug. This change makes both paths behave the same way: an
+> unrecognized type now warns and falls back instead of crashing (raw or wrapped)
+> either way.
+
+### 5. semver への影響
+
+タスク指示の条件（「契約が全経路で堅牢だった場合のみ 2.4.0 の再考材料を提示」）は
+**成立しない** — 調査の結果は「堅牢な契約」ではなく「経路依存の偶発的副作用」だった。
+よって 2.4.0 再考の材料は無く、既定の **2.3.1 (patch) を支持する追加根拠**として
+扱う。決定は引き続きユーザに委ねる。
+
+### 6. 修正後、当該 rescue 箇所は死にコード化するか
+
+**しない。** `XMLArchetypeParser#parse` の `rescue StandardError => e`
+（xml_archetype_parser.rb:25-26）は、D3 の fix 後も以下の経路で引き続き到達可能:
+
+- **構造不正な fallback ノード**: 未知型でも `<occurrences>` を欠く場合、fallback 先の
+  `c_complex_object` は `CObject` の必須検証（constraint_model.rb:119-124）で
+  `ArgumentError` を投げ、この rescue が引き続き `ParseError` にラップする
+  （Cycle 3 の書き換え後 spec の第 2 例がこれを固定する）。
+- **children 以外の未知型**: `attributes()` dispatch（xml_constraint_parsing.rb:52）や
+  expr 系 dispatch は D3 のスコープ外（閉集合と判断、ガード対象外）なので、
+  そこで発生する NoMethodError は今まで通りこの rescue に到達する。
+- **その他の内部エラー全般**: archetype 構築中の無関係な StandardError
+  （不正な日付、識別子など）に対する汎用セーフティネットとしての役割は変わらない。
+
+### 7. 共有 dispatch へのガードで両パーサの挙動が揃うことの確認
+
+`children`（xml_constraint_parsing.rb:63-70）は `XMLConstraintParsing` モジュールの
+単一定義であり、`OPTParser`（opt_parser.rb:9）・`XMLArchetypeParser`
+（xml_archetype_parser.rb:17）の両方が同一定義を include している。D3 のガードを
+そこに追加すれば、**構造的に妥当な未知型ノードに対しては両パーサとも例外を投げず、
+同一の warn を出し、同一の CComplexObject フォールバックを返す**ようになることを
+確認済み（コード読解 + 3 節の実行結果より）。両パーサが唯一なお乖離するのは
+「構造不正な fallback ノード」等、D3 のスコープ外にある一般的な内部エラー処理の
+非対称性（OPTParser は依然無条件で raw 例外、XMLArchetypeParser は依然 ParseError
+ラップ）であり、これは本 PR 以前から存在する別種の非対称性で、範囲外として記録するに
+留める。
+
+## Issue 増補用サマリ（英語・ペースト用 — Anlage 側ドラフトへ中継）
+
+```markdown
+## Investigation update (2026-08-22): the `ParseError` in the existing
+unknown-`xsi:type` spec is not a real, type-specific contract
+
+Schema authority (openEHR/specifications-ITS-XML, `components/AM/Release-1.4/Template.xsd:115-123`):
+
+    <xs:complexType name="C_CODE_REFERENCE">
+      <xs:complexContent>
+        <xs:extension base="C_CODE_PHRASE">
+          <xs:sequence>
+            <xs:element name="referenceSetUri" type="xs:anyURI"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+
+`C_CODE_REFERENCE` is a straightforward extension of `C_CODE_PHRASE` adding one
+`referenceSetUri` element - confirming the planned `CCodeReference < CCodePhrase`
+Ruby model is spec-faithful.
+
+Separately, while scoping the "unknown `xsi:type` should not crash the parser"
+defense that accompanies the `C_CODE_REFERENCE` fix, we traced why
+`spec/lib/openehr/parser/xml_archetype_parser_spec.rb:145` ("raises a ParseError
+for an unknown xsi:type in the definition tree") currently passes on `master`.
+
+Both `OPTParser` and `XMLArchetypeParser` share one dispatch method,
+`XMLConstraintParsing#children` (`lib/openehr/parser/xml_constraint_parsing.rb:68`),
+which does `send child.attributes['type'].text.downcase, child, child_node` with
+no guard. For an unknown type this raises a bare `NoMethodError`. We reproduced
+both parsers against the same unknown-`xsi:type` input and captured the actual
+exception classes:
+
+- `XMLArchetypeParser#parse` (`lib/openehr/parser/xml_archetype_parser.rb:21-27`)
+  wraps it: `rescue StandardError => e; raise ParseError, "...: #{e.class}: #{e.message}"`.
+  This rescue clause does not inspect the exception type or message at all - it
+  wraps *any* `StandardError` raised anywhere while building the archetype, not
+  specifically unknown-`xsi:type` errors.
+- `OPTParser#parse` (`lib/openehr/parser/opt_parser.rb:42-63`) has no rescue at
+  all. The identical input raises a raw `NoMethodError` straight to the caller.
+
+So the same bug, through the same shared dispatch code, currently produces two
+different outcomes depending only on which of the two parser classes is used.
+The existing spec's name overstates the implementation: there is no type-specific
+"unknown xsi:type -> ParseError" contract, only an incidental side effect of one
+parser's generic top-level rescue.
+
+This supports (but doesn't by itself force) treating the fix as behavior
+unification rather than a breaking contract change: both parsers will handle an
+unrecognized constraint type the same way (a warning plus a same-shape fallback
+node) instead of one silently succeeding-via-blanket-rescue and the other
+crashing raw. Final call on wording/semver is the maintainer's.
+```
 
 ### Cycle 0 — Acceptance red（バグの end-to-end 再現）
 
