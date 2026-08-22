@@ -279,13 +279,30 @@ reflection walker**とは実装方式もクラス階層も異なる。#32 の「
   変更しない（他 spec への影響を避ける）。
 - **Red**: 上記 fixture を使った roundtrip spec を追加（Cycle 1 と同じ形。
   現状は `uid` の `root` で `NameError: uninitialized constant
-  OpenEHR::RM::Factory::UidFactory` になるため red — ただし Cycle 1 の
-  denylist は `@root`/`@oid`/`@creating_system_id`/`@version_tree_id` を
-  既に含んでいるため、**Cycle 1 の green 実装のままこの Cycle 2 の red spec が
-  green になるはず**。green にならない場合は denylist の対象漏れであり、
-  Codex は Cycle 1 の実装を見直すこと（design 通りに実装されていれば
-  ここは実質的に確認 spec — 「red を書いたら green だった」なら、Cycle 1 の
-  実装が正しく UID 系もカバーできている証跡としてそのまま採用してよい）。
+  OpenEHR::RM::Factory::UidFactory` になるため red）。
+
+- **訂正（2026-08-22、Codex 実装時の実測により発覚・修正）**: 当初想定
+  「Cycle 1 の denylist だけで green になるはず」は誤りだった。
+  `ObjectVersionID` は `UIDBasedID`（親クラス）と異なり `value=`
+  （identification.rb:247-257）内で `super` を呼ばず、**`@value` ivar を
+  一切保持しない**。`value`（正規属性そのもの）は `@oid`/`@creating_system_id`/
+  `@version_tree_id` から都度再計算する computed getter（:259-263）としてのみ
+  存在する。この3 ivar を denylist で除外すると、canonical な `value` の
+  ivar 表現が跡形もなく消え、シリアライズ結果が `{"_type":"OBJECT_VERSION_ID"}`
+  のみになり、読み戻し時に `ObjectVersionID#value=` が `nil` を受けて
+  `ArgumentError: invalid format` になる（denylist 起因の新種のクラッシュ）。
+  `HierObjectID`（`UIDBasedID` の素のサブクラス、`super` 経由で `@value` を
+  保持）はこの問題を持たないため、Cycle 1 のテスト時には露見しなかった。
+
+  **追加修正**: `lib/openehr/rm/support/identification.rb` の
+  `ObjectVersionID#value=` に `@value = value` を追加し、`UIDBasedID` と
+  同様に canonical `value` を ivar として保持させる（getter 側 :259-263 は
+  不変— 引き続き `@oid` 等から再計算する。`@value` は RMJSONSerializer の
+  reflection が拾えるようにするためだけの追加で、getter の実装は変えない）。
+  これは RMJSONSerializer 側の特殊対応ではなく、`identification.rb` 自体の
+  一貫性を `UIDBasedID` に揃える正当な修正 — RMJSONSerializer は
+  「RM 固有ロジックを持たない汎用 walker」という自身のヘッダコメントの
+  設計原則を保つ。
 
 ### Cycle 3 — read-side leniency: 未知 `_type` の warn+無視
 
