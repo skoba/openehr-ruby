@@ -4,6 +4,22 @@ Non-blocking follow-ups noted during work on the upstream sprint queue. Not sche
 pick up when the relevant gate opens or when convenient alongside other work in the same
 area. No code changes accompany entries here — this file is a record only.
 
+## CI status (verified, not a follow-up item)
+
+CI (`.github/workflows/ci.yml`, `rspec` matrix on Ruby 3.3/3.4/4.0 + `rubocop`) is
+configured and was confirmed actually running and green, not just present, on both the
+`pull_request` and post-merge `push` events for two separate PRs:
+
+- #6a (PR #34): `pull_request` run `32553423708` (2026-08-22T05:05:17Z, success), master
+  `push` run `32553764204` (2026-08-22T05:13:02Z, success).
+- #33 (PR #37): `pull_request` run `32567270890` — all four jobs (RSpec ×3, RuboCop)
+  passed.
+
+Recorded here after an unverified "CI is unconfigured" claim (which only ever applied to
+the sibling `openehr-rails` repo, which genuinely lacks CI) was repeated across two turns
+in this repo before anyone ran `gh run list` — see `CLAUDE.md`'s
+"Verify against the repo before recording a fact in it" rule, added for the same reason.
+
 ## From #6a investigation (C_CODE_REFERENCE parse crash, 2026-08-22)
 
 - **Parser error-handling asymmetry (`XMLArchetypeParser` vs `OPTParser`)**: while
