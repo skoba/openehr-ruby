@@ -9,6 +9,60 @@ include OpenEHR::AM::Archetype::ConstraintModel
 include OpenEHR::AssumedLibraryTypes
 
 describe RMJSONSerializer do
+  it 'round-trips the health summary composition through canonical JSON' do
+    json = File.read(File.expand_path('../../../fixtures/health_summary_composition.json', __dir__))
+    composition = OpenEHR::RM::CompositionFactory.create_from_json(json)
+    serialized = RMJSONSerializer.new(composition).serialize
+
+    expect { OpenEHR::RM::CompositionFactory.create_from_json(serialized) }.not_to raise_error
+  end
+
+  # This is the gem's existing real-artifact health summary fixture with the
+  # originally absent canonical ObjectVersionID uid added to exercise the
+  # UID-family round-trip crash discovered while investigating issue #32.
+  it 'round-trips the health summary composition carrying a uid through canonical JSON' do
+    json = File.read(File.expand_path('../../../fixtures/health_summary_composition_with_uid.json', __dir__))
+    composition = OpenEHR::RM::CompositionFactory.create_from_json(json)
+    serialized = RMJSONSerializer.new(composition).serialize
+
+    expect { OpenEHR::RM::CompositionFactory.create_from_json(serialized) }.not_to raise_error
+  end
+
+  # Watch every object reachable from the fixture, including derived caches
+  # excluded by the serializer, so a future cache with no read-side Factory is
+  # detected without requiring another fixture change.
+  it 'has a Factory or an explicit compatibility exclusion for every typed object in the graph' do
+    json = File.read(File.expand_path('../../../fixtures/health_summary_composition_with_uid.json', __dir__))
+    composition = OpenEHR::RM::CompositionFactory.create_from_json(json)
+    seen = Set.new.compare_by_identity
+    visit = lambda do |value|
+      case value
+      when nil, true, false, Numeric, String
+        next
+      when Array
+        value.each { |element| visit.call(element) }
+      when Hash
+        value.each_value { |element| visit.call(element) }
+      else
+        next if seen.include?(value)
+
+        seen << value
+        type = OpenEHR::RM.type_name_of(value)
+        factory_name = "#{type.downcase.camelize}Factory"
+        expect(
+          OpenEHR::RM.const_defined?(factory_name) ||
+            OpenEHR::RM::Factory::KNOWN_DERIVED_CACHE_TYPES.include?(type)
+        ).to be(true), "expected #{type} to have #{factory_name} or be an explicitly excluded derived type"
+
+        (value.instance_variables - [:@parent]).each do |ivar|
+          visit.call(value.instance_variable_get(ivar))
+        end
+      end
+    end
+
+    visit.call(composition)
+  end
+
   it 'serializes a simple DataValue with a _type discriminator' do
     result = JSON.parse(RMJSONSerializer.new(DvBoolean.new(:value => true)).serialize)
     expect(result).to eq({'_type' => 'DV_BOOLEAN', 'value' => true})

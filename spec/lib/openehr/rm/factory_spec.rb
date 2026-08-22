@@ -67,6 +67,78 @@ module OpenEHR
               .to raise_error(ArgumentError, /:events.*_type/m)
           end
         end
+
+        context 'an unrecognized _type' do
+          {
+            'TIMEZONE' => { value: '+02:00', hour: 2, minute: 0 },
+            'UID' => { value: 'deadbeef' },
+            'VERSION_TREE_ID' => { value: '1' }
+          }.each do |type, attributes|
+            it "silently ignores the old derived-cache type #{type}" do
+              expect { Factory.params(cache: attributes.merge(_type: type)) }
+                .not_to output.to_stderr
+            end
+          end
+
+          it 'warns with the type name when ignoring any other unknown type' do
+            expect { Factory.params(cache: { _type: 'SOME_FUTURE_TYPE', value: 'x' }) }
+              .to output(/unknown.*SOME_FUTURE_TYPE/).to_stderr
+          end
+        end
+
+        it 'reads old serializer JSON containing derived timezone and root caches' do
+          old_json = <<~JSON
+            {
+              "uid": {
+                "_type": "HIER_OBJECT_ID",
+                "value": "deadbeef",
+                "root": {"_type": "UID", "value": "deadbeef"},
+                "extension": ""
+              },
+              "name": {"_type": "DV_TEXT", "value": "Old persisted composition"},
+              "archetype_node_id": "openEHR-EHR-COMPOSITION.health_summary.v1",
+              "language": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {"_type": "TERMINOLOGY_ID", "value": "ISO_639-1"},
+                "code_string": "en"
+              },
+              "territory": {
+                "_type": "CODE_PHRASE",
+                "terminology_id": {"_type": "TERMINOLOGY_ID", "value": "ISO_3166-1"},
+                "code_string": "JP"
+              },
+              "category": {
+                "_type": "DV_CODED_TEXT",
+                "value": "event",
+                "defining_code": {
+                  "_type": "CODE_PHRASE",
+                  "terminology_id": {"_type": "TERMINOLOGY_ID", "value": "openehr"},
+                  "code_string": "433"
+                }
+              },
+              "composer": {"_type": "PARTY_IDENTIFIED", "name": "openehr-ruby"},
+              "context": {
+                "_type": "EVENT_CONTEXT",
+                "start_time": {
+                  "_type": "DV_DATE_TIME",
+                  "value": "2020-09-22T16:18:51.481+02:00",
+                  "timezone": {"_type": "TIMEZONE", "value": "+02:00", "hour": 2, "minute": 0}
+                },
+                "setting": {
+                  "_type": "DV_CODED_TEXT",
+                  "value": "other care",
+                  "defining_code": {
+                    "_type": "CODE_PHRASE",
+                    "terminology_id": {"_type": "TERMINOLOGY_ID", "value": "openehr"},
+                    "code_string": "238"
+                  }
+                }
+              }
+            }
+          JSON
+
+          expect { CompositionFactory.create_from_json(old_json) }.not_to raise_error
+        end
       end
 
       describe HistoryFactory do

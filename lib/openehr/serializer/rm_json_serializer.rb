@@ -10,7 +10,22 @@ module OpenEHR
     # which would otherwise make every subtree cyclic). A defensive
     # visited-object guard covers any other unexpected back-reference.
     class RMJSONSerializer
-      EXCLUDED_IVARS = [:@parent].freeze
+      # Instance variables that value=-style setters derive and cache from a
+      # single canonical attribute (e.g. `value`), but which are not part of
+      # openEHR ITS-JSON canonical form and have no corresponding
+      # OpenEHR::RM::Factory::<Type>Factory to reconstruct them on read - see
+      # docs/design/fix-rmjson-roundtrip-plan.md for the full inventory and
+      # how each was found (DvDate/DvTime/DvDateTime's value= in
+      # lib/openehr/rm/data_types/quantity/date_time.rb; UIDBasedID/
+      # ObjectVersionID's value= in lib/openehr/rm/support/identification.rb).
+      EXCLUDED_IVARS = [
+        :@parent,
+        :@year, :@month, :@day,                      # DvDate, DvDateTime
+        :@hour, :@minute, :@second, :@fractional_second, # DvTime, DvDateTime
+        :@timezone,                                  # DvTime (String), DvDateTime (Timezone)
+        :@root, :@extension,                         # UIDBasedID, HierObjectID, ObjectVersionID
+        :@oid, :@creating_system_id, :@version_tree_id # ObjectVersionID
+      ].freeze
 
       def initialize(rm_instance)
         @rm_instance = rm_instance

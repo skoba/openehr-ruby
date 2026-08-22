@@ -1,3 +1,44 @@
+=== 2.4.0
+Bug fix release: RMJSONSerializer <-> CompositionFactory.create_from_json
+roundtrips now work.
+
+* RMJSONSerializer no longer emits derived-cache instance variables
+  that aren't part of canonical openEHR ITS-JSON: DvDate/DvTime/
+  DvDateTime's year/month/day/hour/minute/second/fractional_second/
+  timezone (all recomputed from `value` on read), and UIDBasedID/
+  HierObjectID/ObjectVersionID's root/extension/oid/
+  creating_system_id/version_tree_id (also recomputed from `value`).
+  Previously, serializing a DvDateTime or a Composition carrying a uid
+  (ObjectVersionID/HierObjectID - a common real-world attribute) and
+  feeding the result back into create_from_json raised NameError:
+  uninitialized constant ...Factory::TimezoneFactory (or UidFactory) -
+  no such Factory class existed for either derived cache. The gem's
+  own fixture had no `uid` field, so the UID-family case had never
+  been exercised until this investigation found it.
+* Factory.params now tolerates an unrecognized `_type` on a Hash
+  value instead of raising: a _type matching one of the
+  now-excluded derived caches above (TIMEZONE, UID, VERSION_TREE_ID)
+  is silently ignored - this is what makes JSON persisted by a prior
+  version of this gem (which still contains those keys) readable
+  again. Any other, genuinely unrecognized `_type` is also ignored,
+  but with a Kernel#warn naming it, so a real authoring mistake
+  (e.g. a typo'd _type) doesn't fail silently.
+* Also includes one internal representation change to an RM class:
+  ObjectVersionID#value= (lib/openehr/rm/support/identification.rb)
+  never stored @value at all - unlike its UIDBasedID parent, its
+  canonical `value` existed only as a getter recomputed from the
+  now-excluded oid/creating_system_id/version_tree_id. This is part
+  of why the roundtrip broke: a class that keeps no canonical
+  attribute in ivar form has nothing left for the serializer to see
+  once the derived caches around it are excluded. Fixed by storing
+  @value alongside those, matching UIDBasedID's own pattern; the
+  `value` getter itself is unchanged. Net effect on ObjectVersionID's
+  serialized JSON specifically: `oid`, `creating_system_id`,
+  `version_tree_id`, `root`, and `extension` disappear (as with the
+  other derived caches above), and `value` newly appears (it was
+  never present in this class's output before, unlike HierObjectID's,
+  which already had it via inheritance from UIDBasedID/ObjectID).
+
 === 2.3.2
 Hardening release: already-safe OPT/archetype XML parsing is now explicit
 and regression-pinned instead of relying on Nokogiri's implicit defaults.

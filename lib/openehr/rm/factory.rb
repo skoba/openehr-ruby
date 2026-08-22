@@ -20,6 +20,8 @@ module OpenEHR
         terminology_id: 'TERMINOLOGY_ID'
       }.freeze
 
+      KNOWN_DERIVED_CACHE_TYPES = %w[TIMEZONE UID VERSION_TREE_ID].freeze
+
       def initialize(cobject)
         @cobject = cobject
       end
@@ -80,6 +82,11 @@ module OpenEHR
                   "and #{key.inspect} is not a known non-polymorphic attribute (keys: #{value.keys.inspect})"
           end
           Factory.create(type, **value)
+        rescue NameError
+          return nil if KNOWN_DERIVED_CACHE_TYPES.include?(type)
+
+          warn "openehr factory: unknown type \"#{type}\" for attribute #{key.inspect}; ignoring"
+          nil
         end
       end
 
@@ -609,5 +616,4 @@ module OpenEHR
     end
   end
 end
-
 
