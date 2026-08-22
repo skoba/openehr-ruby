@@ -38,6 +38,13 @@ For any non-trivial change (bug fix, hardening, enhancement):
   Code reviews the diff against the approved plan first, then makes the
   commit(s) with a trailer identifying the source (e.g.
   `Implemented-by: Codex`).
+- **Mixed-authorship commits get both trailers.** If Claude Code restructures
+  or splits what Codex delivered - e.g. separating an unrelated fix that
+  landed on the same lines into its own commit, which requires constructing
+  an intermediate code state Codex never produced as a discrete unit - the
+  resulting commit(s) carry both `Implemented-by: Codex` and
+  `Restructured-by: Claude Code`. Don't give a commit a Codex-only trailer if
+  it contains a code state Codex's delivery didn't.
 - **Verify against the repo before recording a fact in it**, even when a
   prompt or an earlier report already stated it as true - a premise that
   went unverified once tends to get repeated, not corrected, if the next
