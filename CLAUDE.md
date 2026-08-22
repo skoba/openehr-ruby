@@ -69,6 +69,18 @@ superficially resembles. If a commit's classification is genuinely unclear,
 that is itself a reason to stop instead of tagging and ask for re-arbitration,
 the same as a content/instructed-version mismatch.
 
+A commit touching shipped runtime code (`lib/`, or anything else that ends up
+in the built gem) is **at minimum patch, even when its observable behavior is
+unchanged** - don't ship different code under the same version number.
+"Neutral" is reserved for commits that don't touch shipped runtime code at all
+(docs, CI, dev-tooling config, dev/test-group dependencies).
+
+(This paragraph fixes the v2.3.2 release's `577a0d7` judgment call in the
+rule — it touched `lib/openehr/parser.rb` et al. to make an already-safe
+default explicit, proven bit-identical to the prior implicit behavior by its
+own spec, and was still classified patch rather than neutral because it
+shipped different code.)
+
 (Added 2026-08-22, fixing the v2.3.1 release's `e728023` — a dev-tooling
 commit unrelated to that release's actual fix — as the worked example of a
 neutral classification under this rule.)
