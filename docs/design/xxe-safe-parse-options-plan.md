@@ -1,6 +1,7 @@
 # Plan: XXE-safe ParseOptions の明示化 (openehr-ruby upstream sprint #33)
 
-**Status: DRAFT — RECOVER/STRICT の裁定と plan 承認待ち**
+**Status: APPROVED 2026-08-22 — Proposal A のみ採用、STRICT は
+[skoba/openehr-ruby#36](https://github.com/skoba/openehr-ruby/issues/36) に切り出し済み**
 
 ## Context
 
@@ -311,8 +312,13 @@ Proposal A のみなら **patch**（実行時挙動・公開API・インスト�
 File handle の close 挙動変更も観測可能な公開挙動の変化ではない。
 **最終判定は Step 6 の棚卸しで確定**（規約どおり）。
 
-## 備考: Proposal B（STRICT）を見送る場合の記録
+## 備考: Proposal B（STRICT）を見送った記録
 
+- Proposal B は
+  [skoba/openehr-ruby#36](https://github.com/skoba/openehr-ruby/issues/36)
+  「Consider STRICT-mode XML parsing for OPT/archetype input
+  (input-validation discussion, not security)」として切り出し済み
+  （#33 と相互リンク）。本 PR には含まない。
 - 4節で発見した openehr-rails 側の RECOVER 依存 fixture
   （`spec/templates/lab_result_report_reduced.opt`）の記法修正は、
   STRICT 化とは独立に「正しい XML コメント構文にする」だけの価値がある
@@ -320,7 +326,7 @@ File handle の close 挙動変更も観測可能な公開挙動の変化では�
   openehr-rails 側への軽微な追補提案として別途検討の余地あり
   （本 Issue #33 のスコープ外、本 repo からは直接手を出せない）。
 - STRICT 化そのものを将来提案する場合は、この fixture 側の修正とセットで
-  提案するのが筋が良い。
+  提案するのが筋が良い（#36 本文にも明記済み）。
 
 ## Issue 増補用サマリ（英語・ペースト用）
 
