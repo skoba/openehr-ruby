@@ -37,6 +37,11 @@ or other unknown constraint child types.
   serializing a parsed CCodeReference degrades it to an unconstrained
   C_CODE_PHRASE (referenceSetUri dropped). Round-trip support is
   deferred to the serializer work item.
+* Development: wired rubocop-rspec into the existing rubocop setup,
+  with a generated .rubocop_todo.yml excluding the 7720 pre-existing
+  RSpec-style offenses so `bundle exec rubocop` stays green while the
+  todo shrinks gradually. Development/test group only - no runtime or
+  gemspec impact.
 
 === 2.3.0
 Feature and bug fix release: AQL execution catches up to the parser
