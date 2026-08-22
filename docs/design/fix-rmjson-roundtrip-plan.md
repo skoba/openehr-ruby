@@ -1,6 +1,10 @@
 # Plan: RMJSONSerializer ⇔ create_from_json roundtrip (openehr-ruby upstream sprint #32)
 
-**Status: DRAFT — 4論点の裁定と plan 承認待ち**
+**Status: APPROVED 2026-08-22 — 実装指示書（Codex 向け）。4論点確定:
+(1) denylist + 悉皆 roundtrip spec 併設、(2) 読み側寛容化は同梱・
+denylist 済みキーは無警告/未知 _type のみ warn、(3) 永続互換は寛容化を
+保険として同梱（Anlage に旧永続 JSON は実在しないが一般利用者は確認不能）、
+(4) semver は minor（2.4.0 仮置き、最終確定は Step 6）**
 
 ## Context
 
@@ -163,6 +167,15 @@ JSON を読み戻す**ケースのみ — 該当データが実運用で既に�
 実際に create_from_json で timezone/root 付き JSON を永続化しているか）は、
 本 repo からは確認できない外部要因。裁定が必要な理由の一つ。
 
+**裁定3（2026-08-22）**: Anlage 側には旧永続 JSON は実在しない
+（`Opt::CompositionReader` は当初から `create_from_json` を使わず自前で
+Hash を走査する設計 — #32 Issue 本文の「Anlage's Opt::CompositionReader
+avoids CompositionFactory.create_from_json entirely」の記述どおり）。
+一方、本 gem の一般利用者が既に timezone/root 付き JSON を永続化している
+可能性は本 repo からは確認できない。read-side leniency は「該当データが
+実在する場合の保険」として同梱する（裁定2の warn 区別と合わせて、
+サイレントな互換吸収ではなく検知可能な形にする）。
+
 ### 6. 関連観察: #36 調査の ADL コーパス14件失敗との異同
 
 判定: **別問題（同根ではない）**。#33/#36 調査で確認済みの14件の失敗内訳
@@ -202,92 +215,183 @@ reflection walker**とは実装方式もクラス階層も異なる。#32 の「
 | C. allowlist ×（read-side leniency なし） | **大**（89クラス分の canonical 属性表） | **高**（未知の将来バグにも構造的に頑健） | 旧永続 JSON は読めないまま | 高（一度整備すれば追加不要な設計） |
 | D. allowlist ×（read-side leniency 同梱） | 大 | 高 | 旧永続 JSON も読める | 高 |
 
-## 推奨案: **B（denylist + read-side leniency 同梱）**
+## 採択案: **B（denylist + read-side leniency 同梱）— 確定（2026-08-22 裁定）**
 
 根拠:
 - 発見済みの病理は2箇所（DvDateTime, UID系）に限定されており、allowlist の
   89クラス分の作業量に見合う実益が今は無い（将来また増えたら、その時点で
   allowlist へ移行する判断材料が今回の denylist の保守コストから得られる）。
+  代わりに Cycle 4 の悉皆 roundtrip spec を番犬として併設し、denylist の
+  「保守コストが宿命」という弱点を、CI で自動検出できる形にして補う。
 - read-side leniency は実装コストが小さく（`convert_hash` の1メソッド）、
   「新 writer だけでは救えない、旧 writer が既に出力した永続データ」を
-  読めるようにする実利がある。タイポ隠蔽リスクは、leniency 発動時に
-  `Kernel#warn`（本 repo の既存流儀、#33 で確立）で type 名を明示することで
-  緩和できる（黙らせるのではなく、非サイレント化する）。
-- ただし B は**裁定が必要な意思決定**であり、A（leniency 見送り、write-side の
-  みで様子見）も正当な選択肢として残る。特に「旧永続 JSON が実運用で存在するか」
-  という5節の未確認要因が、B の実利の有無を左右する。
+  読めるようにする実利がある。タイポ隠蔽リスクは、**denylist 済み（既知）の
+  型は無警告で無視・それ以外の未知 `_type` のみ warn**という区別で緩和する
+  （5節・裁定2参照）。
 
-## TDD 手順（推奨案 B ベース、裁定後に確定）
+## TDD 手順（Codex 実装指示。この順序で厳守）
 
-### Cycle 1 — write-side: denylist で派生キャッシュを除外
+### Cycle 1 — write-side: DvDateTime 系 roundtrip red → denylist で green
 
-- **Red**: `spec/lib/openehr/serializer/rm_json_serializer_spec.rb` に
-  roundtrip spec を追加（fixture は gem 既存の
-  `spec/fixtures/health_summary_composition.json` — 実アーティファクト）:
-  `CompositionFactory.create_from_json(fixture)` → `RMJSONSerializer#serialize`
-  → 出力に `"timezone"` キーが**含まれない**ことを assert。現状は含まれるため red。
-  併せて `HierObjectID`/`ObjectVersionID` 単体の unit spec も追加（fixture に
-  `uid` が無いため、これは gem 既存 fixture 由来ではなく直接インスタンス化 —
-  実アーティファクト由来ではない旨を spec コメントに明記。CLAUDE.md の
-  real-artifact ルールは「臨床データ」を対象としており、RM 値オブジェクトの
-  単体構築はこの対象外という整理が必要であれば裁定で確認）。
-- **Green**: `RMJSONSerializer::EXCLUDED_IVARS`（rm_json_serializer.rb:13）を
-  `[:@parent]` から拡張する形式は誤り（グローバル denylist だと DvTime の
-  `@timezone`〔正当なスカラー、除外不要〕まで巻き込む可能性は無いが — 実際には
-  ivar 名ベースの除外は「型を見ない」ため、DvTime の `@timezone`（String）も
-  一緒に消えてしまう。これは実害無し〔非 canonical だから〕だが意図としては
-  「クラス問わず ivar 名だけで判定」という設計になる点に注意）。具体案:
-  `EXCLUDED_IVARS_BY_CLASS = { DvDateTime => [:@timezone, :@year, :@month, :@day, :@hour, :@minute, :@second, :@fractional_second], DvDate => [...], DvTime => [...], UIDBasedID => [:@root, :@extension], ObjectVersionID => [:@oid, :@root, :@creating_system_id, :@version_tree_id, :@extension] }` 形式でクラスごとに定義するか、`EXCLUDED_IVARS = [:@parent, :@timezone, :@year, :@month, ...]` とグローバル1本にするかは、2節の「名前衝突なし」実測を踏まえて **グローバル1本で十分**と考えるが、最終判断は Codex 実装時にコードレビューで確認。
+- **Red — 追記** `spec/lib/openehr/serializer/rm_json_serializer_spec.rb`:
+  `spec/fixtures/health_summary_composition.json`（gem 既存の実アーティファクト）を
+  `CompositionFactory.create_from_json` → `RMJSONSerializer#serialize` →
+  `CompositionFactory.create_from_json`（再度）の roundtrip で通し、2回目の
+  `create_from_json` が raise しないことを assert。現状は `start_time`
+  （DvDateTime）の `timezone` で `NameError` になるため red。
+- **Green — 変更** `lib/openehr/serializer/rm_json_serializer.rb`:
+  `EXCLUDED_IVARS`（:13）を拡張する。2節・3節の実測（ivar 名の衝突が
+  リポジトリ全体で無いことを確認済み）に基づき、**グローバル1本の配列**で
+  十分と判断（クラス別 Hash にする理由が無い — 型を見ない ivar 名ベースの
+  除外は DvTime の `@timezone`〔String〕も道連れにするが、非 canonical な
+  スカラーが1つ余分に消えるだけで実害は無い）:
+  ```ruby
+  # Instance variables that value=-style setters derive and cache from a
+  # single canonical attribute (e.g. `value`), but which are not part of
+  # openEHR ITS-JSON canonical form and have no corresponding
+  # OpenEHR::RM::Factory::<Type>Factory to reconstruct them on read - see
+  # docs/design/fix-rmjson-roundtrip-plan.md for the full inventory and
+  # how each was found (DvDate/DvTime/DvDateTime's value= in
+  # lib/openehr/rm/data_types/quantity/date_time.rb; UIDBasedID/
+  # ObjectVersionID's value= in lib/openehr/rm/support/identification.rb).
+  EXCLUDED_IVARS = [
+    :@parent,
+    :@year, :@month, :@day,                      # DvDate, DvDateTime
+    :@hour, :@minute, :@second, :@fractional_second, # DvTime, DvDateTime
+    :@timezone,                                  # DvTime (String), DvDateTime (Timezone)
+    :@root, :@extension,                         # UIDBasedID, HierObjectID, ObjectVersionID
+    :@oid, :@creating_system_id, :@version_tree_id # ObjectVersionID
+  ].freeze
+  ```
 - **Refactor**: 既存7 examples が green のまま保たれることを確認。
 
-### Cycle 2 — read-side: 未知 Factory 型への寛容化（裁定で B 採用時のみ）
+### Cycle 2 — read-side: UID 系 roundtrip red → green（新規 uid fixture）
 
-- **Red**: `spec/lib/openehr/rm/factory_spec.rb` に、`_type` 付き Hash だが
-  対応 Factory が存在しない場合（例: 手作りの `{_type: "TIMEZONE", value: "+02:00"}`
-  Hash）を渡すと、`NoMethodError`/`NameError` を raise せず、当該キーが
-  `nil`（結果として無視される）になることを assert。併せて
-  `output(/unknown.*TIMEZONE/).to_stderr` で warn を検証（#33 の
-  `Kernel#warn` 流儀を踏襲）。
-- **Green**: `Factory.convert_hash`（factory.rb:75-83）を修正。
+- **新規 fixture** `spec/fixtures/health_summary_composition_with_uid.json`:
+  gem 既存の `health_summary_composition.json`（実アーティファクト）を複製し、
+  `Composition` トップレベルに `uid` フィールドを追加したもの
+  （`{"_type":"OBJECT_VERSION_ID","value":"<既存内容から導出できる適当な UUID>::openehr-ruby::1"}`
+  等、openEHR RM 標準形）。JSON 冒頭に隣接するコメントは JSON 形式では書けないため、
+  同名の `.md`（または spec 内コメント）で出所を明記: 「gem 既存の実アーティファクト
+  `health_summary_composition.json` を複製し、同 fixture が元来持たない `uid`
+  フィールド（`ObjectVersionID`、openEHR RM 標準形）を追加したもの。UID系
+  roundtrip クラッシュ（#32 調査で新規発見）の再現に使用」。既存 fixture 自体は
+  変更しない（他 spec への影響を避ける）。
+- **Red**: 上記 fixture を使った roundtrip spec を追加（Cycle 1 と同じ形。
+  現状は `uid` の `root` で `NameError: uninitialized constant
+  OpenEHR::RM::Factory::UidFactory` になるため red — ただし Cycle 1 の
+  denylist は `@root`/`@oid`/`@creating_system_id`/`@version_tree_id` を
+  既に含んでいるため、**Cycle 1 の green 実装のままこの Cycle 2 の red spec が
+  green になるはず**。green にならない場合は denylist の対象漏れであり、
+  Codex は Cycle 1 の実装を見直すこと（design 通りに実装されていれば
+  ここは実質的に確認 spec — 「red を書いたら green だった」なら、Cycle 1 の
+  実装が正しく UID 系もカバーできている証跡としてそのまま採用してよい）。
 
-### Cycle 3 — 旧永続データの roundtrip 固定
+### Cycle 3 — read-side leniency: 未知 `_type` の warn+無視
 
-- **Red→Green**: Cycle 1 の denylist 適用**前**の出力形（`timezone`/`root` 付き）を
-  文字列として直接 `create_from_json` に渡し、Cycle 2 の leniency で読めることを
-  assert する回帰テスト（5節の「旧 writer × 新 reader」象限を固定）。
+- **Red — 追記** `spec/lib/openehr/rm/factory_spec.rb`:
+  1. **denylist 済み（旧永続データ想定）の型は無警告で無視**: 手作りの
+     `{_type: "TIMEZONE", value: "+02:00", hour: 2, minute: 0}` Hash を
+     `Factory.params` に渡すと、raise せず、かつ **stderr に何も出力しない**
+     ことを assert（`expect { ... }.not_to output.to_stderr` かつ
+     `not_to raise_error`）。`UID`/`VERSION_TREE_ID` も同様に確認。
+  2. **未知 `_type`（真に想定外）は warn+無視**: `{_type: "SOME_FUTURE_TYPE",
+     value: "x"}` のような、denylist 対象でない未知の `_type` を渡すと、
+     raise せず `output(/unknown.*SOME_FUTURE_TYPE/).to_stderr` で warn する
+     ことを assert（#6a の `xml_constraint_parsing.rb` の
+     `respond_to?` ガード + warn 型を踏襲）。
+  現状はどちらも `NameError`（raise する）ため両方とも red。
+- **Green — 変更** `lib/openehr/rm/factory.rb`: `Factory.convert_hash`
+  （:75-83）を修正。`class_eval("#{type}Factory")` を `NameError` で rescue し、
+  **`type` が Cycle 1 の `EXCLUDED_IVARS` に対応する既知の派生型名
+  （`TIMEZONE`, `UID`, `VERSION_TREE_ID` — 定数として明示的に列挙。
+  `EXCLUDED_IVARS` の ivar 名から機械的に導出するのではなく、対応表を明示的に
+  書く方が読み手にとって追跡しやすい）なら無警告で `nil` を返し、それ以外は
+  `warn "openehr factory: unknown type \"#{type}\" for attribute #{key.inspect}; ignoring"`
+  してから `nil` を返す** という2分岐にする。
+- **旧永続データの回帰固定（5節「旧 writer × 新 reader」象限を固定）**:
+  Cycle 1 の denylist 適用**前**の出力形（`timezone`/`root` 付きの生 JSON
+  文字列。ハードコードでよい）を直接 `create_from_json` に渡し、raise せず
+  読めることを assert する spec も同じ Cycle 3 に含める。
 
-## 互換性ノート案（History.txt 草稿）
+### Cycle 4 — 悉皆 roundtrip spec（番犬）
+
+- explore Step 1-1 で洗い出した**全クラス**（`DvDate`, `DvTime`, `DvDateTime`,
+  `DvDuration`, `UIDBasedID`, `HierObjectID`, `ObjectVersionID`、および
+  Cycle 1/2 の fixture に既に含まれる他の全 RM クラス）を対象に、
+  「reflection で得られる全 ivar のうち Hash 値（`_type` 付き）になるものは、
+  必ず対応する `<Type>Factory` が存在する」ことを機械的に検証する spec を
+  `spec/lib/openehr/serializer/rm_json_serializer_spec.rb`
+  （または新規 `spec/lib/openehr/rm/roundtrip_spec.rb`）に追加する。
+  実装方針: `health_summary_composition_with_uid.json` を
+  `create_from_json` → 得られた `Composition` を explore 時に使った
+  reflection walker と同じロジックでオブジェクトグラフ全体を走査し、
+  各オブジェクトの `_type` 付き Hash 値 ivar それぞれについて
+  `OpenEHR::RM.const_defined?("#{camelized_type}Factory") ||
+  <denylist 済みなら OK>` を assert する形（探索時に使った実測スクリプトを
+  そのまま spec 化する形でよい）。**このテストの価値は「未知の将来の
+  派生キャッシュバグを、fixture 追加なしで自動検出する」点** — 新しい
+  RM クラスが同じ病理を持つようになった場合、このテストが red になることで
+  検出される（denylist の追加漏れそのものは検出できないが、少なくとも
+  「クラッシュする」ことは検出できる）。
+- 既存の Cycle 1/2 の個別 roundtrip spec とは独立に維持する（悉皆 spec が
+  1つ落ちても、どのクラスが原因か個別 spec の方が特定しやすいため）。
+
+### Cycle 5 — 仕上げ（TDD 外）
+
+- `lib/openehr/version.rb` → `"2.4.0"`（作業上の仮置き、Step 6 で最終確定）
+- `History.txt` 追記（下記ドラフト）
+- `bundle exec rspec` 全走・`bundle exec rubocop`（todo 再生成禁止）
+- 循環参照ガード誤爆（`ObjectVersionID` の `root`/`oid` 同一参照 →
+  `RMJSONSerializer` の `seen` ガード誤爆によるサイレント null 化）は
+  **本 PR に同梱しない**。別 Issue ドラフトを英語で用意し、Claude Code の
+  報告に含める（起票はユーザ。#32 と Related 相互リンク）。
+
+## 互換性ノート案（History.txt 草稿、=== 2.4.0 仮置き）
 
 ```
+=== 2.4.0
+Bug fix release: RMJSONSerializer <-> CompositionFactory.create_from_json
+roundtrips now work.
+
 * RMJSONSerializer no longer emits derived-cache instance variables
   that aren't part of canonical openEHR ITS-JSON: DvDate/DvTime/
   DvDateTime's year/month/day/hour/minute/second/fractional_second/
   timezone (all recomputed from `value` on read), and UIDBasedID/
-  ObjectVersionID's root/extension/oid/creating_system_id/
-  version_tree_id (recomputed from `value`). Persisted JSON produced
-  by prior versions may contain these keys; [B採用時: they are now
-  tolerated on read, with a Kernel#warn naming any still-unrecognized
-  _type / A採用時: re-serializing through this version's
-  RMJSONSerializer produces canonical output, but re-reading
-  already-persisted old-format JSON containing these keys still
-  raises].
+  HierObjectID/ObjectVersionID's root/extension/oid/
+  creating_system_id/version_tree_id (also recomputed from `value`).
+  Previously, serializing a DvDateTime or a Composition carrying a uid
+  (ObjectVersionID/HierObjectID - a common real-world attribute) and
+  feeding the result back into create_from_json raised NameError:
+  uninitialized constant ...Factory::TimezoneFactory (or UidFactory) -
+  no such Factory class existed for either derived cache. The gem's
+  own fixture had no `uid` field, so the UID-family case had never
+  been exercised until this investigation found it.
+* Factory.params now tolerates an unrecognized `_type` on a Hash
+  value instead of raising: a _type matching one of the
+  now-excluded derived caches above (TIMEZONE, UID, VERSION_TREE_ID)
+  is silently ignored - this is what makes JSON persisted by a prior
+  version of this gem (which still contains those keys) readable
+  again. Any other, genuinely unrecognized `_type` is also ignored,
+  but with a Kernel#warn naming it, so a real authoring mistake
+  (e.g. a typo'd _type) doesn't fail silently.
 ```
 
-## semver 提案
+## semver: **2.4.0 (minor)** — 作業上の仮置き（2026-08-22 裁定）
 
 577a0d7（#33）は「挙動不変でも patch」だったが、**今回は明確に挙動が変わる**
 （出力から `timezone`/`root` 等のキーが消える。既存の永続化済み JSON との
 文字列完全一致を仮定しているコードがあれば影響を受ける）。影響面基準で:
 
-- 実行時挙動: **変わる**（serialize 出力が変わる。B 採用なら read 経路も変わる）
+- 実行時挙動: **変わる**（serialize 出力が変わる。read 経路も寛容化により変わる）
 - 公開API: 変わらない（メソッドシグネチャ不変）
 - インストール依存: 変わらない
 
-出力形式の変更を伴うため **minor** を提案。ただし「壊れていた roundtrip を
-直す」という bug 修正の性格が強く、患者説得力としては patch 論も成立しうる
-（Issue のラベルも `bug`）。**最終判断は Step 6 棚卸しで確定**
-（577a0d7 で確立した「shipped runtime code は最低 patch」規約はここでも
-下限として適用され、争点は patch か minor かの2択）。
+出力形式の変更を伴うため **minor** で確定（裁定4）。「壊れていた roundtrip を
+直す」という bug 修正の性格が強く patch 論も成立しうるが（Issue のラベルも
+`bug`）、観測可能な出力変更を伴う以上 minor が妥当という判断。
+**ただし最終確定は Step 6 棚卸しで**（577a0d7 で確立した「shipped runtime
+code は最低 patch」規約がここでも下限として適用される）。
 
 ## Issue #32 増補用サマリ（英語・ペースト用）
 
