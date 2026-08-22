@@ -12,6 +12,32 @@ allways follow t-wada TDD policy: write a failing spec first (red), make it
 pass with the minimal change (green), then clean up (refactor). Do not
 implement ahead of a red spec.
 
+## Ticket-driven workflow
+
+A change that touches the gem's runtime behavior, public API, or install-time
+dependencies needs a GitHub Issue filed *before* work starts - no such
+code-change commit without one. Docs-only, convention, and dev-tooling-only
+changes don't require one (see the Release convention section below for the
+same runtime-behavior/public-API/install-dependency test applied to semver).
+
+- **Acceptance criteria must be spec-verifiable.** Write them as concrete,
+  checkable conditions (a spec that exists and passes, an observable
+  behavior), not vague intentions.
+- **State which of three resolution shapes the change is**, in both the PR
+  body and a spec comment:
+  - **(a) bug** - a reproduction spec goes red first, then green (t-wada).
+  - **(b) enhancement** - a spec for the new behavior goes red first, then
+    green.
+  - **(c) pin/hardening** - fixing an existing property that's already true
+    (e.g. explicitly pinning a default that was already safe). Red is not
+    achievable, and the spec must say so - literally write "regression pin"
+    in a comment near the assertion. Don't fake a red phase to make it look
+    like classic TDD when it isn't.
+- **One issue = one branch = one PR** (see Contribution workflow below - this
+  is the same rule, restated here because it's part of the ticket cycle).
+  The PR closes the issue via `Fixes #N`.
+- **A `docs/design/` plan document states its issue number at the top.**
+
 ## Contribution workflow
 
 For any non-trivial change (bug fix, hardening, enhancement):
