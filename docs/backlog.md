@@ -16,9 +16,15 @@ configured and was confirmed actually running and green, not just present, on bo
   passed.
 
 Recorded here after an unverified "CI is unconfigured" claim (which only ever applied to
-the sibling `openehr-rails` repo, which genuinely lacks CI) was repeated across two turns
-in this repo before anyone ran `gh run list` — see `CLAUDE.md`'s
-"Verify against the repo before recording a fact in it" rule, added for the same reason.
+the sibling `openehr-rails` repo) was repeated across two turns in this repo before anyone
+ran `gh run list` — see `CLAUDE.md`'s "Verify against the repo before recording a fact in
+it" rule, added for the same reason.
+
+**Correction (2026-08-23)**: the "openehr-rails genuinely lacks CI" half of that claim is
+now also stale — `openehr-rails`'s `master` has both `.github/workflows/ci.yml` and
+`.github/workflows/release.yml`, and recent `push` runs on `master` complete successfully
+(confirmed via `gh run list` in that repo). Actual run-by-run verification of that CI is
+being tracked in `openehr-rails`'s own `docs/backlog.md`, not duplicated here.
 
 ## From #6a investigation (C_CODE_REFERENCE parse crash, 2026-08-22)
 

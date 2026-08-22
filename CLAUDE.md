@@ -21,12 +21,29 @@ For any non-trivial change (bug fix, hardening, enhancement):
   behavior; do not guess at API shapes or call chains. Write the plan down
   (e.g. under `docs/design/`) before writing code, and get it approved
   before implementing.
-- **Fixtures come from real artifacts.** A spec fixture (ADL, OPT/XML, JSON)
-  should be derived from an actual openEHR artifact (a real archetype/
-  template, or output from a real tool), condensed if needed, with its
-  provenance noted in a comment. The one exception is a fixture built
-  specifically to exercise a security control (e.g. XXE) - note that
-  exception explicitly in the fixture itself.
+- **Fixtures fall into four kinds; each fixture's leading comment must say
+  which kind it is** (imported from openehr-rails' `CLAUDE.md`, which
+  codified this first):
+  - **real** — a genuine artifact (CKM export, Archetype Designer output, a
+    real host-app template), used as-is.
+  - **reduced** — a trimmed-down real artifact; the comment must name the
+    real source it was reduced from.
+  - **synthetic** — hand-authored, not derived from any real artifact.
+    real/reduced are preferred by default; synthetic is only for structural
+    test cases whose reproduction conditions can't be controlled with a real
+    artifact. The leading comment must say it's synthetic and cite its
+    design authority (e.g. a design doc section). Archetype IDs/at-codes
+    should use self-evidently invented names that can't be mistaken for real
+    ones — don't rename an existing fixture to fix this after the fact; its
+    at-codes/archetype IDs are reference anchors other specs/docs already
+    point to, and freezing those anchors takes priority.
+  - **security** — built to exercise an attack/abuse case; the comment must
+    say it is not a clinical artifact. Example already in this repo:
+    `spec/lib/openehr/parser/security_fixtures/` (the XXE payloads from #33).
+  - A fixture's provenance comment must describe its lineage as measured
+    (checked against the actual design/implementation record), not as
+    instructed — if an instructed lineage doesn't match what actually went
+    into the fixture, write it to match reality instead.
 - **One issue = one branch = one PR.** Don't bundle unrelated fixes.
 - **Every change needs a semver call and a `History.txt` entry.** State
   whether the change is patch/minor/major and why, even if the answer is
