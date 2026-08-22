@@ -1,3 +1,43 @@
+=== 2.3.1
+Bug fix release: OPT parsing no longer crashes on C_CODE_REFERENCE
+or other unknown constraint child types.
+
+* OPTParser (and XMLArchetypeParser, which shares the same constraint
+  readers) raised NoMethodError on templates containing
+  <children xsi:type="C_CODE_REFERENCE"> - emitted by tools such as
+  Archetype Designer when a DV_CODED_TEXT defining_code is bound to an
+  external terminology reference set. Such children now parse into the
+  new ...Text::CCodeReference (a CCodePhrase subclass, mirroring
+  Template.xsd's C_CODE_REFERENCE extension) carrying referenceSetUri
+  as #reference_set_uri. valid_value?/any_allowed? do not expand the
+  reference set (no terminology service is wired), so an otherwise
+  unconstrained C_CODE_REFERENCE validates permissively.
+* Unknown <children> xsi:type values no longer abort the parse: an
+  unrecognized constraint type falls back to plain C_COMPLEX_OBJECT
+  reading with a Kernel#warn to stderr naming the type and node path.
+  The fallback keeps the C_OBJECT core but drops the unknown type's
+  specific constraint payload, so validation of that node becomes more
+  permissive than the template author intended - the warning makes
+  this visible. There was no prior verified, type-specific contract
+  here to preserve: OPTParser and XMLArchetypeParser share the exact
+  same dispatch code, but only XMLArchetypeParser wrapped the
+  resulting NoMethodError into a ParseError, and only as an incidental
+  side effect of a generic top-level `rescue StandardError` around
+  its whole parse (confirmed by inspecting the wrapped error - the
+  ParseError's message was, character for character, the stringified
+  NoMethodError). OPTParser had no such rescue and raised the same
+  NoMethodError raw. The two parsers already disagreed on the same
+  bug; this release makes them agree. A structurally invalid unknown
+  node (missing occurrences) still raises - via ParseError on the
+  XMLArchetypeParser path, raw on the OPTParser path, matching each
+  path's pre-existing general error-handling behavior (tracked as a
+  separate backlog item, not changed by this release). C_DV_STATE
+  still raises NotImplementedError as before.
+* Not included: XMLSerializer does not yet emit C_CODE_REFERENCE -
+  serializing a parsed CCodeReference degrades it to an unconstrained
+  C_CODE_PHRASE (referenceSetUri dropped). Round-trip support is
+  deferred to the serializer work item.
+
 === 2.3.0
 Feature and bug fix release: AQL execution catches up to the parser
 on 4 previously-ExecutionError constructs, and a Factory.create entry

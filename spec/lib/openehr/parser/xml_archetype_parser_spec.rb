@@ -142,8 +142,8 @@ describe OpenEHR::Parser::XMLArchetypeParser do
       end
     end
 
-    it 'raises a ParseError for an unknown xsi:type in the definition tree' do
-      xml = <<~XML
+    def unknown_type_archetype(occurrences: '')
+      <<~XML
         <?xml version='1.0' encoding='UTF-8'?>
         <archetype xmlns="http://schemas.openehr.org/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <archetype_id><value>openEHR-EHR-CLUSTER.bad.v1</value></archetype_id>
@@ -182,6 +182,7 @@ describe OpenEHR::Parser::XMLArchetypeParser do
               </existence>
               <children xsi:type="C_SOMETHING_UNKNOWN">
                 <rm_type_name>DV_TEXT</rm_type_name>
+                #{occurrences}
               </children>
             </attributes>
           </definition>
@@ -194,14 +195,41 @@ describe OpenEHR::Parser::XMLArchetypeParser do
           </ontology>
         </archetype>
       XML
+    end
 
+    def parse_temporary_archetype(xml)
       tempfile = Tempfile.new(['bad_xsi_type', '.xml'])
       tempfile.write(xml)
       tempfile.close
       begin
-        expect { OpenEHR::Parser::XMLArchetypeParser.new(tempfile.path).parse }.to raise_error(OpenEHR::Parser::ParseError)
+        yield OpenEHR::Parser::XMLArchetypeParser.new(tempfile.path)
       ensure
         tempfile.unlink
+      end
+    end
+
+    it 'falls back to C_COMPLEX_OBJECT with a warning for an unknown xsi:type, matching OPTParser' do
+      occurrences = <<~XML
+        <occurrences>
+          <lower_included>true</lower_included><upper_included>true</upper_included>
+          <lower_unbounded>false</lower_unbounded><upper_unbounded>false</upper_unbounded>
+          <lower>0</lower><upper>1</upper>
+        </occurrences>
+      XML
+      result = nil
+
+      parse_temporary_archetype(unknown_type_archetype(occurrences: occurrences)) do |parser|
+        expect { result = parser.parse }.to output(/unknown constraint type "C_SOMETHING_UNKNOWN" at \//).to_stderr
+      end
+
+      child = result.definition.attributes[0].children[0]
+      expect(child).to be_a(OpenEHR::AM::Archetype::ConstraintModel::CComplexObject)
+      expect(child.rm_type_name).to eq('DV_TEXT')
+    end
+
+    it 'wraps a structurally invalid fallback node in ParseError through its general error handling' do
+      parse_temporary_archetype(unknown_type_archetype) do |parser|
+        expect { parser.parse }.to raise_error(OpenEHR::Parser::ParseError)
       end
     end
   end

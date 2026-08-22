@@ -42,6 +42,27 @@ module OpenEHR
               end
             end
           end
+
+          # C_CODE_REFERENCE is defined by Template.xsd (Template OM) as a
+          # C_CODE_PHRASE extension carrying a referenceSetUri. nil is accepted
+          # for tolerant parsing of real artifacts. valid_value? is inherited:
+          # without a terminology service, this class cannot expand the URI's
+          # reference set and must retain CCodePhrase's permissive behavior.
+          class CCodeReference < CCodePhrase
+            attr_reader :reference_set_uri
+
+            def initialize(args = { })
+              super
+              self.reference_set_uri = args[:reference_set_uri]
+            end
+
+            def reference_set_uri=(reference_set_uri)
+              if !reference_set_uri.nil? && reference_set_uri.empty?
+                raise ArgumentError, 'invalid reference_set_uri'
+              end
+              @reference_set_uri = reference_set_uri
+            end
+          end
         end # of Text
       end # of Data_Types
     end # of OpenEHR Profile
