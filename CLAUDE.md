@@ -38,6 +38,11 @@ For any non-trivial change (bug fix, hardening, enhancement):
   Code reviews the diff against the approved plan first, then makes the
   commit(s) with a trailer identifying the source (e.g.
   `Implemented-by: Codex`).
+- **Verify against the repo before recording a fact in it**, even when a
+  prompt or an earlier report already stated it as true - a premise that
+  went unverified once tends to get repeated, not corrected, if the next
+  write also skips checking (e.g. "CI is unconfigured" repeated across two
+  turns before anyone ran `gh run list`).
 
 ## Release convention
 
