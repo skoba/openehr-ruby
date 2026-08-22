@@ -465,7 +465,17 @@ crashing raw. Final call on wording/semver is the maintainer's.
   CCodeReference instance / reference_set_uri 完全一致 / rm_type_name 'CODE_PHRASE' /
   occurrences 0..1 / path `'/category/defining_code'` / terminology_id nil / code_list nil /
   any_allowed? true。
-- red 確認: NameError（定数なし）。**Cycle 2 完了まで red のまま維持**（stub で潰さない）。
+- red 確認（訂正 2026-08-22、Codex 実装時の実測により修正）: `let` で参照する
+  `CCodeReference` 定数自体は遅延評価のため、実際の失敗は **`NoMethodError:
+  undefined method 'c_code_reference'`**（`XMLConstraintParsing#children`、
+  xml_constraint_parsing.rb:68 の `send` dispatch）である。これは「調査補遺」で
+  実測した :145 のクラッシュと同一の失敗点であり、まさに本 Issue が修正対象と
+  している NoMethodError そのもの — 想定外の不具合ではなく、Cycle 0 が
+  意図通りバグを再現できている証拠として扱ってよい。（旧記載「NameError
+  （定数なし）」は誤り。Cycle 1 で CCodeReference 定数を追加した後も、
+  Cycle 2 で `c_code_reference` ハンドラを追加するまでは同じ NoMethodError の
+  ままである点に注意 — 定数追加だけでは green にならない。）
+  **Cycle 2 完了まで red のまま維持**（stub で潰さない）。
 
 ### Cycle 1 — モデルクラス
 
