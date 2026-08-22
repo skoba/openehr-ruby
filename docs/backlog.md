@@ -40,3 +40,20 @@ in this repo before anyone ran `gh run list` — see `CLAUDE.md`'s
   intentional (e.g. because `OPTParser` callers are expected to want raw exceptions).
   See `docs/design/fix-c-code-reference-plan.md`'s "調査補遺" section for the full
   investigation (reproduced both parsers against the same unknown-type input).
+
+## From #32 investigation (RMJSONSerializer roundtrip fix, 2026-08-22)
+
+- **`Factory.convert_hash`'s `rescue NameError` is method-scoped, not call-scoped**:
+  the rescue added for the known/unknown `_type` leniency
+  (`lib/openehr/rm/factory.rb:75-90`) wraps the whole `convert_hash` method, not just
+  the `Factory.create(type, **value)` call. In principle this means a `NameError`
+  raised for an unrelated reason somewhere deep inside a *successfully resolved*
+  Factory's `.create(...)` call (e.g. a genuine bug referencing an undefined constant
+  inside some RM class's `initialize`) would also be caught here and silently
+  reported as "unknown type", misattributing the real failure. In practice this is
+  narrow: each nested `convert_hash` call in the recursive JSON-parsing chain has its
+  own `rescue`, so the *innermost* frame where a `class_eval` failure actually occurs
+  catches it first — the broader case would need a `NameError` from somewhere other
+  than a missing `*Factory` constant, which no code path currently exercises. No
+  action taken; recorded for awareness if a future `NameError` starts appearing to
+  vanish unexpectedly during `create_from_json`.
