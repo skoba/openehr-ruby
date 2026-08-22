@@ -39,6 +39,14 @@ For any non-trivial change (bug fix, hardening, enhancement):
   commit(s) with a trailer identifying the source (e.g.
   `Implemented-by: Codex`).
 
+## Release convention
+
+Before tagging, make the final semver determination from the actual content
+accumulated since the previous tag (`git diff <previous-tag>..master`), not
+from a pre-assigned version number. If the instructed version number
+contradicts the actual content, stop instead of tagging and ask for
+re-arbitration.
+
 ## Development Commands
 
 ### Testing
