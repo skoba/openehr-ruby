@@ -311,3 +311,14 @@ bumped `2.4.1` → `2.4.2` (`4ffd57b`). Tagged and pushed:
 （このリポジトリ側では実施しない）。
 
 openehr-ruby returns to dormant.
+
+## R12 — gem push confirmed live
+
+User reported `gem push` complete. Independently verified via
+`https://rubygems.org/api/v1/versions/openehr.json`: `openehr 2.4.2` is
+live, `sha: 91556d3a7f9a105634d981de33f66e1427a2fc9efc4ee4e136d97d19f6586948`
+- matches exactly what was built and reported in R11. `2.4.1`'s published
+sha also spot-checked and matches its own prior report
+(`70c1949a87beaa4cb8bdfb9bca4a1c2c9af2e93e283c70d9cddbaad8996c8f6c`).
+
+Batch fully closed. openehr-ruby dormant.
