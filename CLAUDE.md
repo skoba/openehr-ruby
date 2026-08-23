@@ -112,6 +112,15 @@ shipped different code.)
 commit unrelated to that release's actual fix — as the worked example of a
 neutral classification under this rule.)
 
+**A code change's `History.txt` entry is written at merge time**, into an
+unreleased section at the top of the file (version number a placeholder,
+finalized at tag time along with the semver call above). Don't defer the
+entry itself to tag time — release-batching (which tag a change ships in)
+and record-batching (when its `History.txt` line gets written) are separate
+concerns; a change can wait for a release without its record waiting too.
+(Added 2026-08-23, from PR #41 / #38, the worked example of an unreleased
+section landing at merge time ahead of a deferred, batched release.)
+
 ## Development Commands
 
 ### Testing
