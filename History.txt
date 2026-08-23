@@ -1,6 +1,7 @@
-=== 2.4.1 (unreleased)
-Version number is a placeholder, finalized at tag time from the actual
-diff accumulated since 2.4.0 (per this file's own Release convention).
+=== 2.4.1
+Diagnostics and correctness release: AQL WHERE-clause alias-collision
+errors get a clearer hint, and RMJSONSerializer no longer treats
+non-cyclic attribute aliasing as a cycle.
 
 * AQL parser diagnostics: referencing a SELECT alias in a WHERE clause
   (not supported by AQL) used to fail with a bare "expected a
