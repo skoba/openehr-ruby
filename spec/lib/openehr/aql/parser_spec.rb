@@ -621,6 +621,32 @@ end
 # items under M9 in the project plan - need the execution engine to
 # exist first and are handled as part of Phase 8, not here.
 describe 'OpenEHR::AQL.parse (M9: trailing "--" and error quality)' do
+  it 'hints when a trailing WHERE identifier matches a SELECT alias' do
+    source = <<~AQL
+      SELECT o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS height
+      FROM OBSERVATION o
+      WHERE o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude height > 170
+    AQL
+
+    expect { OpenEHR::AQL.parse(source) }.to raise_error(OpenEHR::AQL::ParseError) { |error|
+      expect(error.message).to include("note: 'height' is a SELECT alias")
+    }
+  end
+
+  it 'does not hint when a trailing WHERE identifier is not a SELECT alias' do
+    source = <<~AQL
+      SELECT o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS height
+      FROM OBSERVATION o
+      WHERE o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude weight > 170
+    AQL
+
+    expect { OpenEHR::AQL.parse(source) }.to raise_error(OpenEHR::AQL::ParseError) { |error|
+      expect(error.message).to eq(
+        'expected a comparison operator, LIKE or MATCHES, got identifier "weight" (line 3, column 80)'
+      )
+    }
+  end
+
   it 'accepts a bare trailing "--" (absorbed as an empty comment by the lexer)' do
     expect { OpenEHR::AQL.parse('SELECT c FROM COMPOSITION c --') }.not_to raise_error
   end

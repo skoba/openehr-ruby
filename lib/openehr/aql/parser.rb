@@ -48,6 +48,7 @@ module OpenEHR
         top = check(:top) ? parse_top : nil
         columns = [parse_select_expr]
         columns << parse_select_expr while match(:comma)
+        @select_aliases = columns.filter_map(&:alias_name).to_set
         Model::SelectClause.new(columns: columns, distinct: distinct, top: top)
       end
 
@@ -298,7 +299,11 @@ module OpenEHR
         elsif match(:matches)
           Model::MatchesExpr.new(path: path, operand: parse_matches_operand)
         else
-          raise error("expected a comparison operator, LIKE or MATCHES, got #{describe(peek)}")
+          identifier = peek.type == :identifier ? peek.value : nil
+          hint = if identifier && @select_aliases.include?(identifier)
+                   "'#{identifier}' is a SELECT alias; aliases cannot be used in WHERE -- repeat the identified path"
+                 end
+          raise error("expected a comparison operator, LIKE or MATCHES, got #{describe(peek)}", hint: hint)
         end
       end
 
@@ -476,8 +481,8 @@ module OpenEHR
         token.type == :eof ? 'end of input' : "#{token.type} #{token.value.inspect}"
       end
 
-      def error(message)
-        ParseError.new(message, line: peek.line, column: peek.column)
+      def error(message, hint: nil)
+        ParseError.new(message, line: peek.line, column: peek.column, hint: hint)
       end
     end
   end

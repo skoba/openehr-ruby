@@ -11,11 +11,12 @@ module OpenEHR
     class ParseError < Error
       attr_reader :line, :column
 
-      def initialize(message, line: nil, column: nil)
+      def initialize(message, line: nil, column: nil, hint: nil)
         @line = line
         @column = column
         location = line && column ? " (line #{line}, column #{column})" : ''
-        super("#{message}#{location}")
+        hint_text = hint ? "\nnote: #{hint}" : ''
+        super("#{message}#{location}#{hint_text}")
       end
     end
 
