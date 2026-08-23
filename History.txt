@@ -1,3 +1,22 @@
+=== 2.4.2 (unreleased)
+Version number is a placeholder, finalized at tag time from the actual
+diff accumulated since 2.4.1 (per this file's own Release convention).
+
+* RMJSONSerializer now emits the canonical "value" key for ArchetypeID
+  and TerminologyID (both OBJECT_ID subtypes) instead of only their
+  internal decomposed fields (rm_originator/rm_name/rm_entity/
+  concept_name/specialisation/version_id for ArchetypeID; name/
+  version_id for TerminologyID) - the same class of gap #32 fixed for
+  ObjectVersionID, generalized to these two sibling types. The
+  exclusion is scoped to these two classes specifically (not a global
+  ivar exclusion), so unrelated classes with their own :@name or
+  :@version_id ivars (e.g. any Locatable's #name, or
+  RevisionHistoryItem#version_id) are unaffected. Reading back JSON
+  persisted by a prior version of this gem (decomposed keys only, no
+  "value") is unaffected - Factory already reconstructs both types
+  from their individual fields when "value" is absent. (#46, first
+  reported as #45)
+
 === 2.4.1
 Diagnostics and correctness release: AQL WHERE-clause alias-collision
 errors get a clearer hint, and RMJSONSerializer no longer treats

@@ -9,6 +9,25 @@ include OpenEHR::AM::Archetype::ConstraintModel
 include OpenEHR::AssumedLibraryTypes
 
 describe RMJSONSerializer do
+  # Resolution shape (a), bug: these identifiers omitted their canonical value.
+  it 'serializes the canonical value of an archetype identifier' do
+    archetype_value = 'openEHR-EHR-SECTION.physical_examination.v2'
+    archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: archetype_value)
+
+    archetype_json = JSON.parse(RMJSONSerializer.new(archetype_id).serialize)
+
+    expect(archetype_json['value']).to eq(archetype_value)
+  end
+
+  it 'serializes the canonical value of a terminology identifier' do
+    terminology_value = 'SNOMED-CT(2026)'
+    terminology_id = OpenEHR::RM::Support::Identification::TerminologyID.new(value: terminology_value)
+
+    terminology_json = JSON.parse(RMJSONSerializer.new(terminology_id).serialize)
+
+    expect(terminology_json['value']).to eq(terminology_value)
+  end
+
   it 'serializes a genuine mutual back-reference without recursing forever' do
     first = Object.new
     second = Object.new

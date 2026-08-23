@@ -69,6 +69,7 @@ module OpenEHR
 
           def value=(value)
             if /\A([a-zA-Z]\w+)-([a-zA-Z]\w+)-([a-zA-Z]\w+)\.([a-zA-Z]\w+)(-([a-zA-Z]\w+))?\.(v\d+)\z/ =~ value
+              @value = value
               self.rm_originator = $1
               self.rm_name = $2
               self.rm_entity = $3
@@ -171,6 +172,7 @@ module OpenEHR
 
           def value=(value)
             raise ArgumentError, "value not valid" if value.nil? or value.empty?
+            @value = value
             if /(.*)\((.*)\)/ =~ value
               self.name = $1
               self.version_id = $2

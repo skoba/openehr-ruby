@@ -86,17 +86,35 @@ path never consults `EXCLUDED_IVARS`. Matches the task's own expectation
 
 ## Decision
 
-Mirror #32/PR #39's `ObjectVersionID` pattern exactly, for both classes:
+Mirror #32/PR #39's `ObjectVersionID` pattern for the setters, but **not**
+for the exclusion mechanism:
 
 1. `ArchetypeID#value=` and `TerminologyID#value=` each add `@value = value`
    (storing the canonical string directly; the decomposition stays, since
    `qualified_rm_entity`/`domain_concept`/etc. still need the individual
    fields for their own logic).
-2. Add to `RMJSONSerializer::EXCLUDED_IVARS`: `ArchetypeID`'s
-   `:@rm_originator, :@rm_name, :@rm_entity, :@concept_name,
-   :@specialisation, :@version_id` and `TerminologyID`'s `:@name` (note:
-   `:@version_id` is shared by name with `ArchetypeID`'s own decomposed
-   ivar — one entry covers both, they're the same symbol).
+2. **Correction, found during implementation (not by this plan's original
+   explore)**: a flat, global `RMJSONSerializer::EXCLUDED_IVARS` addition
+   (this plan's original wording) is **unsafe** for `:@name` and
+   `:@version_id` specifically — unlike `ObjectVersionID`'s exclusions
+   (`@root`/`@oid`/etc., which are effectively unique to that class), both
+   symbols collide with genuinely unrelated, legitimate ivars elsewhere:
+   `:@name` is `Locatable#name` (a `DvText`, present on nearly every RM
+   class — `Cluster`, `Element`, `Composition`, ...) via
+   `lib/openehr/rm/common/archetyped.rb:177`, and `:@version_id` is
+   `RevisionHistoryItem#version_id` (`lib/openehr/rm/common/generic.rb:85`).
+   Globally excluding either would have silently dropped those fields from
+   every affected class's serialized output — a real regression, verified
+   both by the implementer (full suite failed under the naive approach) and
+   independently by me (`Cluster#name` dropped to `null` under a manual
+   test of the naive global-exclusion shape). **Fixed shape**: exclusion is
+   now **class-conditional** — `object_value` calls a new
+   `excluded_ivars(value)` method that starts from `EXCLUDED_IVARS` minus
+   the identifier-specific symbols, then adds `ArchetypeID`'s six ivars back
+   only when `value.is_a?(ArchetypeID)`, or `TerminologyID`'s two only when
+   `value.is_a?(TerminologyID)`. Verified independently (`Cluster#name`
+   preserved; `ArchetypeID`/`TerminologyID` still correctly `{_type,
+   value}`-only).
 3. New watchdog spec(s): each identifier class's JSON `value` key
    round-trips, structurally closing off a fourth recurrence in any other
    `ObjectID` subtype the same way #32 intended but didn't generalize.
@@ -132,10 +150,14 @@ workflow)
   internal decomposed fields (rm_originator/rm_name/rm_entity/
   concept_name/specialisation/version_id for ArchetypeID; name/
   version_id for TerminologyID) - the same class of gap #32 fixed for
-  ObjectVersionID, generalized to these two sibling types. Reading back
-  JSON persisted by a prior version of this gem (decomposed keys only,
-  no "value") is unaffected - Factory already reconstructs both types
-  from their individual fields when "value" is absent. (#46)
+  ObjectVersionID, generalized to these two sibling types. The exclusion
+  is scoped to these two classes specifically (not a global ivar
+  exclusion), so unrelated classes with their own :@name or
+  :@version_id ivars (e.g. any Locatable's #name, or
+  RevisionHistoryItem#version_id) are unaffected. Reading back JSON
+  persisted by a prior version of this gem (decomposed keys only, no
+  "value") is unaffected - Factory already reconstructs both types from
+  their individual fields when "value" is absent. (#46)
 ```
 
 ## Acceptance criteria mapping (from the filed issue)

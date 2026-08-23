@@ -4,6 +4,27 @@ require_relative File.dirname(__FILE__) + '/../adl_parser/parser_spec_helper'
 module OpenEHR
   module RM
     describe Factory do
+      describe '.create identifier compatibility' do
+        it 'reconstructs archetype and terminology values from old and new JSON shapes' do
+          old_archetype = Factory.create(
+            'ARCHETYPE_ID',
+            rm_originator: 'openEHR', rm_name: 'EHR', rm_entity: 'SECTION',
+            concept_name: 'physical_examination', specialisation: nil, version_id: 'v2'
+          )
+          new_archetype = Factory.create(
+            'ARCHETYPE_ID', value: 'openEHR-EHR-SECTION.physical_examination.v2'
+          )
+          old_terminology = Factory.create('TERMINOLOGY_ID', name: 'SNOMED-CT', version_id: '2026')
+          new_terminology = Factory.create('TERMINOLOGY_ID', value: 'SNOMED-CT(2026)')
+
+          # regression pin: both persisted decomposed shapes and canonical value-only shapes already read correctly.
+          expect(old_archetype.value).to eq('openEHR-EHR-SECTION.physical_examination.v2')
+          expect(new_archetype.value).to eq('openEHR-EHR-SECTION.physical_examination.v2')
+          expect(old_terminology.value).to eq('SNOMED-CT(2026)')
+          expect(new_terminology.value).to eq('SNOMED-CT(2026)')
+        end
+      end
+
       describe '.params' do
         it 'converts each Hash element of an Array value into an RM object via its _type' do
           result = Factory.params(
