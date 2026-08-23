@@ -1,3 +1,25 @@
+=== 2.4.1 (unreleased)
+Version number is a placeholder, finalized at tag time from the actual
+diff accumulated since 2.4.0 (per this file's own Release convention).
+
+* AQL parser diagnostics: referencing a SELECT alias in a WHERE clause
+  (not supported by AQL) used to fail with a bare "expected a
+  comparison operator, LIKE or MATCHES, got identifier ..." error. When
+  the unexpected identifier matches a known SELECT alias name, the
+  error now appends a "note: '<name>' is a SELECT alias; aliases
+  cannot be used in WHERE -- repeat the identified path" line. No
+  WHERE-clause alias support was added - diagnostics only. (#38)
+* Compatibility note: this changes OpenEHR::AQL::ParseError#message's
+  text in the one alias-collision case above; every other ParseError
+  message is unchanged. An audit of this gem's own specs
+  (spec/lib/openehr/aql/) found zero pre-existing assertions matching
+  a ParseError#message by full string equality - only type checks,
+  regex/substring matches, or #include - so no existing spec needed
+  updating. This PR adds the gem's first full-equality ParseError
+  message assertion, specifically to pin the *unchanged* (non-alias)
+  case. A downstream caller matching this gem's error text by exact
+  string equality is the only audience this note is for.
+
 === 2.4.0
 Bug fix release: RMJSONSerializer <-> CompositionFactory.create_from_json
 roundtrips now work.
