@@ -24,8 +24,18 @@ module OpenEHR
         :@hour, :@minute, :@second, :@fractional_second, # DvTime, DvDateTime
         :@timezone,                                  # DvTime (String), DvDateTime (Timezone)
         :@root, :@extension,                         # UIDBasedID, HierObjectID, ObjectVersionID
-        :@oid, :@creating_system_id, :@version_tree_id # ObjectVersionID
+        :@oid, :@creating_system_id, :@version_tree_id, # ObjectVersionID
+        :@rm_originator, :@rm_name, :@rm_entity,     # ArchetypeID
+        :@concept_name, :@specialisation, :@version_id, # ArchetypeID, TerminologyID
+        :@name                                       # TerminologyID
       ].freeze
+
+      ARCHETYPE_ID_IVARS = [
+        :@rm_originator, :@rm_name, :@rm_entity,
+        :@concept_name, :@specialisation, :@version_id
+      ].freeze
+      TERMINOLOGY_ID_IVARS = [:@name, :@version_id].freeze
+      IDENTIFIER_IVARS = (ARCHETYPE_ID_IVARS + TERMINOLOGY_ID_IVARS).uniq.freeze
 
       def initialize(rm_instance)
         @rm_instance = rm_instance
@@ -55,7 +65,7 @@ module OpenEHR
 
         seen << value
         hash = {'_type' => OpenEHR::RM.type_name_of(value)}
-        (value.instance_variables - EXCLUDED_IVARS).each do |ivar|
+        (value.instance_variables - excluded_ivars(value)).each do |ivar|
           field = value.instance_variable_get(ivar)
           next if field.nil?
 
@@ -63,6 +73,18 @@ module OpenEHR
         end
         seen.delete(value)
         hash
+      end
+
+      def excluded_ivars(value)
+        exclusions = EXCLUDED_IVARS - IDENTIFIER_IVARS
+        case value
+        when OpenEHR::RM::Support::Identification::ArchetypeID
+          exclusions + ARCHETYPE_ID_IVARS
+        when OpenEHR::RM::Support::Identification::TerminologyID
+          exclusions + TERMINOLOGY_ID_IVARS
+        else
+          exclusions
+        end
       end
     end
 
