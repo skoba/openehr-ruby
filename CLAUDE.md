@@ -103,17 +103,34 @@ For any non-trivial change (bug fix, hardening, enhancement):
   claim was directly executed or inferred from other measurements. An
   inference must cite the measurement it rests on, and must never be
   reported as if it were executed.
-- **State-changing git commands confirm their branch first.** Any git command
-  that changes repository state (`commit`, `push`, `reset`, `merge`, etc.)
-  either includes a `cd` to the intended working directory on the same
-  command line, or is preceded by a `pwd` (and, on a multi-branch repo, `git
-  branch --show-current`) check in the same call - don't assume the shell is
-  still where an earlier step left it. (Added 2026-08-23, from an incident in
-  this repo: a docs-only commit intended for `master` landed on a checked-out
-  PR feature branch instead, because the commit command ran without
-  reconfirming which branch was current; caught only because the follow-up
-  `git push origin master` printed the anomalous "Everything up-to-date"
-  instead of an expected ref update.)
+- **Repository-context-dependent commands confirm their target explicitly.**
+  A command whose target (repository, branch, or resumed session) is decided
+  by ambient state - cwd, current branch, or session history - rather than an
+  explicit argument, must have that target pinned before it runs; never
+  assume the shell or session is still where an earlier step left it.
+  - If the tool has an explicit target option, always use it: `git` takes a
+    `cd` to the intended directory on the same command line (or `-C <path>`);
+    `gh` takes `-R <owner>/<repo>` (or `--repo`) on every invocation.
+  - If the tool has no such option (e.g. `codex exec`, `codex exec resume`),
+    print `pwd` immediately before the call and confirm it names the intended
+    repository first.
+  - Before adopting a new repository-context-dependent command for the first
+    time, decide how this principle applies to it before using it.
+
+  (Generalized 2026-08-24, consolidating this repo's prior narrower
+  branch-confirmation rule with `openehr-rails`'s repository-boundary rule,
+  after a third incident of the same class surfaced the need for one shared
+  principle covering non-git tools too. Three incidents on record: (1) this
+  repo, 2026-08-23 - a docs-only commit intended for `master` landed on a
+  checked-out PR feature branch instead, caught only because the follow-up
+  `git push origin master` printed an anomalous "Everything up-to-date"; (2)
+  `openehr-rails`, 2026-08-22 - a mistaken `checkout`/`pull` ran against the
+  wrong repo, caught and self-reported immediately; (3) `anlage`, 2026-08-24 -
+  `codex exec resume --last`, run after cwd had silently drifted back to this
+  repo, resumed an unrelated stale session in the wrong repo instead of the
+  intended one; Codex itself detected the mismatch and made no changes, so
+  there was no lasting effect, but the near-miss is what prompted this
+  generalization.)
 
 ## Release convention
 

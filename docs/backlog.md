@@ -4,6 +4,31 @@ Non-blocking follow-ups noted during work on the upstream sprint queue. Not sche
 pick up when the relevant gate opens or when convenient alongside other work in the same
 area. No code changes accompany entries here — this file is a record only.
 
+## Session isolation: one worktree/session per repo (permanent fix, elevated priority)
+
+**New entry (2026-08-24)** — no prior record of this item was found in this
+repo's, `openehr-rails`'s, or `anlage`'s `docs/backlog.md` before this write;
+recording it here now as the first record, not as a priority update to an
+existing one.
+
+**Priority: elevated after a third incident of the same class. Top priority
+for environment setup once the current freeze work is past** (see
+`CLAUDE.md`'s "Repository-context-dependent commands confirm their target
+explicitly" rule for the incident log this responds to). The per-command
+discipline (`cd`/`-C`/`-R`/`pwd`-before-call) is a mitigation, not a fix — it
+depends on remembering to apply it every time, and has already failed to
+prevent all three incidents it was retrofitted after. The structural fix is
+to stop running one session against a cwd that drifts between multiple
+repositories at all: give each repository its own persistent worktree/session
+(one Claude Code session per repo, each with a cwd that never changes),
+rather than one session `cd`-ing between `openehr-ruby`, `openehr-rails`, and
+`anlage` and relying on per-command vigilance to keep track of where it is.
+Scope of the design work when picked up: how session-per-repo affects
+cross-repo tasks that currently rely on a single session's shared context
+(e.g. this file's own "layer discipline" cross-references), and whether the
+`Agent` tool's `isolation: "worktree"` option is a workable building block or
+whether this needs a different mechanism entirely.
+
 ## CI status (verified, not a follow-up item)
 
 CI (`.github/workflows/ci.yml`, `rspec` matrix on Ruby 3.3/3.4/4.0 + `rubocop`) is
