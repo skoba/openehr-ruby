@@ -117,3 +117,11 @@ criteria mapping. One open question carried to gate 1: confirm
 `OperationalTemplate` over a synthetic fixture for Cycle 2's reproduction.
 
 **Gate 1 due next**: plan + §8 draft (R2) submitted together in one message.
+
+## R5 — Gate 1 approved; Part 2 executed
+
+§8 draft filed: [#43](https://github.com/skoba/openehr-ruby/issues/43)
+(`Archetype#physical_paths`/`#logical_paths` drop an embedded
+C_ARCHETYPE_ROOT's own node_id bracket), labels `bug`,`parser` — first
+application of the new `bug_report.md` template (Part 1). Confirmed
+fence-balanced (10 `` ``` `` lines = 5 pairs) before filing.
