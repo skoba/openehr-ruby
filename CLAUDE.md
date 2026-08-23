@@ -77,6 +77,17 @@ For any non-trivial change (bug fix, hardening, enhancement):
   claim was directly executed or inferred from other measurements. An
   inference must cite the measurement it rests on, and must never be
   reported as if it were executed.
+- **State-changing git commands confirm their branch first.** Any git command
+  that changes repository state (`commit`, `push`, `reset`, `merge`, etc.)
+  either includes a `cd` to the intended working directory on the same
+  command line, or is preceded by a `pwd` (and, on a multi-branch repo, `git
+  branch --show-current`) check in the same call - don't assume the shell is
+  still where an earlier step left it. (Added 2026-08-23, from an incident in
+  this repo: a docs-only commit intended for `master` landed on a checked-out
+  PR feature branch instead, because the commit command ran without
+  reconfirming which branch was current; caught only because the follow-up
+  `git push origin master` printed the anomalous "Everything up-to-date"
+  instead of an expected ref update.)
 
 ## Release convention
 
