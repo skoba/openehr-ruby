@@ -26,6 +26,16 @@ now also stale — `openehr-rails`'s `master` has both `.github/workflows/ci.yml
 (confirmed via `gh run list` in that repo). Actual run-by-run verification of that CI is
 being tracked in `openehr-rails`'s own `docs/backlog.md`, not duplicated here.
 
+**Action version bump (2026-08-23)**: `actions/checkout` bumped `v4` → `v7` in
+`.github/workflows/ci.yml` (PR #42) to clear a "Node.js 20 is deprecated" warning that
+every job in PR #41's run (`32610536000`) logged. Confirmed fixed, not just green, on
+PR #42's own run `32610802034` — `grep -ci` across its full log for the warning text
+returns 0. `ruby/setup-ruby@v1` was left unchanged; its `action.yml` already declares
+`using: node24`, matching the fact that it was never named in the warning. `openehr-rails`
+likely has the same class of warning in its own `ci.yml`/`release.yml` — not checked here;
+that repo's own session owns verifying and fixing its own workflow files (repository
+boundary rule, `CLAUDE.md`), not duplicated in this repo's tracking.
+
 ## From #6a investigation (C_CODE_REFERENCE parse crash, 2026-08-22)
 
 - **Parser error-handling asymmetry (`XMLArchetypeParser` vs `OPTParser`)**: while
