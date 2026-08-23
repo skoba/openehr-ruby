@@ -256,3 +256,58 @@ Semver: patch placeholder, same class as #40 - confirmed at Step 6.
 **Gate 1 due next**: plan submitted for approval (issue already filed per
 this task's own Step 2 instruction - not held for gate approval like §8's
 draft was in the prior batch).
+
+## R10 — Step 3: #46 implemented, #45/#46 reconciled, PR #47 merged, v2.4.2 tagged
+
+**#45/#46 reconciliation**: #46's body edited to add a credit line for #45
+as the first (ArchetypeID-only) report, and to note #46's explore resolved
+#45's own open triage question (additive-fix vs. exclude-decomposed-ivars)
+in favor of the latter, matching #32/PR #39's precedent. #45 closed with a
+comment cross-referencing #46.
+
+**Implementation**: Codex ran all 5 cycles (background, resumed once after
+a tool timeout). **Important correction found mid-implementation, not by
+this plan's original explore**: a flat, global `EXCLUDED_IVARS` addition
+(the plan's original proposal, mirroring #32's exact mechanism) is unsafe
+for `:@name`/`:@version_id` specifically - both collide with genuinely
+unrelated, legitimate ivars (`Locatable#name`, present on nearly every RM
+class; `RevisionHistoryItem#version_id`). A naive global exclusion would
+have silently dropped those fields from every affected class's output.
+Fixed shape: `RMJSONSerializer#object_value` now calls a class-conditional
+`excluded_ivars(value)`. Verified independently, twice: full suite run,
+and a manual script confirming `Cluster#name` is preserved after the fix
+(and would have been wrongly dropped to `null` under the naive shape).
+Plan doc corrected to reflect this before committing (`git branch
+--show-current` confirmed `master` was never touched mid-fix - all work
+stayed on `fix/46-archetype-terminology-id-value`).
+
+Committed with both `Implemented-by: Codex` and `Restructured-by: Claude
+Code` trailers (the commit mixes Codex's delivered diff with my own
+History.txt/plan-doc additions). Pushed, PR
+[#47](https://github.com/skoba/openehr-ruby/pull/47) opened (`Fixes #46`,
+`Related: #45, #32, PR #39`). All 4 CI jobs green (run `32622172656`).
+
+## R11 — Step 6 inventory (v2.4.1..master) and release
+
+4 commits since `v2.4.1`: three docs-only (`59f5948`, `85a2bea`,
+`280676d`) classify neutral; `a7f4346` (#46's fix, `identification.rb` +
+`rm_json_serializer.rb`) touches shipped runtime code → **patch**.
+
+**Version: 2.4.2, patch** - confirmed by the actual diff (exactly one
+runtime-touching commit, an observable-but-corrective fix, no API/
+dependency change).
+
+Post-merge: `bundle exec rspec` → 3973 examples, 0 failures. `#46` and
+`#45` both closed. `History.txt` finalized, `lib/openehr/version.rb`
+bumped `2.4.1` → `2.4.2` (`4ffd57b`). Tagged and pushed:
+`4ffd57b3d9c0ce5af2577e3825a01b3e5e88563f`. `bundle exec rake build` →
+`pkg/openehr-2.4.2.gem`, sha256
+`91556d3a7f9a105634d981de33f66e1427a2fc9efc4ee4e136d97d19f6586948`.
+`gem push` left to the user, per the standing checksum-verification rule.
+
+**Anlage への含意**: 2.4.2 への bump で `skoba/anlage#9` を無シムで再開できます
+（`ArchetypeID`/`TerminologyID` の `value` キー欠落が解消済み）。#38（AQL
+別名ヒント）の再確認は、この bump 作業の中で anlage 側が実施する想定
+（このリポジトリ側では実施しない）。
+
+openehr-ruby returns to dormant.
