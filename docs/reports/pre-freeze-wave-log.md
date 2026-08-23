@@ -125,3 +125,64 @@ criteria mapping. One open question carried to gate 1: confirm
 C_ARCHETYPE_ROOT's own node_id bracket), labels `bug`,`parser` — first
 application of the new `bug_report.md` template (Part 1). Confirmed
 fence-balanced (10 `` ``` `` lines = 5 pairs) before filing.
+
+## R6 — Part 4: #40 implemented, PR #44 open, CI green
+
+Codex ran all 5 cycles (background, resumed once after a tool timeout).
+Diff matches the plan exactly: `object_value` gains `seen.delete(value)`
+before returning; two specs added (inline synthetic regression pin +
+real-`OperationalTemplate` red-then-green). Independently re-verified:
+`bundle exec rspec spec/lib/openehr/serializer/rm_json_serializer_spec.rb`
+(11/0), full suite (3970/0), `rubocop` on touched files (0 offenses).
+`History.txt`'s 2.4.1 unreleased section got #40's entry, added at merge
+time per this repo's own rule. Committed with `Implemented-by: Codex`,
+pushed, PR [#44](https://github.com/skoba/openehr-ruby/pull/44) opened
+(`Fixes #40`, `Related: #43`). All 4 CI jobs green
+(run `32618969257`).
+
+Before committing, corrected two internal inconsistencies found in the plan
+doc itself (Cycle numbering had "Cycle 0" vs the canonical "Cycle 2" for the
+same spec in different paragraphs; added the fixture-taxonomy scope note
+for the inline synthetic cycle object) — see `fe2ca2d` on
+`fix/40-seen-guard-aliasing`.
+
+## R7 — Step 6 inventory (v2.4.0..master, PR #44 not yet merged)
+
+13 commits since `v2.4.0`, classified by actual diff content (not
+category-guessing):
+
+| Commit | Touches | Class |
+|---|---|---|
+| `9c296c8` | `docs/backlog.md`, `docs/design/*.md` | neutral |
+| `cde795c` | `CLAUDE.md` | neutral |
+| `bb2a5ec` | `docs/design/*.md` | neutral |
+| `dfb4f2a` | `lib/openehr/aql/{errors,parser}.rb` (+ spec) | **patch** (#38) |
+| `0682d0e` | `History.txt` | neutral |
+| `142f273` | `CLAUDE.md` | neutral |
+| `4ca4950` | `docs/backlog.md` | neutral |
+| `97eb2f4` | `CLAUDE.md` | neutral |
+| `0c203af` | `.github/workflows/ci.yml` | neutral (CI config) |
+| `7633117` | `docs/backlog.md` | neutral |
+| `00c394d` | `.github/ISSUE_TEMPLATE/*`, `CLAUDE.md` | neutral (#35) |
+| `0ee7489` | `docs/reports/*.md` | neutral |
+| `96fc01e` | `docs/reports/*.md` | neutral |
+
+Plus PR #44 (pending merge): `lib/openehr/serializer/rm_json_serializer.rb`
+(+ spec, `History.txt`) → **patch** (#40).
+
+`#43` (§8) is issue-only — no code change, no diff entry, deferred to the
+next round. `#35` shipped as docs/templates only, correctly neutral despite
+being a governance change (matches the Release convention's own test:
+runtime/public-API/install-dependency surface, which issue templates and
+CLAUDE.md prose don't touch).
+
+**Version proposal: 2.4.1, patch.** Exactly two commits touch shipped
+runtime code across the whole range (`dfb4f2a` for #38, plus PR #44's
+commit for #40 once merged) - both are genuine, observable behavior fixes
+(diagnostic-message addition, aliasing-serialization correction), neither
+adds/changes public API surface or install-time dependencies. No minor- or
+major-triggering change exists in the range. This confirms, not just
+carries forward, the "2.4.1 patch" placeholder from the task instruction.
+
+**Gate 2 due next**: PR #44 merge approval + this inventory + version
+proposal + release report, in one message.
