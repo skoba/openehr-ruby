@@ -218,3 +218,41 @@ proposal + release report, in one message.
 #36 (STRICT-mode discussion), #43 (CObject#path bracket, round 2) - three
 versioned backlog items plus one discussion issue. #35/#38/#40 closed this
 batch. openehr-ruby returns to dormant.
+
+## R9 — Short reawakening: #46 (ArchetypeID/TerminologyID value fix, → 2.4.2)
+
+**Explore (real source, empirical)**: `ArchetypeID#value=` and
+`TerminologyID#value=` (`lib/openehr/rm/support/identification.rb`) both
+override `value=` without calling `super`, exactly matching
+`ObjectVersionID`'s pre-PR#39 pathology - confirmed by tracing the code and
+reproducing live (`bundle exec ruby -e '...'`: serialized `ArchetypeID`
+JSON has no `"value"` key, only the 6 decomposed fields; same for
+`TerminologyID`'s 2 fields). Exhaustive sweep (`grep -rln 'def value='`
+across `lib/openehr/rm/` and `lib/openehr/am/`, all 11 files' methods read)
+confirms these are the **only two** other classes with this exact
+pathology - everything else already stores `@value` directly or via
+`super`. `VersionTreeID`'s related-but-different quirk (getter
+side-effects `@value` on every call, tolerated on read via
+`KNOWN_DERIVED_CACHE_TYPES`) is considered and explicitly ruled out of
+scope - it doesn't need a `value` key for its own canonical shape.
+Watchdog gap confirmed: `archetype_id_spec.rb` asserts the Ruby-level
+`.value` getter extensively but never serializes through
+`RMJSONSerializer`; `factory_spec.rb` only asserts `instance_of`.
+Read-back compatibility empirically verified: both old-shape
+(decomposed-only, today's actual output) and new-shape (`value`-only) JSON
+already round-trip correctly via `Factory.create` for both types,
+unaffected by the fix either way.
+
+**Filed**: [#46](https://github.com/skoba/openehr-ruby/issues/46)
+(`bug_report.md` template), labels `bug`,`serializer`.
+
+**Plan**: `docs/design/fix-archetype-terminology-id-value-plan.md`, on
+branch `fix/46-archetype-terminology-id-value` (pushed). Decision mirrors
+PR #39's `ObjectVersionID` pattern exactly. 5-cycle TDD plan; Cycle 3 is a
+regression pin (read-back correctness is already true today), not staged
+red - same discipline as #40's Cycle 1 and #38's `Fixes #35` rule.
+Semver: patch placeholder, same class as #40 - confirmed at Step 6.
+
+**Gate 1 due next**: plan submitted for approval (issue already filed per
+this task's own Step 2 instruction - not held for gate approval like §8's
+draft was in the prior batch).
