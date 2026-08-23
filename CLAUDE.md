@@ -67,6 +67,16 @@ For any non-trivial change (bug fix, hardening, enhancement):
   went unverified once tends to get repeated, not corrected, if the next
   write also skips checking (e.g. "CI is unconfigured" repeated across two
   turns before anyone ran `gh run list`).
+- **Repository boundary.** This session's work is scoped to this repository
+  only. `cd` into another repository, or any read or execution there,
+  requires the prompt to explicitly instruct crossing that boundary - and
+  every such command's report must state the target repository (`pwd`/`git
+  remote -v`) per command. If a prompt references something that doesn't
+  exist in this repository, stop and ask before executing.
+- **Distinguish executed from inferred.** State plainly in reports whether a
+  claim was directly executed or inferred from other measurements. An
+  inference must cite the measurement it rests on, and must never be
+  reported as if it were executed.
 
 ## Release convention
 
