@@ -186,3 +186,35 @@ carries forward, the "2.4.1 patch" placeholder from the task instruction.
 
 **Gate 2 due next**: PR #44 merge approval + this inventory + version
 proposal + release report, in one message.
+
+## R8 — Gate 2 executed: PR #44 merged, v2.4.1 tagged and built
+
+1. `gh pr merge 44 --rebase --delete-branch` — merged (`0abb63a`), remote
+   branch auto-deleted.
+2. Post-merge on master: `bundle exec rspec` → 3970 examples, 0 failures.
+   `#40` auto-closed (`closed_at: 2026-08-23T04:58:08Z`). `#43`'s
+   cross-reference from PR #44 confirmed present via the issue timeline API.
+3. `History.txt`'s `2.4.1` section finalized (dropped the "(unreleased)"
+   placeholder header/sentence, added a one-line release summary matching
+   this file's existing style). `lib/openehr/version.rb` bumped
+   `2.4.0` → `2.4.1` in a dedicated "Release: bump version" commit
+   (`6cb8605`), matching this repo's pre-session precedent for that
+   commit shape. Tagged `v2.4.1` (annotated), pushed:
+   `6cb8605627a0b4d0d9182e16906a021f6ed7e997`.
+4. `bundle exec rake build` →
+   `pkg/openehr-2.4.1.gem`, sha256
+   `70c1949a87beaa4cb8bdfb9bca4a1c2c9af2e93e283c70d9cddbaad8996c8f6c`.
+   `gem push` intentionally not run — stays the user's own action, after
+   independently verifying this checksum (standing rule).
+5. Local branch hygiene: deleted `ci/update-action-versions` and
+   `docs/ticket-driven-workflow` (both fully content-merged into master,
+   verified via `git diff <branch> master` before deleting the latter,
+   which cherry-pick had made unrecognizable to git's own merged-branch
+   check). `origin/ci/update-action-versions` still exists remotely
+   (PR #42 was merged directly, not via `gh pr merge --delete-branch`) -
+   left as-is, minor housekeeping not requested this round.
+
+**Final OPEN-issue shape, as expected**: #31 (term_bindings, round 2),
+#36 (STRICT-mode discussion), #43 (CObject#path bracket, round 2) - three
+versioned backlog items plus one discussion issue. #35/#38/#40 closed this
+batch. openehr-ruby returns to dormant.
