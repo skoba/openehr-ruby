@@ -1,6 +1,6 @@
-=== 2.4.2 (unreleased)
-Version number is a placeholder, finalized at tag time from the actual
-diff accumulated since 2.4.1 (per this file's own Release convention).
+=== 2.4.2
+Bug fix release: ArchetypeID and TerminologyID round-trip through
+canonical JSON correctly again.
 
 * RMJSONSerializer now emits the canonical "value" key for ArchetypeID
   and TerminologyID (both OBJECT_ID subtypes) instead of only their
