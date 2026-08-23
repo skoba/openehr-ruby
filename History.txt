@@ -19,6 +19,19 @@ diff accumulated since 2.4.0 (per this file's own Release convention).
   message assertion, specifically to pin the *unchanged* (non-alias)
   case. A downstream caller matching this gem's error text by exact
   string equality is the only audience this note is for.
+* RMJSONSerializer's cycle guard now only treats an object as "seen"
+  while it's actively being recursed into (pushed on entry, popped on
+  exit) rather than permanently once first encountered. Two different
+  attributes on the same object that alias the same sub-object (e.g.
+  OperationalTemplate#template_id=, which sets both template_id and
+  archetype_id to the identical object) now both serialize that
+  sub-object's real value; previously the second occurrence silently
+  serialized as null. Genuine cycles (e.g. PATHABLE's @parent, already
+  excluded from traversal separately) are still caught correctly -
+  this only narrows what counts as "seen", it does not remove the
+  guard. Observable change: any output containing a previously-nulled
+  aliased attribute will now contain that attribute's real value
+  instead. (#40)
 
 === 2.4.0
 Bug fix release: RMJSONSerializer <-> CompositionFactory.create_from_json
