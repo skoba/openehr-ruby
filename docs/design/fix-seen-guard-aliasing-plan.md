@@ -44,9 +44,13 @@ RM/AOM object graph — both families that could form one are already
 excluded. A stack-based guard's true-cycle-catching behavior therefore
 cannot be exercised against any *real* class today; it would be
 defense-in-depth for a case that isn't presently live, not a fix for an
-observable gap. **Cycle 2 below must use a synthetic object graph** — no
-real artifact can demonstrate a currently-reachable cycle (four-kind
-fixture taxonomy: synthetic, design authority = this plan's finding (a)).
+observable gap. **Cycle 1 below builds its own minimal cyclic object graph
+inline in the spec** — no real artifact can demonstrate a currently-reachable
+cycle. This is a plain Ruby object pair wired directly in the spec body, not
+a fixture file, so it falls **outside** the four-kind fixture taxonomy (that
+classification, and its leading-comment requirement, applies to fixture
+*files* under `spec/fixtures/`-style paths — an inline test double built and
+discarded within one spec has no such file, and needs no kind label).
 
 ### (b) Other aliasing cases beyond `ObjectVersionID`
 
@@ -101,10 +105,11 @@ already-tested RM/AM class that reproduces this bug today, unmasked. Per
 this repo's fixture taxonomy ("real/reduced are preferred by default;
 synthetic is only for structural test cases whose reproduction conditions
 can't be controlled with a real artifact") — **recommending `OperationalTemplate`
-as Cycle 0's real reproduction case instead of a synthetic double-reference
+as Cycle 2's real reproduction case instead of a synthetic double-reference
 fixture.** Flagged as the one substantive decision point for gate approval
-below; a synthetic fixture is only needed for Cycle 2 (the true-cycle
-regression pin), not for Cycle 0.
+below; a synthetic (inline, not a fixture file — see finding (a)) object
+graph is only needed for Cycle 1 (the true-cycle regression pin), not for
+Cycle 2.
 
 ### (c) Impact scope of the in-progress-stack fix
 
@@ -135,14 +140,15 @@ at all — `@parent` is filtered out of `instance_variables` by
 purely via exclusion, never reaching the `seen.include?` check for that
 link. Confirms (again, independently of finding (a)) that no existing spec
 provides real coverage of the guard's cycle-catching behavior — which is
-exactly why Cycle 2 below has to be new and synthetic, not a
-straightforward "make sure the existing spec stays green" check.
+exactly why Cycle 1 below has to be new (though not red — see its own
+entry), not a straightforward "make sure the existing spec stays green"
+check.
 
 ## Decision
 
 Implement the push-on-enter/pop-on-exit shape in `object_value`. No change
 to `EXCLUDED_IVARS` — `OperationalTemplate`'s aliasing being *observable*
-(not masked) is what makes it usable as Cycle 0's red spec; excluding it
+(not masked) is what makes it usable as Cycle 2's red spec; excluding it
 would defeat that.
 
 ## TDD cycles (t-wada; issue #40 is labeled `bug` → resolution shape (a),
