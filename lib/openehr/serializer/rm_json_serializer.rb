@@ -61,6 +61,7 @@ module OpenEHR
 
           hash[ivar.to_s.delete_prefix('@')] = to_value(field, seen)
         end
+        seen.delete(value)
         hash
       end
     end

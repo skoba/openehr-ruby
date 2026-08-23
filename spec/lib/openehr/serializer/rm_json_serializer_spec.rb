@@ -9,6 +9,34 @@ include OpenEHR::AM::Archetype::ConstraintModel
 include OpenEHR::AssumedLibraryTypes
 
 describe RMJSONSerializer do
+  it 'serializes a genuine mutual back-reference without recursing forever' do
+    first = Object.new
+    second = Object.new
+    first.instance_variable_set(:@other, second)
+    second.instance_variable_set(:@other, first)
+
+    result = nil
+    expect { result = JSON.parse(RMJSONSerializer.new(first).serialize) }.not_to raise_error
+    # regression pin: true cycles resolve to nil at the cyclic link.
+    expect(result.dig('other', 'other')).to be_nil
+  end
+
+  # Resolution shape (a), bug: the aliased archetype_id reproduced null before the fix.
+  it 'serializes both identifiers aliased by an operational template' do
+    template_id = OpenEHR::RM::Support::Identification::TemplateID.new(value: 'example.template.v1')
+    template = OpenEHR::AM::Template::OperationalTemplate.new(
+      template_id: template_id,
+      original_language: Object.new,
+      description: Object.new,
+      definition: Object.new,
+      ontology: Object.new
+    )
+
+    result = JSON.parse(RMJSONSerializer.new(template).serialize)
+    expect(result['archetype_id']).not_to be_nil
+    expect(result['archetype_id']).to eq(result['template_id'])
+  end
+
   it 'round-trips the health summary composition through canonical JSON' do
     json = File.read(File.expand_path('../../../fixtures/health_summary_composition.json', __dir__))
     composition = OpenEHR::RM::CompositionFactory.create_from_json(json)
