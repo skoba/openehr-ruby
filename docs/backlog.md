@@ -70,3 +70,17 @@ being tracked in `openehr-rails`'s own `docs/backlog.md`, not duplicated here.
   `CLAUDE.md`'s four-kind fixture taxonomy) — `ObjectVersionID`, this bug's original
   real-world trigger, stopped being usable as one once #32 excluded its `root`/`oid`
   pair from serialized output entirely.
+
+## #31 (OPTParser drops `term_bindings`)
+
+- WP2 実装知見を追記済み
+  ([comment](https://github.com/skoba/openehr-ruby/issues/31#issuecomment-5383687600),
+  anlage `skoba/anlage#8`)。実装着手は凍結後の第2巡。
+
+## anlage upstream-candidates.md §8 (unfiled, independent of #31)
+
+- anlage 台帳§8参照（`Archetype::ConstraintModel::CObject#path`が埋め込み
+  C_ARCHETYPE_ROOT自身のnode_idブラケットを欠落させる）。第2巡の起票候補。
+  #31 とは別問題（#31 のコメント作成時、根拠調査で同一起源かを確認し、
+  混同を排除済み — 本件はパス文字列構築のバグで、#31の用語スコープ
+  解決とは無関係）。anlage 側台帳の改変はしない（境界規約）。
