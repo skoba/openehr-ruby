@@ -119,3 +119,18 @@ boundary rule, `CLAUDE.md`), not duplicated in this repo's tracking.
   #31 とは別問題（#31 のコメント作成時、根拠調査で同一起源かを確認し、
   混同を排除済み — 本件はパス文字列構築のバグで、#31の用語スコープ
   解決とは無関係）。anlage 側台帳の改変はしない（境界規約）。
+
+## Round 2 magazine (第2巡マガジン — 仮置き優先順, 2026-08-25)
+
+凍結明け第2巡の実施順マガジン（**仮置き** — 着手時に見直す）。1行1項目・根拠付き。
+上掲の既存2エントリ（`## #31` および `## anlage upstream-candidates.md §8` — 後者は
+その後 #43 として起票済み、`docs/reports/pre-freeze-wave-log.md` 参照）は、本マガジンの
+同格1位行・3位行として反映済み（エントリ自体は履歴として残置）。
+
+| 順 | 項目 | 根拠 |
+| --- | --- | --- |
+| 1（同格） | **#48** — AQL `events/time` 到達不能（events/time バグ、anlage 台帳11項） | 公開後（openehr 2.4.2 は rubygems 公開済み、`pre-freeze-wave-log.md` R12）に外部利用者が最初に踏む基本欠落。OBSERVATION のイベント時刻での期間 WHERE が一切不可 — `Event` の `path_attribute :data, :state`（`history.rb:53`）に `time` が無く、`ALLOWED_TERMINAL_HOPS = %w[magnitude name value]`（`path_evaluator.rb:23`）にも無いため Pathable/terminal 両経路から漏れ、代替終端ホップが存在しない（「10項より制約が強い」という台帳自身の優先度判断どおり）。reader は既存（`attr_reader :time`、`history.rb:51`）のため、whitelist 追加だけで `public_send` は通る。 |
+| 1（同格） | **#31** — OPTParser drops `term_bindings`（enhancement/parser） | **撤去カスケードの起点**。迂回保有者は2箇所: (a) anlage `Opt::PathcardExtractor#extract_code_bindings` — `Opt::SafeParser.safe_document` での生XML再解析（wp2-plan.md の**経路2**。#31 はその差し替え候補）、(b) openehr-rails `OpenehrRails::Opt::Parser#populate_term_bindings!`（マージ済み PR skoba/openehr-rails#31 = **参照実装**）。(b) は nil-guard（`next if terminology.term_bindings`）により上流修正がスロットを埋めた瞬間に自動 no-op 化し、撤去は2メソッド削除で完了。WP2 実装知見は issue コメントに追記済み（上掲 `## #31` エントリ参照）。 |
+| 3 | **#43** — embedded `C_ARCHETYPE_ROOT` の `[node_id]` ブラケット欠落（bug/parser） | 根本原因は issue 上で確認済み（`xml_constraint_parsing.rb:18-29` の `c_archetype_root` に `c_complex_object` 相当のブラケット付与が無い）、修正形も記載済み。issue の Timing 節どおり第2巡実装。着手前に explore→plan 1巡（`XMLArchetypeParser` 共有ディスパッチの確認）が必要。設計議論2件より先、外部実需直撃の同格1位2件より後。 |
+| 4 | **#49** — AQL `defining_code`/`code_string` 到達不能（enhancement 扱い妥当、anlage 台帳10項） | **設計議論**。`ALLOWED_TERMINAL_HOPS` は「Expand only when a real query needs another one」（`path_evaluator.rb:20-22`）の意図的スコープ限定で、記録上の根拠は "no arbitrary send"（導入コミット fa6f6c4）— 拡張方針の合意が実装に先行。代替パス（`value/value` ラベル一致）が存在するぶん #48 より低順位（台帳の判断どおり）。初の具体的実需例あり（anlage q20: 診断確度 at0074 のコード値 WHERE — issue に Use case として引用済み、`pathcards_eval_seed.yml`）。 |
+| 5 | **#36** — STRICT-mode XML parsing（enhancement/parser） | **設計議論**（3案: STRICT 既定化／opt-in〔#33 の no-override 設計と緊張〕／低優先で保留）。STRICT 既定化は openehr-rails `spec/templates/lab_result_report_reduced.opt`（XML コメント内の `--` エムダッシュ＝不正な二重ハイフン）の fixture 修正に依存 — 依存先が他リポジトリのため最後尾。 |
