@@ -13,7 +13,9 @@ assignees: ''
 ## Environment
 
 <!-- Gem version (`openehr -v` or your Gemfile.lock), Ruby version, and any
-     directly relevant dependency versions (e.g. nokogiri). -->
+     directly relevant dependency versions (e.g. nokogiri). If the report
+     involves an OPT/ADL file: the generating tool and its version
+     (e.g. Better Archetype Designer / Ocean Template Designer 2.6). -->
 
 ## Reproduction
 
