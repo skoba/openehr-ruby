@@ -47,6 +47,20 @@ For any non-trivial change (bug fix, hardening, enhancement):
   behavior; do not guess at API shapes or call chains. Write the plan down
   (e.g. under `docs/design/`) before writing code, and get it approved
   before implementing.
+- **A plan that adds names to a global namespace must include, as a
+  mandatory explore item, a collision sweep of every added name across all
+  classes.** "Global namespace" here means any cross-class registry an
+  added name enters — an exclusion/allow list, reserved keys, and the like
+  (e.g. a serializer's excluded-ivar list, the AQL evaluator's
+  allowed-attribute whitelist). Before approval, enumerate where else each
+  name legitimately occurs (`grep` across `lib/`) and state how the change
+  avoids capturing those. (Added 2026-08-25; worked example: #46's plan
+  proposed a flat global `EXCLUDED_IVARS` addition of `:@name`/
+  `:@version_id`, which would have silently dropped `Locatable#name` and
+  `RevisionHistoryItem#version_id` from every affected class's serialized
+  output — caught only when the full suite failed during implementation;
+  the shipped fix scoped the exclusion per-class instead. See PR #47's
+  "Important correction found during implementation".)
 - **Fixtures fall into four kinds; each fixture's leading comment must say
   which kind it is** (imported from openehr-rails' `CLAUDE.md`, which
   codified this first):
