@@ -87,5 +87,26 @@ order: #48 and #31 tied at 1st, #43 at 3rd, #49 at 4th, #36 at 5th — with
 
 ## R5 — Push + CI
 
-(recorded after push, same after-the-fact convention as
-`pre-freeze-wave-log.md` R12)
+Three commits pushed to `origin/master` (fast-forward, `3a1843d..a695efa`):
+
+- `42db933` — docs: file AQL round-2 issues (#48, #49); add Round 2
+  magazine to backlog
+- `e98248e` — docs: require collision sweep for global-namespace
+  additions
+- `a695efa` — docs: ask for OPT/ADL generator tool/version in
+  bug_report template
+
+CI run `32832899623` (triggered by the `a695efa` push) — all 4 jobs
+green: RuboCop (23s), RSpec Ruby 3.4 (1m50s), RSpec Ruby 3.3 (1m37s),
+RSpec Ruby 4.0 (1m38s). Confirmed via `gh run watch --exit-status`
+(exit 0), not just "present" — same verification bar as
+`docs/backlog.md`'s CI status entry.
+
+All three commits are docs/CLAUDE.md/.github-only (`git show --stat`
+confirms no `lib/`/`spec/` files touched) — semver neutral, no
+`History.txt` entry needed, matching this repo's established docs-only
+commit convention.
+
+Task complete. Filed: `skoba/openehr-ruby#48` (bug, EVENT.time),
+`skoba/openehr-ruby#49` (enhancement, defining_code/code_string).
+Returning to dormant.
