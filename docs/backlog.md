@@ -29,6 +29,12 @@ cross-repo tasks that currently rely on a single session's shared context
 `Agent` tool's `isolation: "worktree"` option is a workable building block or
 whether this needs a different mechanism entirely.
 
+**傍証（2026-08-27 実測）**: 開発機移行の検収バッチで、同一マシン上の Claude Code セッション3本が同時に稼働し、うち2本が同じバッチの同じ項目に着手していたことを `ps` で実測した（`--add-dir` の構成も同一）。実害も観測している: (a) 同じ検収 R1 を2セッションが別々に書き、片方の草稿が破棄された、(b) `docs/backlog.md` と `CLAUDE.md` の同一項目を2セッションが並行して書いた（`451aebe`・`c9e5576` は他セッション側の着地）、(c) 並行負荷により anlage の system spec が偽陰性になり、その調査に両セッションの工数が二重に投じられた（`skoba/anlage#18`）。cwd ドリフト対策としてだけでなく、**同一リポジトリへの同時書き込みの排除**という観点でも恒久策が要ることの傍証として記録する。
+
+## Sushi（`fsh-sushi`）の版更新 3.20 系（2026-08-27 記録）
+
+検収で固定した測定器の版は `fsh-sushi@3.16.0`。検収バッチ中に版指定なしの `npm install -g fsh-sushi` が最新の **3.20.1** を取得して一度上書きし、約3分後に 3.16.0 へ再固定された（`~/.npm/_logs/` 実測、`docs/reports/machine-migration-log.md` R2）。3.20 系への更新は、FSH 検証の出力（Sushi のエラー件数・診断メッセージ）を動かしうるため単独では判断しない。**12月の世界公開準備の時点で、`docs/design/fsh-plan.md` の検証系への影響を確認した上で一括判断する**。それまでは 3.16.0 固定を維持し、FSH 検証を実行する報告には毎回 `sushi --version` の実測値を含める。
+
 ## CI status (verified, not a follow-up item)
 
 CI (`.github/workflows/ci.yml`, `rspec` matrix on Ruby 3.3/3.4/4.0 + `rubocop`) is

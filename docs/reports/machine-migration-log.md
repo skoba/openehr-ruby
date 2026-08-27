@@ -302,3 +302,88 @@ Step 2-4 の受入条件「全 suite いずれも 0 failures」を **anlage が�
 
 → **損失なし**。残る乖離は本機固有の環境事象（D3・D4・D5・D6）と、
 タスク側の期待値の更新漏れ（D1・D2）、および既存の設定事項（D7）に分類される。
+
+---
+
+## R2: 検収残件の消化（2026-08-27）
+
+R1 の乖離のうち、ツール系（D6・および R1 時点で未導入だった `gh`）を消化した
+記録。実測は本セッションで取り直したものであり、導入操作そのものは本セッション
+外で行われたものを含む（その旨を各項に明記する）。
+
+### `gh`（GitHub CLI）— 導入済み・認証済み
+
+R1 では「未導入」と記録した項目。現在は導入されている（導入操作は本セッション外）。
+
+```
+$ command -v gh   → /usr/bin/gh
+$ gh --version    → gh version 2.45.0 (2025-07-18 Ubuntu 2.45.0-1ubuntu0.3)
+$ gh auth status  → ✓ Logged in to github.com account skoba
+                    Active account: true
+                    Git operations protocol: ssh
+                    Token scopes: 'admin:public_key', 'gist', 'read:org', 'repo'
+```
+
+3リポジトリの `CLAUDE.md` が前提とする `gh -R <owner>/<repo>` 運用
+（issue/PR/CI の確認、`gh run watch --exit-status`）が実行可能になった。
+本 R2 と同バッチで `skoba/anlage#18` の起票に実際に使用しており、
+「導入されている」だけでなく「書き込み操作まで通る」ことを実測済み。
+
+### Sushi — prefix 確認・PATH 追記・**版の再固定**
+
+- npm prefix は `~/.npm-global`（`npm config get prefix` 実測）。R1 で
+  root 権限が無いため選んだユーザ prefix のまま
+- R1 の **D6 は解消済み**: `~/.zshrc:41` に
+  `export PATH="$HOME/.npm-global/bin:$PATH"` が存在する（実測。追記操作は
+  本セッション外）。R1 時点では「未実施」と記録していた
+- 現在の版は `fsh-sushi@3.16.0`
+  （`npm ls -g --depth=0` および `~/.npm-global/lib/node_modules/fsh-sushi/package.json`
+  の `"version": "3.16.0"` の2点で実測）
+
+**版が一度 3.20.1 へ上書きされ、3.16.0 へ再固定された経緯**（`~/.npm/_logs/` 実測）:
+
+| ログ | 導入された版 |
+|---|---|
+| `2026-08-27T01_33_31_175Z-debug-0.log` | `fsh-sushi@3.20.1` |
+| `2026-08-27T01_36_24_071Z-debug-0.log` | `fsh-sushi@3.16.0` |
+
+版指定なしの `npm install -g fsh-sushi` が最新版（3.20.1）を取得し、
+検収で固定したはずの 3.16.0 を上書きした。約3分後に版指定付きで再導入され、
+現在は 3.16.0 に戻っている。
+
+**教訓（記録として残す）**: 測定器の版は、明示的に固定して**かつその固定を
+文書化しない限り、善意の再インストール一回で動く**。Sushi は
+`docs/design/fsh-plan.md` の検証系の一部であり、版が動けばコンパイル結果
+（エラー件数）も動きうる。FSH 検証を実行するときは、実行のたびに
+`sushi --version` を実測して報告に含めること。3.20 系への更新可否は
+`docs/backlog.md` に一括判断項目として記録した。
+
+### R1 の乖離の現況
+
+| 乖離 | 現況 |
+|---|---|
+| D1（rails タグ v0.6.0 / rubygems は 0.5.0） | 変わらず。`gem list -r -a openehr-rails` 実測で最新は `0.5.0`。publish は人間の手番待ち |
+| D2（カード15枚 vs 期待12） | 変わらず。リポジトリ側の記録（15）が正 |
+| D3（rails 初回 suite の `tmp/` 起因3失敗） | `tmp/` 生成済みのため再現せず |
+| D4（anlage system spec のタイムアウト） | **原因を確定し `skoba/anlage#18` として起票・修正**（下記） |
+| D5（`make -j3` でのネイティブ拡張ビルド不安定） | 本 R2 では再現機会なし。`MAKEFLAGS=-j1` の回避策は有効なまま |
+| D6（`sushi` が PATH に無い） | **解消**（`~/.zshrc:41`） |
+| D7（`openehr-ruby/Gemfile` の source が http） | 変わらず（本タスクでも変更しない） |
+
+### D4 の追試 — 決定的な再現条件を特定
+
+R1 は「本機の単発処理速度が旧機より遅いことによるタイムアウト」と記録したが、
+本 R2 の追試で**失敗は速度ではなく負荷依存**であることが判明した。
+
+- 静穏時に同 spec を実行すると **pass**（`POST /templates/preview` は 724ms）
+- CPU 8並列の busy loop 下で実行すると **fail**（同リクエスト **2793ms**）——
+  R1 が記録した 2761ms とほぼ一致する
+- すなわち R1 の2回の失敗は、並行セッションが別 suite と `rbenv install 3.3.12`
+  を同時実行していた時間帯に測定されたものだった
+
+この対照実験により red が決定的に再現できたため、`skoba/anlage#18` として起票し、
+`Capybara.default_max_wait_time` を 5 秒へ固定して red→green を確認した
+（詳細は anlage 側 `docs/reports/` および同 issue）。
+**R1 の D4 の記述（「本機の単発処理速度が遅いこと」）は、より正確には
+「並行負荷時のリクエスト所要時間が既定待ち時間 2 秒を超えること」に訂正する**
+——歴史を書き換えず、ここで上書き記録として残す。
