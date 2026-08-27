@@ -146,6 +146,21 @@ For any non-trivial change (bug fix, hardening, enhancement):
   there was no lasting effect, but the near-miss is what prompted this
   generalization.)
 
+- **Cross-repository implementation work needs its own authorization gate.**
+  The moment it becomes clear that the actual implementation target is a
+  repository other than this one, stop before starting that work and insert a
+  gate report confirming the implementation target - do not slide from
+  read-only cross-repo reference (already permitted for design/evidence
+  gathering) into cross-repo write work on the strength of that same
+  permission. Following the operational convention above (`cd`/`-C`/`-R`
+  discipline) governs *how* to target a command once the crossing is decided;
+  it does not retroactively authorize the crossing itself.
+
+  (Added 2026-08-27, mirroring `openehr-rails`'s own section of the same name
+  - added there 2026-08-26 - so the rule reads identically from either repo.
+  That entry noted a matching line was still planned for `anlage`'s
+  `CLAUDE.md`; as of this entry it is still not added there.)
+
 ## Release convention
 
 Before tagging, make the final semver determination from the actual content
