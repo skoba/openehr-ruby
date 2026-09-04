@@ -159,7 +159,8 @@ For any non-trivial change (bug fix, hardening, enhancement):
   (Added 2026-08-27, mirroring `openehr-rails`'s own section of the same name
   - added there 2026-08-26 - so the rule reads identically from either repo.
   That entry noted a matching line was still planned for `anlage`'s
-  `CLAUDE.md`; as of this entry it is still not added there.)
+  `CLAUDE.md`; as of this entry it is still not added there. Update
+  2026-09-04: added there as 絶対規律 item 9.)
 
 ## Release convention
 
