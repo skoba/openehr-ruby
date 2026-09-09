@@ -3225,7 +3225,7 @@ module OpenEHR
       end
 
       rule V_ARCHETYPE_ID
-        NAMESTR ('-' NAMESTR) 2..2 '.' NAMESTR ('-' NAMESTR)* '.v' [1-9] [0-9]* {
+        NAMESTR ('-' NAMESTR) 2..2 '.' NAMESTR ('-' NAMESTR)* '.v' [0-9]+ {
           def value
             text_value
           end

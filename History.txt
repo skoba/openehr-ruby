@@ -1,3 +1,14 @@
+=== 2.4.3 (unreleased)
+CKM conformance release: ADLParser accepts what the openEHR CKM actually
+emits but that the ADL 1.4 parser previously rejected.
+
+* V_ARCHETYPE_ID in the ADL grammar now accepts a version number of
+  ".v" [0-9]+, so development archetypes published by the CKM with a
+  ".v0" id (e.g. openEHR-EHR-EVALUATION.infectious_disease_summary.v0)
+  parse instead of raising "Invalid ADL". The RM ArchetypeID and the
+  OPT/XML parsers already accepted v0; only the ADL grammar required a
+  non-zero leading digit. (#50)
+
 === 2.4.2
 Bug fix release: ArchetypeID and TerminologyID round-trip through
 canonical JSON correctly again.
