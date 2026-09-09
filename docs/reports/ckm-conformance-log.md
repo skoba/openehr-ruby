@@ -247,3 +247,37 @@ CI artifact to compare against.
 
 `History.txt` `=== 2.4.3` finalized (three entries + the "CKM 実出力への
 適合" framing line); `lib/openehr/version.rb` 2.4.2 → 2.4.3.
+
+## R6 — v2.4.3 tagged, Release run green, artifact verified; Step 3 filed
+
+Commits on `master`: `ab1a568` (CI/Docs: release workflow, publish rule,
+R2-R5; neutral) and `1f9fba3` (Release 2.4.3: `History.txt` +
+`version.rb`; the tag target). Tag `v2.4.3` =
+`1f9fba31a4d6e1e6ab78bf65e8240b844d2e8860`, pushed.
+
+Release workflow run
+[`34358736846`](https://github.com/skoba/openehr-ruby/actions/runs/34358736846)
+(first run of the new `release.yml`): reusable `ci` (RuboCop + RSpec
+3.3/3.4/4.0) and `Build gem artifact` all `success`. The run's "Record
+sha256" step printed
+
+    f66418d350d80e3341ed3df36fea0fee173c9e9492a7bf50a4f89b2648926f40  pkg/openehr-2.4.3.gem
+
+`gh run download 34358736846 -n gem` → `openehr-2.4.3.gem` (118,784
+bytes), local `sha256sum` →
+`f66418d350d80e3341ed3df36fea0fee173c9e9492a7bf50a4f89b2648926f40` —
+**matches the run's value** (executed). That downloaded artifact is the
+only file to `gem push`, per the new `CLAUDE.md` rule; no local `rake
+build` was run in this batch. `gem push` is left to the human.
+
+Step 3: enhancement
+[#56](https://github.com/skoba/openehr-ruby/issues/56) filed — CKM
+corpus conformance smoke over the openehr-japanese-translation reference
+corpus (pointer + fetch procedure, opt-in env var, scheduled workflow),
+with acceptance criteria that are spec-verifiable and the note that
+#50/#51/#52 are the first sightings of a class expected to recur as the
+translation project widens. `docs/backlog.md`: Round 2 magazine gains
+"CKM 適合性" as an independent axis (row references #56), plus the
+`rake release:check` non-port entry.
+
+openehr-ruby returns to dormant after `gem push` confirmation.

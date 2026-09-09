@@ -130,6 +130,20 @@ boundary rule, `CLAUDE.md`), not duplicated in this repo's tracking.
   混同を排除済み — 本件はパス文字列構築のバグで、#31の用語スコープ
   解決とは無関係）。anlage 側台帳の改変はしない（境界規約）。
 
+## `rake release:check` not ported with `release.yml` (2026-09-09 記録)
+
+`.github/workflows/release.yml` (tag-triggered `ci → build → upload-artifact`)
+was ported from openehr-rails for the 2.4.3 release as a docs/CI-only change.
+openehr-rails's workflow also runs `bundle exec rake release:check` (clean
+working tree, sibling-file tracking, gemspec validity; `skoba/openehr-rails#34`),
+but that task is backed by a `lib/` class there (`OpenehrRails::ReleaseCheck`),
+so porting it here would be a runtime-code change and was left out. Follow-up:
+either a dev-only rake task under `tasks/` (no `lib/` impact) or a shell step in
+the workflow (`git status --porcelain` empty on the tag checkout is trivially
+true in CI, so the meaningful checks are gemspec validity and `git ls-files`
+coverage of `lib/`). Not blocking: the artifact + sha256 comparison rule in
+`CLAUDE.md` is the guard that actually addresses the 0.6.0-class incident.
+
 ## Round 2 magazine (第2巡マガジン — 仮置き優先順, 2026-08-25)
 
 凍結明け第2巡の実施順マガジン（**仮置き** — 着手時に見直す）。1行1項目・根拠付き。
@@ -144,3 +158,4 @@ boundary rule, `CLAUDE.md`), not duplicated in this repo's tracking.
 | 3 | **#43** — embedded `C_ARCHETYPE_ROOT` の `[node_id]` ブラケット欠落（bug/parser） | 根本原因は issue 上で確認済み（`xml_constraint_parsing.rb:18-29` の `c_archetype_root` に `c_complex_object` 相当のブラケット付与が無い）、修正形も記載済み。issue の Timing 節どおり第2巡実装。着手前に explore→plan 1巡（`XMLArchetypeParser` 共有ディスパッチの確認）が必要。設計議論2件より先、外部実需直撃の同格1位2件より後。 |
 | 4 | **#49** — AQL `defining_code`/`code_string` 到達不能（enhancement 扱い妥当、anlage 台帳10項） | **設計議論**。`ALLOWED_TERMINAL_HOPS` は「Expand only when a real query needs another one」（`path_evaluator.rb:20-22`）の意図的スコープ限定で、記録上の根拠は "no arbitrary send"（導入コミット fa6f6c4）— 拡張方針の合意が実装に先行。代替パス（`value/value` ラベル一致）が存在するぶん #48 より低順位（台帳の判断どおり）。初の具体的実需例あり（anlage q20: 診断確度 at0074 のコード値 WHERE — issue に Use case として引用済み、`pathcards_eval_seed.yml`）。 |
 | 5 | **#36** — STRICT-mode XML parsing（enhancement/parser） | **設計議論**（3案: STRICT 既定化／opt-in〔#33 の no-override 設計と緊張〕／低優先で保留）。STRICT 既定化は openehr-rails `spec/templates/lab_result_report_reduced.opt`（XML コメント内の `--` エムダッシュ＝不正な二重ハイフン）の fixture 修正に依存 — 依存先が他リポジトリのため最後尾。 |
+| 独立軸 | **CKM 適合性**（#50/#51/#52 → 2.4.3 で対処済み、継続軸として起票 #56） | 上掲の優先順とは別軸で常時走らせる。CKM の実出力（`.v0` id・空スロット・空 author）が ADL 1.4 パーサに拒否される事例は、skoba/openehr-japanese-translation が CKM アーキタイプ 36 本を処理した最初の一巡で 3 件出た — 同クラスの先触れであり、翻訳対象が広がるほど追加発見が見込まれる。方針: 受け入れ側パーサは CKM 実出力に寛容（厳格検証は生成ツール側、anlage `docs/backlog.md` §7 と同じ線）。恒久策は #56 の CKM コーパス適合性スモーク（コーパスはコピーせずポインタ+取得手順、opt-in env var、scheduled workflow）。`docs/reports/ckm-conformance-log.md` 参照。 |
