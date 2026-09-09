@@ -1,6 +1,9 @@
-=== 2.4.3 (unreleased)
-CKM conformance release: ADLParser accepts what the openEHR CKM actually
-emits but that the ADL 1.4 parser previously rejected.
+=== 2.4.3
+CKM conformance release (CKM 実出力への適合): ADLParser accepts three
+constructs the openEHR CKM actually emits in published and development
+archetypes but that the ADL 1.4 parser previously rejected. CKM
+exports (two as-is, one reduced) back each fix as fixtures
+(spec/fixtures/ckm/).
 
 * V_ARCHETYPE_ID in the ADL grammar now accepts a version number of
   ".v" [0-9]+, so development archetypes published by the CKM with a
