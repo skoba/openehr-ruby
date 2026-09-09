@@ -9,11 +9,11 @@ require File.dirname(__FILE__) + '/parser_spec_helper'
 # Fixture kind: real — CKM export used as-is (provenance in
 # spec/fixtures/ckm/README.md).
 describe ADLParser do
-  CKM_FIXTURE_DIR = File.expand_path('../../../fixtures/ckm', __dir__)
+  ckm_fixture_dir = File.expand_path('../../../fixtures/ckm', __dir__)
 
   context 'a CKM development archetype whose id ends in .v0 (#50)' do
     let(:adl_file) do
-      File.join(CKM_FIXTURE_DIR,
+      File.join(ckm_fixture_dir,
                 'openEHR-EHR-EVALUATION.infectious_disease_summary.v0.adl')
     end
 
