@@ -449,6 +449,12 @@ module OpenEHR
             OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(args)
           end
         }
+      / c_archetype_slot_head SYM_MATCHES SYM_START_CBLOCK SYM_END_CBLOCK space {
+          # empty slot block (neither include nor exclude): any archetype allowed (#51)
+          def value(node)
+            OpenEHR::AM::Archetype::ConstraintModel::ArchetypeSlot.new(c_archetype_slot_head.value(node))
+          end
+        }
       end
 
       rule c_archetype_slot_head

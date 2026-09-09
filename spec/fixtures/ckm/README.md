@@ -14,3 +14,4 @@ Licence: the archetypes are openEHR Foundation works under CC BY-SA
 | File | cid | CKM revision | Fetched | sha256 | Pins |
 | --- | --- | --- | --- | --- | --- |
 | `openEHR-EHR-EVALUATION.infectious_disease_summary.v0.adl` | 1013.1.1918 | 0.0.1-alpha | 2026-09-09 | `29d7768a517470ca0bcd5dac5a0d7e7115bbdea7fd3174b427d84cf45da8da13` | #50 — `.v0` archetype id |
+| `openEHR-EHR-CLUSTER.person.v1.adl` | 1013.1.5358 | 1.0.5 | 2026-09-09 | `69cc7845b3f4491102d32750c884bdda2593c42c869c14afeed17cd2e5c3b056` | #51 — empty "any archetype" slot (`CLUSTER[at0008]`) |

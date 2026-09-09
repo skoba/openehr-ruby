@@ -9,6 +9,16 @@ emits but that the ADL 1.4 parser previously rejected.
   OPT/XML parsers already accepted v0; only the ADL grammar required a
   non-zero leading digit. (#50)
 
+* The ADL grammar's archetype_slot rule gained a fourth alternative for
+  a slot block with neither include nor exclude (an "any archetype"
+  slot, e.g. "allow_archetype CLUSTER[at0008] occurrences matches {0..*}
+  matches { }" as the CKM emits for CLUSTER.person.v1's "Additional
+  details" and OBSERVATION.body_temperature.v2's "Extension"). Such a
+  slot now parses to an ArchetypeSlot with nil includes/excludes - the
+  state ArchetypeSlot#any_allowed? already describes and the XML/OPT
+  constraint parser already produced - instead of raising "Invalid ADL".
+  (#51)
+
 === 2.4.2
 Bug fix release: ArchetypeID and TerminologyID round-trip through
 canonical JSON correctly again.
