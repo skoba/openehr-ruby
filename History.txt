@@ -19,6 +19,13 @@ emits but that the ADL 1.4 parser previously rejected.
   constraint parser already produced - instead of raising "Invalid ADL".
   (#51)
 
+* A translation whose author block is empty ("author = < >", as in the
+  fi translation of EVALUATION.problem_diagnosis.v1 and several other
+  published CKM archetypes) no longer makes ADLParser#parse raise
+  "ArgumentError: author is mandatory". The ADL helper now hands
+  TranslationDetails an empty Hash for the empty block; the RM setter's
+  non-nil invariant is unchanged. (#52)
+
 === 2.4.2
 Bug fix release: ArchetypeID and TerminologyID round-trip through
 canonical JSON correctly again.

@@ -37,7 +37,7 @@ module OpenEHR
               code, details  = lang
               td = OpenEHR::RM::Common::Resource::TranslationDetails.new(
                      :language => details['language'],
-                     :author => details['author'],
+                     :author => details['author'] || { },
                      :accreditation => details['accreditation'],
                      :other_details => details['other_details'])
               trans.update Hash[code, td]
