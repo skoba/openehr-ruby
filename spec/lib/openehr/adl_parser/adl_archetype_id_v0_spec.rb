@@ -9,7 +9,7 @@ require File.dirname(__FILE__) + '/parser_spec_helper'
 # Fixture kind: real — CKM export used as-is (provenance in
 # spec/fixtures/ckm/README.md).
 describe ADLParser do
-  ckm_fixture_dir = File.expand_path('../../../fixtures/ckm', __dir__)
+  let(:ckm_fixture_dir) { File.expand_path('../../../fixtures/ckm', __dir__) }
 
   context 'a CKM development archetype whose id ends in .v0 (#50)' do
     let(:adl_file) do
