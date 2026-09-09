@@ -205,6 +205,26 @@ concerns; a change can wait for a release without its record waiting too.
 (Added 2026-08-23, from PR #41 / #38, the worked example of an unreleased
 section landing at merge time ahead of a deferred, batched release.)
 
+**Publish only the CI artifact itself.** `gem push` takes the `.gem` downloaded
+from the tag's Release run (`gh -R skoba/openehr-ruby run download <run-id> -n
+gem`), after its sha256 has been compared against the value that run printed
+in its "Record sha256" step - never a locally built `pkg/*.gem`. `gem.files`
+comes from `git ls-files`, so a build made at any commit other than the tag
+ships different bytes under the same version number, and a stale `pkg/`
+artifact from unrelated local work is indistinguishable by filename from a
+release build. The tag-triggered workflow is `.github/workflows/release.yml`
+(ported from openehr-rails, docs/CI only; that repo's `rake release:check`
+guard is `lib/`-backed there and is not ported - see `docs/backlog.md`).
+
+(Added 2026-09-09 for the 2.4.3 release, mirroring openehr-rails's rule of the
+same name. Lesson from openehr-rails's 0.6.0 publish: the gem that reached
+RubyGems was a `master`-HEAD build left in `pkg/` by an unrelated
+verification run, not the CI-verified `v0.6.0` artifact; accepted rather
+than yanked because `lib/` was byte-identical, but nothing in the release
+path caught it. This repo's own v2.4.2 release built and pushed from a local
+`pkg/` (`docs/reports/pre-freeze-wave-log.md` R11-R12) with no CI artifact to
+compare against - correct by luck of a clean tree, not by construction.)
+
 ## Development Commands
 
 ### Testing

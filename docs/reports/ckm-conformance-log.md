@@ -148,3 +148,102 @@ in this repo; WSL git has no `core.autocrlf` set, verified).
 Plan written to `docs/design/ckm-conformance-plan.md`. Approval gate: the
 task brief itself prescribes the three fixes ("提案どおりの最小修正") and
 the fixture policy, so implementation proceeds on that authorization.
+
+## R2 — #50 fixed, PR #53 merged
+
+Branch `fix/50-v0-archetype-id`. Red measured first:
+`adl_archetype_id_v0_spec.rb` → 3 examples, 2 failures (`Invalid ADL`
+on the real v0 fixture; the `.v1` regression pin passed as expected).
+Grammar change `'.v' [1-9] [0-9]*` → `'.v' [0-9]+` at
+`adl_grammar.tt:3228` (reporter's patch, verbatim) → 3/0. Full suite
+3976 examples, 0 failures.
+
+**Finding, not from the plan**: the first CI run failed RuboCop
+(`Lint/ConstantDefinitionInBlock` + `RSpec/LeakyConstantDeclaration`,
+then `RSpec/LeakyLocalVariable`) on the new spec. My R1 reading that
+`spec/**` is excluded from RuboCop was wrong — that `Exclude` belongs
+to `Metrics/ModuleLength` only (`.rubocop.yml:14-16`), not `AllCops`.
+Fixed by declaring the fixture dir as a `let` (two follow-up commits on
+the branch); the PR body's test-plan line was corrected accordingly.
+Lesson recorded here rather than in `CLAUDE.md`: run `bundle exec
+rubocop` on every branch before pushing, spec-only changes included.
+
+PR [#53](https://github.com/skoba/openehr-ruby/pull/53): CI run
+`34356038269` all 4 jobs green; rebase-merged (master `fc8da16`,
+`3cf0891`, `bf3275a`); #50 closed. `History.txt` unreleased
+`=== 2.4.3` section created by this PR.
+
+## R3 — #51 fixed, PR #54 merged
+
+Branch `fix/51-empty-archetype-slot`. Red first:
+`adl_archetype_slot_empty_spec.rb` → 6 examples, 6 failures (`Invalid
+ADL` on the real person.v1 fixture). Fourth `archetype_slot`
+alternative appended (reporter's patch, plus a one-line comment) → 6/0,
+including the downstream pins from Step 0 item 3: `physical_paths`
+contains the `at0008` slot path, `ADLSerializer#merge` and
+`XMLSerializer#merge` accept the archetype, and the sibling include-only
+slot `at0002` keeps its assertions. Full suite 3982 examples, 0
+failures; RuboCop 369 files, no offenses (run locally before pushing
+this time).
+
+PR [#54](https://github.com/skoba/openehr-ruby/pull/54): CI run
+`34356787039` all 4 jobs green; rebase-merged (master `a7880d4`); #51
+closed.
+
+## R4 — #52 fixed, PR #55 merged
+
+Branch `fix/52-empty-translation-author`. Red first against the full
+CKM export: `adl_language_translation_empty_author_spec.rb` → 3
+examples, 3 failures (`ArgumentError: author is mandatory`).
+`adl_helper.rb:40` → `details['author'] || { }` (reporter's primary
+proposal, verbatim) → 3/0.
+
+**Deviation from the plan, found during implementation**: the plan said
+the #52 fixture would be the real export used as-is. Measured with
+`--profile`, each `ADLParser#parse` of the 262 KB export takes ~34 s
+(Treetop), so the three examples cost ~103 s — more than a third of the
+whole suite. Switched to a **reduced** fixture
+(`openEHR-EHR-EVALUATION.problem_diagnosis.v1.reduced.adl`, 29 KB): the
+`language` section (all 15 translations, the `["fi"]` block verbatim)
+and the `definition` are kept whole; `description` and
+`ontology`/`term_definitions` are cut to their `["en"]` entries by line
+range from the CR/BOM-stripped export, nothing edited inside kept lines
+(exact ranges in `spec/fixtures/ckm/README.md`). Red re-verified on the
+reduced file with the fix stashed (`git stash push lib/…/adl_helper.rb`
+→ `ArgumentError: author is mandatory` → `stash pop`); green 3/0 in
+4.6 s. Also measured: the ADL grammar rejects a `--` comment before
+`archetype` (with or without BOM), so no fixture of any kind can carry
+its provenance comment in-file — the sidecar README is the only place.
+Plan doc annotated with this correction rather than rewritten.
+
+Full suite 3985 examples, 0 failures; RuboCop 370 files, no offenses. PR
+[#55](https://github.com/skoba/openehr-ruby/pull/55): CI run
+`34358278120` all 4 jobs green; rebase-merged (master `9490a07`); #52 closed.
+
+## R5 — Step 2 inventory (v2.4.2..master) and release prep
+
+18 commits since `v2.4.2` (`git log v2.4.2..master`). Shipped runtime
+code (`lib/`) is touched by exactly three: `fc8da16` (#50,
+`adl_grammar.tt`), `a7880d4` (#51, `adl_grammar.tt`), `9490a07` (#52,
+`adl_helper.rb`) — `git diff --stat v2.4.2..master -- lib` → 2 files,
++8/-2. All three are corrective, add no public API and change no
+dependency → **patch**. The other 15 are docs (13), spec-only
+(`3cf0891`, `bf3275a` — `gem.files` is `git ls-files -- lib/*` +
+`README.rdoc`, so spec changes never ship) and the R1 plan/log commit →
+neutral. **Version: 2.4.3, patch** — matches the instructed number; no
+re-arbitration needed.
+
+Release path aligned with openehr-rails (docs/CI only):
+`.github/workflows/release.yml` added (tag `v*` → reusable `ci.yml` →
+`rake build` → sha256 printed → `upload-artifact` name `gem`);
+`ci.yml` gains `workflow_call:` so the release workflow can reuse it
+(openehr-rails's `ci.yml` has the same trigger; without it the `uses:`
+would fail). `rake release:check` deliberately not ported (backed by a
+`lib/` class there) — backlog. `CLAUDE.md` gains "Publish only the CI
+artifact itself" (sha256 comparison against the run's own output; no
+push from local `pkg/`), mirroring openehr-rails's rule and noting that
+this repo's own v2.4.2 was built and pushed from a local `pkg/` with no
+CI artifact to compare against.
+
+`History.txt` `=== 2.4.3` finalized (three entries + the "CKM 実出力への
+適合" framing line); `lib/openehr/version.rb` 2.4.2 → 2.4.3.

@@ -1,0 +1,38 @@
+name: Release
+
+# Tag-triggered build of the gem artifact. Ported from openehr-rails's
+# release.yml (docs/CI only): the .gem that gets published must be the
+# artifact this run uploads, verified by sha256 - never a local pkg/ build.
+# See CLAUDE.md "Publish only the CI artifact itself".
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    name: Build gem artifact
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
+      - name: Build gem
+        run: bundle exec rake build
+      - name: Record sha256
+        run: sha256sum pkg/*.gem | tee pkg/SHA256SUMS
+      - name: Upload gem artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: gem
+          path: pkg/*.gem

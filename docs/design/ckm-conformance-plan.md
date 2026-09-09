@@ -119,3 +119,20 @@ Files are UTF-8-with-BOM, CRLF; committed unchanged (no
 - `CLAUDE.md`: "publish only the CI artifact" rule (sha256 comparison,
   no push from local `pkg/`).
 - `gem push` stays with the human.
+
+## Correction found during implementation (2026-09-09)
+
+- **#52 fixture is reduced, not real.** The full `problem_diagnosis.v1`
+  export (262 KB) takes ~34 s per `ADLParser#parse`, so the spec uses a
+  line-range reduction (language section + definition whole; description
+  and ontology cut to `["en"]`), lineage in `spec/fixtures/ckm/README.md`.
+  Red was re-verified on the reduced file. See
+  `docs/reports/ckm-conformance-log.md` R4.
+- **In-file provenance comments are impossible for ADL fixtures**: the
+  grammar rejects a `--` comment before `archetype` (measured, with and
+  without BOM). The README sidecar is the provenance record for all
+  fixture kinds under `spec/fixtures/ckm/`.
+- **RuboCop covers `spec/**`** (the `Exclude` in `.rubocop.yml` is
+  `Metrics/ModuleLength`-only); the per-PR checklist's "rubocop on
+  touched `lib/` files" is therefore the full `bundle exec rubocop`. See
+  R2.
