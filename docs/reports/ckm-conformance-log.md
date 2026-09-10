@@ -281,3 +281,36 @@ translation project widens. `docs/backlog.md`: Round 2 magazine gains
 `rake release:check` non-port entry.
 
 openehr-ruby returns to dormant after `gem push` confirmation.
+
+## R7 — 2.4.3 published; `pkg/` staging convention adopted
+
+`gem push` executed by the user. openehr 2.4.3 is live on RubyGems
+(`created_at` 2026-09-10T00:20:08Z). The checksum RubyGems recorded at
+push time —
+
+    f66418d350d80e3341ed3df36fea0fee173c9e9492a7bf50a4f89b2648926f40
+
+— equals the sha256 that Release run
+[`34358736846`](https://github.com/skoba/openehr-ruby/actions/runs/34358736846)
+printed and the local artifact's own digest (all three executed and
+compared; `/api/v1/gems/openehr.json` and the compact index agree). So the
+bytes on RubyGems are the CI-built artifact, verified end to end rather
+than by construction — the first release where that holds.
+
+Convention change (user's direction, this session): the downloaded
+artifact is staged in `pkg/` (`.gitignore`d) instead of an ad-hoc `/tmp`
+path, and is **deleted once the version is confirmed live**, leaving
+`pkg/` empty at rest. That preserves the original rule's guarantee — a
+stray `pkg/*.gem` is indistinguishable by filename from a release build —
+by making any file found there outside an in-progress release an anomaly
+by construction. `CLAUDE.md` "Publish only the CI artifact itself"
+updated; the 2.4.3 artifact was the first to run the full
+download → verify → push → confirm → delete pass, and `pkg/` is now empty.
+
+One measurement worth carrying forward: `/api/v1/versions/openehr.json`
+still showed 2.4.2 as newest minutes after the push, while
+`latest.json`, `gems/openehr.json`, and `https://index.rubygems.org/info/openehr`
+already showed 2.4.3. Confirm with the latter three.
+
+openehr-ruby returns to dormant. Open follow-up: #56 (CKM corpus
+conformance smoke).
