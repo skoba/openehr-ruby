@@ -314,3 +314,78 @@ already showed 2.4.3. Confirm with the latter three.
 
 openehr-ruby returns to dormant. Open follow-up: #56 (CKM corpus
 conformance smoke).
+
+## R8 — #56 implemented: opt-in corpus smoke, red → green measured
+
+Plan: `docs/design/ckm-corpus-conformance-plan.md` (approved 2026-09-21
+with four notes, folded into its Status line). Branch
+`feat/56-ckm-corpus-smoke`. Everything below was executed on this
+machine (rbenv Ruby 4.0.6) unless marked otherwise.
+
+**Corpus pin, corrected.** The issue's "36 under `sprint/adl/` at
+`b3bdb12`" does not reproduce: that commit has no `sprint/adl/` (it first
+appears at `c2ec655`). The pinned reference is
+skoba/openehr-japanese-translation @ `82cf80b`: 37 `sprint/adl/*.adl` +
+4 `archetypes/*/source/*.adl` with no `sprint/adl/` twin = **41 files**,
+assembled by `git archive` into a scratch directory outside the repo
+(read-only cross-repo extraction; nothing written there).
+
+**Red 1 (AC3, genuine).** Scratch dir with two files: the #50 fixture
+unchanged (`good.adl`) and the #51 fixture with `concept` misspelt
+(`broken-person.v1.adl`). `CKM_CORPUS_DIR=<dir> bundle exec rspec
+spec/conformance/ckm_corpus_spec.rb`:
+
+    Expected [Ee] at line 4, column 5 (byte 110) after archetype (...)
+    Failures:
+      1) OpenEHR::Parser::ADLParser parses broken-person.v1.adl without raising
+         expected no Exception, got #<OpenEHR::Parser::ParseError: Invalid ADL>
+    2 examples, 1 failure
+
+The file is named in the description, the exception in the message, and
+Treetop's failure position (printed by `ADLParser#parsed_data`) sits on
+stdout directly above. First attempt at this red did *not* go red: the
+break was applied with `sed 's/^archetype/.../'`, which never matched
+because the CKM export starts with a UTF-8 BOM before `archetype`. Worth
+remembering for anyone hand-breaking a CKM export.
+
+**Red 2 (issue's AC2 witness, v2.4.2 parser).** `git worktree add` of
+tag `v2.4.2` in the scratch directory, spec copied in, run over the
+41-file pin: **41 examples, 9 failures** - not the 4 the issue predicted.
+The prediction was made against the issue-time 36-file corpus; the
+41-file pin adds more instances of the same three classes. Measured
+breakdown, every failure attributable to #50/#51/#52:
+
+| class | files |
+| --- | --- |
+| `ParseError: Invalid ADL` (#50 `.v0` id) | `EVALUATION.infectious_disease_summary.v0`, `SECTION.referral_details.v0` (one of the 4 `source/`-only files) |
+| `ParseError: Invalid ADL` (#51 empty slot) | `CLUSTER.person.v1`, `OBSERVATION.body_temperature.v2` |
+| `ArgumentError: author is mandatory` (#52) | `COMPOSITION.encounter.v1`, `COMPOSITION.report-result.v1`, `COMPOSITION.report.v1`, `EVALUATION.family_history.v2`, `EVALUATION.problem_diagnosis.v1` |
+
+The `.v0`/empty-slot attributions are by file identity (the same files
+the 2.4.3 fixtures came from, plus `referral_details.v0` by its id); the
+five `ArgumentError`s are by message. Worktree removed afterwards
+(`git worktree list` shows only the main tree).
+
+**Green.** Same spec, same 41-file pin, this branch's `lib/` (identical
+to `master` @ `237a34c`): **41 examples, 0 failures**, wall 6 min 54 s
+(concurrent with Red 2 on the same machine, corpus on a `/mnt/c` mount;
+the plan's single-process measurement over the 37 `sprint/adl/` files
+was 276.6 s).
+
+**AC1.** `bundle exec rspec` with `CKM_CORPUS_DIR` unset:
+`3986 examples, 0 failures, 1 pending`; with the conformance file
+excluded: `3985 examples, 0 failures`. The one pending example's message
+names the variable and the README. Empty-directory guard checked:
+`CKM_CORPUS_DIR=<empty dir>` raises `ArgumentError ... no *.adl files
+found` at load instead of passing vacuously.
+
+**RuboCop.** Two offenses on the first draft, both fixed:
+`Lint/RedundantDirGlobSort` (`Dir[]` is already sorted) and
+`RSpec/DescribeMethod` (the second `describe` argument was a free-text
+label; dropped - the example descriptions carry the context).
+
+**Workflow.** `.github/workflows/ckm-conformance.yml`: weekly
+(`0 3 * * 1`) + `workflow_dispatch` with boolean `fetch` (default true =
+live re-download via the translation repo's `scripts/fetch_ckm.sh`;
+false = the clone's committed `sprint/adl/`). Cannot be exercised before
+it exists on `master`; its first dispatched run is recorded in R9.
