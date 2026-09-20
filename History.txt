@@ -1,3 +1,14 @@
+=== Unreleased
+* Development: opt-in CKM corpus conformance smoke
+  (spec/conformance/ckm_corpus_spec.rb, gated on CKM_CORPUS_DIR) that
+  parses every archetype of the skoba/openehr-japanese-translation
+  reference corpus with ADLParser, one example per file, failing on any
+  exception; plus a weekly scheduled workflow
+  (.github/workflows/ckm-conformance.yml) that fetches the corpus live
+  from the CKM and runs it, separate from the PR-gating CI. The corpus
+  is referenced by pointer + fetch procedure (spec/conformance/README.md),
+  not copied. No change to lib/ or the gemspec - semver neutral. (#56)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development
