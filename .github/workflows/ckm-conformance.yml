@@ -1,0 +1,53 @@
+name: CKM corpus conformance
+
+# Weekly smoke (#56): parse every CKM archetype of the reference corpus
+# (skoba/openehr-japanese-translation) with ADLParser. Deliberately NOT part
+# of the PR-gating ci.yml - a CKM-side change must surface here as a
+# scheduled failure to triage, never as a red check on an unrelated PR.
+# Procedure and triage: spec/conformance/README.md.
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # Mondays 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      fetch:
+        description: 'Re-download sprint/adl from the CKM REST API (live mode); false = pinned to the clone HEAD'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    name: ADLParser over the CKM corpus
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
+      - name: Clone the reference corpus (pointer, not a copy)
+        run: git clone --depth 1 https://github.com/skoba/openehr-japanese-translation corpus-src
+      - name: Fetch sprint/adl from the CKM (live mode)
+        if: ${{ github.event_name == 'schedule' || inputs.fetch }}
+        run: scripts/fetch_ckm.sh
+        working-directory: corpus-src
+      - name: Assemble CKM_CORPUS_DIR
+        run: |
+          mkdir -p "$RUNNER_TEMP/ckm-corpus"
+          cp corpus-src/sprint/adl/*.adl corpus-src/archetypes/*/source/*.adl "$RUNNER_TEMP/ckm-corpus/"
+          echo "corpus: $(ls "$RUNNER_TEMP/ckm-corpus" | wc -l) files @ $(git -C corpus-src rev-parse --short HEAD)"
+      - name: Run the conformance spec
+        run: bundle exec rspec spec/conformance/ckm_corpus_spec.rb
+        env:
+          CKM_CORPUS_DIR: ${{ runner.temp }}/ckm-corpus
+      - name: Upload manifest for triage
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ckm-manifest
+          path: corpus-src/sprint/adl/manifest.tsv

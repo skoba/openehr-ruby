@@ -207,14 +207,40 @@ section landing at merge time ahead of a deferred, batched release.)
 
 **Publish only the CI artifact itself.** `gem push` takes the `.gem` downloaded
 from the tag's Release run (`gh -R skoba/openehr-ruby run download <run-id> -n
-gem`), after its sha256 has been compared against the value that run printed
-in its "Record sha256" step - never a locally built `pkg/*.gem`. `gem.files`
-comes from `git ls-files`, so a build made at any commit other than the tag
-ships different bytes under the same version number, and a stale `pkg/`
+gem -D pkg`), after its sha256 has been compared against the value that run
+printed in its "Record sha256" step - never a locally built `pkg/*.gem`.
+`gem.files` comes from `git ls-files`, so a build made at any commit other than
+the tag ships different bytes under the same version number, and a stale `pkg/`
 artifact from unrelated local work is indistinguishable by filename from a
 release build. The tag-triggered workflow is `.github/workflows/release.yml`
 (ported from openehr-rails, docs/CI only; that repo's `rake release:check`
 guard is `lib/`-backed there and is not ported - see `docs/backlog.md`).
+
+**`pkg/` is the staging directory, and it is empty except during a release.**
+`pkg` is `.gitignore`d (`.gitignore:22`), so the downloaded artifact lands there
+and never reaches a commit. The release sequence is: download into `pkg/` →
+compare sha256 against the run's recorded value → `gem push pkg/<name>.gem` →
+confirm the version is live on RubyGems (`gem list -r -a openehr`, or the
+versions API) → **delete the file**, leaving `pkg/` empty again. Deletion is
+what keeps the filename-ambiguity above from coming back: outside an
+in-progress release there is nothing in `pkg/` to mistake for a release build,
+so anything found there is by construction suspect and must be re-downloaded
+rather than pushed. The sha256 comparison stays mandatory before every push -
+an empty-at-rest `pkg/` narrows what can go wrong, it does not replace the
+check.
+
+(`pkg/` staging + post-publish deletion added 2026-09-10, at the user's
+direction, replacing the 2.4.3 run's ad-hoc `/tmp/relgem` download location.
+The 2.4.3 artifact was moved into `pkg/`, its sha256 re-verified against run
+`34358736846`, pushed by the user, confirmed live, and deleted - the first full
+pass of the sequence. Worth knowing for future releases: RubyGems publishes the
+sha256 it recorded at push time (`/api/v1/gems/openehr.json` `sha`, and the
+`checksum:` field in `https://index.rubygems.org/info/openehr`), so the
+confirmation step can compare *published* bytes against the CI run's value, not
+merely observe that a version number appeared. For 2.4.3 all three agreed:
+`f66418d3...926f40`. Note also that `/api/v1/versions/<gem>.json` lagged behind
+the other endpoints right after the push - use `latest.json`, `gems/<gem>.json`,
+or the compact index to confirm.)
 
 (Added 2026-09-09 for the 2.4.3 release, mirroring openehr-rails's rule of the
 same name. Lesson from openehr-rails's 0.6.0 publish: the gem that reached
