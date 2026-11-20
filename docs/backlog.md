@@ -160,3 +160,18 @@ coverage of `lib/`). Not blocking: the artifact + sha256 comparison rule in
 | 4 | **#49** — AQL `defining_code`/`code_string` 到達不能（enhancement 扱い妥当、anlage 台帳10項） | **設計議論**。`ALLOWED_TERMINAL_HOPS` は「Expand only when a real query needs another one」（`path_evaluator.rb:20-22`）の意図的スコープ限定で、記録上の根拠は "no arbitrary send"（導入コミット fa6f6c4）— 拡張方針の合意が実装に先行。代替パス（`value/value` ラベル一致）が存在するぶん #48 より低順位（台帳の判断どおり）。初の具体的実需例あり（anlage q20: 診断確度 at0074 のコード値 WHERE — issue に Use case として引用済み、`pathcards_eval_seed.yml`）。 |
 | 5 | **#36** — STRICT-mode XML parsing（enhancement/parser） | **設計議論**（3案: STRICT 既定化／opt-in〔#33 の no-override 設計と緊張〕／低優先で保留）。STRICT 既定化は openehr-rails `spec/templates/lab_result_report_reduced.opt`（XML コメント内の `--` エムダッシュ＝不正な二重ハイフン）の fixture 修正に依存 — 依存先が他リポジトリのため最後尾。 |
 | 独立軸 | **CKM 適合性**（#50/#51/#52 → 2.4.3 で対処済み、継続軸として起票 #56） | 上掲の優先順とは別軸で常時走らせる。CKM の実出力（`.v0` id・空スロット・空 author）が ADL 1.4 パーサに拒否される事例は、skoba/openehr-japanese-translation が CKM アーキタイプ 36 本を処理した最初の一巡で 3 件出た — 同クラスの先触れであり、翻訳対象が広がるほど追加発見が見込まれる。方針: 受け入れ側パーサは CKM 実出力に寛容（厳格検証は生成ツール側、anlage `docs/backlog.md` §7 と同じ線）。恒久策は #56 の CKM コーパス適合性スモーク（コーパスはコピーせずポインタ+取得手順、opt-in env var、scheduled workflow）。`docs/reports/ckm-conformance-log.md` 参照。 |
+
+### 2026-11-20 見直し（裁定 R-20261117-3、着手時の突き合わせ）
+
+上の表は 2026-08-25 の仮置き（10/20 に #60 を追記）のまま残す。現況との差分と、2.5.0 の範囲・順序の案は
+`docs/design/round2-2.5.0-plan.md` に書いた（**順序は案。ゲート承認待ち**）。`master` `96eb4e2` での実測にもとづく差分:
+
+| 項目 | 表の記述 | 現況（2026-11-20） |
+| --- | --- | --- |
+| #31 | 迂回保有者は 2 箇所（anlage の経路2、rails の nil ガード）| anlage 側は撤去済み（`skoba/anlage#19`）。残りは openehr-rails `lib/openehr_rails/opt/parser.rb` の `populate_term_bindings!` のみ |
+| #60 | `contains_resolver.rb:150` 側の扱いも併せて確認 | 確認した。CONTAINS の位置でも name が無視され、`CLUSTER k[archetype_id, 'name']` が同アーキタイプの全ノードを束縛する（エラーにならず行が増える）。直す場所は 2 箇所 |
+| #43 | 修正形は issue に記載済み | ブラケットの中身に分岐がある。eReferral.opt の埋め込みルート 40 件で、`[at0000]` 形は path が 10 通り、`[archetype_id]` 形は 35 通り。計画書 D1 |
+| #49 | 実需例は anlage q20 の 1 件 | anlage 台帳 25 項（`archetype_details/template_id/value` に到達不能、未起票）が同類の 3 件目。`NoMethodError` の漏れも再現した |
+| #58 | 表に無い | 2026-09-25 起票。anlage に迂回あり（`app/lib/opt/template_terms.rb`）。計画書では #43 の次 |
+| #59 | 表に無い | 2026-09-25 起票（日付のみの DV_DATE_TIME を拒否）。anlage に迂回あり（`app/lib/opt/composition_builder.rb` の `dv_date_time_partial`）。2.5.0 の外、2.5.x の先頭候補という案 |
+| CKM 軸 | 恒久策は #56 | #56 は open。PR #57 は 2026-09-20 から open（`MERGEABLE`／`CLEAN`、CI は 9/20 の green）。計画書 4 節 |
