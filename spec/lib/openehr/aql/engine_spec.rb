@@ -763,3 +763,73 @@ describe 'OpenEHR::AQL.execute (E15: mixed aggregate/non-aggregate SELECT)' do
     expect(result.rows).to eq([['Blood pressure', 2, 150]])
   end
 end
+
+# Issue #60, resolution shape (a) bug: an archetype predicate's name value
+# ("[archetype_id, 'name']") was dropped both when a SELECT/WHERE path
+# segment was turned into PATHABLE path text (PathEvaluator) and when a
+# CONTAINS class expression was matched (ContainsResolver), so a template
+# that embeds one archetype twice under one parent and tells the two apart
+# by name fanned out (SELECT/WHERE) or silently bound every sibling
+# (CONTAINS). Written red-first against master 96eb4e2.
+describe 'OpenEHR::AQL.execute (#60: archetype predicate name value)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:composition) { builder.repeated_cluster_composition(names: %w[Referring Receiving]) }
+  let(:dataset) { OpenEHR::AQL::Dataset.of_compositions([composition]) }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o' }
+  let(:tree) { 'o/data[at0001]/events[at0006]/data[at0003]' }
+  let(:cluster_id) { 'openEHR-EHR-CLUSTER.zz_invented_party.v1' }
+
+  it "SELECT: items[archetype_id, 'name'] picks one of two same-archetype siblings" do
+    result = OpenEHR::AQL.execute(
+      "SELECT #{tree}/items[#{cluster_id}, 'Receiving']/items[at0001]/value/value AS label #{from}", dataset
+    )
+    expect(result.rows).to eq([['Receiving value']])
+  end
+
+  it 'WHERE: a comparison over the same named path filters rows' do
+    query = "SELECT c/name/value #{from} " \
+            "WHERE #{tree}/items[#{cluster_id}, 'Receiving']/items[at0001]/value/value = "
+    expect(OpenEHR::AQL.execute("#{query}'Receiving value'", dataset).rows).to eq([['Encounter']])
+    expect(OpenEHR::AQL.execute("#{query}'Referring value'", dataset).rows).to eq([])
+  end
+
+  it "CONTAINS: CLUSTER k[archetype_id, 'name'] binds only the node whose name matches" do
+    result = OpenEHR::AQL.execute(
+      "SELECT k/items[at0001]/value/value #{from} CONTAINS CLUSTER k[#{cluster_id}, 'Receiving']", dataset
+    )
+    expect(result.rows).to eq([['Receiving value']])
+  end
+
+  it 'raises ExecutionError (not yet supported) for a $parameter name value in a path' do
+    query = "SELECT #{tree}/items[#{cluster_id}, $name]/items[at0001]/value/value #{from}"
+    expect { OpenEHR::AQL.execute(query, dataset, params: { name: 'Receiving' }).rows }
+      .to raise_error(OpenEHR::AQL::ExecutionError, /archetype predicate value yet/)
+  end
+
+  it 'raises ExecutionError (not yet supported) for a $parameter name value in CONTAINS' do
+    query = "SELECT k/name/value #{from} CONTAINS CLUSTER k[#{cluster_id}, $name]"
+    expect { OpenEHR::AQL.execute(query, dataset, params: { name: 'Receiving' }).rows }
+      .to raise_error(OpenEHR::AQL::ExecutionError, /archetype predicate value yet/)
+  end
+
+  it 'names the archetype predicate readably in the fan-out error' do
+    query = "SELECT #{tree}/items[#{cluster_id}]/items[at0001]/value/value #{from}"
+    expect { OpenEHR::AQL.execute(query, dataset).rows }
+      .to raise_error(OpenEHR::AQL::ExecutionError, /items\[#{Regexp.escape(cluster_id)}\]" matched 2 items/)
+  end
+
+  it 'names the archetype predicate with its name value in the fan-out error' do
+    query = "SELECT #{tree}/items[#{cluster_id}, 'Receiving']/items[at0001]/value/value #{from}"
+    twins = builder.repeated_cluster_composition(names: %w[Receiving Receiving])
+    expect { OpenEHR::AQL.execute(query, OpenEHR::AQL::Dataset.of_compositions([twins])).rows }
+      .to raise_error(OpenEHR::AQL::ExecutionError, /items\[#{Regexp.escape(cluster_id)}, 'Receiving'\]" matched 2 items/)
+  end
+
+  # regression pin: already true on master before the fix - a name-less
+  # archetype predicate keeps matching by archetype id alone. Red is not
+  # achievable for this example.
+  it 'keeps matching a name-less archetype predicate by archetype id alone (regression pin)' do
+    result = OpenEHR::AQL.execute("SELECT k/name/value #{from} CONTAINS CLUSTER k[#{cluster_id}]", dataset)
+    expect(result.rows).to eq([['Referring'], ['Receiving']])
+  end
+end

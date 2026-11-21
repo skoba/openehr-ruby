@@ -148,7 +148,7 @@ module OpenEHR
         when nil
           true
         when Model::ArchetypePredicate
-          candidate.respond_to?(:archetype_node_id) && candidate.archetype_node_id == predicate.archetype_id
+          archetype_predicate_matches?(candidate, predicate)
         when Model::NodePredicate
           node_predicate_matches?(candidate, predicate)
         when Model::StandardPredicate
@@ -160,6 +160,21 @@ module OpenEHR
         else
           raise ExecutionError, "cannot evaluate a #{predicate.class} predicate yet"
         end
+      end
+
+      # archetypePredicate "[archetype_id]" matches by archetype_node_id
+      # alone; "[archetype_id, 'Name']" additionally requires the node's
+      # own `name` DV_TEXT to equal the given display name - the same
+      # rule as a nodePredicate's name value (issue #60).
+      def archetype_predicate_matches?(candidate, predicate)
+        return false unless candidate.respond_to?(:archetype_node_id) && candidate.archetype_node_id == predicate.archetype_id
+        return true unless predicate.value
+
+        unless predicate.value.is_a?(String)
+          raise ExecutionError, "cannot evaluate a #{predicate.value.class} archetype predicate value yet"
+        end
+
+        node_name_matches?(candidate, predicate.value)
       end
 
       # nodePredicate "[atNNNN]" matches by archetype_node_id alone;
