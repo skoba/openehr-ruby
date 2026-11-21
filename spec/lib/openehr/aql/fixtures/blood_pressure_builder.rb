@@ -14,6 +14,20 @@
 #
 # Both are wrapped in an openEHR-EHR-COMPOSITION.encounter.v1 root with a
 # real EVENT_CONTEXT, so `c/context/start_time` is queryable too.
+#
+#   repeated_cluster_composition - synthetic (hand-authored, not derived
+#                                  from any real artifact; design
+#                                  authority: docs/design/round2-2.5.0-plan.md
+#                                  section 3.1, issue #60). COMPOSITION >
+#                                  OBSERVATION[zz_invented_request] >
+#                                  History[at0001] > PointEvent[at0006] >
+#                                  ItemTree[at0003] > one CLUSTER per given
+#                                  name, all sharing the invented archetype
+#                                  id openEHR-EHR-CLUSTER.zz_invented_party.v1
+#                                  and told apart only by `name`; each holds
+#                                  ELEMENT[at0001] DV_TEXT "<name> value".
+#                                  The archetype ids are invented on purpose
+#                                  so they can't be mistaken for real ones.
 module OpenEHR
   module AQL
     module Fixtures
@@ -38,6 +52,17 @@ module OpenEHR
           event = point_event('at0006', 'Any event', start_time, data)
           history = history_of('at0001', 'History', start_time, [event])
           observation = observation_of('openEHR-EHR-OBSERVATION.body_temperature.v1', 'Body temperature', history)
+          encounter(observation, start_time: start_time, composer_name: composer_name)
+        end
+
+        def repeated_cluster_composition(names:, start_time: '2024-01-01T10:00:00+09:00', composer_name: 'Dr. Test')
+          clusters = names.map do |name|
+            cluster('openEHR-EHR-CLUSTER.zz_invented_party.v1', name, [element('at0001', 'Label', text("#{name} value"))])
+          end
+          data = item_tree('at0003', 'Tree', clusters)
+          event = point_event('at0006', 'Any event', start_time, data)
+          history = history_of('at0001', 'History', start_time, [event])
+          observation = observation_of('openEHR-EHR-OBSERVATION.zz_invented_request.v1', 'Request', history)
           encounter(observation, start_time: start_time, composer_name: composer_name)
         end
 
@@ -94,6 +119,14 @@ module OpenEHR
 
         def item_tree(archetype_node_id, name, items)
           RM::DataStructures::ItemStructure::ItemTree.new(
+            archetype_node_id: archetype_node_id,
+            name: text(name),
+            items: items
+          )
+        end
+
+        def cluster(archetype_node_id, name, items)
+          RM::DataStructures::ItemStructure::Representation::Cluster.new(
             archetype_node_id: archetype_node_id,
             name: text(name),
             items: items
