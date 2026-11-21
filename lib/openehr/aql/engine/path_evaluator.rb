@@ -115,12 +115,26 @@ module OpenEHR
       def predicate_path_text(predicate)
         case predicate
         when Model::ArchetypePredicate
-          predicate.archetype_id
+          archetype_predicate_path_text(predicate)
         when Model::NodePredicate
           node_predicate_path_text(predicate)
         else
           raise ExecutionError, "cannot evaluate a #{predicate.class} path predicate yet"
         end
+      end
+
+      # "[archetype_id, 'Name']" carries its name value into the PATHABLE
+      # path text the same way a node predicate does, so
+      # Pathable.select_by_predicate can tell apart siblings that share
+      # one archetype id (issue #60).
+      def archetype_predicate_path_text(predicate)
+        return predicate.archetype_id unless predicate.value
+
+        unless predicate.value.is_a?(String)
+          raise ExecutionError, "cannot evaluate a #{predicate.value.class} archetype predicate value yet"
+        end
+
+        "#{predicate.archetype_id}, '#{predicate.value}'"
       end
 
       def node_predicate_path_text(predicate)
