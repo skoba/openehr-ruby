@@ -21,8 +21,14 @@ module OpenEHR
         node.id = id unless id.nil? or id.empty?
         occurrences = occurrences(xml.xpath('./occurrences'))
         archetype_id = OpenEHR::RM::Support::Identification::ArchetypeID.new(value: text_on_path(xml, './archetype_id/value'))
+        # The top-level definition's path is "/". An embedded root is
+        # addressed by its archetype id, the way RM data paths and AQL
+        # address it - its node_id is "at0000" for nearly every embedded
+        # archetype, so it cannot tell sibling roots apart (issue #43).
         if node.root? or node.id.nil?
           node.path = "/"
+        else
+          node.path = "#{node.path}[#{archetype_id.value}]"
         end
         component_terminologies(archetype_id, xml)
         OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, attributes: attributes(xml.xpath('./attributes'), node))

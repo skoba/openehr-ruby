@@ -1,3 +1,19 @@
+=== Unreleased
+* Behaviour change: OPTParser now gives an embedded C_ARCHETYPE_ROOT its
+  own path bracket, holding the embedded archetype's id. Before, an
+  embedded root's CObject#path had no bracket at all and equalled its
+  parent attribute's path (e.g. "/context/other_context[at0001]/items"),
+  and every node below it inherited the gap. It is now
+  "/context/other_context[at0001]/items[openEHR-EHR-CLUSTER.individual_personal.v1]",
+  with descendants built on top of that. The archetype id is used
+  rather than the node_id because nearly every embedded root's node_id
+  is "at0000", which cannot tell sibling roots apart; RM data paths and
+  AQL address embedded roots the same way. Archetype#physical_paths and
+  #logical_paths of a parsed OPT return different strings as a result -
+  code that compared against the old bracket-less paths needs updating.
+  The top-level definition's path stays "/", and XMLArchetypeParser
+  paths are unchanged. (#43)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development
