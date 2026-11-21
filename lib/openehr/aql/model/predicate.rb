@@ -29,6 +29,14 @@ module OpenEHR
           @value = value
           freeze
         end
+
+        # Query-text form, used in error messages that quote a path
+        # segment (see PathPart#to_s).
+        def to_s
+          return archetype_id if value.nil?
+
+          value.is_a?(String) ? "#{archetype_id}, '#{value}'" : "#{archetype_id}, $#{value.name}"
+        end
       end
 
       # nodePredicate : (ID_CODE | AT_CODE) (SYM_COMMA (STRING | PARAMETER | TERM_CODE | AT_CODE | ID_CODE))? | ... ;

@@ -1,3 +1,21 @@
+=== Unreleased
+* AQL: an archetype predicate's name value ("[archetype_id, 'name']") is
+  now honoured instead of dropped. In a SELECT/WHERE path,
+  PathEvaluator passes the name through to PATHABLE navigation, so
+  items[openEHR-EHR-CLUSTER.x.v1, 'Receiving organisation'] picks the
+  one sibling with that name instead of raising the fan-out error. In a
+  CONTAINS class expression, ContainsResolver now also requires the
+  name to match - before, CLUSTER k[archetype_id, 'name'] silently
+  bound every node of that archetype, so such a query returns fewer
+  (correct) rows now. A $parameter in the name position raises
+  ExecutionError ("cannot evaluate a ... archetype predicate value
+  yet"), the same as a node predicate. Model::ArchetypePredicate gained
+  #to_s, so the fan-out error quotes the segment as query text rather
+  than as an object inspect string. Known limitation, unchanged and
+  shared with node predicates: a name containing an apostrophe cannot be
+  expressed in PATHABLE path text and raises
+  OpenEHR::Path::InvalidPathError. (#60)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development
