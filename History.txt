@@ -26,6 +26,17 @@
   expressed in PATHABLE path text and raises
   OpenEHR::Path::InvalidPathError. (#60)
 
+* OPTParser now reads an operational template's term_bindings (external
+  terminology bindings such as SNOMED-CT or LOINC) instead of dropping
+  them. Each embedded archetype's bindings land on
+  component_terminologies[archetype_id].term_bindings (and on #ontology
+  for the root archetype) in the shape XMLArchetypeParser already uses,
+  { terminology => { at_code => [CodePhrase] } }; one at-code may be
+  bound in several terminologies. code_string is kept exactly as the
+  OPT writes it (e.g. "[SNOMED-CT::60621009]"), not decomposed. An
+  archetype without term_bindings keeps nil, as before.
+  referenceSetUri and constraint_bindings are not covered. (#31)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development
