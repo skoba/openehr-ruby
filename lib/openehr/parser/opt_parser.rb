@@ -155,7 +155,39 @@ module OpenEHR
           ArchetypeTerminology.new(
                 concept_code: concept_code,
                 original_language: language,
-                term_definitions: td)
+                term_definitions: td,
+                term_bindings: opt_term_bindings(nodes))
+      end
+
+      # An OPT writes term_bindings as
+      #   <term_bindings terminology="T"><items code="atNNNN"><value>
+      #     <terminology_id><value>T</value></terminology_id>
+      #     <code_string>[T::code]</code_string></value></items></term_bindings>
+      # (a serialized CODE_PHRASE per item), not the flat
+      # attribute-plus-text shape XMLArchetypeParser#ontology_bindings
+      # reads. The result has the same in-memory shape on both paths:
+      # { terminology => { code => [CodePhrase] } }. code_string is kept
+      # exactly as written. nil (not {}) when the archetype has no
+      # term_bindings, so "not populated" stays distinguishable.
+      # The method name is deliberately not one openehr-rails'
+      # OpenehrRails::Opt::Parser subclass already defines.
+      def opt_term_bindings(nodes)
+        bindings = nodes.xpath('term_bindings').each_with_object({}) do |binding, by_terminology|
+          codes = (by_terminology[binding['terminology']] ||= {})
+          binding.xpath('items').each do |item|
+            (codes[item['code']] ||= []) << opt_binding_code_phrase(item)
+          end
+        end
+        bindings.empty? ? nil : bindings
+      end
+
+      def opt_binding_code_phrase(item)
+        OpenEHR::RM::DataTypes::Text::CodePhrase.new(
+          code_string: text_on_path(item, './value/code_string'),
+          terminology_id: OpenEHR::RM::Support::Identification::TerminologyID.new(
+            value: text_on_path(item, './value/terminology_id/value')
+          )
+        )
       end
 
       def term_definitions(nodes)
