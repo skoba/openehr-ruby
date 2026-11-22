@@ -833,3 +833,42 @@ describe 'OpenEHR::AQL.execute (#60: archetype predicate name value)' do
     expect(result.rows).to eq([['Referring'], ['Receiving']])
   end
 end
+
+# Issue #48, resolution shape (a) bug: EVENT.time was unreachable from an
+# AQL path. Event declares only path_attribute :data, :state, and "time"
+# was not in PathEvaluator::ALLOWED_TERMINAL_HOPS, so the hop failed both
+# navigation routes and raised 'unsupported path attribute "time"'.
+# Written red-first against master 0ef5b33.
+describe 'OpenEHR::AQL.execute (#48: EVENT.time hop)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o' }
+  let(:time_path) { 'o/data[at0001]/events[at0006]/time/value' }
+
+  def composition_at(start_time, systolic)
+    builder.blood_pressure_composition(systolic: systolic, diastolic: 80, start_time: start_time)
+  end
+
+  it 'SELECT: events[...]/time/value returns the event time' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions([composition_at('2026-03-01T09:30:00+09:00', 120)])
+    result = OpenEHR::AQL.execute("SELECT #{time_path} AS measured_at #{from}", dataset)
+
+    expect(result.columns).to eq(['measured_at'])
+    expect(result.rows).to eq([['2026-03-01T09:30:00+09:00']])
+  end
+
+  # The comparison is the engine's ordinary String comparison of ISO8601
+  # text (lexicographic), not a parsed-instant comparison: it orders
+  # correctly only when both sides use the same format and UTC offset.
+  it 'WHERE: a half-open time/value range (>= lower AND < upper) keeps only the in-range rows' do
+    dataset = OpenEHR::AQL::Dataset.of_compositions(
+      [composition_at('2025-12-31T23:59:59', 110), composition_at('2026-01-01T00:00:00', 120),
+       composition_at('2026-06-30T23:59:59', 130), composition_at('2026-07-01T00:00:00', 140)]
+    )
+    result = OpenEHR::AQL.execute(
+      "SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude #{from} " \
+      "WHERE #{time_path} >= '2026-01-01T00:00:00' AND #{time_path} < '2026-07-01T00:00:00'", dataset
+    )
+
+    expect(result.rows).to contain_exactly([120], [130])
+  end
+end

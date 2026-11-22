@@ -52,6 +52,18 @@
   The top-level definition's path stays "/", and XMLArchetypeParser
   paths are unchanged. (#43)
 
+* AQL: EVENT.time is now reachable from a path. "time" joins
+  PathEvaluator::ALLOWED_TERMINAL_HOPS, so
+  o/data[at0001]/events[at0006]/time/value returns the event time in
+  SELECT and can be compared in WHERE (e.g. a half-open range,
+  >= lower AND < upper) instead of raising ExecutionError ("unsupported
+  path attribute "time""). The comparison is the ordinary String
+  comparison of the ISO8601 text, not of parsed instants, so it orders
+  correctly only when both sides share one format and UTC offset. The
+  hop is whitelisted for every non-path_attribute value, so the same
+  "time" reader also becomes readable on ACTION, PARTICIPATION and
+  FEEDER_AUDIT_DETAILS, the other RM classes with a public time. (#48)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development
