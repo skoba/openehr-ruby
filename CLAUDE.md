@@ -162,6 +162,23 @@ For any non-trivial change (bug fix, hardening, enhancement):
   `CLAUDE.md`; as of this entry it is still not added there. Update
   2026-09-04: added there as 絶対規律 item 9.)
 
+## 裁定台帳(2026-11-20 導入)
+
+- 統括の裁定の正典は `/home/skoba/src/anlage-ops/rulings.md`
+  (非公開リポジトリ `skoba/anlage-ops`)。チャットに貼られた本文は写しで、
+  食い違ったら台帳が正
+- 「裁定 R-… を読んで着手」と言われたら、最初に
+  `git -C /home/skoba/src/anlage-ops pull --ff-only` を実行し、
+  台帳の該当行と本文を読む。読めなければ、着手せずに例外報告
+- 着手したら、台帳の自分宛ての行の状態を 発行 → 着手 に書き換え、
+  anlage-ops に commit・push する(日付と、あれば最初の push SHA)。
+  anlage-ops に書いてよいのはこの 1 行だけ。ほかの行、本文、
+  ほかのファイルは変えない。これは越境ゲートの例外として認められている
+- 完了に進めるのは統括か人間。セッションは「完了申請(SHA、CI run)」まで書いてよい
+- 報告とコミットメッセージには裁定 ID を書く(例: `Refs R-20261120-1`)
+- anlage-ops の内容(裁定の本文、ロードマップ)を、このリポジトリのコード、
+  Issue、PR、文書に写さない。参照は裁定 ID で行う
+
 ## Release convention
 
 Before tagging, make the final semver determination from the actual content
