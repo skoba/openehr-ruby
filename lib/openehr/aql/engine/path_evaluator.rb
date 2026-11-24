@@ -32,7 +32,8 @@ module OpenEHR
       # this file is loaded before parts of the RM.
       TYPED_TERMINAL_HOPS = {
         'OpenEHR::RM::Common::Archetyped::Locatable' => %w[archetype_details],
-        'OpenEHR::RM::Common::Archetyped::Archetyped' => %w[archetype_id template_id]
+        'OpenEHR::RM::Common::Archetyped::Archetyped' => %w[archetype_id template_id],
+        'OpenEHR::RM::Composition::EventContext' => %w[end_time setting start_time]
       }.freeze
 
       # Dataset::EHRRecord#ehr_id is already an unwrapped String (see

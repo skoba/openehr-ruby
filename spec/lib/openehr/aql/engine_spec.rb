@@ -973,3 +973,66 @@ describe 'OpenEHR::AQL.execute (#70: archetype_details/template_id, per-type ter
     end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "composer" on a .*Composition/)
   end
 end
+
+# Issue #71, resolution shape (b) enhancement: EVENT_CONTEXT's start_time,
+# end_time and setting become reachable from a path, as rows of the
+# per-type table #70 introduced. Written red-first against master e9ba19f.
+describe 'OpenEHR::AQL.execute (#71: COMPOSITION.context hops)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c' }
+  let(:dataset) do
+    OpenEHR::AQL::Dataset.of_compositions(
+      [composition_at('2025-12-31T23:59:59', 110), composition_at('2026-01-01T00:00:00', 120),
+       composition_at('2026-06-30T23:59:59', 130), composition_at('2026-07-01T00:00:00', 140)]
+    )
+  end
+
+  def composition_at(start_time, systolic)
+    builder.blood_pressure_composition(systolic: systolic, diastolic: 80, start_time: start_time)
+  end
+
+
+  it 'SELECT: c/context/start_time/value returns the context start time' do
+    result = OpenEHR::AQL.execute("SELECT c/context/start_time/value AS started #{from}", dataset)
+    expect(result.rows.flatten).to eq(%w[2025-12-31T23:59:59 2026-01-01T00:00:00 2026-06-30T23:59:59 2026-07-01T00:00:00])
+  end
+
+  # Ordinary String comparison of the ISO8601 text, as for EVENT.time (#48).
+  it 'WHERE: a half-open c/context/start_time/value range keeps only the in-range compositions' do
+    result = OpenEHR::AQL.execute(
+      "SELECT o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude #{from} CONTAINS OBSERVATION o " \
+      "WHERE c/context/start_time/value >= '2026-01-01T00:00:00' AND c/context/start_time/value < '2026-07-01T00:00:00'",
+      dataset
+    )
+    expect(result.rows).to contain_exactly([120], [130])
+  end
+
+  it 'SELECT: c/context/setting reaches both the label and the code' do
+    result = OpenEHR::AQL.execute(
+      "SELECT c/context/setting/value, c/context/setting/defining_code/code_string #{from}",
+      OpenEHR::AQL::Dataset.of_compositions([composition_at('2026-01-01T00:00:00', 120)])
+    )
+    expect(result.rows).to eq([['other care', '238']])
+  end
+
+  it 'returns a null column for c/context/end_time/value when the context has no end time' do
+    result = OpenEHR::AQL.execute("SELECT c/context/end_time/value #{from}",
+                                  OpenEHR::AQL::Dataset.of_compositions([composition_at('2026-01-01T00:00:00', 120)]))
+    expect(result.rows).to eq([[nil]])
+  end
+
+  it 'still raises ExecutionError for an EVENT_CONTEXT attribute outside the table (regression pin)' do
+    # regression pin: location is a real public reader on EVENT_CONTEXT
+    # and is still not reachable.
+    expect do
+      OpenEHR::AQL.execute("SELECT c/context/location #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "location" on a .*EventContext/)
+  end
+
+  it 'does not make start_time reachable on another type (regression pin)' do
+    # regression pin: the row is typed to EVENT_CONTEXT.
+    expect do
+      OpenEHR::AQL.execute("SELECT c/start_time #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "start_time" on a .*Composition/)
+  end
+end
