@@ -31,7 +31,7 @@ module OpenEHR
           node.path = "#{node.path}[#{archetype_id.value}]"
         end
         component_terminologies(archetype_id, xml)
-        OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, attributes: attributes(xml.xpath('./attributes'), node))
+        OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot.new(rm_type_name: rm_type_name, node_id: node.id, path: node.path, occurrences: occurrences, archetype_id: archetype_id, term_definitions: opt_root_term_definitions(xml), term_bindings: opt_term_bindings(xml), attributes: attributes(xml.xpath('./attributes'), node))
       end
 
       def c_complex_object(xml, node)
