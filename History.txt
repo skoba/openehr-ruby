@@ -1,4 +1,12 @@
-=== Unreleased
+=== 2.5.0
+Round 2 release: six items found while building real applications on
+top of the gem. The AQL engine honours an archetype predicate's name
+value and reaches EVENT.time and a DV_CODED_TEXT's code; OPTParser
+reads term_bindings, keeps terminology per embedded root, and gives an
+embedded root a path that tells siblings apart. One behaviour change
+to note when upgrading: the .path of an embedded C_ARCHETYPE_ROOT and
+of everything below it (#43, below).
+
 * Development: opt-in CKM corpus conformance smoke
   (spec/conformance/ckm_corpus_spec.rb, gated on CKM_CORPUS_DIR) that
   parses every archetype of the skoba/openehr-japanese-translation
