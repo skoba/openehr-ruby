@@ -127,3 +127,16 @@ gem に入るのは `lib/*` と `README.rdoc` だけ（`openehr.gemspec:19-20`�
      (b) 迂回は OPT 全体からアーキタイプ ID ごとに束ねるが、上流は後勝ち（最後のルートの束縛だけ）。
      同じアーキタイプのルート間で束縛が違う OPT では結果が変わりうる
 3. **（openehr-rails）Issue #36 への記録。** 済み（`issuecomment-7130601375`）
+
+## R4 — 2.5.0 の公開（2026-11-24）
+
+裁定 R-20261124-9 の作業列 2・3。
+
+- リリースの PR #69 → master `12d7518`（「Release 2.5.0」。人間がマージ）。master の CI run 45390579974 success
+- タグ `v2.5.0`（注釈つき）→ `12d7518`。人間の指示でセッションが打って push した
+- Release run 45390903643 success（RuboCop、RSpec の Ruby 3.3・3.4・4.0、gem のビルド）
+- sha256 の照合（3 つとも一致）: `8eb126bfda72a16aeb608f2fba9e4259aca95800196e0b21136d9eb3ed42f10b`
+  - Release run の「Record sha256」の値
+  - `pkg/` にダウンロードした artifact（`gh -R skoba/openehr-ruby run download 45390903643 -n gem -D pkg`）
+  - 公開後の RubyGems（`/api/v1/gems/openehr.json` の `sha` と、compact index の `checksum:`。`created_at` は 2026-11-24T12:18:23Z）
+- `gem push` は人間。公開の確認のあと `pkg/openehr-2.5.0.gem` を削除し、`pkg/` は空
