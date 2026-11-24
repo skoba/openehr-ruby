@@ -82,6 +82,17 @@
   produce is unchanged as well: the generic walker skips the two new
   attributes on CArchetypeRoot. (#58)
 
+* AQL: a DV_CODED_TEXT's code is now reachable from a path.
+  "defining_code" and "code_string" join
+  PathEvaluator::ALLOWED_TERMINAL_HOPS, so
+  .../value/defining_code/code_string returns the code in SELECT and can
+  be filtered in WHERE (e.g. MATCHES {'at0074', 'at0075'}) instead of
+  raising ExecutionError ("unsupported path attribute \"defining_code\"").
+  Before, only the display label (.../value/value) could be queried.
+  This is the minimal form: the whitelist stays one flat, type-blind
+  list read through public_send, and any other attribute still raises
+  ExecutionError. A per-type table is left for a later release. (#49)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development
