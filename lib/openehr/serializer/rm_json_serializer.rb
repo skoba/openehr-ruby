@@ -36,6 +36,10 @@ module OpenEHR
       ].freeze
       TERMINOLOGY_ID_IVARS = [:@name, :@version_id].freeze
       IDENTIFIER_IVARS = (ARCHETYPE_ID_IVARS + TERMINOLOGY_ID_IVARS).uniq.freeze
+      # CArchetypeRoot only (issue #58): its per-root terminology is
+      # scoped per class here, not added to EXCLUDED_IVARS, because
+      # ArchetypeOntology legitimately has ivars of the same two names.
+      ARCHETYPE_ROOT_IVARS = [:@term_definitions, :@term_bindings].freeze
 
       def initialize(rm_instance)
         @rm_instance = rm_instance
@@ -82,6 +86,8 @@ module OpenEHR
           exclusions + ARCHETYPE_ID_IVARS
         when OpenEHR::RM::Support::Identification::TerminologyID
           exclusions + TERMINOLOGY_ID_IVARS
+        when OpenEHR::AM::Archetype::ConstraintModel::CArchetypeRoot
+          exclusions + ARCHETYPE_ROOT_IVARS
         else
           exclusions
         end

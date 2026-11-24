@@ -64,6 +64,24 @@
   "time" reader also becomes readable on ACTION, PARTICIPATION and
   FEEDER_AUDIT_DETAILS, the other RM classes with a public time. (#48)
 
+* CArchetypeRoot gained #term_definitions and #term_bindings, and
+  OPTParser fills them in per root. An operational template repeats an
+  archetype's terms under every C_ARCHETYPE_ROOT and may rename them per
+  root; until now the only home for them was
+  component_terminologies[archetype_id], keyed by archetype id, so when
+  one archetype was embedded more than once only the last root's names
+  survived. Each root now keeps its own, including two roots of the same
+  archetype at one and the same path.
+  term_definitions is { language => { code => ArchetypeTerm } };
+  term_bindings is { terminology => { code => [CodePhrase] } }, nil when
+  the root has none. Both are nil on a root not built by OPTParser.
+  component_terminologies is unchanged, last-root-wins behaviour and its
+  { language => [ArchetypeTerm] } shape included - the two shapes differ
+  on purpose (the per-root one follows the issue, the aggregate one is
+  kept for compatibility). The JSON that OPTSerializer#context/#content
+  produce is unchanged as well: the generic walker skips the two new
+  attributes on CArchetypeRoot. (#58)
+
 === 2.4.3
 CKM conformance release (CKM 実出力への適合): ADLParser accepts three
 constructs the openEHR CKM actually emits in published and development

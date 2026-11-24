@@ -487,11 +487,22 @@ module OpenEHR
 
         class CArchetypeRoot <CComplexObject
           attr_reader :slot_node_id, :archetype_id
+          # The terms and external bindings this one root carries in an
+          # operational template. An OPT repeats them under every
+          # C_ARCHETYPE_ROOT, and a template may rename them per root, so
+          # they differ between two roots that embed the same archetype.
+          #   term_definitions: { language => { code => ArchetypeTerm } }
+          #   term_bindings:    { terminology => { code => [CodePhrase] } }
+          # Both are nil when not populated (e.g. a root not built by
+          # OPTParser, or a root without term_bindings).
+          attr_accessor :term_definitions, :term_bindings
 
           def initialize(args = {})
             super
             self.slot_node_id = args[:slot_node_id]
             self.archetype_id = args[:archetype_id]
+            self.term_definitions = args[:term_definitions]
+            self.term_bindings = args[:term_bindings]
           end
 
           def slot_node_id=(slot_node_id)

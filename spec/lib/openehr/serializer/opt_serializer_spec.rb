@@ -53,5 +53,22 @@ describe OPTSerializer do
       expect(content['_type']).to eq('C_MULTIPLE_ATTRIBUTE')
       expect(content['rm_attribute_name']).to eq('content')
     end
+
+    # Issue #58, resolution shape (c) pin/hardening - regression pin: the
+    # generic reflection walker dumps every ivar of an AOM node, so
+    # CArchetypeRoot#term_definitions/#term_bindings (added by #58) would
+    # otherwise appear in this JSON. The serialized output is deliberately
+    # kept as it was before #58. This could not go red against master
+    # (the ivars did not exist there); it was red against the first
+    # implementation of #58 on this branch.
+    it 'does not add per-root term_definitions/term_bindings to the constraint JSON (regression pin)' do
+      repeated = OPTSerializer.new(File.join(File.dirname(__FILE__), '../opt_parser/jp_referral_repeated_roots_reduced.opt'),
+                                   format: :json)
+      bound = OPTSerializer.new(File.join(File.dirname(__FILE__), '../opt_parser/bmi_term_bindings_reduced.opt'),
+                                format: :json)
+      expect(repeated.content).to include('"C_ARCHETYPE_ROOT"')
+      expect(repeated.content).not_to include('"term_definitions"')
+      expect(bound.content).not_to include('"term_bindings"')
+    end
   end
 end

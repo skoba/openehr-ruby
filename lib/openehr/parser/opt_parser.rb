@@ -201,6 +201,17 @@ module OpenEHR
         { language.code_string => term_items }
       end
 
+      # One C_ARCHETYPE_ROOT's own terms, for CArchetypeRoot#term_definitions:
+      # { language => { code => ArchetypeTerm } }. Unlike
+      # component_terminologies (keyed by archetype id, last root wins,
+      # { language => [ArchetypeTerm] }), this is kept per root, so a
+      # template's per-root renames survive (issue #58).
+      def opt_root_term_definitions(nodes)
+        term_definitions(nodes).transform_values do |terms|
+          terms.to_h { |term| [term.code, term] }
+        end
+      end
+
       def empty_then_nil(val)
         if val.empty?
           return nil
