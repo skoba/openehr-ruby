@@ -223,8 +223,15 @@ module OpenEHR
               self.timezone = iso8601date_time.timezone
             end
 
+            # A missing part counts as the earliest value it could have
+            # (month 1, day 1, 00:00:00), so partial values (issue #59:
+            # YYYY-MM-DD, YYYY-MM, YYYY; and the time-partial forms, which
+            # raised TypeError here before) order as their earliest instant.
+            # Comparable#== follows this ordering: values of different
+            # precision that denote the same earliest instant are ==, while
+            # their #value still differs.
             def magnitude
-              hour, minute = @hour, @minute
+              hour, minute = @hour || 0, @minute || 0
               if @timezone
                 if @timezone.sign == -1
                   hour -= @timezone.hour
@@ -235,10 +242,10 @@ module OpenEHR
                 end
               end
               seconds = (((((((@year * 365.24) +
-                           (@month * 30.42) +
-                           @day) * 24) +
+                           ((@month || 1) * 30.42) +
+                           (@day || 1)) * 24) +
                            hour) * 60) +
-                           minute) * 60) + @second
+                           minute) * 60) + (@second || 0)
               if @fractional_second.nil?
                 return seconds
               else

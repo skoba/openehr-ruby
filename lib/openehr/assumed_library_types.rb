@@ -496,7 +496,17 @@ module OpenEHR
       def hour_unknown?
         @hour.nil?
       end
-      
+
+      # A date-time may have no time part at all (YYYY-MM-DD, YYYY-MM,
+      # YYYY; issue #59), so the hour may be nil here, unlike in a time.
+      def hour=(hour)
+        if hour.nil?
+          @hour = nil
+        else
+          super
+        end
+      end
+
       def as_string
         if (!@year.nil? and !@month.nil? and !@day.nil?)
           s = Date.new(@year, @month, @day).to_s
@@ -530,7 +540,17 @@ module OpenEHR
         # Anchored, and the date must be complete before a time may follow
         # (issue #72): unanchored, any string containing a date-time passed
         # and the rest was dropped.
-        unless /\A(\d{4})-(\d{2})-(\d{2})T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?\z/ =~ string
+        #
+        # The time part, and the day and month, may be missing (YYYY-MM-DD,
+        # YYYY-MM, YYYY; issue #59), so a value known only to the day or
+        # the year is kept at that precision instead of a time of day being
+        # made up. openEHR BASE Foundation Types is not consistent here:
+        # section 6.2 ("Partial variants of Iso8601_date_time can include
+        # missing hours, days and months") and the Iso8601_date_time class
+        # description allow it; valid_iso8601_date_time and the class
+        # invariants (Partial_validity_hour: not hour_unknown, ...) do not.
+        # This implementation follows the former.
+        unless /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?)?\z/ =~ string
           raise ArgumentError, 'format invalid'
         else
           self.year = $1.to_i
