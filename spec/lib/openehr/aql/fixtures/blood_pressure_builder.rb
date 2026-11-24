@@ -39,6 +39,13 @@
 #                                  DV_CODED_TEXT with the given display
 #                                  label and local code. The archetype id
 #                                  and the codes specs pass in are invented.
+#
+#   templated                    - synthetic (design authority:
+#                                  docs/design/round3-plan.md section 3.1,
+#                                  issue #70). Gives any composition built
+#                                  here a root ARCHETYPED (archetype_details)
+#                                  carrying the given template id. Specs pass
+#                                  in invented template ids.
 module OpenEHR
   module AQL
     module Fixtures
@@ -86,6 +93,15 @@ module OpenEHR
           history = history_of('at0001', 'History', start_time, [event])
           observation = observation_of('openEHR-EHR-OBSERVATION.zz_invented_assessment.v1', 'Assessment', history)
           encounter(observation, start_time: start_time, composer_name: composer_name)
+        end
+
+        def templated(composition, template_id:)
+          composition.archetype_details = RM::Common::Archetyped::Archetyped.new(
+            archetype_id: RM::Support::Identification::ArchetypeID.new(value: composition.archetype_node_id),
+            rm_version: '1.0.2',
+            template_id: RM::Support::Identification::TemplateID.new(value: template_id)
+          )
+          composition
         end
 
         def encounter(*entries, start_time:, composer_name:)

@@ -910,3 +910,66 @@ describe 'OpenEHR::AQL.execute (#49: defining_code / code_string hops)' do
     end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "encoding" on a .*DvCodedText/)
   end
 end
+
+# Issue #70, resolution shape (b) enhancement: archetype_details/template_id
+# becomes reachable from a path. The terminal-hop whitelist gains a
+# per-type table (TYPED_TERMINAL_HOPS) next to the generic names, and a
+# whitelisted name the current value does not have now raises the
+# engine's own ExecutionError instead of leaking NoMethodError. Written
+# red-first against master 86f9f8a.
+describe 'OpenEHR::AQL.execute (#70: archetype_details/template_id, per-type terminal hops)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c' }
+  let(:plain) { builder.blood_pressure_composition(systolic: 120, diastolic: 80) }
+  let(:templated) do
+    builder.templated(builder.blood_pressure_composition(systolic: 150, diastolic: 95), template_id: 'zz_invented_template.v0')
+  end
+  let(:dataset) { OpenEHR::AQL::Dataset.of_compositions([templated, plain]) }
+
+  it 'SELECT: c/archetype_details/template_id/value returns the template id' do
+    result = OpenEHR::AQL.execute("SELECT c/archetype_details/template_id/value AS template #{from}",
+                                  OpenEHR::AQL::Dataset.of_compositions([templated]))
+    expect(result.rows).to eq([['zz_invented_template.v0']])
+  end
+
+  it 'returns a null column, not an exception, for a COMPOSITION without archetype_details' do
+    result = OpenEHR::AQL.execute("SELECT c/archetype_details/template_id/value #{from}", dataset)
+    expect(result.rows).to eq([['zz_invented_template.v0'], [nil]])
+  end
+
+  it 'WHERE: filters compositions by template id' do
+    result = OpenEHR::AQL.execute(
+      "SELECT c/name/value #{from} CONTAINS OBSERVATION o " \
+      "WHERE c/archetype_details/template_id/value = 'zz_invented_template.v0'", dataset
+    )
+    expect(result.rows).to eq([['Encounter']])
+  end
+
+  it 'SELECT: c/archetype_details/archetype_id/value returns the root archetype id' do
+    result = OpenEHR::AQL.execute("SELECT c/archetype_details/archetype_id/value #{from}",
+                                  OpenEHR::AQL::Dataset.of_compositions([templated]))
+    expect(result.rows).to eq([['openEHR-EHR-COMPOSITION.encounter.v1']])
+  end
+
+  it 'does not make a typed hop reachable on another type (regression pin)' do
+    # regression pin: this already raised before #70 (the name was in no
+    # list); it pins that the per-type table stays per type.
+    expect do
+      OpenEHR::AQL.execute("SELECT c/name/template_id #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "template_id" on a .*DvText/)
+  end
+
+  it 'raises ExecutionError, not NoMethodError, for a generic hop the value does not have' do
+    expect do
+      OpenEHR::AQL.execute("SELECT c/name/magnitude #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "magnitude" on a .*DvText/)
+  end
+
+  it 'still raises ExecutionError for a name in neither list (regression pin)' do
+    # regression pin: composer is a real public reader on COMPOSITION and
+    # is still not reachable.
+    expect do
+      OpenEHR::AQL.execute("SELECT c/composer #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "composer" on a .*Composition/)
+  end
+end

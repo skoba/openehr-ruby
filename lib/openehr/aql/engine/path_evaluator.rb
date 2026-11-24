@@ -20,7 +20,20 @@ module OpenEHR
       # Attribute hops not reachable through the path_attribute DSL.
       # Expand only when a real query needs another one - see the
       # project's "no arbitrary send" rule in the class comment above.
+      #
+      # These names are generic: allowed on any value that has a public
+      # reader of that name (a value without one raises ExecutionError).
+      # A new name should normally go into TYPED_TERMINAL_HOPS instead,
+      # so that it is reachable only on the RM type it belongs to.
       ALLOWED_TERMINAL_HOPS = %w[code_string defining_code magnitude name time value].freeze
+
+      # Attribute hops allowed on one RM type only (matched with is_a?,
+      # so subclasses inherit them). Class names are resolved lazily:
+      # this file is loaded before parts of the RM.
+      TYPED_TERMINAL_HOPS = {
+        'OpenEHR::RM::Common::Archetyped::Locatable' => %w[archetype_details],
+        'OpenEHR::RM::Common::Archetyped::Archetyped' => %w[archetype_id template_id]
+      }.freeze
 
       # Dataset::EHRRecord#ehr_id is already an unwrapped String (see
       # Dataset's own header comment), but AQL's "e/ehr_id/value" syntax
@@ -99,11 +112,19 @@ module OpenEHR
 
       def navigate_terminal(current, segment)
         raise ExecutionError, "path predicates on a non-Pathable value are not supported (#{segment.attribute})" if segment.predicate
-        unless ALLOWED_TERMINAL_HOPS.include?(segment.attribute)
+        unless terminal_hop_allowed?(current, segment.attribute)
           raise ExecutionError, "unsupported path attribute #{segment.attribute.inspect} on a #{current.class}"
         end
 
         current.public_send(segment.attribute)
+      end
+
+      def terminal_hop_allowed?(current, attribute)
+        return current.respond_to?(attribute) if ALLOWED_TERMINAL_HOPS.include?(attribute)
+
+        TYPED_TERMINAL_HOPS.any? do |class_name, attributes|
+          attributes.include?(attribute) && current.is_a?(Object.const_get(class_name))
+        end
       end
 
       def rm_path_for(segment)
