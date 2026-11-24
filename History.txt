@@ -1,3 +1,91 @@
+=== 2.6.0
+Round 3 release. AQL reaches a COMPOSITION's archetype_details
+(template id) and its EVENT_CONTEXT start_time, end_time and setting,
+and a name predicate may contain an apostrophe. DV_DATE_TIME accepts a
+value known only to the day, the month or the year. Two behaviour
+changes to note when upgrading: ISO8601DateTime / ISO8601Date reject
+input that is not exactly one ISO 8601 value (#72, below), and an AQL
+hop on a value without that attribute raises ExecutionError instead of
+NoMethodError (#70, below).
+
+* AQL: a COMPOSITION's archetype_details is now reachable from a path, so
+  c/archetype_details/template_id/value (and .../archetype_id/value)
+  works in SELECT and WHERE instead of raising ExecutionError
+  ("unsupported path attribute \"archetype_details\""). A root without
+  archetype_details gives a null column. PathEvaluator's whitelist
+  gained a per-type table, TYPED_TERMINAL_HOPS, next to the generic
+  names in ALLOWED_TERMINAL_HOPS: a typed name is reachable only on the
+  RM type it belongs to (archetype_details on LOCATABLE; archetype_id
+  and template_id on ARCHETYPED). Still a whitelist read through
+  public_send. One error changed type: a generic name asked of a value
+  that has no such reader (e.g. c/name/magnitude) now raises
+  OpenEHR::AQL::ExecutionError with the usual "unsupported path
+  attribute" message, where NoMethodError used to leak. (#70)
+
+* AQL: a COMPOSITION's context (EVENT_CONTEXT) is now queryable past the
+  context hop itself. c/context/start_time/value, c/context/end_time/value
+  and c/context/setting (.../value for the label,
+  .../defining_code/code_string for the code) work in SELECT and WHERE
+  instead of raising ExecutionError ("unsupported path attribute
+  \"start_time\""). The three names are rows of TYPED_TERMINAL_HOPS,
+  reachable on EVENT_CONTEXT only. A WHERE over start_time compares the
+  ISO8601 text as a String, like EVENT.time. Other EVENT_CONTEXT
+  attributes (location, health_care_facility, participations,
+  other_context) still raise ExecutionError. (#71)
+
+* AQL: a name predicate value containing an apostrophe (e.g.
+  items[at0001, "O'Brien"] or items[openEHR-EHR-CLUSTER.x.v1, "O'Brien"])
+  no longer raises OpenEHR::Path::InvalidPathError from a SELECT/WHERE
+  path. PathEvaluator used to write the predicate back into PATHABLE
+  path text, whose quoting cannot hold an apostrophe; it now asks
+  PATHABLE for the node id alone and narrows by name itself, with the
+  same rule (name.value equals the given name). OpenEHR::Path's own
+  grammar is unchanged: a path String with an apostrophe inside a
+  quoted name is still invalid there. (#65)
+
+* Behaviour change: ISO8601DateTime and ISO8601Date (and so DV_DATE_TIME
+  and DV_DATE) now reject input that is not exactly one ISO 8601 value.
+  Their regular expressions were unanchored, so such input used to be
+  accepted with part of it silently dropped or misread. Four kinds of
+  input raise ArgumentError now:
+  - surrounding characters, including leading/trailing whitespace and a
+    trailing newline ("x2026-09-22T14zz" used to be read as
+    2026-09-22T14). The caller must trim.
+  - a date-time String given to ISO8601Date / DvDate ("2026-09-22T10:00:00"
+    used to be read as 2026-09-22, dropping the time).
+  - an hour without a complete date ("2026T14", "2026-09T14" used to be
+    read as 2026 and 2026-09, dropping the hour).
+  - the compact form ("20260922T143000" used to be misread as year
+    0922). The compact form is valid ISO 8601 and valid in openEHR; it
+    is rejected for now rather than read wrongly, and reading it
+    correctly is tracked separately.
+  Complete values and the time-partial forms (YYYY-MM-DDThh,
+  YYYY-MM-DDThh:mm) are unchanged. (#72)
+
+* ISO8601DateTime and DV_DATE_TIME accept a date-time known only to the
+  day, the month or the year: YYYY-MM-DD, YYYY-MM and YYYY (no "T" and
+  no time part). The value is kept at the precision it was entered;
+  no time of day is made up, and #value / #as_string / canonical JSON
+  return it as given. This follows openEHR BASE Foundation Types
+  section 6.2 ("Partial variants of Iso8601_date_time can include
+  missing hours, days and months") and the Iso8601_date_time class
+  description. It departs from that class's invariants
+  (Partial_validity_hour: not hour_unknown, ...) and from
+  valid_iso8601_date_time, which the specification also states; the
+  specification is not consistent here.
+  Ordering and equality: a missing part counts as the earliest value it
+  could have (month 1, day 1, 00:00:00), so "2026-09-22" sorts before
+  "2026-09-22T00:00:01". The time-partial forms (YYYY-MM-DDThh,
+  YYYY-MM-DDThh:mm) now order the same way; comparing them raised
+  TypeError before. == follows the ordering: "2026-09-22" ==
+  "2026-09-22T00:00:00", while their #value differs.
+  C_DATE_TIME#valid_value? accepts a date-only value when the
+  constraint's hour validity allows a missing hour, and rejects it
+  when the hour is mandatory. (#59)
+
+* README: the CRuby version the gem is developed with now reads 4.0.10,
+  matching .ruby-version (it still said 4.0.7).
+
 === 2.5.0
 Round 2 release: six items found while building real applications on
 top of the gem. The AQL engine honours an archetype predicate's name
