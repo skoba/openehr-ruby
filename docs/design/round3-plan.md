@@ -156,3 +156,37 @@ Issue: #59、#65、#70、#36（#36 は計画まで。実装の前にゲート報
 2. **#36: 「パスまたは生の XML」の入口を上流に持たせる変更を、Round 3 に入れてよいか。** 公開 API の追加になる
 3. **#70 を openehr-rails のどの変更と同じ版にそろえるか。** openehr-rails 側の予定（0.9.0 か 0.9.1 か）が決まれば、
    こちらの版の切り方を合わせる。決まるまでは、#70 と #65 がそろった時点で出す
+
+## 7. 事後の確認への対応（裁定 R-20261124-12、2026-11-24）
+
+計画は承認。6 節の 3 点への回答と、足された項目を受けて、次のように改める。上の節と食い違う箇所は、この節が優先する。
+
+| 順 | Issue | 内容 | PR の分け方 |
+|---|---|---|---|
+| 0 | — | `changelog.d/README.md`（この PR） | docs |
+| 1 | #70 | 型ごとの表への切り替えと、archetype_details/template_id | 1 PR |
+| 2 | #71 | EVENT_CONTEXT の start_time・end_time・setting | #70 のあと、別の PR |
+| 3 | #65 | name 述語のアポストロフィ（案 B） | 1 PR |
+| 4 | #72 | `ISO8601DateTime` の正規表現に `\A`／`\z` | #59 と同じ時期。別の PR で、#59 より先 |
+| 5 | #59 | 日付だけの DV_DATE_TIME を受ける | 1 PR |
+| 6 | #74 | OPT の「パスまたは生の XML」の入口（追加だけ） | 1 PR |
+| — | #73 | 週次 workflow の修正 | ワークフローの PR。マージは人間 |
+| — | — | `README.rdoc` の Ruby の版 | 小さな PR。gem に入るファイルなので patch |
+| — | #36 | STRICT 既定化 | #74 のあと、ゲート報告 |
+
+- **#71 を #70 と分ける理由。** 1 Issue = 1 PR。#70 が表の仕組みを入れ、#71 はその表に行を足すだけになる。
+  現状（実行、master `86f9f8a`）: `c/context/start_time/value`、`c/context/setting/value`、`c/context/end_time/value` は
+  どれも `unsupported path attribute ... on a OpenEHR::RM::Composition::EventContext`。`context` の hop 自体は通る
+  （`composition.rb:14` の `path_attribute :content, :context`）。リーダーは `composition.rb:71-72`
+  - 表に足す行: `EventContext => start_time, end_time, setting`。`setting` の先の `defining_code`／`code_string`／`value` は
+    #49 と既存の行で届く
+  - COMPOSITION のほかの属性（`composer`、`language`、`territory`、`category`、`uid`）も同じ形で届かない（実行）。実需が出たら足す
+- **#59 の読み。** 日付だけの値（`YYYY-MM-DD`、`YYYY-MM`、`YYYY`）を受け、入力した精度のまま往復させる。時刻は補わない。
+  仕様の不変条件（`not hour_unknown` など）とは食い違う。採った読み（BASE の 6.2 節と 6.5.6 節の説明文）を、
+  コードのコメントと変更履歴の断片に書く
+  - 比較と大きさ: 欠けた部分はいちばん早い時点（1 月、1 日、0 時）として扱う
+  - 精度の違う値どうしの等値と、C_DATE_TIME の妥当性判定（`primitive.rb:445-465`）が時の無い値にどう答えるかは、
+    実装の前に実行して決め、決めた規則を spec と文書に書く
+- **#72 を先にする理由。** #59 は同じ正規表現を書き換える。先に「余分な文字を拒む」「時があって日が無い値を拒む」を
+  bug として固定しておくと、#59 の差分が「受ける形を増やす」だけになる
+- **#70 は openehr-rails を待たない。** #70 と #71 が master に入った時点で、その時の中身で棚卸しに進む
