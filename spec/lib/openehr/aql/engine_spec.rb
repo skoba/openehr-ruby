@@ -1036,3 +1036,52 @@ describe 'OpenEHR::AQL.execute (#71: COMPOSITION.context hops)' do
     end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "start_time" on a .*Composition/)
   end
 end
+
+# Issue #65, resolution shape (a) bug: a name predicate value containing an
+# apostrophe raised OpenEHR::Path::InvalidPathError, because PathEvaluator
+# wrote the predicate back into PATHABLE path text ("[id, 'name']"), whose
+# grammar cannot hold an apostrophe inside the quoted name. The evaluator
+# now navigates by id and narrows by name itself. Written red-first against
+# master e9ba19f.
+describe "OpenEHR::AQL.execute (#65: name predicate value with an apostrophe)" do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:cluster_id) { 'openEHR-EHR-CLUSTER.zz_invented_party.v1' }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o' }
+  let(:tree) { 'o/data[at0001]/events[at0006]/data[at0003]' }
+  let(:dataset) do
+    OpenEHR::AQL::Dataset.of_compositions(
+      [builder.repeated_cluster_composition(names: ["O'Brien", 'Other'], label: "Patient's label")]
+    )
+  end
+
+  it %q(archetype predicate: [archetype_id, "O'Brien"] picks the one sibling with that name) do
+    result = OpenEHR::AQL.execute(%(SELECT #{tree}/items[#{cluster_id}, "O'Brien"]/items[at0001]/value/value #{from}), dataset)
+    expect(result.rows).to eq([["O'Brien value"]])
+  end
+
+  it %q(node predicate: [at-code, "Patient's label"] matches the node with that name) do
+    result = OpenEHR::AQL.execute(
+      %(SELECT #{tree}/items[#{cluster_id}, 'Other']/items[at0001, "Patient's label"]/value/value #{from}), dataset
+    )
+    expect(result.rows).to eq([['Other value']])
+  end
+
+  it 'WHERE: a comparison over a path with an apostrophe in a name filters rows' do
+    result = OpenEHR::AQL.execute(
+      %(SELECT o/name/value #{from} WHERE #{tree}/items[#{cluster_id}, "O'Brien"]/items[at0001]/value/value = "O'Brien value"),
+      dataset
+    )
+    expect(result.rows).to eq([['Request']])
+  end
+
+  it 'returns a null column when no sibling has the apostrophe name' do
+    result = OpenEHR::AQL.execute(%(SELECT #{tree}/items[#{cluster_id}, "O'Neill"]/items[at0001]/value/value #{from}), dataset)
+    expect(result.rows).to eq([[nil]])
+  end
+
+  it %q(CONTAINS: CLUSTER k[archetype_id, "O'Brien"] binds only the node with that name (regression pin)) do
+    # regression pin: ContainsResolver never went through path text.
+    result = OpenEHR::AQL.execute(%(SELECT k/name/value #{from} CONTAINS CLUSTER k[#{cluster_id}, "O'Brien"]), dataset)
+    expect(result.rows).to eq([["O'Brien"]])
+  end
+end
