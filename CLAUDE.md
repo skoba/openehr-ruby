@@ -179,6 +179,35 @@ For any non-trivial change (bug fix, hardening, enhancement):
 - anlage-ops の内容(裁定の本文、ロードマップ)を、このリポジトリのコード、
   Issue、PR、文書に写さない。参照は裁定 ID で行う
 
+## 全開の進め方(2026-11-24 導入。裁定 R-20261124-8)
+
+要点だけを書く。正典は裁定台帳の R-20261124-8。これより前の記述と食い違うときは、この節が優先する。
+
+- **止まらずに進める範囲**: 承認済みの計画書と、このリポジトリ宛ての作業列にある項目。
+  計画書が要る項目は、計画書を push してそのまま実装に進む(確認は事後)
+- **必ず止まってゲート報告を出す範囲**: 計画書に無い挙動の変更と公開 API の変更。
+  gem の追加と未リリースのコードへの依存。データの移行と削除、開発機の設定の変更。
+  臨床の判断と人間の入力を待つもの。タグと publish。ほかのリポジトリへの書き込み
+  (台帳の自分宛ての行は除く)
+- **セッションが自分でマージしてよい PR**: 自分で開いた、docs のみの PR と、
+  止まらずに進める範囲の実装の PR。条件は、head の CI がすべて green、競合なし、
+  1 Issue = 1 PR。マージのあと `master` の CI を確かめ、赤なら次に進まず例外報告。
+  `master` では force-push と履歴の書き換えをしない
+- **人間がマージする PR**: 依存を変えるもの(`Gemfile`、gemspec、lock)、版番号を
+  変えるもの、CI のワークフローを変えるもの、ファイルの削除が主な中身のもの、
+  必ず止まる範囲に当たったもの。権限でマージが止められたら、回避せずに報告する
+- **変更履歴は断片ファイル(v2.5.0 のタグのあとの PR から)**: PR では `History.txt` に
+  触らない。`changelog.d/<Issue 番号>-<slug>.md` を 1 PR につき 1 つ足し、変更履歴の文と
+  semver の判定・理由を書く。棚卸しで断片を `History.txt` にまとめ、断片を消す
+  (タグの時点で `changelog.d/` に断片が残っていないこと)。「記録はマージの時点で書く」
+  という規則は変えない。書く場所が変わるだけ
+- **公開はできた順**: 公開できる中身が `master` にそろったら棚卸しに進む。
+  手順は Release convention のとおりで、変えない
+- **報告**: ゲート・バンドル・例外の報告は `docs/reports/` に push し、台帳の自分宛ての
+  行に PR 番号と SHA を書き足す。次の裁定を待たずに、作業列の次の項目に進む
+- **変えないもの**: TDD(Red の出力を報告に載せる)、合否は CI、実測と推論の区別、
+  越境は読み取りだけ、publish は CI artifact だけで `gem push` は人間
+
 ## Release convention
 
 Before tagging, make the final semver determination from the actual content
@@ -213,7 +242,9 @@ shipped different code.)
 commit unrelated to that release's actual fix — as the worked example of a
 neutral classification under this rule.)
 
-**A code change's `History.txt` entry is written at merge time**, into an
+**A code change's `History.txt` entry is written at merge time** (from the
+first PR after the v2.5.0 tag: as a `changelog.d/` fragment, consolidated into
+`History.txt` at the inventory - see 全開の進め方 above), into an
 unreleased section at the top of the file (version number a placeholder,
 finalized at tag time along with the semver call above). Don't defer the
 entry itself to tag time — release-batching (which tag a change ships in)
