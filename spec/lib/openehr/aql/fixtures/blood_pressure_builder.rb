@@ -28,6 +28,17 @@
 #                                  ELEMENT[at0001] DV_TEXT "<name> value".
 #                                  The archetype ids are invented on purpose
 #                                  so they can't be mistaken for real ones.
+#
+#   coded_value_composition      - synthetic (hand-authored, not derived
+#                                  from any real artifact; design
+#                                  authority: docs/design/round2-2.5.0-plan.md
+#                                  section 3.6, issue #49). COMPOSITION >
+#                                  OBSERVATION[zz_invented_assessment] >
+#                                  History[at0001] > PointEvent[at0006] >
+#                                  ItemTree[at0003] > ELEMENT[at0007]
+#                                  DV_CODED_TEXT with the given display
+#                                  label and local code. The archetype id
+#                                  and the codes specs pass in are invented.
 module OpenEHR
   module AQL
     module Fixtures
@@ -67,6 +78,15 @@ module OpenEHR
         end
 
         # --- building blocks (openEHR-EHR-COMPOSITION.encounter.v1 root) ---
+
+        def coded_value_composition(label:, code:, start_time: '2024-01-01T10:00:00+09:00', composer_name: 'Dr. Test')
+          coded = element('at0007', 'Certainty', coded_text(label, code_phrase('local', code)))
+          data = item_tree('at0003', 'Tree', [coded])
+          event = point_event('at0006', 'Any event', start_time, data)
+          history = history_of('at0001', 'History', start_time, [event])
+          observation = observation_of('openEHR-EHR-OBSERVATION.zz_invented_assessment.v1', 'Assessment', history)
+          encounter(observation, start_time: start_time, composer_name: composer_name)
+        end
 
         def encounter(*entries, start_time:, composer_name:)
           RM::Composition::Composition.new(

@@ -872,3 +872,41 @@ describe 'OpenEHR::AQL.execute (#48: EVENT.time hop)' do
     expect(result.rows).to contain_exactly([120], [130])
   end
 end
+
+# Issue #49, resolution shape (b) enhancement, minimal form (Option A):
+# "defining_code" and "code_string" join
+# PathEvaluator::ALLOWED_TERMINAL_HOPS, so a DV_CODED_TEXT's code - not
+# only its display label - is reachable from a path. Written red-first
+# against master d5e3a90.
+describe 'OpenEHR::AQL.execute (#49: defining_code / code_string hops)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o' }
+  let(:coded) { 'o/data[at0001]/events[at0006]/data[at0003]/items[at0007]/value' }
+  let(:dataset) do
+    OpenEHR::AQL::Dataset.of_compositions(
+      [builder.coded_value_composition(label: 'Suspected', code: 'at9074'),
+       builder.coded_value_composition(label: 'Probable', code: 'at9075'),
+       builder.coded_value_composition(label: 'Confirmed', code: 'at9076')]
+    )
+  end
+
+  it 'SELECT: value/defining_code/code_string returns the code, not the label' do
+    result = OpenEHR::AQL.execute("SELECT #{coded}/defining_code/code_string AS code #{from}", dataset)
+    expect(result.rows).to eq([['at9074'], ['at9075'], ['at9076']])
+  end
+
+  it 'WHERE: code_string MATCHES {...} filters rows by code' do
+    result = OpenEHR::AQL.execute(
+      "SELECT #{coded}/value #{from} WHERE #{coded}/defining_code/code_string MATCHES {'at9074', 'at9075'}", dataset
+    )
+    expect(result.rows).to eq([['Suspected'], ['Probable']])
+  end
+
+  it 'still raises ExecutionError for an attribute outside the whitelist (regression pin)' do
+    # regression pin: the whitelist stays a whitelist. encoding is a real
+    # public reader on DV_CODED_TEXT, and is still not reachable.
+    expect do
+      OpenEHR::AQL.execute("SELECT #{coded}/encoding #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "encoding" on a .*DvCodedText/)
+  end
+end

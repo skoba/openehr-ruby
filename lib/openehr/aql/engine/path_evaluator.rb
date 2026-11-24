@@ -20,7 +20,7 @@ module OpenEHR
       # Attribute hops not reachable through the path_attribute DSL.
       # Expand only when a real query needs another one - see the
       # project's "no arbitrary send" rule in the class comment above.
-      ALLOWED_TERMINAL_HOPS = %w[magnitude name time value].freeze
+      ALLOWED_TERMINAL_HOPS = %w[code_string defining_code magnitude name time value].freeze
 
       # Dataset::EHRRecord#ehr_id is already an unwrapped String (see
       # Dataset's own header comment), but AQL's "e/ehr_id/value" syntax
