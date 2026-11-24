@@ -288,7 +288,8 @@ module OpenEHR
     class ISO8601Date
       include ISO8601DateModule, Comparable
       def initialize(string)
-        /(\d{4})(?:-(\d{2})(?:-(\d{2})?)?)?/ =~ string
+        # Anchored (issue #72): YYYY, YYYY-MM or YYYY-MM-DD and nothing else.
+        /\A(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\z/ =~ string
         if $1.nil?
           raise ArgumentError, 'data invalid'
         else
@@ -526,7 +527,10 @@ module OpenEHR
     class ISO8601DateTime
       include ISO8601DateTimeModule, Comparable
       def initialize(string)
-        unless /(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?/ =~ string
+        # Anchored, and the date must be complete before a time may follow
+        # (issue #72): unanchored, any string containing a date-time passed
+        # and the rest was dropped.
+        unless /\A(\d{4})-(\d{2})-(\d{2})T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?\z/ =~ string
           raise ArgumentError, 'format invalid'
         else
           self.year = $1.to_i
