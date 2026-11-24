@@ -162,7 +162,7 @@ For any non-trivial change (bug fix, hardening, enhancement):
   `CLAUDE.md`; as of this entry it is still not added there. Update
   2026-09-04: added there as 絶対規律 item 9.)
 
-## 裁定台帳(2026-11-20 導入)
+## 裁定台帳(2026-11-20 導入、2026-11-24 改定)
 
 - 統括の裁定の正典は `/home/skoba/src/anlage-ops/rulings.md`
   (非公開リポジトリ `skoba/anlage-ops`)。チャットに貼られた本文は写しで、
@@ -170,11 +170,13 @@ For any non-trivial change (bug fix, hardening, enhancement):
 - 「裁定 R-… を読んで着手」と言われたら、最初に
   `git -C /home/skoba/src/anlage-ops pull --ff-only` を実行し、
   台帳の該当行と本文を読む。読めなければ、着手せずに例外報告
-- 着手したら、台帳の自分宛ての行の状態を 発行 → 着手 に書き換え、
-  anlage-ops に commit・push する(日付と、あれば最初の push SHA)。
-  anlage-ops に書いてよいのはこの 1 行だけ。ほかの行、本文、
-  ほかのファイルは変えない。これは越境ゲートの例外として認められている
-- 完了に進めるのは統括か人間。セッションは「完了申請(SHA、CI run)」まで書いてよい
+- `rulings.md` は統括だけが書く。セッションは書き換えない
+- 進み具合は `/home/skoba/src/anlage-ops/status/openehr-ruby.md` に書く。
+  裁定 ID の見出しの下に、日付つきの行を書き足す(着手、PR 番号、SHA、CI run、
+  ゲート報告の提出、完了申請)。古い行は消さない。書いたら commit・push する
+- anlage-ops に書いてよいのは、自分のレーンのこの 1 ファイルだけ。
+  これは越境ゲートの例外として認められている
+- 完了に進めるのは統括か人間。セッションは完了申請まで
 - 報告とコミットメッセージには裁定 ID を書く(例: `Refs R-20261120-1`)
 - anlage-ops の内容(裁定の本文、ロードマップ)を、このリポジトリのコード、
   Issue、PR、文書に写さない。参照は裁定 ID で行う
@@ -188,7 +190,7 @@ For any non-trivial change (bug fix, hardening, enhancement):
 - **必ず止まってゲート報告を出す範囲**: 計画書に無い挙動の変更と公開 API の変更。
   gem の追加と未リリースのコードへの依存。データの移行と削除、開発機の設定の変更。
   臨床の判断と人間の入力を待つもの。タグと publish。ほかのリポジトリへの書き込み
-  (台帳の自分宛ての行は除く)
+  (`status/openehr-ruby.md` は除く)
 - **セッションが自分でマージしてよい PR**: 自分で開いた、docs のみの PR と、
   止まらずに進める範囲の実装の PR。条件は、head の CI がすべて green、競合なし、
   1 Issue = 1 PR。マージのあと `master` の CI を確かめ、赤なら次に進まず例外報告。
@@ -203,8 +205,9 @@ For any non-trivial change (bug fix, hardening, enhancement):
   という規則は変えない。書く場所が変わるだけ
 - **公開はできた順**: 公開できる中身が `master` にそろったら棚卸しに進む。
   手順は Release convention のとおりで、変えない
-- **報告**: ゲート・バンドル・例外の報告は `docs/reports/` に push し、台帳の自分宛ての
-  行に PR 番号と SHA を書き足す。次の裁定を待たずに、作業列の次の項目に進む
+- **報告**: ゲート・バンドル・例外の報告は `docs/reports/` に push し、PR 番号と SHA を
+  `status/openehr-ruby.md` に書き足す(裁定台帳の節。R-20261124-18)。次の裁定を待たずに、
+  作業列の次の項目に進む
 - **変えないもの**: TDD(Red の出力を報告に載せる)、合否は CI、実測と推論の区別、
   越境は読み取りだけ、publish は CI artifact だけで `gem push` は人間
 
