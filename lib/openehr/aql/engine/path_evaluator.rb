@@ -102,13 +102,36 @@ module OpenEHR
       # PATHABLE#item_at_path itself), not an error - only an
       # *ambiguous* match (more than one item) is.
       def navigate_pathable(current, segment)
-        matches = current.items_at_path(rm_path_for(segment))
+        matches = narrow_by_name(current.items_at_path(rm_path_for(segment)), segment.predicate)
         case matches.size
         when 0 then nil
         when 1 then matches.first
         else raise ExecutionError, "path segment #{segment.to_s.inspect} matched #{matches.size} items " \
                                     '(fan-out SELECT paths are not yet supported)'
         end
+      end
+
+      # A predicate's name value ("[id, 'Name']") is applied here, on the
+      # items PATHABLE returned for the id alone, instead of being written
+      # into the path text: PATHABLE path text quotes the name with
+      # apostrophes and cannot hold a name that contains one (issue #65).
+      # Same rule as Pathable.select_by_predicate: the node's name.value
+      # must equal the given name.
+      def narrow_by_name(items, predicate)
+        name = predicate_name(predicate)
+        return items if name.nil?
+
+        items.select do |item|
+          item.respond_to?(:name) && item.name.respond_to?(:value) && item.name.value == name
+        end
+      end
+
+      def predicate_name(predicate)
+        return nil if predicate.nil? || predicate.value.nil?
+        return predicate.value if predicate.value.is_a?(String)
+
+        kind = predicate.is_a?(Model::ArchetypePredicate) ? 'archetype' : 'node'
+        raise ExecutionError, "cannot evaluate a #{predicate.value.class} #{kind} predicate value yet"
       end
 
       def navigate_terminal(current, segment)
@@ -128,45 +151,21 @@ module OpenEHR
         end
       end
 
+      # PATHABLE path text for the segment, by id only - see narrow_by_name
+      # for the name value.
       def rm_path_for(segment)
         return "/#{segment.attribute}" unless segment.predicate
 
-        "/#{segment.attribute}[#{predicate_path_text(segment.predicate)}]"
+        "/#{segment.attribute}[#{predicate_id_text(segment.predicate)}]"
       end
 
-      def predicate_path_text(predicate)
+      def predicate_id_text(predicate)
         case predicate
-        when Model::ArchetypePredicate
-          archetype_predicate_path_text(predicate)
-        when Model::NodePredicate
-          node_predicate_path_text(predicate)
+        when Model::ArchetypePredicate then predicate.archetype_id
+        when Model::NodePredicate then predicate.code
         else
           raise ExecutionError, "cannot evaluate a #{predicate.class} path predicate yet"
         end
-      end
-
-      # "[archetype_id, 'Name']" carries its name value into the PATHABLE
-      # path text the same way a node predicate does, so
-      # Pathable.select_by_predicate can tell apart siblings that share
-      # one archetype id (issue #60).
-      def archetype_predicate_path_text(predicate)
-        return predicate.archetype_id unless predicate.value
-
-        unless predicate.value.is_a?(String)
-          raise ExecutionError, "cannot evaluate a #{predicate.value.class} archetype predicate value yet"
-        end
-
-        "#{predicate.archetype_id}, '#{predicate.value}'"
-      end
-
-      def node_predicate_path_text(predicate)
-        return predicate.code unless predicate.value
-
-        unless predicate.value.is_a?(String)
-          raise ExecutionError, "cannot evaluate a #{predicate.value.class} node predicate value yet"
-        end
-
-        "#{predicate.code}, '#{predicate.value}'"
       end
     end
   end

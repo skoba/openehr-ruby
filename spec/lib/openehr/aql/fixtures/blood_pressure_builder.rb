@@ -73,9 +73,12 @@ module OpenEHR
           encounter(observation, start_time: start_time, composer_name: composer_name)
         end
 
-        def repeated_cluster_composition(names:, start_time: '2024-01-01T10:00:00+09:00', composer_name: 'Dr. Test')
+        # label: the name given to each cluster's ELEMENT[at0001] (issue #65
+        # passes a name containing an apostrophe).
+        def repeated_cluster_composition(names:, label: 'Label', start_time: '2024-01-01T10:00:00+09:00',
+                                         composer_name: 'Dr. Test')
           clusters = names.map do |name|
-            cluster('openEHR-EHR-CLUSTER.zz_invented_party.v1', name, [element('at0001', 'Label', text("#{name} value"))])
+            cluster('openEHR-EHR-CLUSTER.zz_invented_party.v1', name, [element('at0001', label, text("#{name} value"))])
           end
           data = item_tree('at0003', 'Tree', clusters)
           event = point_event('at0006', 'Any event', start_time, data)
