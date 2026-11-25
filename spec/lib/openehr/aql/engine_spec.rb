@@ -1085,3 +1085,49 @@ describe "OpenEHR::AQL.execute (#65: name predicate value with an apostrophe)" d
     expect(result.rows).to eq([["O'Brien"]])
   end
 end
+
+# Issue #88, resolution shape (a) bug: c/uid/value raised ExecutionError
+# ("unsupported path attribute \"uid\" on a ...Composition"), because uid -
+# a LOCATABLE attribute - was in neither terminal-hop list. It becomes a
+# row of TYPED_TERMINAL_HOPS under Locatable, so that it stays unreachable
+# on VERSION and VERSIONED_OBJECT, which also have a uid. Written red-first
+# against master d80e709.
+describe 'OpenEHR::AQL.execute (#88: COMPOSITION.uid hop)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c' }
+  let(:early) { composition_with_uid('zz-invented-uid-1::local::1', start_time: '2025-12-31T23:59:59') }
+  let(:late) { composition_with_uid('zz-invented-uid-2::local::1', start_time: '2026-03-15T00:30:00') }
+
+  def composition_with_uid(uid, start_time:)
+    builder.blood_pressure_composition(systolic: 120, diastolic: 80, start_time: start_time).tap do |composition|
+      composition.uid = OpenEHR::RM::Support::Identification::HierObjectID.new(value: uid) if uid
+    end
+  end
+
+  it 'SELECT: c/uid/value returns the composition uid' do
+    result = OpenEHR::AQL.execute("SELECT c/uid/value #{from}", OpenEHR::AQL::Dataset.of_compositions([early]))
+    expect(result.rows).to eq([['zz-invented-uid-1::local::1']])
+  end
+
+  it 'WHERE: c/uid/value of the compositions whose context starts after a date' do
+    result = OpenEHR::AQL.execute(
+      "SELECT c/uid/value #{from} WHERE c/context/start_time/value > '2026-01-01'",
+      OpenEHR::AQL::Dataset.of_compositions([early, late])
+    )
+    expect(result.rows).to eq([['zz-invented-uid-2::local::1']])
+  end
+
+  it 'returns a null column for a composition without a uid' do
+    result = OpenEHR::AQL.execute("SELECT c/uid/value #{from}",
+                                  OpenEHR::AQL::Dataset.of_compositions([composition_with_uid(nil, start_time: '2026-01-01T00:00:00')]))
+    expect(result.rows).to eq([[nil]])
+  end
+
+  it 'does not make uid reachable on a value that is not a LOCATABLE (regression pin)' do
+    # regression pin: this already raised before #88; it pins that the row
+    # is typed to Locatable.
+    expect do
+      OpenEHR::AQL.execute("SELECT c/context/uid #{from}", OpenEHR::AQL::Dataset.of_compositions([early]))
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "uid" on a .*EventContext/)
+  end
+end
