@@ -81,3 +81,16 @@ gem に入るのは `lib/*` と `README.rdoc` だけ（`openehr.gemspec:19-20`�
 - `changelog.d/` の断片 6 件を `History.txt` の `=== 2.6.0` にまとめ、断片を消す（`changelog.d/README.md` は残す）
 - `lib/openehr/version.rb` を 2.6.0 に
 - 版番号を変える PR なので、マージは人間。タグも人間
+
+## R3 — 2.6.0 の公開（2026-11-25）
+
+- リリースの PR #86 は人間がマージ → master `284a457`（CI run 45599787027 success）
+- タグの前の確認（実行）: `git diff --stat v2.5.0..284a457 -- lib '*.gemspec' Gemfile Gemfile.lock` は `lib/` の 3 ファイルと
+  `version.rb` だけ。R2 の判定（minor）と食い違いは無い
+- タグ `v2.6.0` → `284a457`。人間の指示で、このセッションが打って push した
+- Release run 45600042365 success。「Record sha256」の値は
+  `e6c4040352792b90e2895789068e81c64d36c85aff4a2273631c14334d410ee4`
+- artifact を空の `pkg/` に取り、手元の sha256 が上の値と一致（実行）
+- `gem push` は人間。公開のあとの照合（実行）: `/api/v1/gems/openehr.json` は version 2.6.0、`sha` が上の値と一致。
+  `https://index.rubygems.org/info/openehr` の 2.6.0 の `checksum:` も一致
+- 照合のあと `pkg/openehr-2.6.0.gem` を消した。`pkg/` は空
