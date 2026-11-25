@@ -39,10 +39,18 @@ module OpenEHR
       DEFINITION_PATH = '/template/definition'
       OCCURRENCE_PATH = '/occurrences'
 
+      # A parser for OPT XML already held in a String (#74), parsed with the
+      # same SAFE_PARSE_OPTIONS as a path: OPTParser.from_xml(xml).parse.
+      # Called on a subclass, it returns an instance of that subclass.
+      # filename is nil for such a parser.
+      def self.from_xml(xml)
+        raise ArgumentError, "OPT XML must be a String, not #{xml.class}" unless xml.is_a?(String)
+
+        new(nil).tap { |parser| parser.instance_variable_set(:@xml, xml) }
+      end
+
       def parse
-        @opt = File.open(@filename) do |file|
-          Nokogiri::XML::Document.parse(file, options: SAFE_PARSE_OPTIONS)
-        end
+        @opt = read_document
         @opt.remove_namespaces!
 
         uid = build_uid
@@ -65,6 +73,14 @@ module OpenEHR
       end
 
       private
+
+      def read_document
+        return Nokogiri::XML::Document.parse(@xml, options: SAFE_PARSE_OPTIONS) if @xml
+
+        File.open(@filename) do |file|
+          Nokogiri::XML::Document.parse(file, options: SAFE_PARSE_OPTIONS)
+        end
+      end
 
       # template_id is mandatory for an operational template (enforced by
       # OperationalTemplate itself); a missing/blank <template_id> element
