@@ -36,10 +36,17 @@ jobs:
         if: ${{ github.event_name == 'schedule' || inputs.fetch }}
         run: scripts/fetch_ckm.sh
         working-directory: corpus-src
+      # Two cp calls, not one (#73): GNU cp refuses a second source with the
+      # same file name in one call ("will not overwrite just-created"), even
+      # when the two are byte-identical. source/ goes first and sprint/adl/
+      # second, so where an archetype is in both, the sprint/adl/ copy (the
+      # fresh CKM download in live mode) is the one parsed; source/-only
+      # files are kept.
       - name: Assemble CKM_CORPUS_DIR
         run: |
           mkdir -p "$RUNNER_TEMP/ckm-corpus"
-          cp corpus-src/sprint/adl/*.adl corpus-src/archetypes/*/source/*.adl "$RUNNER_TEMP/ckm-corpus/"
+          cp corpus-src/archetypes/*/source/*.adl "$RUNNER_TEMP/ckm-corpus/"
+          cp corpus-src/sprint/adl/*.adl "$RUNNER_TEMP/ckm-corpus/"
           echo "corpus: $(ls "$RUNNER_TEMP/ckm-corpus" | wc -l) files @ $(git -C corpus-src rev-parse --short HEAD)"
       - name: Run the conformance spec
         run: bundle exec rspec spec/conformance/ckm_corpus_spec.rb

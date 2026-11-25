@@ -43,12 +43,20 @@ scheduled job below follows its `HEAD`, not the pin.
 git clone https://github.com/skoba/openehr-japanese-translation corpus-src
 git -C corpus-src checkout 82cf80b            # or any later commit
 mkdir -p ckm-corpus
-cp corpus-src/sprint/adl/*.adl corpus-src/archetypes/*/source/*.adl ckm-corpus/
+cp corpus-src/archetypes/*/source/*.adl ckm-corpus/
+cp corpus-src/sprint/adl/*.adl ckm-corpus/
 CKM_CORPUS_DIR=$PWD/ckm-corpus bundle exec rspec spec/conformance/ckm_corpus_spec.rb
 ```
 
-The overlapping files are byte-identical, so the second `cp` is
-idempotent.
+Two `cp` calls, not one (#73): GNU `cp` refuses a second source with the
+same file name in a single call ("will not overwrite just-created"), even
+when the two files are byte-identical. `source/` is copied first and
+`sprint/adl/` second, so **where an archetype is in both, the
+`sprint/adl/` copy is the one parsed**. The `source/`-only files are kept.
+In pinned mode the overlapping files are byte-identical, so the order
+does not matter there. In live mode `sprint/adl/` is the fresh CKM
+download and may be a later revision than `source/`; the parsed corpus
+follows the CKM.
 
 **Live mode** (what the weekly workflow does): the same clone at `HEAD`,
 then re-download `sprint/adl/` from the CKM before copying:
@@ -57,7 +65,8 @@ then re-download `sprint/adl/` from the CKM before copying:
 git clone --depth 1 https://github.com/skoba/openehr-japanese-translation corpus-src
 (cd corpus-src && scripts/fetch_ckm.sh)       # every row of sprint/targets.tsv
 mkdir -p ckm-corpus
-cp corpus-src/sprint/adl/*.adl corpus-src/archetypes/*/source/*.adl ckm-corpus/
+cp corpus-src/archetypes/*/source/*.adl ckm-corpus/
+cp corpus-src/sprint/adl/*.adl ckm-corpus/
 ```
 
 `fetch_ckm.sh` resolves each archetype id to its `cid` via
