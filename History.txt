@@ -1,3 +1,14 @@
+=== 2.6.1
+AQL reaches a LOCATABLE's uid, so c/uid/value works in SELECT and WHERE.
+
+* AQL: a LOCATABLE's uid is now reachable from a path, so c/uid/value
+  works in SELECT and WHERE instead of raising ExecutionError
+  ("unsupported path attribute \"uid\" on a ...Composition"). A
+  composition without a uid gives a null column. uid is a row of
+  TYPED_TERMINAL_HOPS under LOCATABLE, not a generic name, so it stays
+  unreachable on VERSION and VERSIONED_OBJECT, which also have a uid.
+  (#88)
+
 === 2.6.0
 Round 3 release. AQL reaches a COMPOSITION's archetype_details
 (template id) and its EVENT_CONTEXT start_time, end_time and setting,
