@@ -11,7 +11,7 @@ module OpenEHR
     # CONTAINS chain searching a matched Locatable's *entire* subtree
     # (any depth, via Pathable#path_children) for the next class,
     # archetype-predicate filtering, AND/OR-grouped sibling branches
-    # (cross-product / union of each branch's matches), NOT CONTAINS
+    # (cross-product / left join of each branch's matches, #97), NOT CONTAINS
     # (parent matches survive only when the negated class is absent),
     # and an EHR-level standardPredicate (e.g. "[ehr_id/value=$ehr_id]",
     # reusing PathEvaluator/PredicateEvaluator's existing comparison
@@ -105,10 +105,52 @@ module OpenEHR
         end
       end
 
-      # "A CONTAINS (B OR C)": either branch matching is enough; each
-      # branch's matches contribute their own bindings independently.
+      # "A CONTAINS (B x OR C y)": each branch is left-joined to the
+      # shared parent, and the parent is kept only when at least one
+      # branch matches (#97). A branch with no match leaves its variables
+      # nil; when both match, every combination of a B-match and a
+      # C-match is one binding (several matches multiply, as in a SQL
+      # left join, and no nil row is added for a branch that matched).
+      #
+      # The AQL specification (Release 1.1.0) does not decide this; it
+      # follows EHRbase so that the same AQL returns the same rows. Raised
+      # upstream on 2026-11-26:
+      # https://discourse.openehr.org/t/contains-a-or-b-what-should-an-unmatched-branch-return-a-third-implementation-asks-for-a-normative-answer/17523
+      #
+      # When the two branches declare the same variable name, the
+      # bindings stay a plain union of the two branches (the behaviour
+      # before #97): a join could not keep both values under one name.
       def resolve_containment_or(node, ehr_record, pool)
-        resolve(node.left, ehr_record, pool) + resolve(node.right, ehr_record, pool)
+        left_matches = resolve(node.left, ehr_record, pool)
+        right_matches = resolve(node.right, ehr_record, pool)
+        left_names = declared_variables(node.left)
+        right_names = declared_variables(node.right)
+        return left_matches + right_matches if left_names.intersect?(right_names)
+        return with_nil(left_matches, right_names) if right_matches.empty?
+        return with_nil(right_matches, left_names) if left_matches.empty?
+
+        left_matches.flat_map do |left_vars, _left_obj|
+          right_matches.map { |right_vars, right_obj| [left_vars.merge(right_vars), right_obj] }
+        end
+      end
+
+      def with_nil(matches, names)
+        unbound = names.to_h { |name| [name, nil] }
+        matches.map { |vars, obj| [unbound.merge(vars), obj] }
+      end
+
+      # The variables a containment node binds when it matches. A NOT
+      # CONTAINS child binds nothing (see negated_matches).
+      def declared_variables(node)
+        case node
+        when Model::ClassExpression then [node.variable].compact
+        when Model::Containment
+          names = declared_variables(node.parent)
+          node.negated ? names : names + declared_variables(node.child)
+        when Model::ContainmentAnd, Model::ContainmentOr
+          declared_variables(node.left) + declared_variables(node.right)
+        else []
+        end
       end
 
       def descendant_pool(bound_object, ehr_record)

@@ -1168,3 +1168,109 @@ describe 'OpenEHR::AQL.execute (#96: LOCATABLE.archetype_node_id hop)' do
     end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "archetype_node_id" on a .*DvText/)
   end
 end
+
+# #97: CONTAINS (A x OR B y). Each OR branch's variables are left-joined
+# to the shared parent, and a parent is kept only when at least one
+# branch matches. A branch with no match leaves its variables null; when
+# both branches match, one row holds both, and several matches in a
+# branch multiply (cross product), never producing a null row.
+#
+# The AQL specification (Release 1.1.0) does not say what an unmatched
+# OR branch's variable holds. This follows EHRbase (left join; its
+# conformance test "Simple 'AND' and 'OR'" in ehrbase/integration-tests
+# tests/robot/AQL/FROM/AND_OR/simple_and_or.robot), so that the same AQL
+# returns the same rows here and there (ruling R-20261126-10). The
+# question was raised upstream on 2026-11-26:
+# https://discourse.openehr.org/t/contains-a-or-b-what-should-an-unmatched-branch-return-a-third-implementation-asks-for-a-normative-answer/17523
+# If that discussion settles differently, the change goes in a new issue.
+#
+# Each example below is data, query and expected rows side by side.
+describe 'OpenEHR::AQL.execute (#97: CONTAINS OR, left join of the branches)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:query) do
+    'SELECT c/name/value, o1/name/value, o2/name/value FROM EHR e CONTAINS COMPOSITION c ' \
+      'CONTAINS (OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
+      'OR OBSERVATION o2[openEHR-EHR-OBSERVATION.body_temperature.v1])'
+  end
+
+  def bp(systolic) = builder.blood_pressure_composition(systolic: systolic, diastolic: 80).content.first
+  def temp(celsius) = builder.body_temperature_composition(celsius: celsius).content.first
+
+  def composition(name, *observations)
+    builder.encounter(*observations, start_time: '2024-01-01T10:00:00+09:00', composer_name: 'Dr. Test').tap do |c|
+      c.name = OpenEHR::RM::DataTypes::Text::DvText.new(value: name)
+    end
+  end
+
+  def rows_for(*compositions, aql: query)
+    OpenEHR::AQL.execute(aql, OpenEHR::AQL::Dataset.of_compositions(compositions)).rows
+  end
+
+  it 'data: O1 only / expected: one row, o2 null' do
+    expect(rows_for(composition('only BP', bp(120)))).to eq([['only BP', 'Blood pressure', nil]])
+  end
+
+  it 'data: O2 only / expected: one row, o1 null' do
+    expect(rows_for(composition('only temp', temp(36.5)))).to eq([['only temp', nil, 'Body temperature']])
+  end
+
+  it 'data: O1 and O2 / expected: one row holding both' do
+    expect(rows_for(composition('both', bp(120), temp(36.5)))).to eq([['both', 'Blood pressure', 'Body temperature']])
+  end
+
+  it 'data: neither / expected: no row' do
+    # regression pin: a parent where no branch matches gave no row before #97 too.
+    expect(rows_for(composition('neither', builder.repeated_cluster_composition(names: ['x']).content.first))).to eq([])
+  end
+
+  it 'data: 2 x O1 and 3 x O2 in one parent / expected: 6 rows (cross product), none null' do
+    aql = 'SELECT o1/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude, ' \
+          'o2/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude ' \
+          'FROM EHR e CONTAINS COMPOSITION c ' \
+          'CONTAINS (OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
+          'OR OBSERVATION o2[openEHR-EHR-OBSERVATION.body_temperature.v1])'
+    rows = rows_for(composition('2 x 3', bp(110), bp(120), temp(36.1), temp(36.2), temp(36.3)), aql:)
+    expect(rows).to contain_exactly(
+      [110.0, 36.1], [110.0, 36.2], [110.0, 36.3], [120.0, 36.1], [120.0, 36.2], [120.0, 36.3]
+    )
+  end
+
+  it 'data: 2 x O1, no O2 / expected: 2 rows, o2 null' do
+    expect(rows_for(composition('2 BP', bp(110), bp(120)))).to eq([['2 BP', 'Blood pressure', nil]] * 2)
+  end
+
+  it 'data: one parent of each kind / expected: one row per parent, in dataset order' do
+    rows = rows_for(composition('only BP', bp(120)), composition('only temp', temp(36.5)),
+                    composition('both', bp(120), temp(36.5)))
+    expect(rows).to eq([['only BP', 'Blood pressure', nil], ['only temp', nil, 'Body temperature'],
+                        ['both', 'Blood pressure', 'Body temperature']])
+  end
+
+  it 'SELECT of the bare variable of an unmatched branch gives null' do
+    only_bp = composition('only BP', bp(120))
+    aql = query.sub('SELECT c/name/value, o1/name/value, o2/name/value', 'SELECT o2')
+    expect(rows_for(only_bp, aql:)).to eq([[nil]])
+  end
+
+  it 'WHERE on an unmatched branch follows the existing null handling (the comparison is false)' do
+    aql = "#{query} WHERE o2/name/value = 'Body temperature'"
+    rows = rows_for(composition('only BP', bp(120)), composition('only temp', temp(36.5)), aql:)
+    expect(rows).to eq([['only temp', nil, 'Body temperature']])
+  end
+
+  it 'data: O1 and O2, both branches named o / expected: two rows, one per branch (regression pin)' do
+    # regression pin: the same variable in both branches keeps the plain
+    # union of before #97 (a join cannot hold two values under one name).
+    aql = 'SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c ' \
+          'CONTAINS (OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
+          'OR OBSERVATION o[openEHR-EHR-OBSERVATION.body_temperature.v1])'
+    expect(rows_for(composition('both', bp(120), temp(36.5)), aql:)).to eq([['Blood pressure'], ['Body temperature']])
+  end
+
+  it 'a name not declared in FROM is still a SemanticError (regression pin)' do
+    # regression pin: undeclared names raised before #97 too.
+    aql = query.sub('SELECT c/name/value, o1/name/value, o2/name/value', 'SELECT o3')
+    expect { rows_for(composition('only BP', bp(120)), aql:) }
+      .to raise_error(OpenEHR::AQL::SemanticError, /unbound variable: "o3"/)
+  end
+end
