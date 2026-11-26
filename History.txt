@@ -1,3 +1,21 @@
+=== 2.7.0
+OPT XML held in a String can be parsed with OPTParser.from_xml, and AQL
+reaches a LOCATABLE's archetype_node_id.
+
+* OPTParser.from_xml(xml).parse parses OPT XML held in a String, with
+  the same safe parse options (SAFE_PARSE_OPTIONS) as a path, so a
+  caller no longer has to override #parse to read a document from memory.
+  Called on a subclass, it returns an instance of that subclass. A
+  leading UTF-8 BOM is accepted; an argument that is not a String raises
+  ArgumentError. OPTParser.new(path).parse is unchanged. (#74)
+
+* AQL: a LOCATABLE's archetype_node_id is now reachable from a path, so
+  o/archetype_node_id works in SELECT and WHERE (e.g. WHERE
+  o/archetype_node_id MATCHES {...} without an archetype predicate)
+  instead of raising ExecutionError ("unsupported path attribute
+  \"archetype_node_id\""). It is a row of TYPED_TERMINAL_HOPS under
+  LOCATABLE, next to archetype_details and uid. (#96)
+
 === 2.6.1
 AQL reaches a LOCATABLE's uid, so c/uid/value works in SELECT and WHERE.
 
