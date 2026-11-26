@@ -173,5 +173,5 @@ coverage of `lib/`). Not blocking: the artifact + sha256 comparison rule in
 | #43 | 修正形は issue に記載済み | ブラケットの中身に分岐がある。eReferral.opt の埋め込みルート 40 件で、`[at0000]` 形は path が 10 通り、`[archetype_id]` 形は 35 通り。計画書 D1 |
 | #49 | 実需例は anlage q20 の 1 件 | anlage 台帳 25 項（`archetype_details/template_id/value` に到達不能、未起票）が同類の 3 件目。`NoMethodError` の漏れも再現した |
 | #58 | 表に無い | 2026-09-25 起票。anlage に迂回あり（`app/lib/opt/template_terms.rb`）。計画書では #43 の次 |
-| #59 | 表に無い | 2026-09-25 起票（日付のみの DV_DATE_TIME を拒否）。anlage に迂回あり（`app/lib/opt/composition_builder.rb` の `dv_date_time_partial`）。2.5.0 の外、2.5.x の先頭候補という案 |
+| #59 | 表に無い | 2026-09-25 起票（日付のみの DV_DATE_TIME を拒否）。anlage に迂回あり（`app/lib/opt/composition_builder.rb` の `dv_date_time_partial`）。2.5.0 の外、2.5.x の先頭候補という案。2.6.0 で受けるようにした（PR #83）。BASE の Foundation Types の説明文と、検証関数・不変条件の食い違いは、仕様の問題として 2026-11-26 に openEHR の Discourse に提起された: https://discourse.openehr.org/t/one-clinical-time-many-precisions-should-dv-date-time-hold-date-only-and-year-only-values/17524 |
 | CKM 軸 | 恒久策は #56 | #56 は open。PR #57 は 2026-09-20 から open（`MERGEABLE`／`CLEAN`、CI は 9/20 の green）。計画書 4 節 |

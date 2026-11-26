@@ -550,6 +550,8 @@ module OpenEHR
         # description allow it; valid_iso8601_date_time and the class
         # invariants (Partial_validity_hour: not hour_unknown, ...) do not.
         # This implementation follows the former.
+        # Raised upstream as a specification question (2026-11-26):
+        # https://discourse.openehr.org/t/one-clinical-time-many-precisions-should-dv-date-time-hold-date-only-and-year-only-values/17524
         unless /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?)?\z/ =~ string
           raise ArgumentError, 'format invalid'
         else
