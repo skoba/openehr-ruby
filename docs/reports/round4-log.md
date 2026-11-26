@@ -54,3 +54,19 @@ Refs R-20261125-4。作業列は先頭から: 1. 下流の報告（AQL が COMPO
 - `changelog.d/88-aql-composition-uid.md` を `History.txt` の `=== 2.6.1` にまとめ、断片を消す（`changelog.d/README.md` は残す）
 - `lib/openehr/version.rb` を 2.6.1 にする
 - 版番号を変える PR なので、マージは人間。タグも人間
+
+## R3 — 2.6.1 の公開（2026-11-26）
+
+- リリースの PR #91 は人間がマージ → master `5d208af`（CI run 45732126928 success）
+- タグの前の確認（実行）
+  - `git diff --stat v2.6.0..5d208af -- lib '*.gemspec' Gemfile Gemfile.lock` は `path_evaluator.rb` と `version.rb` だけ。R2 の判定（patch）と食い違いは無い
+  - 実行時の依存 9 個は、どれも最新版の公開が CI run の開始（11/26 00:55 UTC）より前。`Gemfile.lock` はリポジトリに入っていないので、Release run は依存を解決し直す。それでも CI と違う版を拾うことはない
+- タグ `v2.6.1` → `5d208af`。人間の指示で、このセッションが打って push した
+- Release run 45733955963 success。「Record sha256」の値は
+  `6e081ff2360b87acfbcfdd2a54fdd4f7fd592784fc2906132889ed80a1e194fe`
+- artifact を空の `pkg/` に取り、手元の sha256 が上の値と一致（実行）
+- `gem push` は人間。公開のあとの照合（実行）
+  - `/api/v1/gems/openehr.json` は version 2.6.1、`sha` が上の値と一致
+  - `https://index.rubygems.org/info/openehr` の 2.6.1 の `checksum:` も一致
+- 照合のあと `pkg/openehr-2.6.1.gem` を消した。`pkg/` は空
+- PR #94（#74、minor）は、このタグのあとにマージする（R1 の時点で止めていた）
