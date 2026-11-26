@@ -1131,3 +1131,40 @@ describe 'OpenEHR::AQL.execute (#88: COMPOSITION.uid hop)' do
     end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "uid" on a .*EventContext/)
   end
 end
+
+# Issue #96, resolution shape (a) bug: o/archetype_node_id raised
+# ExecutionError ("unsupported path attribute \"archetype_node_id\""), the
+# same kind of gap as #88. It becomes a row of TYPED_TERMINAL_HOPS under
+# Locatable. Written red-first against master 3e97eb0.
+describe 'OpenEHR::AQL.execute (#96: LOCATABLE.archetype_node_id hop)' do
+  let(:builder) { OpenEHR::AQL::Fixtures::BloodPressureBuilder }
+  let(:from) { 'FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o' }
+  let(:dataset) do
+    OpenEHR::AQL::Dataset.of_compositions(
+      [builder.blood_pressure_composition(systolic: 150, diastolic: 95), builder.body_temperature_composition]
+    )
+  end
+
+  it 'SELECT: o/archetype_node_id returns the archetype id of each observation' do
+    result = OpenEHR::AQL.execute("SELECT o/archetype_node_id #{from}", dataset)
+    expect(result.rows).to contain_exactly(['openEHR-EHR-OBSERVATION.blood_pressure.v1'],
+                                           ['openEHR-EHR-OBSERVATION.body_temperature.v1'])
+  end
+
+  it 'WHERE: o/archetype_node_id MATCHES {...} selects the listed archetypes without an archetype predicate' do
+    result = OpenEHR::AQL.execute(
+      "SELECT o/archetype_node_id #{from} " \
+      "WHERE o/archetype_node_id MATCHES {'openEHR-EHR-OBSERVATION.blood_pressure.v1', 'openEHR-EHR-OBSERVATION.zz_invented.v2'}",
+      dataset
+    )
+    expect(result.rows).to eq([['openEHR-EHR-OBSERVATION.blood_pressure.v1']])
+  end
+
+  it 'does not make archetype_node_id reachable on a value that is not a LOCATABLE (regression pin)' do
+    # regression pin: this already raised before #96; it pins that the row
+    # is typed to Locatable.
+    expect do
+      OpenEHR::AQL.execute("SELECT o/name/archetype_node_id #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "archetype_node_id" on a .*DvText/)
+  end
+end

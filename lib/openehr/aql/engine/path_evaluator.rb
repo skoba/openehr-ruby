@@ -32,7 +32,7 @@ module OpenEHR
       # this file is loaded before parts of the RM.
       TYPED_TERMINAL_HOPS = {
         # uid only here: VERSION and VERSIONED_OBJECT have one too (#88).
-        'OpenEHR::RM::Common::Archetyped::Locatable' => %w[archetype_details uid],
+        'OpenEHR::RM::Common::Archetyped::Locatable' => %w[archetype_details archetype_node_id uid],
         'OpenEHR::RM::Common::Archetyped::Archetyped' => %w[archetype_id template_id],
         'OpenEHR::RM::Composition::EventContext' => %w[end_time setting start_time]
       }.freeze
