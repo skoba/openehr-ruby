@@ -445,6 +445,9 @@ module OpenEHR
         end
       end
 
+      # Compares as written: the UTC offset is ignored, because a time has
+      # no date and normalising it to UTC can cross midnight (#113).
+      # ISO8601DateTime does normalise (#112).
       def <=>(other)
         self.to_second <=> other.to_second
       end

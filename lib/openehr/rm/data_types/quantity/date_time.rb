@@ -136,6 +136,10 @@ module OpenEHR
               @timezone = iso8601_time.timezone
             end
 
+            # Seconds since the start of the day, as written. The UTC offset
+            # is ignored, so times with different offsets compare as
+            # written (#113): a time has no date, and normalising it to UTC
+            # can cross midnight. DvDateTime does normalise (#108).
             def magnitude
               if @fractional_second.nil? && @second.nil? && @minute.nil?
                 return @hour * 60 * 60
