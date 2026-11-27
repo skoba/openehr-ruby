@@ -193,3 +193,21 @@ Refs R-20261127-7。
 
 - semver は minor のまま(2.9.0)。R7 の判定と食い違わない。版番号を変える必要は無い
 - この PR で、3 つの断片を `=== 2.9.0` にまとめて消し、版の冒頭の文を書き直す。この PR のマージのコミットにタグを打つ
+
+## R9 — 2.9.0 の公開(2026-11-27)
+
+Refs R-20261127-7。
+
+- 人間が補いの PR #130 をマージ → master `4289afb`(CI run 45968583543 success)。R-20261126-4 の 1 により、このマージをタグの承認とした(R8 のとおり、`8a2da02` にはタグを打っていない)
+- タグの前の確認(実行)
+  - `changelog.d/` に断片は残っていない(`README.md` だけ)
+  - `git diff --stat v2.8.0..4289afb -- lib '*.gemspec' Gemfile Gemfile.lock` は `assumed_library_types.rb`、`date_time.rb`、`version.rb` だけ。R7 と R8 の判定(minor)と食い違いは無い
+  - 実行時の依存 9 個は、どれも最新版の公開が CI run の開始(11/27 08:48 UTC)より前
+- タグ `v2.9.0` → `4289afb`。このセッションが打って push した
+- Release run 45968836141 success。「Record sha256」の値は
+  `dc0aea00c264277f6beb2b4748d5d2f1c924332f2134e3f732fe18995fe35a08`
+- artifact を空の `pkg/` に取り、手元の sha256 が上の値と一致(実行)
+- `gem push` は人間。公開のあとの照合(実行)
+  - `/api/v1/gems/openehr.json` は version 2.9.0、`sha` が上の値と一致
+  - `https://index.rubygems.org/info/openehr` の 2.9.0 の `checksum:` も一致
+- 照合のあと `pkg/openehr-2.9.0.gem` を消した。`pkg/` は空
