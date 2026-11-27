@@ -397,12 +397,11 @@ module OpenEHR
             s += ":" + sprintf("%02d", @second)
             if !@fractional_second.nil?
               s += "." + @fractional_second.to_s[2..-1]
-              if !@timezone.nil?
-                s += @timezone.to_s
-              end
             end
           end
         end
+        # The offset is written whatever the precision (#121).
+        s += @timezone.to_s unless @timezone.nil?
         return s
       end
 
