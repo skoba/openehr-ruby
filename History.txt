@@ -1,3 +1,46 @@
+=== 2.8.0
+CONTAINS (A x OR B y) left-joins its branches, as EHRbase does, so a
+variable of a branch that did not match is null instead of an error.
+DvDateTime#magnitude normalises to UTC with the right sign. One
+behaviour change to note when upgrading: a parent that matches both OR
+branches now gives one row per combination (#97, below).
+
+* AQL: in CONTAINS (A x OR B y), each branch's variables are now
+  left-joined to the shared parent, so SELECT and WHERE may name a
+  variable of a branch that did not match instead of raising
+  SemanticError ("unbound variable"). A parent is kept when at least one
+  branch matches; the unmatched branch's variables are null. When both
+  branches match, one row holds both, and several matches in a branch
+  multiply (2 x A and 3 x B give 6 rows, none null). A name not declared
+  in FROM is still a SemanticError. The AQL specification (Release 1.1.0)
+  does not decide what an unmatched branch returns; this follows EHRbase
+  (left join, its "Simple 'AND' and 'OR'" conformance test) so that the
+  same AQL returns the same rows. The question was raised upstream on
+  2026-11-26:
+  https://discourse.openehr.org/t/contains-a-or-b-what-should-an-unmatched-branch-return-a-third-implementation-asks-for-a-normative-answer/17523
+  Behaviour change: a query that names only variables bound in every
+  row (e.g. SELECT c) used to get one row per branch match (a parent
+  with 1 A and 1 B gave 2 rows; 2 A and 3 B gave 5); it now gets one
+  row per combination (1 and 6). Two branches that declare the same
+  variable name keep the old union: that is this implementation's own
+  handling, not checked against the specification or EHRbase. (#97)
+
+* DvDateTime#magnitude now normalises to UTC by subtracting the offset,
+  so 2026-03-01T10:00:00+09:00 has the magnitude of 01:00Z and orders
+  before 11:00Z. Before, a positive offset was added instead (the value
+  came out 18 hours late for +09:00), a negative offset's minutes went
+  the wrong way (-03:30 counted as -02:30), and "-00:30" was right only
+  by accident. AQL WHERE and ORDER BY on DV_DATE_TIME values with a
+  non-UTC offset compared them wrongly. Values without an offset, Z
+  values and whole-hour negative offsets are unchanged. DvTime,
+  ISO8601Time and ISO8601DateTime still compare local fields without
+  the offset (unchanged here). (#108)
+
+* ISO8601DateTime: the comment on why a date-only value (YYYY-MM-DD,
+  YYYY-MM, YYYY) is accepted now links the openEHR Discourse thread where
+  the conflict in BASE Foundation Types was raised as a specification
+  question. No behaviour change. (#59)
+
 === 2.7.0
 OPT XML held in a String can be parsed with OPTParser.from_xml, and AQL
 reaches a LOCATABLE's archetype_node_id.
