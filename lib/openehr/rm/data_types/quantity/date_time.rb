@@ -293,19 +293,6 @@ module OpenEHR
 
             private
 
-            # The offset in seconds, east of UTC positive. Read from the
-            # offset text, because Timezone#hour loses the sign of "-00:30"
-            # and Timezone#minute is unsigned (#108).
-            def utc_offset_seconds
-              return 0 unless @timezone
-
-              match = /\A([+-])(\d{2}):?(\d{2})\z/.match(@timezone.to_s)
-              return 0 unless match
-
-              seconds = (match[2].to_i * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) + (match[3].to_i * SECONDS_IN_MINUTE)
-              match[1] == '-' ? -seconds : seconds
-            end
-
             def split_date_time(date_time)
               /^(.*)T(.*)$/ =~ date_time.as_string
               return DvDate.new(:value => $1), DvTime.new(:value => $2)

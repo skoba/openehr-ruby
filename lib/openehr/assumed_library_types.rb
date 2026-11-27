@@ -532,6 +532,23 @@ module OpenEHR
         end
         return s
       end
+
+      private
+
+      # The offset in seconds, east of UTC positive. Read from the offset
+      # text, because Timezone#hour loses the sign of "-00:30" and
+      # Timezone#minute is unsigned (#108). Z and a value without an
+      # offset both give 0, so a value without an offset counts as UTC,
+      # also when it is compared with a value that has one (#112).
+      def utc_offset_seconds
+        return 0 unless @timezone
+
+        match = /\A([+-])(\d{2}):?(\d{2})\z/.match(@timezone.to_s)
+        return 0 unless match
+
+        seconds = (match[2].to_i * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) + (match[3].to_i * SECONDS_IN_MINUTE)
+        match[1] == '-' ? -seconds : seconds
+      end
     end
 
     class ISO8601DateTime
@@ -599,9 +616,11 @@ module OpenEHR
       end
 
       protected
+      # The UTC instant (#112), by the same rule as DvDateTime#magnitude
+      # (#108): local time minus the offset.
       def magnitude
         return (self.to_days*HOURS_IN_DAY*MINUTES_IN_HOUR*SECONDS_IN_MINUTE) +
-          self.to_second
+          self.to_second - utc_offset_seconds
       end
     end
   
