@@ -56,11 +56,14 @@ module OpenEHR
               @day = iso8601_date.day
             end
 
-            # A missing month or day counts as 1, here only, so a partial
-            # value (2026, 2026-11) has a magnitude and orders as its
-            # earliest day (#120; it raised TypeError before).
+            # Days since 0001-01-01, as RM Data Types 7.2.2 defines
+            # DV_DATE.magnitude (#126; it counted from 0000-01-01 before).
+            # The count is ISO8601DateModule#calendar_days, which
+            # ISO8601Date also orders by: a missing month or day counts as
+            # 1, here only, so a partial value (2026, 2026-11) orders as
+            # its earliest day (#120).
             def magnitude
-              return Date.new(@year, @month || 1, @day || 1)-Date.new(0000,1,1)
+              calendar_days
             end
 
             def diff(other)

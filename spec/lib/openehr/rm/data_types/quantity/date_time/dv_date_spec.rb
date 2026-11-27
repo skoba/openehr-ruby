@@ -26,8 +26,10 @@ describe DvDate do
     expect(@dv_date.day).to be_equal 28
   end
 
-  it 'magnitude should 734045' do
-    expect(@dv_date.magnitude).to eq(734045)
+  # Days since 0001-01-01 (RM 7.2.2, #126). Before #126 the count started
+  # at 0000-01-01 and this was 734045.
+  it 'magnitude should 733677' do
+    expect(@dv_date.magnitude).to eq(733677)
   end
 
   it 'diff should P0Y0M1W11D' do
