@@ -120,6 +120,8 @@ module OpenEHR
       # When the two branches declare the same variable name, the
       # bindings stay a plain union of the two branches (the behaviour
       # before #97): a join could not keep both values under one name.
+      # This is this implementation's own choice; neither the AQL
+      # specification nor EHRbase was checked as a basis for it.
       def resolve_containment_or(node, ehr_record, pool)
         left_matches = resolve(node.left, ehr_record, pool)
         right_matches = resolve(node.right, ehr_record, pool)
