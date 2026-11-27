@@ -20,8 +20,11 @@ describe 'OpenEHR::AssumedLibraryTypes strict ISO 8601 input (#72)' do
       end
     end
 
-    it 'rejects the compact form instead of misreading it (it used to parse 20260922T143000 as year 0922)' do
-      expect { date_time.new('20260922T143000') }.to raise_error(ArgumentError)
+    # #72 rejected the compact form, so that it was no longer misread;
+    # #80 reads it correctly.
+    it 'does not misread the compact form (it used to parse 20260922T143000 as year 0922)' do
+      value = date_time.new('20260922T143000')
+      expect([value.year, value.month, value.day, value.hour]).to eq [2026, 9, 22, 14]
     end
 
     ['2026-09-22T14', '2026-09-22T14:30', '2026-09-22T14:30:05', '2026-09-22T14:30:05.25', '2026-09-22T14:30:05Z',

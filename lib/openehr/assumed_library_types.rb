@@ -271,8 +271,12 @@ module OpenEHR
         @day.nil?
       end
 
+      # True if the value was given in the extended form (with '-' and
+      # ':' separators), false for the compact form (BASE Foundation
+      # Types 6.5.3-6.5.6; #80). A value that cannot show a separator
+      # (a year only, an hour only) counts as extended.
       def is_extended?
-        true
+        @extended.nil? ? true : @extended
       end
 
       def is_partial?
@@ -317,14 +321,21 @@ module OpenEHR
 
     class ISO8601Date
       include ISO8601DateModule, Comparable
+
+      EXTENDED_FORM = /\A(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\z/
+      COMPACT_FORM = /\A(\d{4})(\d{2})(\d{2})?\z/
+
       def initialize(string)
-        # Anchored (issue #72): YYYY, YYYY-MM or YYYY-MM-DD and nothing else.
-        /\A(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\z/ =~ string
-        if $1.nil?
-          raise ArgumentError, 'data invalid'
+        # Anchored (issue #72): YYYY, YYYY-MM or YYYY-MM-DD, or the
+        # compact YYYYMMDD or YYYYMM (#80), and nothing else.
+        if EXTENDED_FORM =~ string
+          @extended = true
+        elsif COMPACT_FORM =~ string
+          @extended = false
         else
-          self.year = $1.to_i
+          raise ArgumentError, 'data invalid'
         end
+        self.year = $1.to_i
         if $2.nil?
           self.month = nil
         else
@@ -412,8 +423,12 @@ module OpenEHR
         false
       end
 
+      # True if the value was given in the extended form (with '-' and
+      # ':' separators), false for the compact form (BASE Foundation
+      # Types 6.5.3-6.5.6; #80). A value that cannot show a separator
+      # (a year only, an hour only) counts as extended.
       def is_extended?
-        true
+        @extended.nil? ? true : @extended
       end
 
       def is_partial?
@@ -447,6 +462,8 @@ module OpenEHR
     class ISO8601Time
       include ISO8601TimeModule, Comparable
       def initialize(string)
+        # hhmm... is the compact form (#80); a bare hh counts as extended.
+        @extended = !(/\A\d{4}/ =~ string)
         /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ string
         if $2.nil?
           self.minute = nil
@@ -598,6 +615,12 @@ module OpenEHR
 
     class ISO8601DateTime
       include ISO8601DateTimeModule, Comparable
+
+      # Both forms capture the same groups: year, month, day, hour,
+      # minute, second, decimal sign, fraction, offset.
+      EXTENDED_FORM = /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?)?\z/
+      COMPACT_FORM = /\A(\d{4})(\d{2})(?:(\d{2})(?:T(\d{2})(?:(\d{2})(?:(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(\d{2}))?)?)?)?\z/
+
       def initialize(string)
         # Anchored, and the date must be complete before a time may follow
         # (issue #72): unanchored, any string containing a date-time passed
@@ -614,11 +637,18 @@ module OpenEHR
         # This implementation follows the former.
         # Raised upstream as a specification question (2026-11-26):
         # https://discourse.openehr.org/t/one-clinical-time-many-precisions-should-dv-date-time-hold-date-only-and-year-only-values/17524
-        unless /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?)?\z/ =~ string
-          raise ArgumentError, 'format invalid'
+        #
+        # The compact form (YYYYMMDDThhmmss..., YYYYMMDD, YYYYMM; BASE
+        # Foundation Types 6.5.1) is read too (#80). The date part and the
+        # time part use one form; a value that mixes them is rejected.
+        if EXTENDED_FORM =~ string
+          @extended = true
+        elsif COMPACT_FORM =~ string
+          @extended = false
         else
-          self.year = $1.to_i
+          raise ArgumentError, 'format invalid'
         end
+        self.year = $1.to_i
         if $2.nil?
           self.month = nil
         else

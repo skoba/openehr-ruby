@@ -56,6 +56,12 @@ module OpenEHR
               @day = iso8601_date.day
             end
 
+            # The form #value was given in (#80). Read from #value, so no
+            # extra instance variable reaches the serializers.
+            def is_extended?
+              OpenEHR::AssumedLibraryTypes::ISO8601Date.new(value).is_extended?
+            end
+
             # Days since 0001-01-01, as RM Data Types 7.2.2 defines
             # DV_DATE.magnitude (#126; it counted from 0000-01-01 before).
             # The count is ISO8601DateModule#calendar_days, which
@@ -140,6 +146,11 @@ module OpenEHR
               @second = iso8601_time.second
               @fractional_second = iso8601_time.fractional_second
               @timezone = iso8601_time.timezone
+            end
+
+            # The form #value was given in (#80); see DvDate#is_extended?.
+            def is_extended?
+              OpenEHR::AssumedLibraryTypes::ISO8601Time.new(value).is_extended?
             end
 
             # Seconds since the start of the day, as written. The UTC offset
@@ -231,6 +242,11 @@ module OpenEHR
               self.hour = iso8601date_time.hour
               self.fractional_second = iso8601date_time.fractional_second
               self.timezone = iso8601date_time.timezone
+            end
+
+            # The form #value was given in (#80); see DvDate#is_extended?.
+            def is_extended?
+              OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(value).is_extended?
             end
 
             # A missing part counts as the earliest value it could have
