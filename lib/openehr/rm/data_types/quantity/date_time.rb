@@ -230,22 +230,15 @@ module OpenEHR
             # Comparable#== follows this ordering: values of different
             # precision that denote the same earliest instant are ==, while
             # their #value still differs.
+            #
+            # The value is normalised to UTC (#108): local time minus the
+            # offset, so 10:00+09:00 has the magnitude of 01:00Z.
             def magnitude
-              hour, minute = @hour || 0, @minute || 0
-              if @timezone
-                if @timezone.sign == -1
-                  hour -= @timezone.hour
-                  minute -= @timezone.minute
-                elsif @timezone.sign == +1
-                  hour += @timezone.hour
-                  minute += @timezone.minute
-                end
-              end
               seconds = (((((((@year * 365.24) +
                            ((@month || 1) * 30.42) +
                            (@day || 1)) * 24) +
-                           hour) * 60) +
-                           minute) * 60) + (@second || 0)
+                           (@hour || 0)) * 60) +
+                           (@minute || 0)) * 60) + (@second || 0) - utc_offset_seconds
               if @fractional_second.nil?
                 return seconds
               else
@@ -299,6 +292,19 @@ module OpenEHR
             end
 
             private
+
+            # The offset in seconds, east of UTC positive. Read from the
+            # offset text, because Timezone#hour loses the sign of "-00:30"
+            # and Timezone#minute is unsigned (#108).
+            def utc_offset_seconds
+              return 0 unless @timezone
+
+              match = /\A([+-])(\d{2}):?(\d{2})\z/.match(@timezone.to_s)
+              return 0 unless match
+
+              seconds = (match[2].to_i * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) + (match[3].to_i * SECONDS_IN_MINUTE)
+              match[1] == '-' ? -seconds : seconds
+            end
 
             def split_date_time(date_time)
               /^(.*)T(.*)$/ =~ date_time.as_string
