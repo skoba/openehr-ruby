@@ -1261,6 +1261,8 @@ describe 'OpenEHR::AQL.execute (#97: CONTAINS OR, left join of the branches)' do
   it 'data: O1 and O2, both branches named o / expected: two rows, one per branch (regression pin)' do
     # regression pin: the same variable in both branches keeps the plain
     # union of before #97 (a join cannot hold two values under one name).
+    # This is this implementation's own handling (ruling R-20261126-13):
+    # neither the AQL specification nor EHRbase was checked as a basis.
     aql = 'SELECT o/name/value FROM EHR e CONTAINS COMPOSITION c ' \
           'CONTAINS (OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1] ' \
           'OR OBSERVATION o[openEHR-EHR-OBSERVATION.body_temperature.v1])'

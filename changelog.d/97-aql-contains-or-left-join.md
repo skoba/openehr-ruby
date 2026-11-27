@@ -15,7 +15,8 @@
   row (e.g. SELECT c) used to get one row per branch match (a parent
   with 1 A and 1 B gave 2 rows; 2 A and 3 B gave 5); it now gets one
   row per combination (1 and 6). Two branches that declare the same
-  variable name keep the old union. (#97)
+  variable name keep the old union: that is this implementation's own
+  handling, not checked against the specification or EHRbase. (#97)
 
 Semver: decided at the inventory (ruling R-20261126-10). A query that
 raised now returns rows (patch), but the row count for a parent that
