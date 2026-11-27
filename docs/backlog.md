@@ -174,4 +174,5 @@ coverage of `lib/`). Not blocking: the artifact + sha256 comparison rule in
 | #49 | 実需例は anlage q20 の 1 件 | anlage 台帳 25 項（`archetype_details/template_id/value` に到達不能、未起票）が同類の 3 件目。`NoMethodError` の漏れも再現した |
 | #58 | 表に無い | 2026-09-25 起票。anlage に迂回あり（`app/lib/opt/template_terms.rb`）。計画書では #43 の次 |
 | #59 | 表に無い | 2026-09-25 起票（日付のみの DV_DATE_TIME を拒否）。anlage に迂回あり（`app/lib/opt/composition_builder.rb` の `dv_date_time_partial`）。2.5.0 の外、2.5.x の先頭候補という案。2.6.0 で受けるようにした（PR #83）。BASE の Foundation Types の説明文と、検証関数・不変条件の食い違いは、仕様の問題として 2026-11-26 に openEHR の Discourse に提起された: https://discourse.openehr.org/t/one-clinical-time-many-precisions-should-dv-date-time-hold-date-only-and-year-only-values/17524 |
+| #113 | 表に無い | 2026-11-27 起票。DvTime#magnitude と ISO8601Time#<=> は、オフセットを見ずに書かれた時刻で比べる(`10:00:00+09:00` が `02:00:00Z` より後)。この扱いのまま、注釈と regression pin を足した。日付を持つ ISO8601DateTime と DvDateTime は UTC にそろえる(#108、#112)。残る問い: オフセットの違う DV_TIME どうしの順序を、仕様の問題として openEHR に提起するか(RM の DV_TIME.magnitude の定義はオフセットに触れていない)。決めるのは人間 |
 | CKM 軸 | 恒久策は #56 | #56 は open。PR #57 は 2026-09-20 から open（`MERGEABLE`／`CLEAN`、CI は 9/20 の green）。計画書 4 節 |
