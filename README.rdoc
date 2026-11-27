@@ -87,6 +87,20 @@ DV_DURATION (calendar-aware: month-end clamping, leap years, and
 day/timezone wraparound), and DV_DURATION supports +/-/multiply
 against another DV_DURATION.
 
+Date/time ordering. DV_DATE_TIME and ISO8601DateTime order by one count,
+the seconds since 0001-01-01T00:00:00Z (RM Data Types 7.2.4), normalised
+to UTC; a value without an offset is read as UTC. DV_DATE and
+ISO8601Date order by calendar days. A partial value (2026, 2026-11)
+orders as its earliest instant: a missing month or day counts as 1, and
+a missing hour, minute or second as 0, inside that count only. The value
+and its string keep the precision they were written with. The
+specification does not say how partial values are ordered; this follows
+EHRbase and will be revisited if the openEHR discussion concludes
+otherwise. Because 2026 and 2026-01-01 order the same, they are == too
+(Comparable); compare #value to tell precisions apart. DV_TIME and
+ISO8601Time compare the time as written, ignoring the offset, since a
+time has no date.
+
 Not yet incorporated from RM 1.1.0 / BASE 1.2.0: ITEM_TAG (still in a
 development branch, not yet in a released RM version).
 
