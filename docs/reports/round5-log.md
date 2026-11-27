@@ -120,3 +120,21 @@ Refs R-20261126-9、R-20261126-10。作業列: 1. 次の版（#74 と #96）、2
 - 断片 3 つ（`59-…`、`97-…`、`108-…`）を `History.txt` の `=== 2.8.0` にまとめ、断片を消す。#97 の断片の「Semver」の行は、この判定に置き換える
 - `lib/openehr/version.rb` を 2.8.0 にする
 - 版番号を変える PR なので、マージは人間。マージがタグの承認になる（R-20261126-4 の 1）
+
+## R6 — 2.8.0 の公開(2026-11-27)
+
+Refs R-20261127-3。
+
+- リリースの PR #111 は人間がマージ → master `d371b30`(CI run 45936303837 success)。R-20261126-4 の 1 により、このマージをタグの承認とした
+- タグの前の確認(実行)
+  - `git diff --stat v2.7.0..d371b30 -- lib '*.gemspec' Gemfile Gemfile.lock` は `contains_resolver.rb`、`assumed_library_types.rb`(注釈)、`date_time.rb`、`version.rb` だけ。R5 の判定(minor)と食い違いは無い
+  - 実行時の依存 9 個は、どれも最新版の公開が CI run の開始(11/27 03:48 UTC)より前
+- タグ `v2.8.0` → `d371b30`。このセッションが打って push した
+- Release run 45936540127 success。「Record sha256」の値は
+  `e7aacd8854d32be0ff1f5bbf8482a009a80ee76522c9f3910cd5a5be15ba1081`
+- artifact を空の `pkg/` に取り、手元の sha256 が上の値と一致(実行)
+- `gem push` は人間。公開のあとの照合(実行)
+  - `/api/v1/gems/openehr.json` は version 2.8.0、`sha` が上の値と一致
+  - `https://index.rubygems.org/info/openehr` の 2.8.0 の `checksum:` も一致
+- 照合のあと `pkg/openehr-2.8.0.gem` を消した。`pkg/` は空
+- タグのあとの PR: #114(#112、ISO8601DateTime#<=> を UTC にそろえる)と #115(#113、DvTime・ISO8601Time は書かれた時刻のまま)。どちらも head の CI は green。セッションのマージは権限で止められたので、人間のマージを待つ
