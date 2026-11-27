@@ -1,0 +1,191 @@
+{<img src="https://github.com/skoba/openehr-ruby/actions/workflows/ci.yml/badge.svg" alt="CI" />}[https://github.com/skoba/openehr-ruby/actions/workflows/ci.yml]
+
+{English}[link:README.rdoc] | 日本語
+
+この文書は、英語版(README.rdoc)の訳である。食い違うときは、英語版が正。
+
+=概要
+
+openEHR の仕様の Ruby による実装
+
+* http://github.com/skoba/openehr-ruby
+
+= 動かすのに要るもの
+
+* Ruby のコアチームがいま保守している Ruby の版に対応する: 3.3、3.4、4.0。
+* 開発には Linux 上の CRuby 4.0.10 を使った。CI は 3.3、3.4、4.0 で回している。
+* ほかの版(3.1 と 3.2 を含む)には対応しない(どちらも EOL になった)。
+
+=説明
+
+これは、Ruby による openEHR の実装プロジェクトの安定版である。
+この版は、openEHR の仕様のリリース 1.0.2 を基準にし、その上に
+RM 1.1.0 / BASE 1.2.0 との差分を、少しずつ重ねている(どのクラスと属性が
+1.1.0 だけのものかは、下の「RM 1.0.2 と RM 1.1.0 の意味」を見ること)。
+以前は、このパッケージを open_ehr と呼んでいたが、リリース 1.1.0 から
+openehr に変えた。1.0.x の版は廃止した。
+
+openEHR の標準を、開発しながら理解するために、Ruby on Rails ですぐに配置できる見本の EHR を作ることが狙いである。
+
+このパッケージに入っているもの:
+* ADL 1.4 のパーサ
+* XML のアーキタイプのパーサ(この gem の XMLSerializer が出力する、
+  openEHR の正規の ITS-XML の形を読む。制約の木のノードを組む部品は、
+  OPT のパーサと共有している)
+* openEHR の仕様 1.0.2 にもとづく AM/RM のパッケージと、RM 1.1.0 との差分
+* ADL/XML/JSON のシリアライザと、ADL のアーキタイプの検証器
+* AQL(Archetype Query Language): パーサと、メモリの中で動く実行エンジン。
+  手元のメモリにすでにある RM のオブジェクトのグラフに対して、
+  問い合わせを直接評価する(下の「AQL で問い合わせる」を見ること)
+
+このパッケージに入っていないもの:
+* 永続的なデータストアと検索の索引。ここの AQL が問い合わせるのは、
+  メモリの中の RM のオブジェクトのグラフだけである。データが
+  データベースにある時点で、そこから取り出す統合の部分(たとえば
+  openehr-rails)がその役を持ち、この gem の AQL エンジンは、
+  取り出し方をまったく知らないままでいる
+* 用語サービス(openehr-terminology パッケージに移した)
+* Rails のプラグイン(openehr-rails パッケージに移した)
+
+ほぼすべてのクラスが、RSpec23 で組んだテストを通っている。これらの spec の
+ファイルは /spec の下にある。
+
+rm/security などのように、仕様がまだ定まっていないものもある。そのため、
+これらのクラスの実装は後に回した。
+
+用語のサーバと人口統計(Demographic)のサーバは、別のプロジェクトで
+実装する。
+
+=RM 1.0.2 と RM 1.1.0 の意味
+
+この gem の基準は openEHR RM 1.0.2 で、ここまでに、次の RM 1.1.0 /
+BASE 1.2.0 の差分を取り入れた。ここに挙げていないものは、すべて
+1.0.2 の意味のままである。ここに挙げたものは、RM 1.1.0 以降にだけあるか、
+RM 1.1.0 以降でだけ、このように振る舞う。
+
+  クラス / 属性                               RM の版     注
+  ------------------------------------------  ----------  ---------------------------------------------
+  DV_SCALE(新しいクラス)                   1.1.0       DV_ORDINAL と同じだが、値が Real(SPECRM-19)
+  DV_QUANTITY.units_system                   1.1.0       省ける。UCUM でない単位の体系を表す
+  DV_QUANTITY.units_display_name             1.1.0       省ける。単位の表示用の形(SPECRM-65)
+  CODE_PHRASE.preferred_term                 1.1.0       省ける。code_string の推奨の用語
+  DV_PARAGRAPH                               非推奨      RM 1.0.4 から非推奨。使えるが、警告を出す
+  DV_DURATION の負の値("-P10D")            1.1.0       一貫して対応する(SPECRM-96)
+  EHR.folders                                1.1.0       List<OBJECT_REF>。directory = folders.item(1)
+  FOLDER.details                             1.1.0       省ける。ITEM_STRUCTURE のメタデータ
+  FEEDER_AUDIT_DETAILS.other_details         1.1.0       省ける。ITEM_STRUCTURE のメタデータ(SPECRM-74)
+  ACTIVITY.timing                            1.1.0       省けるようになった(1.1.0 より前は必須)
+  ISM_TRANSITION.reason                      1.1.0       省ける。List<DV_TEXT>
+  ISM_TRANSITION.transition                  1.1.0       省けるようになった(1.1.0 より前は必須)
+  DV_IDENTIFIER.issuer/assigner/type         1.0.4       省ける(1..1 の必須で残るのは id だけ)
+  PARTICIPATION.mode                         1.0.4       省けるようになった(1.0.4 より前は必須)
+  EHR.contributions / EHR.compositions       1.1.0       省けるようになった(1.1.0 より前は必須)
+  DV_MULTIMEDIA.size                         1.1.0       省ける Integer。明示しないときは、継承した
+                                                          値にもとづく size に戻る
+  ELEMENT.null_reason                        1.1.0       省ける DV_TEXT。null_flavor が設定されていること
+  COMPOSITION.category = "episodic"          1.1.0       コードの変更ではなく、用語の値(SPECRM-89)。
+                                                          差し替えのできる OpenEHR::TerminologyService
+                                                          の継ぎ目で、すでに対応している
+
+DV_DATE/DV_TIME/DV_DATE_TIME は、DV_DURATION との #add/#subtract に
+対応した(暦にもとづく: 月末への切り詰め、閏年、日とタイムゾーンの
+繰り上がり)。DV_DURATION は、ほかの DV_DURATION との +/-/掛け算に
+対応した。
+
+日付と日時の順序。DV_DATE_TIME と ISO8601DateTime は、1 つの数で並べる。
+0001-01-01T00:00:00Z からの秒数で(RM Data Types 7.2.4)、UTC に
+そろえたもの。オフセットの無い値は UTC として読む。DV_DATE と
+ISO8601Date は、暦の日数で並べる。一部だけの値(2026、2026-11)は、
+いちばん早い時点として並ぶ。その数の中でだけ、無い月と日は 1、無い時、
+分、秒は 0 と数える。値とその文字列は、書かれたときの精度のままである。
+一部だけの値をどう並べるかは、仕様に書かれていない。ここでは EHRbase に
+合わせており、openEHR での議論が別の結論になれば、見直す。2026 と
+2026-01-01 は同じ順に並ぶので、== でも等しい(Comparable)。精度を
+区別するには #value を比べること。DV_TIME と ISO8601Time は、時刻を
+書かれたとおりに比べ、オフセットを無視する。時刻には日付が無いからである。
+
+RM 1.1.0 / BASE 1.2.0 からまだ取り入れていないもの: ITEM_TAG(まだ開発の
+ブランチにあり、リリースされた RM の版には入っていない)。
+
+=AQL で問い合わせる
+
+  query  = OpenEHR::AQL.parse(aql_string)                    # => 解析済みの、変更できない Query
+  result = query.execute(dataset, params: { ehr_id: '...' })  # => ResultSet(Enumerable で、#to_json もある)
+  result = OpenEHR::AQL.execute(aql_string, dataset, params: {})  # 1 回で済ませる形
+
+エンジンは、<tt>OpenEHR::AQL::Dataset</tt> に対して問い合わせを評価する。
+これが、ただ 1 つの入力の境界であり、特定の Web フレームワークや
+O/R マッパーから独立していることの、すべてである。
+<tt>lib/openehr/aql/</tt> の下にあるものは、どれも「データがある場所」と、
+<tt>Dataset</tt> を通してだけやりとりする。<tt>Dataset</tt> 自体が頼るのは、
+Ruby の <tt>Enumerable</tt>/<tt>#each</tt> の約束と、この gem の
+RM のクラスだけである。ActiveRecord も Rails も Sequel も、この gem の
+どこにも無く、これからも入れない。
+
+==AQL にデータを渡す
+
+<tt>Dataset</tt> は、<tt>{ehr_id:, compositions:, ehr_status: (省ける)}</tt>
+の形のレコードの、どんな Enumerable でも受け取る(キーがシンボルか文字列の
+Hash、または同じメソッドに応えるダックタイプのオブジェクト)。すでに
+<tt>OpenEHR::RM::EHR::EHR</tt> を持っていれば、それをそのまま渡してもよい。
+レコードの <tt>compositions</tt> が返す要素は、どれも、この gem 自身の
+RM のオブジェクト(<tt>is_a?(OpenEHR::RM::Common::Archetyped::Pathable)</tt>)
+でなければならない。それ以外のものは、ゆるいダックタイピングで中途半端に
+動かすのではなく、すぐに <tt>OpenEHR::AQL::DatasetError</tt> を上げ、
+問題のクラスと位置を示す。
+
+作るときに元をたどらないので、遅延で作られる Enumerable は、
+<tt>execute</tt> の最後まで遅延のままである。仮に Rails + ActiveRecord と
+統合する(たとえば openehr-rails)なら、次のようになる。これはまったく
+この gem の外のもので、境界を具体的に見せるためだけに示す:
+
+  records = Ehr.find_each.lazy.map { |row|
+    { ehr_id: row.uid,
+      compositions: row.composition_records.lazy.map { |cr|
+        OpenEHR::RM::CompositionFactory.create_from_json(cr.canonical_json) } } }
+  OpenEHR::AQL.execute(aql, OpenEHR::AQL::Dataset.new(ehrs: records))
+
+Sinatra + Sequel や、ほかのフレームワークと ORM に替えても、変わるのは
+上の 2 つの <tt>.map</tt> の中身だけである。この gem の AQL のコードは、
+何も知る必要がない。データベースを使わない、ちょっとしたスクリプトなら:
+
+  c1 = OpenEHR::RM::CompositionFactory.create_from_json(composition_json)  # または手で組む
+  OpenEHR::AQL.execute(aql, OpenEHR::AQL::Dataset.of_compositions([c1, c2]))
+  # または単に: OpenEHR::AQL.execute(aql, [c1, c2])  # Dataset.wrap を通る
+
+=おもなコードの作者
+* http://openehr.jp の Shinji Kobayashi と Akimichi Tatsukawa
+* ADL のパーサのテストの事例は、openEHR の Java と Eiffel の参照実装のプロジェクトから取った。
+
+=貢献者
+GitHub でのプルリクエストに感謝する。
+
+* Michael Deryugin
+* Dmitry Lavrov
+* Evgeny Strokov
+* Marcus Baw(pacharanero)
+
+=著作権
+このソフトウェア(このディレクトリとその下のディレクトリにある、
+ADL のファイルを除くすべてのファイルを含む)の著作権は、
+元の作者と貢献者にある。2011-2013 年。
+
+All Rights Reserved.
+
+=ライセンス
+
+この製品は、Apache 2.0 ライセンスで公開している。
+
+   Copyright [2012-2020] openEHR Ruby implementation project.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.

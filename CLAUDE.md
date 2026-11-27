@@ -85,6 +85,8 @@ For any non-trivial change (bug fix, hardening, enhancement):
     instructed — if an instructed lineage doesn't match what actually went
     into the fixture, write it to match reality instead.
 - **One issue = one branch = one PR.** Don't bundle unrelated fixes.
+- **A PR that changes `README.rdoc` fixes its Japanese translation,
+  `README.ja.rdoc`, in the same PR** (R-20261127-28, #145).
 - **Every change needs a semver call and a `History.txt` entry.** State
   whether the change is patch/minor/major and why, even if the answer is
   debatable - record the reasoning, not just the conclusion.
