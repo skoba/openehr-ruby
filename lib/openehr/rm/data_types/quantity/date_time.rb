@@ -56,8 +56,11 @@ module OpenEHR
               @day = iso8601_date.day
             end
 
+            # A missing month or day counts as 1, here only, so a partial
+            # value (2026, 2026-11) has a magnitude and orders as its
+            # earliest day (#120; it raised TypeError before).
             def magnitude
-              return Date.new(@year, @month, @day)-Date.new(0000,1,1)
+              return Date.new(@year, @month || 1, @day || 1)-Date.new(0000,1,1)
             end
 
             def diff(other)
@@ -214,9 +217,6 @@ module OpenEHR
           class DvDateTime < DvTemporal
             include OpenEHR::AssumedLibraryTypes::ISO8601DateTimeModule
 
-            # Julian day number of 0001-01-01, the origin of magnitude (#117).
-            CALENDAR_ORIGIN_JD = Date.new(1, 1, 1, Date::GREGORIAN).jd
-
             def value=(value)              
               super(value)
               iso8601date_time = OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(value)
@@ -246,15 +246,11 @@ module OpenEHR
             # Gregorian calendar (#117). Before #117 a year counted as
             # 365.24 days and a month as 30.42, so order inverted near the
             # end of a 31-day month.
+            #
+            # The count is shared with ISO8601DateTime (#120): see
+            # ISO8601DateTimeModule#utc_seconds.
             def magnitude
-              days = Date.new(@year, @month || 1, @day || 1, Date::GREGORIAN).jd - CALENDAR_ORIGIN_JD
-              seconds = (((((days * HOURS_IN_DAY) + (@hour || 0)) * MINUTES_IN_HOUR) +
-                          (@minute || 0)) * SECONDS_IN_MINUTE) + (@second || 0) - utc_offset_seconds
-              if @fractional_second.nil?
-                return seconds
-              else
-                return seconds + @fractional_second
-              end
+              utc_seconds
             end
 
             # rubocop:disable Metrics/AbcSize -- dense calendar arithmetic; refactoring

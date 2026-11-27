@@ -174,6 +174,9 @@ module OpenEHR
       NOMINAL_DAYS_IN_MONTH = 30.42
       NOMINAL_DAYS_IN_YEAR = 365.24
       SECONDS_IN_MINUTE = 60
+      # Julian day number of 0001-01-01 on the proleptic Gregorian
+      # calendar, the origin of the ordering count (#117, #120).
+      CALENDAR_ORIGIN_JD = Date.new(1, 1, 1, Date::GREGORIAN).jd
 
       def self.valid_year?(year)
         return !year.nil? && year >= 0
@@ -283,6 +286,33 @@ module OpenEHR
         else year % 4 == 0
         end
       end
+
+      protected
+
+      # The ordering count of the date and date-time classes (#120): days
+      # since 0001-01-01 on the proleptic Gregorian calendar, the origin
+      # RM Data Types 7.2.2 gives DV_DATE.magnitude. ISO8601Date,
+      # ISO8601DateTime and DvDateTime all order by it (DvDate: see its
+      # magnitude); #to_days is a nominal count and is not used for order.
+      #
+      # A missing month or day counts as 1, here only, so a partial value
+      # (2026, 2026-11) orders as its earliest instant. The value and its
+      # string keep their precision: nothing is written back. The
+      # specification does not say how a partial value is ordered (RM
+      # Data Types 7.2; BASE Foundation Types 6.5 says only that the date
+      # and time types are ordered); this follows EHRbase, which fills
+      # the smallest value for magnitude and keeps the original string
+      # (openEHR Discourse "CDR implementation of partial DV_TEMPORALs",
+      # https://discourse.openehr.org/t/cdr-implementation-of-partial-dv-temporals/11954 ).
+      # See also #59 (https://discourse.openehr.org/t/one-clinical-time-many-precisions-should-dv-date-time-hold-date-only-and-year-only-values/17524 ).
+      # To be revisited if those discussions reach a conclusion.
+      #
+      # Ordering equality is not value equality: 2026 and 2026-01-01
+      # order the same (and are == through Comparable), but their #value
+      # (or #as_string) differs. Compare that to tell precisions apart.
+      def calendar_days
+        Date.new(@year, @month || 1, @day || 1, Date::GREGORIAN).jd - CALENDAR_ORIGIN_JD
+      end
     end
 
     class ISO8601Date
@@ -307,8 +337,9 @@ module OpenEHR
         end
       end
 
+      # By the calendar count (#120); see ISO8601DateModule#calendar_days.
       def <=>(other)
-        self.to_days <=> other.to_days
+        self.calendar_days <=> other.calendar_days
       end
 
       def self.valid_iso8601_date?(string)
@@ -535,6 +566,18 @@ module OpenEHR
         return s
       end
 
+      protected
+
+      # Seconds since 0001-01-01T00:00:00Z (RM Data Types 7.2.4), the
+      # ordering count of ISO8601DateTime and DvDateTime (#117, #120):
+      # calendar days, then the time of day (a missing hour, minute or
+      # second counts as 0, here only), minus the UTC offset (#108).
+      def utc_seconds
+        ((((((calendar_days * HOURS_IN_DAY) + (@hour || 0)) * MINUTES_IN_HOUR) +
+           (@minute || 0)) * SECONDS_IN_MINUTE) + (@second || 0)) +
+          (@fractional_second || 0) - utc_offset_seconds
+      end
+
       private
 
       # The offset in seconds, east of UTC positive. Read from the offset
@@ -618,11 +661,10 @@ module OpenEHR
       end
 
       protected
-      # The UTC instant (#112), by the same rule as DvDateTime#magnitude
-      # (#108): local time minus the offset.
+      # The UTC instant (#112), counted as DvDateTime#magnitude is
+      # (#117, #120): see ISO8601DateTimeModule#utc_seconds.
       def magnitude
-        return (self.to_days*HOURS_IN_DAY*MINUTES_IN_HOUR*SECONDS_IN_MINUTE) +
-          self.to_second - utc_offset_seconds
+        utc_seconds
       end
     end
   
