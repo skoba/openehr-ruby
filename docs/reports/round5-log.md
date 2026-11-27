@@ -60,3 +60,19 @@ Refs R-20261126-9、R-20261126-10。作業列: 1. 次の版（#74 と #96）、2
 
 - 変数名が別々の OR で、どの行にも入る変数（`c` など）だけを選ぶ問いは、行の数が変わる。O1 と O2 が 1 つずつの親は 2 行から 1 行に、O1 が 2 つと O2 が 3 つの親は 5 行から 6 行になる
 - semver は棚卸しで決める（裁定のとおり）。少なくとも minor として検討する
+
+## R3 — 2.7.0 の公開（2026-11-26〜27）
+
+- リリースの PR #102 は人間がマージ → master `432b409`（CI run 45802626011 success）。R-20261126-4 の 1 により、このマージをタグの承認とした
+- タグの前の確認（実行）
+  - `git diff --stat v2.6.1..432b409 -- lib '*.gemspec' Gemfile Gemfile.lock` は `path_evaluator.rb`、`opt_parser.rb`、`version.rb` だけ。R1 の判定（minor）と食い違いは無い
+  - 実行時の依存 9 個は、どれも最新版の公開が CI run の開始（11/26 10:34 UTC）より前
+- タグ `v2.7.0` → `432b409`。このセッションが打って push した
+- Release run 45802985830 success。「Record sha256」の値は
+  `f7bb253e80af7b3541a4062db1554187ed0db44c707651d46ad1393095a17cd6`
+- artifact を空の `pkg/` に取り、手元の sha256 が上の値と一致（実行）
+- `gem push` は人間。公開のあとの照合（実行）
+  - `/api/v1/gems/openehr.json` は version 2.7.0、`sha` が上の値と一致
+  - `https://index.rubygems.org/info/openehr` の 2.7.0 の `checksum:` も一致
+- 照合のあと `pkg/openehr-2.7.0.gem` を消した。`pkg/` は空
+- タグのあと PR #103（#59 の URL）をマージ → master `c87f54e`（CI run 45803386265 success）。PR #104（#97）は R2 のゲートの答えを待っている
