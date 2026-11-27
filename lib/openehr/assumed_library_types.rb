@@ -125,7 +125,7 @@ module OpenEHR
 
       def value=(value)
         unless value.nil?
-          if /((([+-](\d{2})):?(\d{2}))|Z)/ =~ value
+          if /((([+-](\d{2}))(?::?(\d{2}))?)|Z)/ =~ value
             @value = value
             if $1 == 'Z'
               @hour, @minute = 0,0
@@ -464,7 +464,7 @@ module OpenEHR
       def initialize(string)
         # hhmm... is the compact form (#80); a bare hh counts as extended.
         @extended = !(/\A\d{4}/ =~ string)
-        /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ string
+        /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2})(?::?(\d{2}))?))?$/ =~ string
         if $2.nil?
           self.minute = nil
         else
@@ -500,7 +500,7 @@ module OpenEHR
       end
 
       def self.valid_iso8601_time?(s)
-        if /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ s
+        if /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2})(?::?(\d{2}))?))?$/ =~ s
 # ISO 8601 regular expression by H. Yuki
 #  http://digit.que.ne.jp/work/wiki.cgi?Perl%E3%83%A1%E3%83%A2%2FW3C%E5%BD%A2%E5%BC%8F%E3%81%AE%E6%97%A5%E6%99%82%E3%81%AE%E8%A7%A3%E6%9E%90
 # (\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d))?)?(Z|([+-]\d{2}):(\d{2}))?)?)?)?
@@ -601,11 +601,12 @@ module OpenEHR
       # text, because Timezone#hour loses the sign of "-00:30" and
       # Timezone#minute is unsigned (#108). Z and a value without an
       # offset both give 0, so a value without an offset counts as UTC,
-      # also when it is compared with a value that has one (#112).
+      # also when it is compared with a value that has one (#112). An
+      # hour-only offset (±hh) counts whole hours (#137).
       def utc_offset_seconds
         return 0 unless @timezone
 
-        match = /\A([+-])(\d{2}):?(\d{2})\z/.match(@timezone.to_s)
+        match = /\A([+-])(\d{2})(?::?(\d{2}))?\z/.match(@timezone.to_s)
         return 0 unless match
 
         seconds = (match[2].to_i * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) + (match[3].to_i * SECONDS_IN_MINUTE)
@@ -618,8 +619,8 @@ module OpenEHR
 
       # Both forms capture the same groups: year, month, day, hour,
       # minute, second, decimal sign, fraction, offset.
-      EXTENDED_FORM = /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?)?\z/
-      COMPACT_FORM = /\A(\d{4})(\d{2})(?:(\d{2})(?:T(\d{2})(?:(\d{2})(?:(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(\d{2}))?)?)?)?\z/
+      EXTENDED_FORM = /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(?::?(\d{2}))?)?)?)?)?)?\z/
+      COMPACT_FORM = /\A(\d{4})(\d{2})(?:(\d{2})(?:T(\d{2})(?:(\d{2})(?:(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(\d{2})?)?)?)?)?\z/
 
       def initialize(string)
         # Anchored, and the date must be complete before a time may follow
