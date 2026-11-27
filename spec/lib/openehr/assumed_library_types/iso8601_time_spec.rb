@@ -34,8 +34,9 @@ describe ISO8601Time do
     @iso8601time.timezone == '+0900'
   end
 
-  it 'should be 15:55:37.32+0900 as_string' do
-    expect(@iso8601time.as_string).to eq('15:55:37.32+0900')
+  # The offset is written in the extended form (#138); it was +0900.
+  it 'should be 15:55:37.32+09:00 as_string' do
+    expect(@iso8601time.as_string).to eq('15:55:37.32+09:00')
   end
 
   it 'decimal sign should not be comma' do

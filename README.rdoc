@@ -1,4 +1,7 @@
 {<img src="https://github.com/skoba/openehr-ruby/actions/workflows/ci.yml/badge.svg" alt="CI" />}[https://github.com/skoba/openehr-ruby/actions/workflows/ci.yml]
+
+English | {日本語}[link:README.ja.rdoc]
+
 =Synopsis
 
 A Ruby implementation of the openEHR specifications
