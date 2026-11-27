@@ -10,8 +10,9 @@ describe ISO8601DateTime do
     expect(@iso8601date_time).to be_an_instance_of ISO8601DateTime
   end
 
+  # The offset is written in the extended form (#138); it was +0900.
   it 'should be 2009-06-29T12:34:56.78T+09:00 as string' do
-    expect(@iso8601date_time.as_string).to eq('2009-06-29T12:34:56.78+0900')
+    expect(@iso8601date_time.as_string).to eq('2009-06-29T12:34:56.78+09:00')
   end
 
   it 'should raise ArgumentError with invalid date format' do

@@ -447,7 +447,7 @@ module OpenEHR
           end
         end
         # The offset is written whatever the precision (#121).
-        s += @timezone.to_s unless @timezone.nil?
+        s += extended_offset unless @timezone.nil?
         return s
       end
 
@@ -456,6 +456,18 @@ module OpenEHR
           nilthenzero(@second) +
           nilthenzero(@fractional_second)
         return second
+      end
+
+      private
+
+      # The offset as as_string writes it: the extended form ±hh:mm
+      # (BASE Foundation Types 6.5.5-6.5.6; #138). +0900 becomes +09:00;
+      # Z, ±hh:mm and ±hh are already extended. #timezone and a DV_ value
+      # keep the offset as given.
+      def extended_offset
+        text = @timezone.to_s
+        match = /\A([+-]\d{2})(\d{2})\z/.match(text)
+        match ? "#{match[1]}:#{match[2]}" : text
       end
     end
 
@@ -577,7 +589,7 @@ module OpenEHR
             end
           end
           unless @timezone.nil?
-            s += @timezone.to_s
+            s += extended_offset
           end
         end
         return s
