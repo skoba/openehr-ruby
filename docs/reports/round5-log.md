@@ -138,3 +138,39 @@ Refs R-20261127-3。
   - `https://index.rubygems.org/info/openehr` の 2.8.0 の `checksum:` も一致
 - 照合のあと `pkg/openehr-2.8.0.gem` を消した。`pkg/` は空
 - タグのあとの PR: #114(#112、ISO8601DateTime#<=> を UTC にそろえる)と #115(#113、DvTime・ISO8601Time は書かれた時刻のまま)。どちらも head の CI は green。セッションのマージは権限で止められたので、人間のマージを待つ
+
+## R7 — 棚卸し(バンドル報告、2026-11-27)
+
+裁定 R-20261127-7 の「#119 が master に入ったら、その時点の中身で棚卸しに進む」による。対象は master `76cad6f`(CI run 45950299501 success)。
+
+### `git log v2.8.0..76cad6f` の分類(マージを除く 6 コミット)
+
+| コミット | 中身 | 分類 |
+|---|---|---|
+| `cdd8a8c` | #112: `ISO8601DateTime#<=>` を UTC にそろえる。オフセットを計る処理を `ISO8601DateTimeModule` に移す | patch(順序の bug の修正) |
+| `0b01754` | #113: DvTime と ISO8601Time の注釈、regression pin、`docs/backlog.md` | patch(`lib/` は注釈だけ) |
+| `ded1c56` | `docs/reports/round5-log.md` R6(2.8.0 の公開の記録) | neutral(docs) |
+| `5c48b60` | #117: `DvDateTime#magnitude` を 0001-01-01T00:00:00Z からの暦の秒にする | minor(下を見よ) |
+| `970567a` | `docs/design/temporal-ordering-plan.md`、`docs/backlog.md` | neutral(docs) |
+| `f8204fa` | #121: `ISO8601Time#as_string` がオフセットを落とさない | patch |
+
+`lib/` の差分は 2 ファイル(41 行の追加、22 行の削除)。`openehr.gemspec`、`Gemfile`、`Gemfile.lock` は変わっていない(`git diff --stat v2.8.0..76cad6f -- lib '*.gemspec' Gemfile Gemfile.lock`、実行)。
+
+### semver の判定: minor(2.9.0)
+
+- #117 は、公開のメソッド `DvDateTime#magnitude` の返す数を、どの値でも変える(`2009-09-29T15:03:22.3Z` は 63423697018.3 から 63389833402.3)。
+  RM の定義に合わせる bug の修正で、シグネチャは変わらない。ただ、magnitude の数をそのまま保存したり比べたりしている呼び出し側には、違う数が見える。
+  そのため patch にはしない。前例は 2.8.0 の #97 と 2.6.0 の #72・#70 で、挙動を変える修正は minor にした
+- major も考えた。数が変わるのは、仕様と違っていた値を仕様のとおりに直したためで、メソッドを消したり、引数を変えたりはしていない。前例にならって minor とする
+- #112、#113、#121 は patch で、minor に含まれる
+- 依存の追加、`required_ruby_version` の変更は無い
+
+### 版に入らないもの
+
+- #120(順序の計算を 1 か所に)と DvDate の起点(R-20261127-7)、#118(diff が落ちる件)は、まだ実装していない。間に合わなければ次の版(裁定のとおり)
+
+### リリースの PR で行うこと
+
+- 断片 4 つ(`112-…`、`113-…`、`117-…`、`121-…`)を `History.txt` の `=== 2.9.0` にまとめ、断片を消す。#117 の断片の「Semver」の行は、この判定に置き換える
+- `lib/openehr/version.rb` を 2.9.0 にする
+- 版番号を変える PR なので、マージは人間。マージがタグの承認になる(R-20261126-4 の 1)
