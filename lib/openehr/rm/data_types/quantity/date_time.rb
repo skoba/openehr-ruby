@@ -210,6 +210,9 @@ module OpenEHR
           class DvDateTime < DvTemporal
             include OpenEHR::AssumedLibraryTypes::ISO8601DateTimeModule
 
+            # Julian day number of 0001-01-01, the origin of magnitude (#117).
+            CALENDAR_ORIGIN_JD = Date.new(1, 1, 1, Date::GREGORIAN).jd
+
             def value=(value)              
               super(value)
               iso8601date_time = OpenEHR::AssumedLibraryTypes::ISO8601DateTime.new(value)
@@ -233,12 +236,16 @@ module OpenEHR
             #
             # The value is normalised to UTC (#108): local time minus the
             # offset, so 10:00+09:00 has the magnitude of 01:00Z.
+            #
+            # Seconds since 0001-01-01T00:00:00Z, as RM Data Types 7.2
+            # defines DV_DATE_TIME.magnitude, counted on the proleptic
+            # Gregorian calendar (#117). Before #117 a year counted as
+            # 365.24 days and a month as 30.42, so order inverted near the
+            # end of a 31-day month.
             def magnitude
-              seconds = (((((((@year * 365.24) +
-                           ((@month || 1) * 30.42) +
-                           (@day || 1)) * 24) +
-                           (@hour || 0)) * 60) +
-                           (@minute || 0)) * 60) + (@second || 0) - utc_offset_seconds
+              days = Date.new(@year, @month || 1, @day || 1, Date::GREGORIAN).jd - CALENDAR_ORIGIN_JD
+              seconds = (((((days * HOURS_IN_DAY) + (@hour || 0)) * MINUTES_IN_HOUR) +
+                          (@minute || 0)) * SECONDS_IN_MINUTE) + (@second || 0) - utc_offset_seconds
               if @fractional_second.nil?
                 return seconds
               else

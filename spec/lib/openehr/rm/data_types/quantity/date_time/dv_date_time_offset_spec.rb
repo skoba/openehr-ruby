@@ -38,7 +38,9 @@ describe OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime, '#magnitude wit
 
   it 'keeps the magnitude of a value without an offset, or with Z (regression pin)' do
     # regression pin: no offset and Z were already right before #108.
-    expect(dt('2009-09-29T15:03:22.3Z').magnitude).to be_within(0.01).of(63423697018.3)
-    expect(dt('2009-09-29T15:03:22.3').magnitude).to be_within(0.01).of(63423697018.3)
+    # The number is the calendar count since 0001-01-01 (#117); before
+    # #117 it was the nominal count 63423697018.3.
+    expect(dt('2009-09-29T15:03:22.3Z').magnitude).to be_within(0.01).of(63389833402.3)
+    expect(dt('2009-09-29T15:03:22.3').magnitude).to be_within(0.01).of(63389833402.3)
   end
 end

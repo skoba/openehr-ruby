@@ -11,8 +11,10 @@ describe DvDateTime do
     expect(@dv_date_time).to be_an_instance_of DvDateTime
   end
 
-  it 'magnitude should be 63423697018.3' do
-    expect(@dv_date_time.magnitude).to be_within(0.01).of(63423697018.3)
+  # Seconds since 0001-01-01T00:00:00Z on the calendar (#117). Before
+  # #117 this was the nominal count 63423697018.3.
+  it 'magnitude should be 63389833402.3' do
+    expect(@dv_date_time.magnitude).to be_within(0.01).of(63389833402.3)
   end
 
   it 'should be equal when magnitude is same' do
