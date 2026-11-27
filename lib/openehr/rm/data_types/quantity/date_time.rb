@@ -270,7 +270,9 @@ module OpenEHR
               future_date, future_time = split_date_time(future)
               time_diff = future_time.magnitude - past_time.magnitude
               if future_time.magnitude < past_time.magnitude
-                future_date.day = future_date.day - 1
+                # Borrow a day on the calendar, so the 1st of a month
+                # becomes the last day of the one before (#118).
+                future_date = future_date.subtract(DvDuration.new(:value => 'P1D'))
                 time_diff += 24 * 60 * 60
               end
               date_duration = past_date.diff(future_date)
