@@ -65,10 +65,11 @@ describe 'AQL: a date-time path compared with an ISO 8601 literal (#134)' do
       .to raise_error(OpenEHR::AQL::ExecutionError, /DV_DATE_TIME/)
   end
 
-  # regression pin: already true before #134. The …/value comparison is
-  # a String comparison (#135 is the question of changing it).
-  it 'still compares …/value as a String' do
-    expect(starts("#{start}/value >= '2026-03-01T00:00:00Z'", data)).to match_array %w[2026-03-01T08:00:00+09:00 2026-03-15]
+  # Before #135 …/value compared as a String, and this gave
+  # %w[2026-03-01T08:00:00+09:00 2026-03-15]. It now compares like the
+  # value itself (value_components_spec.rb).
+  it 'compares …/value like the value itself' do
+    expect(starts("#{start}/value >= '2026-03-01T00:00:00Z'", data)).to match_array %w[2026-03-15]
   end
 
   describe 'PredicateEvaluator.compare with a DV_DATE' do

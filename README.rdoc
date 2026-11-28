@@ -43,7 +43,7 @@ This package excludes:
   database, that integration (e.g. openehr-rails) owns fetching it out
   and this gem's AQL engine stays completely unaware of how
 * Terminology service(moved to openehr-terminology package)
-* Rails plugin(moved to openehr-rails package
+* Rails plugin(moved to openehr-rails package)
 
 Almost all classes passed the test constructed by RSpec23 These spec
 files are under /spec.
@@ -153,6 +153,49 @@ needs to know or care. For quick, non-database scripts:
   c1 = OpenEHR::RM::CompositionFactory.create_from_json(composition_json)  # or build one by hand
   OpenEHR::AQL.execute(aql, OpenEHR::AQL::Dataset.of_compositions([c1, c2]))
   # or even just: OpenEHR::AQL.execute(aql, [c1, c2])  # via Dataset.wrap
+
+==Comparing dates and date-times in AQL
+
+In WHERE, a DV_DATE_TIME or DV_DATE value - the value itself
+(<tt>c/context/start_time</tt>) or its <tt>.../value</tt> - compares with
+an ISO 8601 date or date-time literal or parameter, or with another such
+value, by the components written in both:
+
+* The values are compared from the year on, using only the components
+  both have (year, month, day, hour, minute, second with its fraction).
+  The first difference decides. Missing components are not filled in.
+* Values equal down to their common precision are equal:
+  <tt>2026-11 = '2026-11-15'</tt> matches, and <tt>2026-11 > '2026-10-30'</tt>
+  matches because the month decides.
+* An offset (Z, +09:00) is applied only when both sides have one; then
+  both are converted to UTC first. Otherwise the values compare as
+  written: <tt>2026-03-01T08:00:00+09:00 >= '2026-03-01'</tt> matches,
+  <tt>2026-03-01T08:00:00+09:00 >= '2026-03-01T00:00:00Z'</tt> does not
+  (it is 2026-02-28T23:00:00Z).
+* To select a period, use <tt>=</tt> at that precision:
+  <tt>c/context/start_time = '2025'</tt> selects every value in 2025
+  (2025, 2025-03, 2025-03-10T08:00:00+09:00, ...). With a range, note
+  that <tt>2026-11</tt> does not match <tt>>= '2026-11-10' AND < '2026-11-20'</tt>
+  (its month equals 2026-11-20's, so <tt><</tt> fails).
+* A literal that is not an ISO 8601 date or date-time raises
+  <tt>OpenEHR::AQL::ExecutionError</tt>.
+
+ORDER BY on these values needs a total order, so it orders by the
+earliest instant (missing components lowest, no offset read as UTC),
+then the coarser value first (2026-11, 2026-11-01,
+2026-11-01T00:00:00Z), then the written string. Rows without the value
+come last in either direction.
+
+LIKE and MATCHES compare the written string; to match the stored text
+exactly, use LIKE without wildcards. SELECT returns the value as
+written. DV_TIME and DV_DURATION are compared as before.
+
+The specification does not say how partial values or values in
+different offsets compare. This is this implementation's rule, and it
+differs from EHRbase in two places: values equal down to the common
+precision are equal here, and in WHERE a value without an offset is not
+read as UTC. It will be revised if the openEHR discussion concludes
+otherwise.
 
 =Main codebase authors
 * Shinji Kobayashi and Akimichi Tatsukawa of http://openehr.jp

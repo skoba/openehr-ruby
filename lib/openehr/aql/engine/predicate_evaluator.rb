@@ -105,8 +105,8 @@ module OpenEHR
       # false in AQL/SQL terms - it simply fails to select the row, the
       # same as SQL's NULL-comparison-is-UNKNOWN convention.
       def evaluate_comparison(comparison, binding, params)
-        left = resolve_operand(comparison.left, binding, params)
-        right = resolve_operand(comparison.right, binding, params)
+        left = comparison_operand(comparison.left, binding, params)
+        right = comparison_operand(comparison.right, binding, params)
         return false if left.nil? || right.nil?
 
         compare(left, comparison.operator, right)
@@ -116,6 +116,14 @@ module OpenEHR
         return lookup_param(node, params) if node.is_a?(Model::Parameter)
 
         PathEvaluator.evaluate(node, binding)
+      end
+
+      # As resolve_operand, but …/value of a date or date-time gives the
+      # owner (#135): the comparison operators use it.
+      def comparison_operand(node, binding, params)
+        return lookup_param(node, params) if node.is_a?(Model::Parameter)
+
+        PathEvaluator.evaluate_operand(node, binding)
       end
 
       def lookup_param(parameter, params)

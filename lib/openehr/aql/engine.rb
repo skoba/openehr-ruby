@@ -52,7 +52,7 @@ module OpenEHR
 
       def compare_bindings(a, b, order_by_items)
         order_by_items.each do |item|
-          cmp = compare_values(PathEvaluator.evaluate(item.path, a), PathEvaluator.evaluate(item.path, b),
+          cmp = compare_values(PathEvaluator.evaluate_operand(item.path, a), PathEvaluator.evaluate_operand(item.path, b),
                                item.direction)
           return cmp unless cmp.zero?
         end
