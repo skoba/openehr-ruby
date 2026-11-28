@@ -276,3 +276,47 @@ R-20261128-11 による。最初の棚卸し(PR #153、master `013fa6d` で判�
 - `lib/openehr/version.rb` を 2.10.0 にする
 - 版番号を変える PR なので、マージは人間。マージがタグの承認になる(R-20261126-4 の 1)
 - マージの前に、`22292d2` のあとに master に入った PR が無いかを見る。入っていれば、R8 と同じく補う
+
+## R11 — 2.10.0 のタグ(2026-11-28)
+
+Refs R-20261128-14。
+
+- 人間がリリースの PR #164 をマージ → master `b398d56`(CI run 46128649484 success)。R-20261126-4 の 1 により、このマージをタグの承認とした
+- タグの前の確認(実行)
+  - `changelog.d/` に断片は残っていない(`README.md` だけ)
+  - `git log v2.9.0..b398d56` のマージを除くコミットは、R10 で分類した 19 と、リリースのコミット `dd44738` の 20。`22292d2..b398d56` は、リリースのコミットだけ
+  - 実行時の依存 9 個は、どれも最新版の公開が CI run の開始(11/28 09:03 UTC)より前
+- タグ `v2.10.0` → `b398d56`(注釈つき)。このセッションが打って push した
+- Release run 46129008340 success。「Record sha256」の値は
+  `0b26c0b30ece587d924247e350f0696f94a9bb0cfa65f214fabe4a0c5a209ca3`
+- `gem push` は人間。公開のあとの照合と `pkg/` の片づけは、公開を確かめてから書く
+
+## R12 — 2.11.0 の棚卸し(バンドル報告、2026-11-28)
+
+R-20261128-14 の「2.10.0 のあと」の 3 による。対象は master `f4cda43`(CI run 46129612341 success)。
+
+### `git log v2.10.0..f4cda43` の分類(マージを除く 3 コミット)
+
+| コミット | 中身 | 分類 |
+|---|---|---|
+| `823467e` | #159: OPTParser が、壊れた XML で読めないとき、libxml2 の誤りの場所を添えて `ParseError` を上げる | minor(R-20261128-12。上がる例外のクラスが変わる。Upgrade note あり) |
+| `1e3e12a` | #156 の計画書 | neutral(docs) |
+| `8d95a1c` | #156: AQL で COMPOSITION の category・language・territory・composer を引く。README(英語と日本語)に 1 段落 | minor(引けるパスが増える) |
+
+`git diff --stat v2.10.0..f4cda43 -- lib '*.gemspec' Gemfile Gemfile.lock README.rdoc`(実行)で変わったのは、
+`README.rdoc`、`lib/openehr/aql/engine/path_evaluator.rb`、`lib/openehr/parser/opt_parser.rb` の 3 つ(追加 35 行、削除 1 行)。
+`openehr.gemspec`、`Gemfile`、`Gemfile.lock` は変わっていない。
+
+### semver の判定: minor(2.11.0)
+
+- #156 は、問い合わせで使えるパスを足す。いま通る問い合わせの結果は変わらない
+- #159 は、もう失敗していた入力でだけ、上がる例外が `ArgumentError` から `ParseError` に変わる。裁定(R-20261128-12)の判定のとおり minor。
+  前例(2.10.0 の #136)にならい、Upgrade note を History.txt に書いた
+- 依存の追加、`required_ruby_version` と `files` の変更は無い
+
+### リリースの PR で行うこと
+
+- 断片 2 つを `History.txt` の `=== 2.11.0` にまとめ、断片を消す。版の冒頭の文を足す。断片の「Semver」の行は写さない
+- `lib/openehr/version.rb` を 2.11.0 にする
+- 版番号を変える PR なので、マージは人間。マージがタグの承認になる(R-20261126-4 の 1)
+- 2.10.0 の `gem push` がまだなら、2.11.0 のタグはその公開を確かめてから打つ(順に公開する)
