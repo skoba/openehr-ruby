@@ -122,6 +122,12 @@ but Ruby's own <tt>Enumerable</tt>/<tt>#each</tt> protocol and this
 gem's own RM classes - no ActiveRecord, no Rails, no Sequel, anywhere
 in this gem, ever.
 
+Besides the content and context paths, a COMPOSITION's own attributes
+are reachable: <tt>c/category/value</tt> and
+<tt>c/category/defining_code/code_string</tt>,
+<tt>c/language/code_string</tt>, <tt>c/territory/code_string</tt>,
+<tt>c/composer/name</tt> and <tt>c/composer/external_ref/id/value</tt>.
+
 ==Supplying data to AQL
 
 <tt>Dataset</tt> accepts any Enumerable of records shaped like

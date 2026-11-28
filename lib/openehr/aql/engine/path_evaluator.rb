@@ -36,7 +36,12 @@ module OpenEHR
         # uid only here: VERSION and VERSIONED_OBJECT have one too (#88).
         'OpenEHR::RM::Common::Archetyped::Locatable' => %w[archetype_details archetype_node_id uid],
         'OpenEHR::RM::Common::Archetyped::Archetyped' => %w[archetype_id template_id],
-        'OpenEHR::RM::Composition::EventContext' => %w[end_time setting start_time]
+        'OpenEHR::RM::Composition::EventContext' => %w[end_time setting start_time],
+        # language here only: ENTRY, DV_TEXT and others have one too (#156).
+        'OpenEHR::RM::Composition::Composition' => %w[category composer language territory],
+        'OpenEHR::RM::Common::Generic::PartyProxy' => %w[external_ref],
+        # id here only: DV_IDENTIFIER has one too (#156).
+        'OpenEHR::RM::Support::Identification::ObjectRef' => %w[id]
       }.freeze
 
       # Dataset::EHRRecord#ehr_id is already an unwrapped String (see

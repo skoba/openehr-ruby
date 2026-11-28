@@ -966,11 +966,12 @@ describe 'OpenEHR::AQL.execute (#70: archetype_details/template_id, per-type ter
   end
 
   it 'still raises ExecutionError for a name in neither list (regression pin)' do
-    # regression pin: composer is a real public reader on COMPOSITION and
-    # is still not reachable.
+    # regression pin: feeder_audit is a real public reader on COMPOSITION
+    # (from LOCATABLE) and is still not reachable. Until #156 this pinned
+    # c/composer, which #156 made reachable.
     expect do
-      OpenEHR::AQL.execute("SELECT c/composer #{from}", dataset)
-    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "composer" on a .*Composition/)
+      OpenEHR::AQL.execute("SELECT c/feeder_audit #{from}", dataset)
+    end.to raise_error(OpenEHR::AQL::ExecutionError, /unsupported path attribute "feeder_audit" on a .*Composition/)
   end
 end
 
