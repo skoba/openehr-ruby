@@ -1,3 +1,108 @@
+=== 2.10.0
+Dates, times and date-times now read the ISO 8601 compact form
+(20260301T100000+0900) and hour-only UTC offsets (+09), and as_string
+writes the offset in the extended form (+09:00). AQL can compare a
+DV_DATE_TIME or DV_DATE path, or its .../value, with a quoted ISO 8601
+literal, a parameter or another such path, by the components written in
+both: values equal down to the common precision are equal (2026-11 =
+'2026-11-15'), and offsets are applied only when both sides have one.
+ORDER BY on these values follows the earliest instant, and ORDER BY ...
+DESC now puts rows without the value last. Behaviour changes to note
+when upgrading: .../value of a date or date-time no longer compares as
+a String (#135), a time that mixes the two forms (1430:00) now raises
+ArgumentError (#136), as_string writes +hh:mm where +hhmm was given
+(#138), is_extended? is false for a compact value (#80), and DESC no
+longer puts missing values first (#151), all below.
+
+* ISO8601Date and ISO8601DateTime (and so DvDate and DvDateTime) now
+  read the ISO 8601 compact form BASE Foundation Types 6.5.1 lists:
+  YYYYMMDD and YYYYMM for a date; YYYYMMDDThhmmss[(,|.)s+][Z|+hhmm],
+  YYYYMMDDThhmm, YYYYMMDDThh, YYYYMMDD and YYYYMM for a date-time. They
+  give the same fields, order and as_string as the extended form;
+  as_string is always the extended form (6.5.4, 6.5.6), while a DV_
+  value keeps the string it was given. A value that mixes the two forms
+  (2026-09-22T143000, 20260922T14:30:00) is still rejected. Behaviour
+  change: is_extended? now says which form was given (false for a
+  compact value) instead of always true; a value that cannot show a
+  separator (2026, 14) counts as extended. Compact times were already
+  read. (#80)
+
+* An hour-only UTC offset (±hh, e.g. 2026-03-01T10:00:00+09,
+  20260301T100000+09, 14:30:00+09) is now read by Timezone,
+  ISO8601Time, ISO8601DateTime (extended and compact) and so the DV_
+  classes, as BASE Foundation Types 6.5.1 lists it (Z|±hh[:mm],
+  Z|±hh[mm]). Before, it raised ArgumentError. It counts whole hours
+  where the offset becomes seconds, so +09 orders and has the magnitude
+  of +09:00, and -00 counts as 0. (#137)
+
+* ISO8601Time (and so DvTime) now rejects a time that mixes the
+  extended and compact forms, such as 1430:00 or 14:3000, and
+  valid_iso8601_time? returns false for it. BASE Foundation Types
+  6.5.1 lists times in one form only; ISO8601Date and ISO8601DateTime
+  already rejected mixed forms (#80).
+  Upgrade note: such times were accepted before (read as 14:30:00) and
+  now raise ArgumentError. Write them as 14:30:00 or 143000. (#136)
+
+* as_string of ISO8601Time, ISO8601DateTime, DvTime and DvDateTime now
+  writes the UTC offset in the extended form, as BASE Foundation Types
+  6.5.5-6.5.6 says as_string does: 14:30:00+0900 is written as
+  14:30:00+09:00. Z, ±hh:mm and ±hh are written as before. #timezone and
+  a DV_ value keep the offset as given. ISO8601Timezone#as_string is
+  unchanged. Behaviour change: callers that compared as_string output
+  with a +hhmm offset see +hh:mm. (#138)
+
+* ISO8601Time.valid_iso8601_time? now accepts a negative UTC offset
+  (14:30:00-05:00, 14:30-0500, 14:30:00-05). Before, it returned false
+  for every negative offset, because it checked the signed offset hour
+  against 0; ISO8601Time.new already read these times. An offset hour of
+  24 or more, or minutes of 60 or more, is still rejected in either
+  direction. (#141)
+
+* AQL: a DV_DATE_TIME or DV_DATE path can now be compared with a quoted
+  ISO 8601 date or date-time literal, a parameter, or another such path,
+  as AQL (QUERY 3.12.5) writes it: WHERE c/context/start_time >=
+  '2026-01-01'. Before, this raised NoMethodError. The two compare by
+  their written components, from the year on, only those both sides have
+  (#161): 2026-11 > '2026-10-30', and values equal down to the common
+  precision are equal, so 2026-11 = '2026-11-15' and = '2025' matches
+  every value in 2025. Offsets are applied only when both sides have one;
+  otherwise values compare as written (2026-03-01T08:00:00+09:00 >=
+  '2026-03-01' matches). A DV_DATE compares with a date-time literal by
+  its date. ORDER BY on these values orders by earliest instant, the
+  coarser value first on a tie. The specification gives no rule for
+  partial values or mixed offsets; this rule differs from EHRbase, which
+  fills missing components and reads a missing offset as UTC. A literal
+  that cannot be read as a date or date-time (not ISO 8601, a time only,
+  a number) raises ExecutionError instead of matching nothing. The RM
+  types' own <=> and magnitude are unchanged. (#134, #161)
+
+* AQL: .../value of a DV_DATE_TIME or DV_DATE (c/context/start_time/value)
+  now compares in WHERE and orders in ORDER BY like the value itself
+  (#134, #161): by the written components, equal down to the common
+  precision, offsets applied only when both sides have one; ORDER BY by
+  earliest instant, the coarser value first on a tie. Before, it was a
+  String comparison. SELECT, LIKE and MATCHES still see the String as
+  written. A literal that is not an ISO 8601 date or date-time compared
+  with such a .../value now raises ExecutionError. README.rdoc (and its
+  Japanese translation) describes the rule, its examples and how it
+  differs from EHRbase. Upgrade note: results change where the stored
+  values or the literal differ in offset or precision, for example
+  2026-03-01T08:00:00+09:00 no longer matches .../value >=
+  '2026-03-01T00:00:00Z', 2026-03-15 now matches .../value >=
+  '2026-03-15T00:00:00Z', .../value = '2025' matches every value in
+  2025, and ORDER BY .../value follows the instant instead of the text.
+  To compare the stored text itself, use LIKE without wildcards. (#135)
+
+* AQL: ORDER BY ... DESC now puts rows without the ordered value last, as
+  ASC already did and as the engine's comment documents (NULLS LAST). DESC
+  used to negate the comparison with the missing value too, so those rows
+  came first; this has been the case since ORDER BY was added in 2.0.0.
+  (#151)
+
+* Docs: README.ja.rdoc, a Japanese translation of README.rdoc. README.rdoc
+  links to it at the top and it links back; the English version wins where
+  they differ. The Japanese file is not in the gem. (#145)
+
 === 2.9.0
 Date and date-time values now order by one calendar count, as the RM
 defines magnitude: DvDateTime#magnitude is the seconds since
