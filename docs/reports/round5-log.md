@@ -211,3 +211,55 @@ Refs R-20261127-7。
   - `/api/v1/gems/openehr.json` は version 2.9.0、`sha` が上の値と一致
   - `https://index.rubygems.org/info/openehr` の 2.9.0 の `checksum:` も一致
 - 照合のあと `pkg/openehr-2.9.0.gem` を消した。`pkg/` は空
+
+## R10 — 棚卸し(バンドル報告、2026-11-28)
+
+裁定 R-20261128-8 の「#142 と、この不具合の修正が master に入ったら、段 B の答えを待たずに、棚卸しに進んでよい」による(R-20261127-18 の時機を改めたもの)。対象は master `013fa6d`(CI run 46103357303 success)。
+
+### `git log v2.9.0..013fa6d` の分類(マージを除く 12 コミット)
+
+| コミット | 中身 | 分類 |
+|---|---|---|
+| `2f78264` | `docs/reports/round5-log.md` R9(2.9.0 の公開の記録) | neutral(docs) |
+| `42a7a46` | #80 の計画書 | neutral(docs) |
+| `85ac6a7` | #80: ISO8601Date・ISO8601DateTime がコンパクト形式を読む。`is_extended?` が与えられた形を返す | minor(受け付ける入力が増える。`is_extended?` の返す値が変わる) |
+| `249a571` | #134 の計画書 | neutral(docs) |
+| `23caef5` | #134: AQL で、日付・日時のパスを ISO 8601 のリテラルやパラメータと時点で比べる | minor(`NoMethodError` だった問い合わせが行を返す) |
+| `08f57ba` | #136: ISO8601Time が、2 つの形を混ぜた時刻を拒む | patch(仕様の外の入力を拒む。Upgrade note あり) |
+| `1b0fad9` | #137: 時だけの UTC からのずれ(`±hh`)を読む | minor(受け付ける入力が増える) |
+| `d39eee9` | #138: `as_string` がオフセットを extended の形で書く | patch(出力の形が変わる。仕様に合わせる) |
+| `13d9b1b` | #145: `README.ja.rdoc` と、`README.rdoc` の先頭に案内の 1 行 | patch(`README.rdoc` は gem に入る) |
+| `eff8f67` | #147: `README.ja.rdoc` の 2 語 | neutral(gem に入らない) |
+| `ce27d71` | #148: `CLAUDE.md` に、差分の削除を見る決まり | neutral(docs) |
+| `5639372` | #151: ORDER BY … DESC で、値の無い行を最後に | patch(bug の修正) |
+
+`git diff --stat v2.9.0..013fa6d -- lib '*.gemspec' Gemfile Gemfile.lock README.rdoc`(実行)で変わったファイルは、次の 5 つだけ(追加 133 行、削除 23 行)。
+
+- `README.rdoc`
+- `lib/openehr/aql/engine.rb`
+- `lib/openehr/aql/engine/predicate_evaluator.rb`
+- `lib/openehr/assumed_library_types.rb`
+- `lib/openehr/rm/data_types/quantity/date_time.rb`
+
+`openehr.gemspec`、`Gemfile`、`Gemfile.lock` は変わっていない。
+
+### semver の判定: minor(2.10.0)
+
+- #80、#134、#137 で、受け付ける入力と、問い合わせの答えが増える。シグネチャは変わらない
+- 挙動を変える修正(#136、#138、#151、#80 の `is_extended?`)もある。前例(2.6.0 の #72・#70、2.8.0 の #97、2.9.0 の #117)にならって minor に含めた。どれも、メソッドを消すことも引数を変えることもしていない
+- major も考えた。#136 は、これまで受け付けていた入力を拒む。ただ、その入力は仕様(BASE 6.5.1)に無い形で、#72(2.6.0、minor)で日付と日時の仕様の外の入力を拒んだのと同じ扱いとした
+- 依存の追加、`required_ruby_version` と `files` の変更は無い
+- 断片の semver の行で「棚卸しで決める」としていたもの(#134、#136、#137、#138、#151)は、この判定で決める
+
+### 版に入らないもの
+
+- 段 B(#135、`…/value` を時点で比べるか。PR #144)は、小林の答えを待つ。答えが出たら、その次の版に入れる
+- #141(`valid_iso8601_time?` が負のオフセットを拒む)は、直していない
+
+### リリースの PR で行うこと
+
+- 断片 7 つを `History.txt` の `=== 2.10.0` にまとめ、断片を消す。版の冒頭の文を足す
+- 断片の「Semver」の行は、`History.txt` に写さない(これまでと同じ)
+- `lib/openehr/version.rb` を 2.10.0 にする
+- 版番号を変える PR なので、マージは人間。マージがタグの承認になる(R-20261126-4 の 1)
+- マージの前に、#142 のほかに master に入った PR が無いかを見る。入っていれば、R8 と同じく補う
