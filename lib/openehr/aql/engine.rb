@@ -52,7 +52,7 @@ module OpenEHR
 
       def compare_bindings(a, b, order_by_items)
         order_by_items.each do |item|
-          cmp = compare_values(PathEvaluator.evaluate(item.path, a), PathEvaluator.evaluate(item.path, b),
+          cmp = compare_values(PathEvaluator.evaluate_operand(item.path, a), PathEvaluator.evaluate_operand(item.path, b),
                                item.direction)
           return cmp unless cmp.zero?
         end
@@ -67,8 +67,18 @@ module OpenEHR
         return 1 if a.nil?
         return -1 if b.nil?
 
-        cmp = a <=> b
+        cmp = ordering(a, b)
         direction == :desc ? -cmp : cmp
+      end
+
+      # Date and date-time values order by TemporalComparison.order_key
+      # (earliest instant, then the coarser value first; #161).
+      def ordering(a, b)
+        if TemporalComparison.temporal?(a) && TemporalComparison.temporal?(b)
+          TemporalComparison.order_key(TemporalComparison.parse(a)) <=> TemporalComparison.order_key(TemporalComparison.parse(b))
+        else
+          a <=> b
+        end
       end
 
       def project(bindings)

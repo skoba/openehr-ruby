@@ -1,3 +1,5 @@
+require_relative 'temporal_comparison'
+
 module OpenEHR
   module AQL
     # Evaluates a WHERE clause's boolean expression tree against a
@@ -103,8 +105,8 @@ module OpenEHR
       # false in AQL/SQL terms - it simply fails to select the row, the
       # same as SQL's NULL-comparison-is-UNKNOWN convention.
       def evaluate_comparison(comparison, binding, params)
-        left = resolve_operand(comparison.left, binding, params)
-        right = resolve_operand(comparison.right, binding, params)
+        left = comparison_operand(comparison.left, binding, params)
+        right = comparison_operand(comparison.right, binding, params)
         return false if left.nil? || right.nil?
 
         compare(left, comparison.operator, right)
@@ -116,6 +118,14 @@ module OpenEHR
         PathEvaluator.evaluate(node, binding)
       end
 
+      # As resolve_operand, but …/value of a date or date-time gives the
+      # owner (#135): the comparison operators use it.
+      def comparison_operand(node, binding, params)
+        return lookup_param(node, params) if node.is_a?(Model::Parameter)
+
+        PathEvaluator.evaluate_operand(node, binding)
+      end
+
       def lookup_param(parameter, params)
         return params[parameter.name.to_sym] if params.key?(parameter.name.to_sym)
         return params[parameter.name] if params.key?(parameter.name)
@@ -125,40 +135,43 @@ module OpenEHR
 
       def compare(left, operator, right)
         method = COMPARATORS.fetch(operator) { raise ExecutionError, "unknown comparison operator #{operator.inspect}" }
-        left.public_send(method, temporal_operand(left, right))
+        return compare_temporal(left, method, right) if TemporalComparison.temporal?(left) && !other_temporal?(right)
+
+        left.public_send(method, right)
       end
 
-      # The DV_ types whose value is compared with an ISO 8601 literal by
-      # instant (#134), with the RM type name used in error messages.
-      DATE_TYPES = {
-        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime => 'DV_DATE_TIME',
-        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate => 'DV_DATE'
+      # A DV_TIME or DV_DURATION on the right of a date or date-time is
+      # one side only being a date-time value: left as it was (#161).
+      def other_temporal?(right)
+        right.is_a?(OpenEHR::RM::DataTypes::Quantity::DateTime::DvTemporal) && !TemporalComparison.temporal?(right)
+      end
+
+      # The RM type names used in error messages.
+      DATE_TYPE_NAMES = {
+        TemporalComparison::DATE_TIME => 'DV_DATE_TIME',
+        TemporalComparison::DATE => 'DV_DATE'
       }.freeze
 
-      # AQL (QUERY 3.12.5) compares a date-time path itself with a quoted
-      # ISO 8601 literal, read as the path's type (#134). The literal is
-      # read as that type and the two are compared by instant, with the
-      # ordering count of #117/#120: a partial value is its earliest
-      # instant and a value without an offset is UTC (the specification
-      # gives no rule for either; this follows EHRbase). A literal that
-      # cannot be read as that type raises instead of matching nothing.
-      # Another DV_ value on the right (path to path), and DV_TIME and
-      # DV_DURATION on the left, are left as they were.
+      # A DV_DATE_TIME or DV_DATE on the left compares with a date or
+      # date-time on the right - another such value (path to path), or an
+      # ISO 8601 String (a literal or a parameter, #134) - by the rule in
+      # TemporalComparison (R-20261128-11, #161). A right side that cannot
+      # be read as a date or date-time raises instead of matching nothing.
+      def compare_temporal(left, method, right)
+        cmp = TemporalComparison.compare(TemporalComparison.parse(left), temporal_operand(left, right))
+        cmp.public_send(method, 0)
+      end
+
       def temporal_operand(left, right)
-        klass, type_name = DATE_TYPES.find { |k, _| left.is_a?(k) }
-        return right unless klass
-        return right if right.is_a?(OpenEHR::RM::DataTypes::Quantity::DateTime::DvTemporal)
+        type_name = DATE_TYPE_NAMES.find { |klass, _| left.is_a?(klass) }.last
+        return TemporalComparison.parse(right) if TemporalComparison.temporal?(right)
 
         unless right.is_a?(String)
           raise ExecutionError, "cannot compare a #{type_name} with #{right.inspect}: expected an ISO 8601 string"
         end
 
-        begin
-          klass.new(value: right)
-        rescue ArgumentError
-          raise ExecutionError,
-                "cannot compare a #{type_name} with '#{right}': not an ISO 8601 #{type_name == 'DV_DATE' ? 'date' : 'date or date-time'}"
-        end
+        TemporalComparison.parse(right) ||
+          raise(ExecutionError, "cannot compare a #{type_name} with '#{right}': not an ISO 8601 date or date-time")
       end
     end
   end

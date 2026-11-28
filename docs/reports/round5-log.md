@@ -211,3 +211,68 @@ Refs R-20261127-7。
   - `/api/v1/gems/openehr.json` は version 2.9.0、`sha` が上の値と一致
   - `https://index.rubygems.org/info/openehr` の 2.9.0 の `checksum:` も一致
 - 照合のあと `pkg/openehr-2.9.0.gem` を消した。`pkg/` は空
+
+## R10 — 2.10.0 の棚卸し(やり直し。バンドル報告、2026-11-28)
+
+R-20261128-11 による。最初の棚卸し(PR #153、master `013fa6d` で判定)は、R-20261128-10 で止め、
+日時の比べ方の直し(#161、#135)と #141 が master に入ったので、閉じた(理由は PR #153 に書いた)。
+対象は master `22292d2`(CI run 46114414367 success)。
+
+### `git log v2.9.0..22292d2` の分類(マージを除く 19 コミット)
+
+| コミット | 中身 | 分類 |
+|---|---|---|
+| `2f78264` | round5-log R9(2.9.0 の公開の記録) | neutral(docs) |
+| `42a7a46` | #80 の計画書 | neutral(docs) |
+| `85ac6a7` | #80: ISO8601Date・ISO8601DateTime がコンパクト形式を読む。`is_extended?` が与えられた形を返す | minor(受け付ける入力が増える。`is_extended?` の値が変わる) |
+| `249a571` | #134 の計画書 | neutral(docs) |
+| `23caef5` | #134: AQL で、日付・日時のパスを ISO 8601 のリテラルと比べる(時点で。未公開のまま #161 で直した) | minor(`NoMethodError` だった問い合わせが行を返す) |
+| `08f57ba` | #136: ISO8601Time が、2 つの形を混ぜた時刻を拒む | patch(仕様の外の入力を拒む。Upgrade note あり) |
+| `1b0fad9` | #137: 時だけの UTC からのずれ(`±hh`)を読む | minor(受け付ける入力が増える) |
+| `d39eee9` | #138: `as_string` がオフセットを extended の形で書く | patch(出力の形が変わる。仕様に合わせる) |
+| `2317dea` | #135 の計画とゲート報告(最初の版) | neutral(docs) |
+| `13d9b1b` | #145: `README.ja.rdoc` と、`README.rdoc` の先頭の案内 | patch(`README.rdoc` は gem に入る) |
+| `eff8f67` | #147: `README.ja.rdoc` の 2 語 | neutral(gem に入らない) |
+| `ce27d71` | #148: CLAUDE.md、差分の削除を見る決まり | neutral(docs) |
+| `5639372` | #151: ORDER BY … DESC で値の無い行を最後に | patch(bug の修正) |
+| `39825a3` | #141: `valid_iso8601_time?` が負のオフセットを受け付ける | patch(bug の修正) |
+| `17455bc` | #36 の計画とゲート報告(案 C、見送り) | neutral(docs) |
+| `66ef829` | #157: CLAUDE.md の fixture の決まりと、XML の fixture が整形式である spec | neutral(docs と spec) |
+| `35e4e5e` | #135 の計画の書き直し(R-20261128-11) | neutral(docs) |
+| `c6b5d25` | #161: AQL の日時の比べ方を、書かれた成分に(`AQL::TemporalComparison`)。#134 の断片を最後の挙動に | minor(#134 と合わせて。未公開の挙動の直し) |
+| `827951b` | #135: `…/value` も同じ比べ方と並べ方に。README(英語と日本語)に比べ方 | minor(いまの問い合わせの結果が変わる) |
+
+`git diff --stat v2.9.0..22292d2 -- lib '*.gemspec' Gemfile Gemfile.lock README.rdoc`(実行)で変わったのは、次の 7 つ(追加 333 行、削除 26 行)。
+`openehr.gemspec`、`Gemfile`、`Gemfile.lock` は変わっていない。
+
+- `README.rdoc`
+- `lib/openehr/aql/engine.rb`
+- `lib/openehr/aql/engine/path_evaluator.rb`
+- `lib/openehr/aql/engine/predicate_evaluator.rb`
+- `lib/openehr/aql/engine/temporal_comparison.rb`(新しいファイル)
+- `lib/openehr/assumed_library_types.rb`
+- `lib/openehr/rm/data_types/quantity/date_time.rb`
+
+### semver の判定: minor(2.10.0)
+
+- 受け付ける入力と、AQL の答えが増える(#80、#137、#134/#161)。シグネチャは変わらない
+- いまの問い合わせの結果が変わるもの(#135 の `…/value`)と、挙動を変える修正(#136、#138、#151、#80 の `is_extended?`)は、前例
+  (2.6.0 の #72・#70、2.8.0 の #97、2.9.0 の #117)にならって minor に含めた。メソッドを消すことも、引数を変えることもしていない
+- major も考えた。#135 は、`…/value` の比較の結果を黙って変える。ただ、変わるのは時刻帯か精度がそろっていない値だけで、
+  そろっていれば結果は同じ(計画書の表)。変わる形は、Upgrade note と README に書いた。#136 は、仕様に無い形を拒むので、
+  2.6.0 の #72 と同じ扱いにした
+- 依存の追加、`required_ruby_version` と `files` の変更は無い
+- 断片の semver の行で「棚卸しで決める」としていたもの(#134、#135、#136、#137、#138、#151)は、この判定で決める。
+  #161 は、裁定のとおり #134 の断片に合わせて書いた(断片は 1 つ)
+
+### 版に入らないもの
+
+- #159(PR #160、OPTParser の誤りの場所)は、裁定に無い判断を足したのでゲートにしてある。マージされていない
+- #156(AQL で `c/category` が引けない)は、Issue だけ
+
+### リリースの PR で行うこと
+
+- 断片 9 つを `History.txt` の `=== 2.10.0` にまとめ、断片を消す。版の冒頭の文を足す。断片の「Semver」の行は写さない
+- `lib/openehr/version.rb` を 2.10.0 にする
+- 版番号を変える PR なので、マージは人間。マージがタグの承認になる(R-20261126-4 の 1)
+- マージの前に、`22292d2` のあとに master に入った PR が無いかを見る。入っていれば、R8 と同じく補う
