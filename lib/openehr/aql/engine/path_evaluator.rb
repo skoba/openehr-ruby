@@ -1,3 +1,5 @@
+require_relative 'temporal_comparison'
+
 module OpenEHR
   module AQL
     # Evaluates a columnExpr/terminal Model node against a Binding.
@@ -54,6 +56,28 @@ module OpenEHR
         else
           raise ExecutionError, "cannot evaluate a #{expression.class} yet"
         end
+      end
+
+      # The operand a comparison or ORDER BY uses (#135): a path ending in
+      # value whose owner is a DV_DATE_TIME or DV_DATE gives the owner,
+      # so that it compares by TemporalComparison like the value itself.
+      # Anything else, and SELECT, LIKE and MATCHES, see evaluate's
+      # result (for …/value, the String as written).
+      def evaluate_operand(expression, binding)
+        owner = temporal_value_owner(expression, binding)
+        owner.nil? ? evaluate(expression, binding) : owner
+      end
+
+      def temporal_value_owner(expression, binding)
+        return nil unless expression.is_a?(Model::IdentifiedPath) && expression.path
+
+        *owner_segments, last = expression.path.segments
+        return nil unless last.attribute == 'value' && last.predicate.nil? && !owner_segments.empty?
+
+        owner_path = Model::IdentifiedPath.new(variable: expression.variable, predicate: expression.predicate,
+                                               path: Model::ObjectPath.new(segments: owner_segments))
+        owner = evaluate_identified_path(owner_path, binding)
+        TemporalComparison.temporal?(owner) ? owner : nil
       end
 
       def evaluate_identified_path(path, binding)
