@@ -122,6 +122,11 @@ Ruby の <tt>Enumerable</tt>/<tt>#each</tt> の約束と、この gem の
 RM のクラスだけである。ActiveRecord も Rails も Sequel も、この gem の
 どこにも無く、これからも入れない。
 
+content と context のパスのほかに、COMPOSITION そのものの属性も引ける:
+<tt>c/category/value</tt> と <tt>c/category/defining_code/code_string</tt>、
+<tt>c/language/code_string</tt>、<tt>c/territory/code_string</tt>、
+<tt>c/composer/name</tt> と <tt>c/composer/external_ref/id/value</tt>。
+
 ==AQL にデータを渡す
 
 <tt>Dataset</tt> は、<tt>{ehr_id:, compositions:, ehr_status: (省ける)}</tt>
