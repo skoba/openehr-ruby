@@ -70,9 +70,32 @@ module OpenEHR
           terminology_extracts: @component_terminologies || {},
           adl_version: "1.4"
         )
+      rescue StandardError => e
+        raise if e.is_a?(OpenEHR::Parser::ParseError)
+
+        xml_error = first_xml_error
+        raise unless xml_error
+
+        raise OpenEHR::Parser::ParseError, xml_error_message(xml_error, e)
       end
 
       private
+
+      # The XML is read with RECOVER (#36), so a broken document still
+      # parses and the failure surfaces later, often as an unrelated
+      # ArgumentError. When libxml2 recorded an error, say where (#159).
+      def first_xml_error
+        return nil unless @opt
+
+        @opt.errors.find { |error| error.error? || error.fatal? }
+      end
+
+      def xml_error_message(xml_error, original)
+        source = @filename ? " (#{@filename})" : ''
+        text = xml_error.message.strip.sub(/\A\d+:\d+: /, '')
+        "invalid OPT XML#{source}: line #{xml_error.line}, column #{xml_error.column}: #{text} " \
+          "(#{original.class}: #{original.message})"
+      end
 
       def read_document
         return Nokogiri::XML::Document.parse(@xml, options: SAFE_PARSE_OPTIONS) if @xml

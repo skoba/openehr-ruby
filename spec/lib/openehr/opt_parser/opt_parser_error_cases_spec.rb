@@ -26,13 +26,16 @@ module OpenEHR
             }.to raise_error(ArgumentError, 'invalid archetype id form')
           end
 
+          # Before #159 this raised ArgumentError 'invalid archetype id
+          # form'; libxml2 recorded the error, so it is now a ParseError
+          # saying where (see opt_parser_error_location_spec.rb).
           it 'should handle invalid XML gracefully' do
             temp_file.write('<?xml version="1.0"?><invalid><unclosed>')
             temp_file.close
 
             expect {
               OPTParser.new(temp_file.path).parse
-            }.to raise_error(ArgumentError, 'invalid archetype id form')
+            }.to raise_error(OpenEHR::Parser::ParseError, /line 1, column 41/)
           end
         end
 
