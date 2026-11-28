@@ -67,8 +67,18 @@ module OpenEHR
         return 1 if a.nil?
         return -1 if b.nil?
 
-        cmp = a <=> b
+        cmp = ordering(a, b)
         direction == :desc ? -cmp : cmp
+      end
+
+      # Date and date-time values order by TemporalComparison.order_key
+      # (earliest instant, then the coarser value first; #161).
+      def ordering(a, b)
+        if TemporalComparison.temporal?(a) && TemporalComparison.temporal?(b)
+          TemporalComparison.order_key(TemporalComparison.parse(a)) <=> TemporalComparison.order_key(TemporalComparison.parse(b))
+        else
+          a <=> b
+        end
       end
 
       def project(bindings)
