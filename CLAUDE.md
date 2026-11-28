@@ -84,13 +84,33 @@ For any non-trivial change (bug fix, hardening, enhancement):
     (checked against the actual design/implementation record), not as
     instructed — if an instructed lineage doesn't match what actually went
     into the fixture, write it to match reality instead.
+  - An XML fixture's comments (an OPT's included) never contain `--`:
+    XML 1.0 section 2.5 forbids it, and strict XML parsers refuse the file
+    (R-20261128-13, #157). Write a dash some other way.
 - **One issue = one branch = one PR.** Don't bundle unrelated fixes.
+- **A PR that changes `README.rdoc` fixes its Japanese translation,
+  `README.ja.rdoc`, in the same PR** (R-20261127-28, #145).
 - **Every change needs a semver call and a `History.txt` entry.** State
   whether the change is patch/minor/major and why, even if the answer is
   debatable - record the reasoning, not just the conclusion.
 - **Don't commit scratch/tmp scripts.** One-off verification scripts used
   while working belong in a scratch directory outside the repo, not in the
   commit.
+- **Check the diff's deletions before every commit and merge**
+  (R-20261127-33, #148):
+  - Before committing, read `git diff --cached --stat`. Don't commit if
+    the line counts don't match the change you meant to make, if a
+    deletion is unintended, or if a file has become 0 bytes.
+  - The PR body gives the diff's added and deleted line counts. Any
+    deletion of more than 20 lines in one file, and any file that is
+    emptied or removed, is stated as intended, with the reason, so that
+    whoever merges (a human or the session) can see it from the body.
+  - Before merging, and before asking a human to merge, review the PR
+    diff's deletions again.
+  - A script that rewrites a file reads it first. Never open the same
+    file for writing while reading it in one expression (that is how a
+    one-line fix emptied a whole README in another repository).
+  - The PR body states only what was checked in the diff.
 - **Codex delivers working-tree changes only.** It does not commit. Claude
   Code reviews the diff against the approved plan first, then makes the
   commit(s) with a trailer identifying the source (e.g.

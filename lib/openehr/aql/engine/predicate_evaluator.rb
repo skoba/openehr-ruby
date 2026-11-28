@@ -125,7 +125,40 @@ module OpenEHR
 
       def compare(left, operator, right)
         method = COMPARATORS.fetch(operator) { raise ExecutionError, "unknown comparison operator #{operator.inspect}" }
-        left.public_send(method, right)
+        left.public_send(method, temporal_operand(left, right))
+      end
+
+      # The DV_ types whose value is compared with an ISO 8601 literal by
+      # instant (#134), with the RM type name used in error messages.
+      DATE_TYPES = {
+        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDateTime => 'DV_DATE_TIME',
+        OpenEHR::RM::DataTypes::Quantity::DateTime::DvDate => 'DV_DATE'
+      }.freeze
+
+      # AQL (QUERY 3.12.5) compares a date-time path itself with a quoted
+      # ISO 8601 literal, read as the path's type (#134). The literal is
+      # read as that type and the two are compared by instant, with the
+      # ordering count of #117/#120: a partial value is its earliest
+      # instant and a value without an offset is UTC (the specification
+      # gives no rule for either; this follows EHRbase). A literal that
+      # cannot be read as that type raises instead of matching nothing.
+      # Another DV_ value on the right (path to path), and DV_TIME and
+      # DV_DURATION on the left, are left as they were.
+      def temporal_operand(left, right)
+        klass, type_name = DATE_TYPES.find { |k, _| left.is_a?(k) }
+        return right unless klass
+        return right if right.is_a?(OpenEHR::RM::DataTypes::Quantity::DateTime::DvTemporal)
+
+        unless right.is_a?(String)
+          raise ExecutionError, "cannot compare a #{type_name} with #{right.inspect}: expected an ISO 8601 string"
+        end
+
+        begin
+          klass.new(value: right)
+        rescue ArgumentError
+          raise ExecutionError,
+                "cannot compare a #{type_name} with '#{right}': not an ISO 8601 #{type_name == 'DV_DATE' ? 'date' : 'date or date-time'}"
+        end
       end
     end
   end

@@ -125,7 +125,7 @@ module OpenEHR
 
       def value=(value)
         unless value.nil?
-          if /((([+-](\d{2})):?(\d{2}))|Z)/ =~ value
+          if /((([+-](\d{2}))(?::?(\d{2}))?)|Z)/ =~ value
             @value = value
             if $1 == 'Z'
               @hour, @minute = 0,0
@@ -447,7 +447,7 @@ module OpenEHR
           end
         end
         # The offset is written whatever the precision (#121).
-        s += @timezone.to_s unless @timezone.nil?
+        s += extended_offset unless @timezone.nil?
         return s
       end
 
@@ -457,6 +457,18 @@ module OpenEHR
           nilthenzero(@fractional_second)
         return second
       end
+
+      private
+
+      # The offset as as_string writes it: the extended form ±hh:mm
+      # (BASE Foundation Types 6.5.5-6.5.6; #138). +0900 becomes +09:00;
+      # Z, ±hh:mm and ±hh are already extended. #timezone and a DV_ value
+      # keep the offset as given.
+      def extended_offset
+        text = @timezone.to_s
+        match = /\A([+-]\d{2})(\d{2})\z/.match(text)
+        match ? "#{match[1]}:#{match[2]}" : text
+      end
     end
 
     class ISO8601Time
@@ -464,7 +476,10 @@ module OpenEHR
       def initialize(string)
         # hhmm... is the compact form (#80); a bare hh counts as extended.
         @extended = !(/\A\d{4}/ =~ string)
-        /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ string
+        # One form only (#136): 1430:00 and 14:3000 mix them.
+        raise ArgumentError, 'data invalid' if ISO8601Time.mixed_form?(string)
+
+        /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2})(?::?(\d{2}))?))?$/ =~ string
         if $2.nil?
           self.minute = nil
         else
@@ -499,8 +514,18 @@ module OpenEHR
         self.to_second <=> other.to_second
       end
 
+      # hh:mm and mm:ss separated differently (one with ':', one
+      # without) mix the extended and compact forms, which BASE
+      # Foundation Types 6.5.1 does not list (#136).
+      def self.mixed_form?(string)
+        match = /\A\d{2}(:?)\d{2}(:?)\d{2}/.match(string)
+        !match.nil? && match[1] != match[2]
+      end
+
       def self.valid_iso8601_time?(s)
-        if /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2}):?(\d{2})))?$/ =~ s
+        return false if mixed_form?(s)
+
+        if /^(\d{2}):?(\d{2})?(:?)(\d{2})?((\.|,)(\d+))?(Z|([+-](\d{2})(?::?(\d{2}))?))?$/ =~ s
 # ISO 8601 regular expression by H. Yuki
 #  http://digit.que.ne.jp/work/wiki.cgi?Perl%E3%83%A1%E3%83%A2%2FW3C%E5%BD%A2%E5%BC%8F%E3%81%AE%E6%97%A5%E6%99%82%E3%81%AE%E8%A7%A3%E6%9E%90
 # (\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d))?)?(Z|([+-]\d{2}):(\d{2}))?)?)?)?
@@ -533,7 +558,8 @@ module OpenEHR
         return true if tz.nil?
 
         timezone = Timezone.new(tz)
-        return false if timezone.hour < 0 or timezone.hour >= HOURS_IN_DAY
+        # Timezone#hour is signed (-05 is -5), so check its size (#141).
+        return false if timezone.hour.abs >= HOURS_IN_DAY
         return false if timezone.minute < 0 or timezone.minute >= MINUTES_IN_HOUR
 
         true
@@ -577,7 +603,7 @@ module OpenEHR
             end
           end
           unless @timezone.nil?
-            s += @timezone.to_s
+            s += extended_offset
           end
         end
         return s
@@ -601,11 +627,12 @@ module OpenEHR
       # text, because Timezone#hour loses the sign of "-00:30" and
       # Timezone#minute is unsigned (#108). Z and a value without an
       # offset both give 0, so a value without an offset counts as UTC,
-      # also when it is compared with a value that has one (#112).
+      # also when it is compared with a value that has one (#112). An
+      # hour-only offset (±hh) counts whole hours (#137).
       def utc_offset_seconds
         return 0 unless @timezone
 
-        match = /\A([+-])(\d{2}):?(\d{2})\z/.match(@timezone.to_s)
+        match = /\A([+-])(\d{2})(?::?(\d{2}))?\z/.match(@timezone.to_s)
         return 0 unless match
 
         seconds = (match[2].to_i * MINUTES_IN_HOUR * SECONDS_IN_MINUTE) + (match[3].to_i * SECONDS_IN_MINUTE)
@@ -618,8 +645,8 @@ module OpenEHR
 
       # Both forms capture the same groups: year, month, day, hour,
       # minute, second, decimal sign, fraction, offset.
-      EXTENDED_FORM = /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2}):?(\d{2}))?)?)?)?)?\z/
-      COMPACT_FORM = /\A(\d{4})(\d{2})(?:(\d{2})(?:T(\d{2})(?:(\d{2})(?:(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(\d{2}))?)?)?)?\z/
+      EXTENDED_FORM = /\A(\d{4})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2})(?::(\d{2})(?::(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(?::?(\d{2}))?)?)?)?)?)?\z/
+      COMPACT_FORM = /\A(\d{4})(\d{2})(?:(\d{2})(?:T(\d{2})(?:(\d{2})(?:(\d{2})(?:(\.|,)(\d+))?)?(Z|([+-]\d{2})(\d{2})?)?)?)?)?\z/
 
       def initialize(string)
         # Anchored, and the date must be complete before a time may follow
