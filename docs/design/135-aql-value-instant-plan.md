@@ -1,98 +1,109 @@
-# 計画: AQL の `…/value` とリテラルの比較を、時点の比較にするか(段 B。ゲート)
+# 計画: AQL の日時の比べ方(段 A の直しと、段 B の `…/value`)
 
-Issue: #135。Refs R-20261127-18(段 B)。段 A(日時そのものとリテラルの比較)は #134(PR #139)。
+Issue: #135(段 B、`…/value`)と、段 A の直しの Issue(未公開の挙動の直し。番号は PR に書く)。
+Refs R-20261128-11(R-20261127-18 の段 A・段 B を改める)。
 
-**この計画は、決めるための材料。実装は、答えが出てから。**
+比べ方は R-20261128-11 で決まった。この計画書は、その決めを実装に落とすためのもの。
+前の版(時点で比べる案と、決めてほしいことの一覧)は、この裁定で置き換えた。
 
-## 前提
+## いまの作り(読んだもの、master `0f21160`)
 
-- 段 A(PR #139)で、日時そのもの(`c/context/start_time`)とリテラルは、時点で比べる
-- `…/value` は RM の上では String(DV_DATE_TIME.value: String)。いまの `PredicateEvaluator.compare`
-  (`lib/openehr/aql/engine/predicate_evaluator.rb:126`)は、String どうしの比較になる
+- `lib/openehr/aql/engine/predicate_evaluator.rb:126-129`(`compare`): 左の値の `==`、`<` などを呼ぶ。
+  右は `temporal_operand`(`:146-163`)が、左が DvDateTime か DvDate のとき、同じ型に読む(段 A、#134)
+- 型の比較(`DvDateTime#<=>` など)は、欠けた成分をいちばん早い時点、時刻帯の無い値を UTC として数える
+  (#117・#120、`lib/openehr/rm/data_types/quantity/date_time.rb`)。そのため、いまは `2026-11 = '2026-11-15'` が当たらない
+- DV_DATE の左に日時のリテラルを置くと、いまは `ExecutionError`(`temporal_operand` が DvDate として読む)
+- `…/value` は String になる(`PathEvaluator.evaluate`、`lib/openehr/aql/engine/path_evaluator.rb:48-67`)。
+  WHERE でも ORDER BY でも、文字列として比べる
+- ORDER BY は `Engine#compare_values`(`lib/openehr/aql/engine.rb:62-71`)で `a <=> b`。値の無い行は最後(#151)
 
-## 仕様とほかの実装(読み取り)
+## 比べ方(WHERE の =、!=、<、<=、>、>=)
 
-- AQL(QUERY、3.12.5。統括の読みによる): 日時のリテラルは引用符つきの ISO 8601。例は日時そのものとの比較。
-  処理系は、比べる相手のパスの型か文字列の形から日時として扱う。オフセットと部分的な値の比べ方は書かれていない
-- AQL 3.8.1.1: LIKE を日時の文字列に使う例がある(統括の読みによる)
-- EHRbase: 比較の演算子は magnitude の比較(openEHR Discourse 11954 の 7 番めの投稿。統括の読みによる)。
-  `…/value` の比較も magnitude になるかは、確かめていない
-- **仕様に無い点: オフセットの違う値、部分的な値、`=` の意味。ここでの答えは「この実装の決め」**
+1. 値を、書かれた成分(年、月、日、時、分、秒)に分ける。書かれていない成分は補わない
+2. 年から順に、両方に書かれている成分だけを比べる。はじめて違いの出た成分で、前後が決まる
+3. 両方に書かれている成分がすべて同じなら、等しい(=、<=、>= が成り立つ。!=、<、> は成り立たない)
+4. 時刻帯(Z、±hh:mm、±hh)は、両方に書かれているときだけ、両方を UTC に直してから 1〜3 を行う。
+   どちらかに無いとき(日付だけの値を含む)は、時刻帯を見ずに、書かれた成分のまま比べる
+5. 秒の小数は、秒と合わせて 1 つの成分(小数の無い秒は、小数が 0 の秒と同じ)。コンパクト形式も同じ成分に読む
 
-## 結果が変わる問いと、変わらない問い(実行。段 A のブランチ `fix/134-aql-date-time-literal` で、`…/value` の形と日時そのものの形を比べた)
+UTC に直すとき(4)は、欠けた分(分・秒)を 0 として計算し、直したあと、もとの精度に切りつめる
+(裁定の例のとおり。時刻帯を持つ値は、ISO 8601 の上、時まではかならずある)。
 
-| 問いの形(`S = c/context/start_time`) | 値 | `S/value`(いま、文字列) | `S`(時点) | 変わるか |
-|---|---|---|---|---|
-| `>= '2026-03-01T00:00:00Z'`、値も Z だけ | `2026-02-28T23:30:00Z`、`2026-03-01T00:30:00Z` | 後者 | 後者 | 変わらない |
-| `>= '2026-03-01T00:00:00Z'`、オフセットが混じる | `2026-03-01T08:00:00+09:00`、`2026-03-01T00:30:00Z` | 両方 | 後者だけ | **変わる** |
-| `>= '2026-03-15T00:00:00Z'`、日までの値 | `2026-03-15`、`2026-03-16T00:00:00Z` | 後者だけ | 両方 | **変わる** |
-| `>= '2026-03-01'`(日までのリテラル) | `2026-03-01T08:00:00+09:00`、`2026-03-01T10:00:00Z` | 両方 | 後者だけ | **変わる** |
-| `= '2026-03-01T08:00:00+09:00'`(同じ文字列) | `2026-03-01T08:00:00+09:00` | 当たる | 当たる | 変わらない |
-| `= '2026-02-28T23:00:00Z'`(同じ時点、違う文字列) | `2026-03-01T08:00:00+09:00` | 当たらない | 当たる | **変わる** |
-| `>= '20260301'`(コンパクト形式のリテラル) | `2026-03-15T00:00:00Z` | 当たらない | 当たる | **変わる** |
-| `>= '2026-03-01T00:00:00Z'`、値にオフセットが無い | `2026-03-01T08:00:00` | 当たる | 当たる | 変わらない |
-| `ORDER BY S/value` と `ORDER BY S` | `2026-03-01T08:00:00+09:00`、`2026-02-28T23:30:00Z` | 文字列の順(Z が先) | 時点の順(+09:00 が先) | **変わる**(ORDER BY も時点にするなら) |
-| `S/value LIKE '2026-03*'` | 上と同じ | 文字列で当たる | — | 変えない案 |
-| `S/value >= 'abc'`(ISO 8601 でない) | 上と同じ | 当たらない(文字列の比較) | 段 A ではエラー | 下の 5 |
-| `S/value >= $t`(パラメータ) | 上と同じ | 文字列の比較 | — | リテラルと同じ扱い |
-| `S/value = c/context/start_time/value`(パスどうし) | 上と同じ | 文字列の比較 | — | 下の 4 |
+### 対象
 
-まとめ: オフセットと精度がそろっていて、リテラルも同じ形なら、結果は変わらない。そろっていないときだけ変わる。
-openehr-rails は、いま AQL に渡す値を UTC の時点にそろえている(統括の読み: `lib/openehr_rails/aql/dataset_adapter.rb:55`)ので、
-openehr-rails 経由の問いは、日までのリテラル(`>= '2026-03-01'`)を除いて、ほぼ変わらない(推論。実行していない)
+- 左: DV_DATE_TIME と DV_DATE そのもの(段 A)。その `…/value`(段 B。持ち主が DV_DATE_TIME か DV_DATE のとき)
+- 右: ISO 8601 の日付か日時として読める文字(リテラル、パラメータ)。日付の型と日時の文字、日時の型と日付の文字の組も比べる
+- 右がパスで、日時の値(そのもの、または `…/value`)のときも、同じ比べ方。片方だけが日時の値のときは、いまのまま
+- ISO 8601 の日付か日時として読めない文字は `ExecutionError`(`…/value` でも)。数などの文字でない値も、いまのまま `ExecutionError`
 
-## 案(統括の案。決めるのは人間)
+## 並べ方(ORDER BY)
 
-1. **比べ方**: 左が `…/value` で、その持ち主が DV_DATE_TIME か DV_DATE、右が ISO 8601 として読めるリテラルかパラメータなら、
-   持ち主どうしを時点で比べる(段 A と同じ計算)
-2. **`=` と `!=`**: 時点で比べる(`2026-03-01T08:00:00+09:00` と `2026-02-28T23:00:00Z` は等しい)。
-   書かれた文字列そのものを比べたいときは、ワイルドカードの無い `LIKE`(`S/value LIKE '2026-03-01T08:00:00+09:00'`)を使う。LIKE は文字列のまま
-3. **ORDER BY `…/value`**: 持ち主が DV_DATE_TIME か DV_DATE なら、時点の順にする(`ORDER BY S` とそろえる)。
-   同じ時点の値どうしの順は、いまの安定でない sort のまま(決めない)
-4. **パスどうし**(`S/value = T/value`): 両方の持ち主が日付の型なら時点で比べる。片方だけなら、いまのまま文字列
-5. **ISO 8601 として読めないリテラル**: 2 案
-   - 5a(推奨): エラー(段 A とそろえる)。DV_DATE_TIME の value はいつも ISO 8601 なので、読めないリテラルと比べても意味のある結果にならない
-   - 5b: いまのまま文字列の比較(後方互換)。黙って当たらないことがある
-6. **LIKE と MATCHES**: 文字列のまま(仕様の 3.8.1.1 の例に合う)
-7. **DV_TIME の `…/value`**: 文字列のまま(R-20261127-3: 書かれたまま比べる)。DV_DURATION も変えない
+- 日時の値(そのもの、または `…/value`)は、いちばん早い時点の順(欠けた成分は最小、時刻帯の無い値は UTC)
+- 同じ時点なら、粗い値が先(`2026-11`、`2026-11-01`、`2026-11-01T00:00:00Z` の順)。それも同じなら、書かれた文字の順
+- 値の無い行は、向きによらず最後(#151 のまま)。DESC は、全体の順を逆にする(値の無い行を除く)
 
-## エンジンが value の持ち主の型を知る作り
+## 変えないもの
 
-- いまの `PathEvaluator.evaluate`(`path_evaluator.rb:48-57`)は、最後の値(String)だけを返す
-- 案: `PredicateEvaluator.evaluate_comparison` と `Engine#compare_bindings` で、左のパスの最後の区切りが `value` のとき、
-  1 つ手前までを評価して持ち主を得る(`PathEvaluator` に「最後の 1 区切りを除いて評価する」関数を足す)。
-  持ち主が DV_DATE_TIME か DV_DATE なら、持ち主で比べる。そうでなければ、いまのまま
-- パスの評価は 1 回増える(最後の 1 区切りの分)。行の数が多いときの重さは、実装のときに測る
+- RM の型(DvDateTime、DvDate、ISO8601 の型)の比較と magnitude。並べ替えと Comparable には全順序が要る
+- LIKE と MATCHES は文字のまま。書かれた文字そのものを比べたいときは、ワイルドカードの無い LIKE
+- DV_TIME と DV_DURATION、集計(MIN、MAX など)、DISTINCT
 
-## semver と Upgrade note
+## 作り
 
-- いま動いている問いの結果が変わる(上の表の「変わる」の行)。シグネチャは変わらない
-- 前例(#97 で行の数が変わったのを minor にした)にならうなら minor。結果が黙って変わるので major も考えられる。棚卸しで決める
-- Upgrade note の文の案:
+- 比べる計算は、AQL のエンジンの中の 1 か所に置く: `lib/openehr/aql/engine/temporal_comparison.rb`
+  - `TemporalComparison.parse(value)`: DvDateTime・DvDate・String を、成分の列(年〜秒、秒は Rational)と、
+    時刻帯(UTC からの秒、無ければ nil)に分ける。読めなければ nil
+  - `TemporalComparison.compare(a, b)`: 上の 1〜5 で -1、0、1
+  - `TemporalComparison.order_key(a)`: ORDER BY の鍵(いちばん早い時点、成分の数、書かれた文字)
+- `PredicateEvaluator`: 左が日時の値(段 A)か、持ち主が日時の型の `…/value`(段 B)なら、右を読んで `compare` の結果で演算子を決める
+- `PathEvaluator` に、パスの最後の区切りが `value` のとき、持ち主(1 つ手前まで)を返す関数を足す(段 B)
+- `Engine#compare_values`: 両方が日時の値なら `order_key` で比べる
+- 追加する名前は、AQL の許す属性の一覧(`ALLOWED_TERMINAL_HOPS`・`TYPED_TERMINAL_HOPS`)には入れない(衝突の洗い出しは要らない)
 
-  > AQL: comparing `…/value` of a DV_DATE_TIME or DV_DATE with an ISO 8601 literal or parameter now compares instants, not strings,
-  > and `ORDER BY …/value` on those types orders by instant. Results change only where the stored values or the literal differ in UTC
-  > offset or precision (e.g. `2026-03-01T08:00:00+09:00` no longer matches `>= '2026-03-01T00:00:00Z'`; a date-only value `2026-03-15`
-  > now matches `>= '2026-03-15T00:00:00Z'`). To compare the stored text itself, use `LIKE` without wildcards.
+## spec の一覧(裁定の例。左が記録の値、右が条件)
 
-## openEHR Discourse に出す問いの案(投稿は人間)
+| 記録の値 | 条件 | 結果 |
+|---|---|---|
+| 2026-11 | `> '2026-10-30'` | 当たる(月で決まる) |
+| 2026-11 | `= '2026-11-15'` | 当たる(月まで同じ) |
+| 2026-11-15 | `= '2026-11'` | 当たる |
+| 2026-11-15 | `> '2026-11'` | 当たらない |
+| 2026-11 | `>= '2026-11-15'` | 当たる |
+| 2026-11 | `> '2026-11-15'` | 当たらない |
+| 2026-11 | `>= '2026-11-10' AND < '2026-11-20'` | 当たらない |
+| 2026-11 | `>= '2026-11-10' AND <= '2026-11-20'` | 当たる |
+| 2025 | `>= '2025-01-01' AND < '2026-01-01'` | 当たる |
+| 2026 | `>= '2025-01-01' AND < '2026-01-01'` | 当たらない |
+| 2025、2025-03、2025-03-10、2025-03-10T08:00:00+09:00 | `= '2025'` | どれも当たる |
+| 2026-03-01T08:00:00+09:00 | `>= '2026-03-01'` | 当たる(書かれた日で比べる) |
+| 2026-02-28T23:00:00Z | `>= '2026-03-01'` | 当たらない |
+| 2026-03-01T08:00:00+09:00 | `= '2026-02-28T23:00:00Z'` | 当たる(両方に時刻帯) |
+| 2026-03-01T08:00:00+09:00 | `>= '2026-03-01T00:00:00Z'` | 当たらない |
+| 2026-03-01T08:00:00(時刻帯なし) | `>= '2026-03-01T00:00:00Z'` | 当たる |
+| 2026-03-15 | `>= '2026-03-15T00:00:00Z'` | 当たる |
+| 2026-03-15 | `> '2026-03-15T00:00:00Z'` | 当たらない |
+| 2026-03-01T08:30+09:00 | `= '2026-02-28T23:30:45Z'` | 当たる(UTC に直して、分まで同じ) |
+| 2026-03-01T08:00:00 | `< '2026-03-01T08:00:00.5'` | 当たる |
+| 2026-11-15T10:00:00+09:00 | `= '20261115'` | 当たる |
+| DV_DATE 2026-03-01 | `= '2026-03-01T12:00:00'` | 当たる |
 
-> **AQL: should `…/value` of a DV_DATE_TIME be compared as a date-time or as a string?**
->
-> AQL 1.1 (3.12.5) compares date-time paths with quoted ISO 8601 literals, and its examples use the DV_DATE_TIME itself
-> (`composition/context/start_time >= '2024-01-01'`). Many real queries write `…/start_time/value >= '…'` instead.
-> Since `value` is a String in the RM, a straightforward implementation compares strings, which agrees with instant order only when
-> offset and precision match (`2026-03-01T08:00:00+09:00` sorts after `2026-03-01T00:00:00Z` as a string, but is earlier as an instant).
->
-> 1. Should an implementation compare `…/value` of DV_DATE_TIME / DV_DATE by instant (as for the DV_DATE_TIME itself), or as a string?
-> 2. For `=`, are `2026-03-01T08:00:00+09:00` and `2026-02-28T23:00:00Z` equal?
-> 3. How should a partial value (`2026-03-15`) compare with a full literal (`2026-03-15T00:00:00Z`)?
->
-> EHRbase compares magnitudes (thread 11954). We would like the specification to say which, so that the same AQL gives the same rows
-> on every CDR.
+それぞれを、日時そのもの(段 A の PR)と、`…/value`(段 B の PR)の両方で確かめる。加えて:
 
-## 実装に進むとき(答えが出たら)
+- パスどうし(両方が日時の値): 上と同じ比べ方
+- 読めないリテラル(`'abc'`、時刻だけの `'14:30'`)は `ExecutionError`(`…/value` でも)
+- 負の時刻帯(`-05:00`)も UTC に直す(#141 のあと)
+- ORDER BY: `2026-11`、`2026-11-01T00:00:00Z`、`2026-11-01` を、`2026-11`、`2026-11-01`、`2026-11-01T00:00:00Z` の順に。DESC はその逆。値の無い行は最後
+- regression pin: LIKE は文字のまま。DV_TIME はいまのまま
 
-- Issue #135 を (a) bug か (b) enhancement として、Red から。上の表の「変わる」の行を spec にする
-- 案 5 の答えにより、読めないリテラルのテストを足す
-- openehr-rails の #92 は、段 A と段 B の両方を見て進める(R-20261127-18 の公開の節)
+## 文書
+
+- README(英語と日本語)の AQL の節に、比べ方、例、並べ方を書く。期間で絞るときは、その精度の `=` が使えること(`= '2025'`)
+- EHRbase との違い: 共通の精度まで同じ値を等しいとする点と、WHERE で時刻帯の無い値を UTC とみなさない点。
+  仕様が決めていない点についての、この実装の決めであることと、openEHR の議論で結論が出たら改めること
+- 段 B の PR に入れる(README を変える PR は日本語版も直す)
+
+## semver と変更履歴
+
+- 段 A は未公開なので、文は 2.9.0 からの差で書く。#134 の断片を、最後の挙動に書き直す(段 A の PR)
+- 段 B は、`…/value` の比較と並びの結果が変わる。minor の見込み(判定は棚卸しで、中身から)。Upgrade note に、結果の変わる形を書く
+- このあと、2.10.0 の棚卸しをやり直す(PR #153 は、master を取り込んで作り直すか、閉じて開き直す)
