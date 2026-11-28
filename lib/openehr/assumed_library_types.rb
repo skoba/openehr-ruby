@@ -558,7 +558,8 @@ module OpenEHR
         return true if tz.nil?
 
         timezone = Timezone.new(tz)
-        return false if timezone.hour < 0 or timezone.hour >= HOURS_IN_DAY
+        # Timezone#hour is signed (-05 is -5), so check its size (#141).
+        return false if timezone.hour.abs >= HOURS_IN_DAY
         return false if timezone.minute < 0 or timezone.minute >= MINUTES_IN_HOUR
 
         true
