@@ -52,21 +52,23 @@ module OpenEHR
 
       def compare_bindings(a, b, order_by_items)
         order_by_items.each do |item|
-          cmp = compare_values(PathEvaluator.evaluate(item.path, a), PathEvaluator.evaluate(item.path, b))
-          cmp = -cmp if item.direction == :desc
+          cmp = compare_values(PathEvaluator.evaluate(item.path, a), PathEvaluator.evaluate(item.path, b),
+                               item.direction)
           return cmp unless cmp.zero?
         end
         0
       end
 
       # nil (an absent path) sorts after any real value, regardless of
-      # ASC/DESC - the usual SQL "NULLS LAST" convention.
-      def compare_values(a, b)
+      # ASC/DESC - the usual SQL "NULLS LAST" convention. Only the
+      # comparison of two real values follows the direction (#151).
+      def compare_values(a, b, direction)
         return 0 if a.nil? && b.nil?
         return 1 if a.nil?
         return -1 if b.nil?
 
-        a <=> b
+        cmp = a <=> b
+        direction == :desc ? -cmp : cmp
       end
 
       def project(bindings)
