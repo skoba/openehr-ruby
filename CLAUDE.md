@@ -84,6 +84,9 @@ For any non-trivial change (bug fix, hardening, enhancement):
     (checked against the actual design/implementation record), not as
     instructed — if an instructed lineage doesn't match what actually went
     into the fixture, write it to match reality instead.
+  - An XML fixture's comments (an OPT's included) never contain `--`:
+    XML 1.0 section 2.5 forbids it, and strict XML parsers refuse the file
+    (R-20261128-13, #157). Write a dash some other way.
 - **One issue = one branch = one PR.** Don't bundle unrelated fixes.
 - **A PR that changes `README.rdoc` fixes its Japanese translation,
   `README.ja.rdoc`, in the same PR** (R-20261127-28, #145).
