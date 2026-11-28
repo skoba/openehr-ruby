@@ -1,3 +1,29 @@
+=== 2.11.0
+AQL can now reach a COMPOSITION's category, language, territory and
+composer (its name and its external_ref's id). OPTParser#parse says
+where libxml2 found the error when broken XML makes the parse fail.
+Behaviour change to note when upgrading: such input now raises
+OpenEHR::Parser::ParseError where it raised ArgumentError (#159), below.
+
+* AQL: COMPOSITION's category, language, territory and composer are now
+  reachable from a path (c/category/value,
+  c/category/defining_code/code_string, c/language/code_string,
+  c/territory/code_string, c/composer/name,
+  c/composer/external_ref/id/value). The names are reachable only on the
+  RM type they belong to: an ENTRY's language and a DV_IDENTIFIER's id
+  stay unreachable. (#156)
+
+* OPTParser#parse now raises OpenEHR::Parser::ParseError when the XML is
+  broken and the parse fails: the message gives the line, column and text
+  of the first error libxml2 recorded, and the original exception's class
+  and message; the original exception is the cause. The XML is still read
+  with RECOVER (#36), so a document whose errors do not stop the parse
+  (a "--" in a comment) still parses, and a document with no XML error
+  raises what it raised before. Upgrade note: such input raised
+  ArgumentError (usually "invalid archetype id form") before; a caller
+  that rescues ArgumentError by name for it now needs ParseError (both
+  are StandardError). (#159)
+
 === 2.10.0
 Dates, times and date-times now read the ISO 8601 compact form
 (20260301T100000+0900) and hour-only UTC offsets (+09), and as_string
